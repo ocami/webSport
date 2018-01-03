@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} index
+{% endblock %}
+
+{% block body %}
+
+    <h1>Test</h1>
+
+    {{ user.username }}<br>
+
+    {% for role in user.roles %}
+        {{ role }}<br>
+    {% endfor %}
+
+
+{% endblock %}
