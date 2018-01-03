@@ -11,9 +11,20 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Service\UserService;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 
 class homeController  extends Controller
 {
+
+    protected $container;
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
     /**
      * @Route("/", name="index")
      */
@@ -38,4 +49,23 @@ class homeController  extends Controller
         return $this->render('home/test.html.twig', array('user'=>$user));
     }
 
+    /**
+     * @Route("/attributRole", name="attributRole")
+     */
+    public function attributRoleAction(UserService $userService)
+    {
+        $userManager = $this->get('fos_user.user_manager');
+        $user = $this->getUser();
+        $user->addRole('ROLE_SUPER_ADMIN');
+        $userManager->updateUser($user);
+
+        $token = $userService->refreshToken($user);
+
+        $security = $this->container->get('security.token_storage');
+
+        $security->setToken($token);
+
+        return $this->render('home/test.html.twig', array('user'=>$user));
+
+    }
 }

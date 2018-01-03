@@ -8,21 +8,16 @@
 
 namespace AppBundle\Service;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
-class User
+
+
+class UserService
 {
-
-    protected $container;
-
-    private function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
 
     public function refreshToken($user)
     {
+
         $token = new UsernamePasswordToken(
             $user,
             null,
@@ -30,8 +25,6 @@ class User
             $user->getRoles()
         );
 
-        $security = $this->container->get('security.token_storage');
-
-        $security->setToken($token);
+        return $token;
     }
 }
