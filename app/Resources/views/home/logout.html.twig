@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} index
+{% endblock %}
+
+{% block body %}
+
+    <input type="button" class="btn btn-info" value="Déconnection" onclick="location.href = '{{ path('fos_user_security_logout') }}';">
+
+{% endblock %}
