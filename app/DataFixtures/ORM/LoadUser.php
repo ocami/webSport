@@ -12,8 +12,11 @@ use AppBundle\Entity\User;
 
 class LoadUser implements FixtureInterface
 {
+
     public function load(ObjectManager $manager)
     {
+
+        /*
         // Les noms d'utilisateurs à créer
         $listNames = array('toto', 'tata', 'tutu');
 
@@ -38,5 +41,6 @@ class LoadUser implements FixtureInterface
 
         // On déclenche l'enregistrement
         $manager->flush();
+        */
     }
 }

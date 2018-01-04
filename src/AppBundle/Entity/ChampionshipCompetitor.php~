@@ -1,0 +1,54 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use AppBundle\Entity\Championship;
+use AppBundle\Entity\Competitor;
+
+
+/**
+ * RaceCompetitor
+ *
+ * @ORM\Table(name="race_competitor")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\RaceCompetitorRepository")
+ */
+class ChampionshipCompetitor
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Championship",inversedBy="competitors",  cascade={"persist"})
+     */
+    private $championship;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Competitor",inversedBy="$championships",  cascade={"persist"})
+     */
+    private $competitor;
+
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="number", type="integer", nullable=true)
+     */
+    private $points;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="ranck", type="integer", nullable=true)
+     */
+    private $ranck;
+
+
+
+}

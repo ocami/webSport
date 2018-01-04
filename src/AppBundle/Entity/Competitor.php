@@ -2,11 +2,12 @@
 /**
  * Created by PhpStorm.
  * User: alex
- * Date: 30/12/2017
- * Time: 18:10
+ * Date: 03/01/2018
+ * Time: 22:12
  */
 
 namespace AppBundle\Entity;
+
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -66,51 +67,51 @@ class Competitor
 
 
     /**
-     * Set sexe
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\ChampionshipCompetitor",mappedBy="competitor")
+     */
+    private $championships;
+
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->championships = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Get id
      *
-     * @param string $sexe
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set userId
+     *
+     * @param integer $userId
      *
      * @return Competitor
      */
-    public function setSexe($sexe)
+    public function setUserId($userId)
     {
-        $this->sexe = $sexe;
+        $this->userId = $userId;
 
         return $this;
     }
 
     /**
-     * Get sexe
+     * Get userId
      *
-     * @return string
+     * @return integer
      */
-    public function getSexe()
+    public function getUserId()
     {
-        return $this->sexe;
-    }
-
-    /**
-     * Set date
-     *
-     * @param \DateTime $date
-     *
-     * @return Competitor
-     */
-    public function setDate($date)
-    {
-        $this->date = $date;
-
-        return $this;
-    }
-
-    /**
-     * Get date
-     *
-     * @return \DateTime
-     */
-    public function getDate()
-    {
-        return $this->date;
+        return $this->userId;
     }
 
     /**
@@ -162,36 +163,85 @@ class Competitor
     }
 
     /**
-     * Get id
+     * Set sexe
      *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set userId
-     *
-     * @param integer $userId
+     * @param string $sexe
      *
      * @return Competitor
      */
-    public function setUserId($userId)
+    public function setSexe($sexe)
     {
-        $this->userId = $userId;
+        $this->sexe = $sexe;
 
         return $this;
     }
 
     /**
-     * Get userId
+     * Get sexe
      *
-     * @return integer
+     * @return string
      */
-    public function getUserId()
+    public function getSexe()
     {
-        return $this->userId;
+        return $this->sexe;
+    }
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     *
+     * @return Competitor
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * Add championship
+     *
+     * @param \AppBundle\Entity\ChampionshipCompetitor $championship
+     *
+     * @return Competitor
+     */
+    public function addChampionship(\AppBundle\Entity\ChampionshipCompetitor $championship)
+    {
+        $championship->setCompetitor($this);
+        $this->championships[] = $championship;
+
+        return $this;
+    }
+
+    /**
+     * Remove championship
+     *
+     * @param \AppBundle\Entity\ChampionshipCompetitor $championship
+     */
+    public function removeChampionship(\AppBundle\Entity\ChampionshipCompetitor $championship)
+    {
+        $this->championships->removeElement($championship);
+    }
+
+    /**
+     * Get championships
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getChampionships()
+    {
+        return $this->championships;
     }
 }

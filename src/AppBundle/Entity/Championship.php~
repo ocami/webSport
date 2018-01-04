@@ -1,0 +1,61 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: alex
+ * Date: 03/01/2018
+ * Time: 22:13
+ */
+
+namespace AppBundle\Entity;
+
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * championship
+ *
+ * @ORM\Table(name="championship")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\championshipRepository")
+ */
+class Championship
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255, unique=true)
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="code", type="string", length=10, unique=true)
+     */
+    private $code;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Race", mappedBy="championship")
+     */
+    private $races;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\ChampionshipCompetitor",mappedBy="championship")
+     */
+    private $competitors;
+
+    /**
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Category", mappedBy="championship", cascade={"persist"})
+     */
+    private $category;
+
+
+}

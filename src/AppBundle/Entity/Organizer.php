@@ -2,11 +2,12 @@
 /**
  * Created by PhpStorm.
  * User: alex
- * Date: 30/12/2017
- * Time: 18:10
+ * Date: 03/01/2018
+ * Time: 22:14
  */
 
 namespace AppBundle\Entity;
+
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -49,6 +50,18 @@ class Organizer
      */
     private $code;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Competition", mappedBy="organizer")
+     */
+    private $competitions;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->competitions = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -130,5 +143,40 @@ class Organizer
     public function getCode()
     {
         return $this->code;
+    }
+
+    /**
+     * Add competition
+     *
+     * @param \AppBundle\Entity\Competition $competition
+     *
+     * @return Organizer
+     */
+    public function addCompetition(\AppBundle\Entity\Competition $competition)
+    {
+        $competition->setOrganizer($this);
+        $this->competitions[] = $competition;
+
+        return $this;
+    }
+
+    /**
+     * Remove competition
+     *
+     * @param \AppBundle\Entity\Competition $competition
+     */
+    public function removeCompetition(\AppBundle\Entity\Competition $competition)
+    {
+        $this->competitions->removeElement($competition);
+    }
+
+    /**
+     * Get competitions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCompetitions()
+    {
+        return $this->competitions;
     }
 }

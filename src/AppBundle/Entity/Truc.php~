@@ -1,0 +1,66 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Truc
+ *
+ * @ORM\Table(name="truc")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\TrucRepository")
+ */
+class Truc
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="truc", type="string", length=255)
+     */
+    private $truc;
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set truc
+     *
+     * @param string $truc
+     *
+     * @return Truc
+     */
+    public function setTruc($truc)
+    {
+        $this->truc = $truc;
+
+        return $this;
+    }
+
+    /**
+     * Get truc
+     *
+     * @return string
+     */
+    public function getTruc()
+    {
+        return $this->truc;
+    }
+}
+
