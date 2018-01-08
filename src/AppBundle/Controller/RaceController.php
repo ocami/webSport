@@ -8,64 +8,145 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Race;
+use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Service\UserService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use AppBundle\Entity\Post;
+use AppBundle\Form\RaceType;
+use AppBundle\Form\RaceChampionshipType;
 
 
-class RaceController  extends Controller
+class RaceController extends Controller
 {
 
-    protected $container;
-
-    public function setContainer(ContainerInterface $container = null)
+    private function raceRepository()
     {
-        $this->container = $container;
+        $repo = $this->getDoctrine()->getManager()
+            ->getRepository('AppBundle:Race');
+
+        return $repo;
+    }
+
+    private function repository($class)
+    {
+        $competionRepository = $this->getDoctrine()->getManager()
+            ->getRepository('AppBundle:'.$class);
+
+        return $competionRepository;
+    }
+
+
+    /**
+     * @Route("/race/show/{id}", name="race_show")
+     */
+    public function showAction(Race $race)
+    {
+
+        $competitorsRace = $this->repository('RaceCompetitor')->findByRace($race);
+
+        return $this->render('race/show.html.twig', array(
+            'race' => $race,
+            'competitorsRace' => $competitorsRace
+        ));
     }
 
     /**
-     * @Route("/races/{id}", name="race_show")
+     * @Route("/race/CompetitionShow/{idCompetition}", name="race_competition_show")
      */
-    public function RaceSowAction(Request $request)
+    public function showByCompetitionAction($idCompetition, UserService $userService)
     {
-      return $this->render('home/index.html.twig');
+        $races = $this->raceRepository()->findByCompetition($idCompetition);
+        $competition = $this->repository('Competition')->find($idCompetition);
+        $isOrganizer=$userService->isOrganisatorComeptition($competition,$this->getUser());
+
+        return $this->render('race/showList.html.twig', array(
+            'races' => $races,
+            'competition'=>$competition,
+            'isOrganizer'=>$isOrganizer
+        ));
     }
 
     /**
-     * @Route("/userRole", name="userRole")
+     * @Security("has_role('ROLE_ORGANIZER')")
+     * @Route("/race_championship/{idCompetition}", name="race_new_championship")
      */
-    public function loginAction(Request $request)
+    public function newInChampionshipAction(Request $request, $idCompetition)
     {
-        $userManager = $this->get('fos_user.user_manager');
+        $race = new Race();
+        $form = $this->createForm(RaceChampionshipType::class, $race);
 
-        $user = $userManager->findUserBy(array('username' => 'lolo'));
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-        $user->addRole('ROLE_SUPER_ADMIN');
+            $competition=$this->repository('Competition')->find($idCompetition);
+            $race->setCompetition($competition);
 
-        $userManager->updateUser($user);
+            foreach ($race->getChampionships() as $championship)
+            {
+                $race->addCategory($championship->getCategory());
+            }
 
-        return $this->render('home/test.html.twig', array('user'=>$user));
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($race);
+            $em->flush();
+            $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée.');
+    
+            return $this->redirectToRoute('race_competition_show',array('idCompetition'=>$idCompetition));
+        }
+
+        return $this->render('race/new.html.twig', array('form' => $form->createView()));
     }
 
     /**
-     * @Route("/attributRole", name="attributRole")
+     * @Security("has_role('ROLE_ORGANIZER')")
+     * @Route("/race/new/{idCompetition}", name="race_new")
      */
-    public function attributRoleAction(UserService $userService)
+    public function newAction(Request $request, $idCompetition)
     {
-        $userManager = $this->get('fos_user.user_manager');
-        $user = $this->getUser();
-        $user->addRole('ROLE_SUPER_ADMIN');
-        $userManager->updateUser($user);
+        $race = new Race();
+        $form = $this->createForm(RaceType::class, $race);
 
-        $token = $userService->refreshToken($user);
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-        $security = $this->container->get('security.token_storage');
+            $competition=$this->repository('Competition')->find($idCompetition);
+            $race->setCompetition($competition);
 
-        $security->setToken($token);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($race);
+            $em->flush();
+            $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée.');
 
-        return $this->render('home/test.html.twig', array('user'=>$user));
+            return $this->redirectToRoute('race_competition_show',array('idCompetition'=>$idCompetition));
+        }
 
+        return $this->render('race/new.html.twig', array('form' => $form->createView()));
     }
+
+    /**
+     * @Security("has_role('ROLE_ORGANIZER')")
+     * @Route("/race/edit/{id}", name="race_edit")
+     */
+    public function editAction(Request $request, Race $race)
+    {
+        $form = $this->createForm(RaceType::class, $race);
+
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($race);
+            $em->flush();
+
+            $request->getSession()->getFlashBag()->add('notice', 'Course bien modifiée.');
+
+            return $this->redirectToRoute('race_competition_show',array(
+                'idCompetition'=>$race->getCompetition()->getId()
+            ));
+        }
+
+        return $this->render('race/new.html.twig', array('form' => $form->createView()));
+    }
+
 }

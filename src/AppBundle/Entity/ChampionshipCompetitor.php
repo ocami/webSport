@@ -30,7 +30,7 @@ class ChampionshipCompetitor
     private $championship;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Competitor",inversedBy="$championships",  cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Competitor",inversedBy="championships",  cascade={"persist"})
      */
     private $competitor;
 

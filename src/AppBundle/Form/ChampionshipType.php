@@ -13,7 +13,11 @@ class ChampionshipType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name')->add('code')->add('category');
+        $builder
+            ->add('code')
+            ->add('name')
+            ->add('category', CategoryType::class);
+
     }/**
      * {@inheritdoc}
      */

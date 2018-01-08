@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} index
+{% endblock %}
+
+{% block body %}
+
+    <h1>Race</h1>
+
+    {{ form_start(form, {'attr': {'class': 'my-form-class'} }) }}
+    {{ form_widget(form) }}
+    <input type="submit" value="Create" class="btn btn-default pull-right"/>
+    {{ form_end(form) }}
+
+{% endblock %}

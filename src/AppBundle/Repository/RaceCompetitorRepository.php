@@ -10,4 +10,5 @@ namespace AppBundle\Repository;
  */
 class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
 {
+
 }

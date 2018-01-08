@@ -11,11 +11,12 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
  * championship
  *
  * @ORM\Table(name="championship")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\championshipRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ChampionshipRepository")
  */
 class Championship
 {
@@ -43,7 +44,7 @@ class Championship
     private $code;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Race", mappedBy="championship")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Race", mappedBy="championships")
      */
     private $races;
 
@@ -53,9 +54,10 @@ class Championship
     private $competitors;
 
     /**
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Category", mappedBy="championship", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Category", cascade={"persist"})
      */
     private $category;
+
 
 
     /**
@@ -202,6 +204,7 @@ class Championship
      */
     public function setCategory(\AppBundle\Entity\Category $category = null)
     {
+        $category->setCreateBy(666);
         $this->category = $category;
 
         return $this;

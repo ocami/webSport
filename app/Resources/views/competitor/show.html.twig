@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} index
+{% endblock %}
+
+{% block body %}
+
+    <h1>competitor</h1>
+
+    {{ competitor.firstName }}<br>
+    {{ competitor.lastName }}<br>
+
+    {% for race in races %}
+
+        {{ race.number }} {{ race.race.code }}  <br>
+
+    {% endfor %}
+
+
+{% endblock %}

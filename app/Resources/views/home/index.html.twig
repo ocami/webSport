@@ -17,6 +17,8 @@
     <input type="button" class="btn btn-info" value="Créer organisateur"
            onclick="location.href = '{{ path('redirectBeforeRegister',{'toCreate':'organizer'}) }}';">
 
+    {{ include('competition/showList.html.twig')  }}
+
     {% if not is_granted('ROLE_USER') %}
         <p>Pas user</p>
     {% endif %}

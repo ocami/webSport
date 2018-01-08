@@ -22,12 +22,12 @@ class RaceCompetitor
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Race",inversedBy="competitors",  cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Race",inversedBy="competitors", cascade={"persist"})
      */
     private $race;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Competitor",inversedBy="races",  cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Competitor",inversedBy="races", cascade={"persist"})
      */
     private $competitor;
 
@@ -46,11 +46,18 @@ class RaceCompetitor
      */
     private $ranck;
 
+    /**
+     * @var Time
+     *
+     * @ORM\Column(name="chrono", type="time", nullable=true)
+     */
+    private $chrono;
+
 
     /**
      * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -74,7 +81,7 @@ class RaceCompetitor
     /**
      * Get number
      *
-     * @return int
+     * @return integer
      */
     public function getNumber()
     {
@@ -98,11 +105,35 @@ class RaceCompetitor
     /**
      * Get ranck
      *
-     * @return int
+     * @return integer
      */
     public function getRanck()
     {
         return $this->ranck;
+    }
+
+    /**
+     * Set chrono
+     *
+     * @param \DateTime $chrono
+     *
+     * @return RaceCompetitor
+     */
+    public function setChrono($chrono)
+    {
+        $this->chrono = $chrono;
+
+        return $this;
+    }
+
+    /**
+     * Get chrono
+     *
+     * @return \DateTime
+     */
+    public function getChrono()
+    {
+        return $this->chrono;
     }
 
     /**
@@ -140,6 +171,7 @@ class RaceCompetitor
     {
         $this->competitor = $competitor;
 
+        //$competitor->addRace($this->race);
         return $this;
     }
 

@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  * competition
  *
  * @ORM\Table(name="competition")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\competitionRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\CompetitionRepository")
  */
 class Competition
 {

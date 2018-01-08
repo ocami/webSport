@@ -36,8 +36,8 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/redirectAfterRegister", name="redirectAfterRegister")
      * @Security("has_role('ROLE_USER')")
+     * @Route("/redirectAfterRegister", name="redirectAfterRegister")
      */
     public function redirectAfterRegisterAction(Request $request)
     {
@@ -61,7 +61,7 @@ class UserController extends Controller
 
             default :
                 $request->getSession()->getFlashBag()->add('notice', 'Enregistrement non valide, vous devez choisir de créer un compte competiteur ou organisateur');
-                return $this->render('home/index.html.twig');
+                return $this->redirectToRoute('index');
         }
     }
 }

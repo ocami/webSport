@@ -30,7 +30,12 @@ class homeController  extends Controller
      */
     public function indexAction(Request $request)
     {
-      return $this->render('home/index.html.twig');
+        $repo = $this->getDoctrine()->getManager()
+            ->getRepository('AppBundle:Competition');
+
+        $competitions = $repo->findAll();
+
+      return $this->render('home/index.html.twig',array('competitions'=>$competitions));
     }
 
     /**
@@ -49,23 +54,4 @@ class homeController  extends Controller
         return $this->render('home/test.html.twig', array('user'=>$user));
     }
 
-    /**
-     * @Route("/attributRole", name="attributRole")
-     */
-    public function attributRoleAction(UserService $userService)
-    {
-        $userManager = $this->get('fos_user.user_manager');
-        $user = $this->getUser();
-        $user->addRole('ROLE_SUPER_ADMIN');
-        $userManager->updateUser($user);
-
-        $token = $userService->refreshToken($user);
-
-        $security = $this->container->get('security.token_storage');
-
-        $security->setToken($token);
-
-        return $this->render('home/test.html.twig', array('user'=>$user));
-
-    }
 }

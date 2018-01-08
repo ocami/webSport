@@ -5,6 +5,7 @@ namespace AppBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class RaceType extends AbstractType
 {
@@ -13,7 +14,26 @@ class RaceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('code')->add('name')->add('km')->add('date')->add('time')->add('competition')->add('championship')->add('categories');
+        $builder
+            ->add('code')
+            ->add('name')
+            ->add('km')
+            ->add('date')
+            ->add('time')
+            ->add('categories', EntityType::class, array(
+                'class'        => 'AppBundle:Category',
+                'choice_label' => 'name',
+                'multiple'     => true,
+                'expanded'     => true
+            ))
+
+
+            /*
+            ->add('championship')
+            ->add('competition')
+
+            */
+        ;
     }/**
      * {@inheritdoc}
      */

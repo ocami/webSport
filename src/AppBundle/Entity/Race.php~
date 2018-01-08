@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints\Time;
  * race
  *
  * @ORM\Table(name="race")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\raceRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\RaceRepository")
  */
 class Race
 {
@@ -70,19 +70,23 @@ class Race
      * @ORM\JoinColumn(nullable=false)
      */
     private $competition;
-    
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Championship", inversedBy ="races")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Championship", inversedBy ="races")
      */
-    private $championship;
+    private $championships;
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Category", inversedBy ="races")
-     * @ORM\JoinColumn(nullable=false)
      */
     private $categories;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\RaceCompetitor",mappedBy="race")
+     */
+    private $competitors;
+
 
 
     /**
@@ -90,6 +94,7 @@ class Race
      */
     public function __construct()
     {
+        $this->championships = new \Doctrine\Common\Collections\ArrayCollection();
         $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -246,30 +251,39 @@ class Race
     {
         return $this->competition;
     }
-    
 
     /**
-     * Set championship
+     * Add championship
      *
      * @param \AppBundle\Entity\Championship $championship
      *
      * @return Race
      */
-    public function setChampionship(\AppBundle\Entity\Championship $championship = null)
+    public function addChampionship(\AppBundle\Entity\Championship $championship)
     {
-        $this->championship = $championship;
-
+        $this->championships[] = $championship;
+        $championship->addRace($this);
         return $this;
     }
 
     /**
-     * Get championship
+     * Remove championship
      *
-     * @return \AppBundle\Entity\Championship
+     * @param \AppBundle\Entity\Championship $championship
      */
-    public function getChampionship()
+    public function removeChampionship(\AppBundle\Entity\Championship $championship)
     {
-        return $this->championship;
+        $this->championships->removeElement($championship);
+    }
+
+    /**
+     * Get championships
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getChampionships()
+    {
+        return $this->championships;
     }
 
     /**
@@ -282,7 +296,7 @@ class Race
     public function addCategory(\AppBundle\Entity\Category $category)
     {
         $this->categories[] = $category;
-
+        $category->addRace($this);
         return $this;
     }
 
@@ -305,4 +319,6 @@ class Race
     {
         return $this->categories;
     }
+
+
 }

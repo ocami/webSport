@@ -71,6 +71,11 @@ class Competitor
      */
     private $championships;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\RaceCompetitor", mappedBy="competitor")
+     */
+    private $races;
+
 
     /**
      * Constructor
@@ -78,6 +83,7 @@ class Competitor
     public function __construct()
     {
         $this->championships = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->races = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -243,5 +249,41 @@ class Competitor
     public function getChampionships()
     {
         return $this->championships;
+    }
+
+
+
+    /**
+     * Add race
+     *
+     * @param \AppBundle\Entity\RaceCompetitor $race
+     *
+     * @return Competitor
+     */
+    public function addRace(\AppBundle\Entity\RaceCompetitor $race)
+    {
+        $this->races[] = $race;
+
+        return $this;
+    }
+
+    /**
+     * Remove race
+     *
+     * @param \AppBundle\Entity\RaceCompetitor $race
+     */
+    public function removeRace(\AppBundle\Entity\RaceCompetitor $race)
+    {
+        $this->races->removeElement($race);
+    }
+
+    /**
+     * Get races
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRaces()
+    {
+        return $this->races;
     }
 }

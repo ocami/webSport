@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  * category
  *
  * @ORM\Table(name="category")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\categoryRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\CategoryRepository")
  */
 class Category
 {
@@ -70,15 +70,8 @@ class Category
      */
     private $ageMin;
 
-
     /**
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Championship",inversedBy="category", cascade={"persist"})
-     */
-    private $championship;
-
-
-    /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Race", inversedBy ="categories")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Race", mappedBy ="categories")
      */
     private $races;
 
@@ -107,7 +100,7 @@ class Category
      *
      * @param string $sexe
      *
-     * @return Category
+     * @return category
      */
     public function setSexe($sexe)
     {
@@ -131,7 +124,7 @@ class Category
      *
      * @param string $name
      *
-     * @return Category
+     * @return category
      */
     public function setName($name)
     {
@@ -155,7 +148,7 @@ class Category
      *
      * @param string $code
      *
-     * @return Category
+     * @return category
      */
     public function setCode($code)
     {
@@ -179,7 +172,7 @@ class Category
      *
      * @param integer $createBy
      *
-     * @return Category
+     * @return category
      */
     public function setCreateBy($createBy)
     {
@@ -203,7 +196,7 @@ class Category
      *
      * @param integer $ageMax
      *
-     * @return Category
+     * @return category
      */
     public function setAgeMax($ageMax)
     {
@@ -227,7 +220,7 @@ class Category
      *
      * @param integer $ageMin
      *
-     * @return Category
+     * @return category
      */
     public function setAgeMin($ageMin)
     {
@@ -247,35 +240,11 @@ class Category
     }
 
     /**
-     * Set championship
-     *
-     * @param \AppBundle\Entity\Championship $championship
-     *
-     * @return Category
-     */
-    public function setChampionship(\AppBundle\Entity\Championship $championship = null)
-    {
-        $this->championship = $championship;
-
-        return $this;
-    }
-
-    /**
-     * Get championship
-     *
-     * @return \AppBundle\Entity\Championship
-     */
-    public function getChampionship()
-    {
-        return $this->championship;
-    }
-
-    /**
      * Add race
      *
      * @param \AppBundle\Entity\Race $race
      *
-     * @return Category
+     * @return category
      */
     public function addRace(\AppBundle\Entity\Race $race)
     {

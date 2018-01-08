@@ -13,7 +13,18 @@ class CompetitionType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('code')->add('name')->add('ville')->add('adress')->add('dep')->add('dateStart')->add('dateEnd')->add('organizer');
+        $builder
+            ->add('code')
+            ->add('name')
+            ->add('ville')
+            ->add('adress')
+            ->add('dep')
+            ->add('dateStart')
+            ->add('dateEnd')
+            /*
+            ->add('organizer')
+            */
+            ;
     }/**
      * {@inheritdoc}
      */

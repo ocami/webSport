@@ -13,7 +13,13 @@ class CategoryType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('sexe')->add('name')->add('code')->add('createBy')->add('ageMax')->add('ageMin')->add('championship')->add('races');
+        $builder
+            ->add('code')
+            ->add('name')
+            ->add('sexe')
+            ->add('ageMin')
+            ->add('ageMax')
+        ;
     }/**
      * {@inheritdoc}
      */

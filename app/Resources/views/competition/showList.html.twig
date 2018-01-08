@@ -1,0 +1,33 @@
+{% block body %}
+
+    <div class="row">
+        {% for competition in competitions %}
+            <div class="col-xs-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{ competition.name }}</h3>
+                    </div>
+                    <div class="panel-body">
+
+                        {{ competition.ville }}<br>
+
+                        {% for race in competition.races %}
+                            {{ race.name }}<br>
+                        {% endfor %}
+
+                    </div>
+                    <div class="panel-footer">
+                        <input type="button" class="btn-xs btn-info" value="Détail"
+                               onclick="location.href = '{{ path('race_competition_show', {'idCompetition': competition.id}) }}';">
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if is_granted('ROLE_ORGANIZER') %}
+        <input type="button" class="btn btn-success" value="Ajouter une compétition"
+               onclick="location.href = '{{ path('competition_new') }}';">
+    {% endif %}
+
+{% endblock %}

@@ -53,7 +53,7 @@ class OrganizerController extends Controller
 
             $request->getSession()->getFlashBag()->add('notice', 'Votre compte competiteur est bien enregistré');
 
-            return $this->render('home/index.html.twig');
+            return $this->redirectToRoute('index');
         }
 
         return $this->render('organizer/register.html.twig', array(
