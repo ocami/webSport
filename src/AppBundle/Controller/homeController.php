@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Service\UserService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use AppBundle\Service\MessageGenerator;
 
 
 class homeController  extends Controller
@@ -52,6 +53,16 @@ class homeController  extends Controller
         $userManager->updateUser($user);
 
         return $this->render('home/test.html.twig', array('user'=>$user));
+    }
+
+    /**
+     * @Route("/test", name="test")
+     */
+    public function testAction()
+    {
+        $messageGenerator = $this->get('app.slugger');
+        $test= $messageGenerator->getHappyMessage(0);
+        return $this->render('home/test.html.twig', array('test'=>$test));
     }
 
 }

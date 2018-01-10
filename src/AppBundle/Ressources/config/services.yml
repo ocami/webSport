@@ -1,0 +1,7 @@
+services:
+    app.slugger:
+        class: AppBundle\Utils\Slugger
+
+    messageGenerator:
+        class: AppBundle\Service\MessageGenerator
+

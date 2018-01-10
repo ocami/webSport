@@ -10,6 +10,7 @@ namespace AppBundle\Entity;
 
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -31,7 +32,7 @@ class Championship
 
     /**
      * @var string
-     *
+     *@Assert\Length(min="5", max="255")
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
     private $name;
@@ -54,6 +55,7 @@ class Championship
     private $competitors;
 
     /**
+     * @Assert\Valid()
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\Category", cascade={"persist"})
      */
     private $category;

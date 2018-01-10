@@ -18,6 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use AppBundle\Entity\Post;
 use AppBundle\Form\RaceType;
 use AppBundle\Form\RaceChampionshipType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 
 class RaceController extends Controller

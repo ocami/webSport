@@ -12,6 +12,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\Time;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * race

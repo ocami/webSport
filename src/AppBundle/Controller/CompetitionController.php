@@ -17,6 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 
 
+
 class CompetitionController extends Controller
 {
 

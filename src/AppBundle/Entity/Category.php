@@ -10,6 +10,8 @@ namespace AppBundle\Entity;
 
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * category
@@ -30,21 +32,20 @@ class Category
 
     /**
      * @var string
-     *
+     * @Assert\Length(min="1", max="2")
      * @ORM\Column(name="sexe", type="string", length=2)
      */
     private $sexe;
 
     /**
      * @var string
-     *
+     * @Assert\Length(min="2", max="255", minMessage="Ce champ doit comporter entre 2 et 255 caractères")
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
 
     /**
      * @var string
-     *
      * @ORM\Column(name="code", type="string", length=10, unique=true, nullable=false, unique=true)
      */
     private $code;
@@ -58,14 +59,12 @@ class Category
 
     /**
      * @var int
-     *
      * @ORM\Column(name="age_max", type="integer")
      */
     private $ageMax;
 
     /**
      * @var int
-     *
      * @ORM\Column(name="age_min", type="integer")
      */
     private $ageMin;
@@ -272,4 +271,62 @@ class Category
     {
         return $this->races;
     }
+
+
+
+    /**
+     * @Assert\Callback
+     */
+    public function isAgeValid(ExecutionContextInterface $context)
+    {
+        $yearMin = date("Y")-100;
+        $yearMax = date("Y")-8;
+
+        if ($this->getAgeMin()< $yearMin ) {
+            // La règle est violée, on définit l'erreur
+            $context
+                ->buildViolation('Il n\'est pas possible d\'enterigistrer un compétiteur de plus de 100 ans') // message
+                ->atPath('ageMin')                                                   // attribut de l'objet qui est violé
+                ->addViolation() // ceci déclenche l'erreur, ne l'oubliez pas
+            ;
+        }
+
+        if ($this->getAgeMin()>$yearMax) {
+            // La règle est violée, on définit l'erreur
+            $context
+                ->buildViolation("Il faut être agé de 8 ans minimum pour participer à une course") // message
+                ->atPath('ageMin')                                                   // attribut de l'objet qui est violé
+                ->addViolation() // ceci déclenche l'erreur, ne l'oubliez pas
+            ;
+        }
+
+        if ($this->getAgeMax()< $yearMin ) {
+            // La règle est violée, on définit l'erreur
+            $context
+                ->buildViolation('Il n\'est pas possible d\'enterigistrer un compétiteur de plus de 100 ans') // message
+                ->atPath('ageMax')                                                   // attribut de l'objet qui est violé
+                ->addViolation() // ceci déclenche l'erreur, ne l'oubliez pas
+            ;
+        }
+
+        if ($this->getAgeMax()>$yearMax) {
+            // La règle est violée, on définit l'erreur
+            $context
+                ->buildViolation("Il faut être agé de 8 ans minimum pour participer à une course") // message
+                ->atPath('ageMax')                                                   // attribut de l'objet qui est violé
+                ->addViolation() // ceci déclenche l'erreur, ne l'oubliez pas
+            ;
+        }
+
+        if($this->getAgeMin()<$this->ageMax)
+        {
+            $context
+                ->buildViolation("L'age maximum doit être suppérieur à l'age minimum") // message
+                ->atPath('ageMax')                                                   // attribut de l'objet qui est violé
+                ->addViolation() // ceci déclenche l'erreur, ne l'oubliez pas
+            ;
+        }
+
+    }
+
 }

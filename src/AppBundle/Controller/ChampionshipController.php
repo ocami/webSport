@@ -17,6 +17,7 @@ use AppBundle\Form\ChampionshipType;
 
 
 
+
 class ChampionshipController extends Controller
 {
 
@@ -65,6 +66,11 @@ class ChampionshipController extends Controller
         $form = $this->createForm(ChampionshipType::class, $championship);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+
+            //$slug = $this->get('app.slugger')->slugify($championship->getCode());
+            $slug = $this->container->get('app.slugger')->slugify($championship->getCode());
+
+            $championship->setCode($slug);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($championship);

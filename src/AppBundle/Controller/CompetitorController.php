@@ -18,6 +18,7 @@ use AppBundle\Entity\Race;
 use AppBundle\Form\CompetitorType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
+
 class CompetitorController extends Controller
 {
 
