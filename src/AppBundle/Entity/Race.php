@@ -10,6 +10,7 @@ namespace AppBundle\Entity;
 
 
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\Time;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -34,7 +35,7 @@ class Race
     /**
      * @var string
      *
-     * @ORM\Column(name="code", type="string", length=10, unique=true)
+     * @ORM\Column(name="code", type="string", length=20, unique=true)
      */
     private $code;
 
@@ -88,6 +89,10 @@ class Race
      */
     private $competitors;
 
+    /**
+     * @var Boolean
+     */
+    private $competitorCanEntry;
 
 
     /**
@@ -355,5 +360,27 @@ class Race
     public function getCompetitors()
     {
         return $this->competitors;
+    }
+
+    /**
+     * Set competitorCanEntry
+     *
+     * @param boolean $competitorCanEntry
+     *
+     * @return Race
+     */
+    public function setCompetitorCanEntry($competitorCanEntry)
+    {
+        $this->competitorCanEntry = $competitorCanEntry;
+
+        return $this;
+    }
+
+    /**
+     * Get competitorCanEntry
+     */
+    public function getCompetitorCanEntry()
+    {
+        return $this->competitorCanEntry;
     }
 }

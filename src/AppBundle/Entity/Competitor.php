@@ -40,6 +40,13 @@ class Competitor
     /**
      * @var string
      *
+     * @ORM\Column(name="code", type="string", length=20, unique=true)
+     */
+    private $code;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="FirstName", type="string", length=255)
      */
     private $firstName;
@@ -286,5 +293,29 @@ class Competitor
     public function getRaces()
     {
         return $this->races;
+    }
+
+    /**
+     * Set code
+     *
+     * @param string $code
+     *
+     * @return Competitor
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * Get code
+     *
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
     }
 }

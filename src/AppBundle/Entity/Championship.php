@@ -18,6 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="championship")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ChampionshipRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Championship
 {
@@ -40,7 +41,7 @@ class Championship
     /**
      * @var string
      *
-     * @ORM\Column(name="code", type="string", length=10, unique=true)
+     * @ORM\Column(name="code", type="string", length=20, unique=true, nullable=true)
      */
     private $code;
 
@@ -59,6 +60,8 @@ class Championship
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\Category", cascade={"persist"})
      */
     private $category;
+
+
 
 
 
@@ -220,5 +223,15 @@ class Championship
     public function getCategory()
     {
         return $this->category;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function generateCode()
+    {
+        /*
+        $this->setCode('000007');
+        */
     }
 }

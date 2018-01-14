@@ -46,7 +46,7 @@ class Organizer
     /**
      * @var string
      *
-     * @ORM\Column(name="code", type="string", length=255)
+     * @ORM\Column(name="code", type="string", length=20)
      */
     private $code;
 

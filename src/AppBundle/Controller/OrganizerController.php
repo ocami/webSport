@@ -13,9 +13,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use AppBundle\Service\UserService;
 use AppBundle\Entity\Organizer;
 use AppBundle\Form\OrganizerType;
+use AppBundle\Services\UserService;
+use AppBundle\Services\CodeService;
 
 class OrganizerController extends Controller
 {
@@ -36,20 +37,8 @@ class OrganizerController extends Controller
         $form = $this->createForm(OrganizerType::class, $organizer);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $em = $this->getDoctrine()->getManager();
 
-            $user = $this->getUser();
-            $user->addRole('ROLE_ORGANIZER');
-
-            $organizer->setUserId($user->getId());
-
-            $em->persist($organizer);
-            $em->persist($user);
-            $em->flush();
-
-            $token = $userService->refreshToken($user);
-            $security = $this->container->get('security.token_storage');
-            $security->setToken($token);
+            $this->get(UserService::class)->registerUserApp($organizer);
 
             $request->getSession()->getFlashBag()->add('notice', 'Votre compte competiteur est bien enregistré');
 

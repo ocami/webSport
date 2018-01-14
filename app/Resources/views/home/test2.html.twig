@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} index
+{% endblock %}
+
+{% block body %}
+
+    <h1>Test 2</h1>
+
+    {% for race in test %}
+
+        {{ race.code }}
+
+        {% if race.competitorCanEntry %}
+            <p>Inscription</p>
+        {% endif %}
+
+        {% if race.competitorCanEntry == false %}
+            <p>False</p>
+        {% endif %}
+
+        {% for category in race.categories %}
+            <P>
+                {{ category.code }} {{ category.sexe }} {{ category.ageMin }} / {{ category.ageMax }}
+
+            </P>
+        {% endfor %}
+
+    {% endfor %}
+
+
+
+{% endblock %}

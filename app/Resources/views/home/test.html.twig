@@ -8,8 +8,24 @@
 
     <h1>Test</h1>
 
-    {{ test }}<br>
 
+
+    {{ test.code }}
+
+    {% if test.competitorCanEntry %}
+        <p>Inscription</p>
+    {% endif %}
+
+    {% if test.competitorCanEntry == false %}
+        <p>False</p>
+    {% endif %}
+
+    {% for category in test.categories %}
+        <P>
+            {{ category.code }} {{ category.sexe }} {{ category.ageMin }} / {{ category.ageMax }}
+
+        </P>
+    {% endfor %}
 
 
 

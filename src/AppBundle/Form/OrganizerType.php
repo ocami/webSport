@@ -16,7 +16,6 @@ class OrganizerType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('code')
             ->add('save',SubmitType::class);
     }/**
      * {@inheritdoc}

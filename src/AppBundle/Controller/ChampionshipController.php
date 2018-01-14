@@ -67,10 +67,6 @@ class ChampionshipController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-            //$slug = $this->get('app.slugger')->slugify($championship->getCode());
-            $slug = $this->container->get('app.slugger')->slugify($championship->getCode());
-
-            $championship->setCode($slug);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($championship);

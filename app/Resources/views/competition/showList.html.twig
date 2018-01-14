@@ -9,16 +9,17 @@
                     </div>
                     <div class="panel-body">
 
-                        {{ competition.ville }}<br>
+                        {{ competition.ville }} du {{ competition.dateStart|date("d/m/Y") }} au {{ competition.dateEnd|date("d/m/Y") }}<br>
+                        Organisé par {{ competition.organizer.name }}<br>
 
                         {% for race in competition.races %}
-                            {{ race.name }}<br>
+                            <span style="margin-left: 1em" >{{ race.name }}</span><br>
                         {% endfor %}
 
                     </div>
                     <div class="panel-footer">
                         <input type="button" class="btn-xs btn-info" value="Détail"
-                               onclick="location.href = '{{ path('race_competition_show', {'idCompetition': competition.id}) }}';">
+                               onclick="location.href = '{{ path('competition_show', {'idCompetition': competition.id}) }}';">
                     </div>
                 </div>
             </div>

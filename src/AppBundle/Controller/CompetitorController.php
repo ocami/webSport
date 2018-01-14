@@ -9,10 +9,11 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\RaceCompetitor;
+use AppBundle\Services\CodeService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use AppBundle\Service\UserService;
+use AppBundle\Services\UserService;
 use AppBundle\Entity\Competitor;
 use AppBundle\Entity\Race;
 use AppBundle\Form\CompetitorType;
@@ -32,7 +33,6 @@ class CompetitorController extends Controller
         return $competitorRepository;
     }
 
-
     private function repository($class)
     {
         $repository = $this->getDoctrine()->getManager()
@@ -41,7 +41,7 @@ class CompetitorController extends Controller
         return $repository;
     }
 
-    private function curentCompetitor()
+    private function currentCompetitor()
     {
         return $this->competitorRepository()->findOneByUserId($this->getUser());
     }
@@ -57,20 +57,8 @@ class CompetitorController extends Controller
         $form = $this->createForm(CompetitorType::class, $competitor);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $em = $this->getDoctrine()->getManager();
 
-            $user = $this->getUser();
-            $user->addRole('ROLE_COMPETITOR');
-
-            $competitor->setUserId($user->getId());
-
-            $em->persist($competitor);
-            $em->persist($user);
-            $em->flush();
-
-            $token = $userService->refreshToken($user);
-            $security = $this->container->get('security.token_storage');
-            $security->setToken($token);
+            $this->get(UserService::class)->registerUserApp($competitor);
 
             $request->getSession()->getFlashBag()->add('notice', 'Votre compte competiteur est bien enregistré');
 
@@ -88,7 +76,7 @@ class CompetitorController extends Controller
      */
     public function showAction()
     {
-        $competitor = $this->curentCompetitor();
+        $competitor = $this->currentCompetitor();
         $races = $this->repository('RaceCompetitor')->findByCompetitor($competitor);
 
         return $this->render('competitor/show.html.twig', array(
@@ -106,7 +94,7 @@ class CompetitorController extends Controller
 
         $raceComp = new RaceCompetitor();
 
-        $competitor = $this->curentCompetitor();
+        $competitor = $this->currentCompetitor();
 
         $competitorExist = $this->repository('RaceCompetitor')->findOneBy(array('race' => $race, 'competitor' => $competitor));
 

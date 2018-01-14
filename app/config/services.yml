@@ -1,3 +1,6 @@
+parameters:
+    maxLenghtDescription: 200
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -15,7 +18,12 @@ services:
         resource: '../../src/AppBundle/*'
         # you can exclude directories or files
         # but if a service is unused, it's removed anyway
-        exclude: '../../src/AppBundle/{Entity,Repository}'
+        exclude: '../../src/AppBundle/{Entity,Repository,Form,MesServices}'
+
+    AppBundle\ServicesArg\AntiSpam:
+        public: true
+        arguments:
+            $maxLenght: '%maxLenghtDescription%'
 
     # controllers are imported separately to make sure they're public
     # and have a tag that allows actions to type-hint services
@@ -23,3 +31,15 @@ services:
         resource: '../../src/AppBundle/Controller'
         public: true
         tags: ['controller.service_arguments']
+
+    # controllers are imported separately to make sure they're public
+    # and have a tag that allows actions to type-hint services
+    AppBundle\Services\:
+        resource: '../../src/AppBundle/Services'
+        public: true
+        tags: ['controller.service_arguments']
+
+
+
+
+

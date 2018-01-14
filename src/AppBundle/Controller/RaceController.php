@@ -8,12 +8,15 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Organizer;
 use AppBundle\Entity\Race;
+use AppBundle\Entity\Category;
 use AppBundle\Entity\User;
+use AppBundle\Services\CodeService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use AppBundle\Service\UserService;
+use AppBundle\Services\UserService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use AppBundle\Entity\Post;
 use AppBundle\Form\RaceType;
@@ -55,21 +58,6 @@ class RaceController extends Controller
         ));
     }
 
-    /**
-     * @Route("/race/CompetitionShow/{idCompetition}", name="race_competition_show")
-     */
-    public function showByCompetitionAction($idCompetition, UserService $userService)
-    {
-        $races = $this->raceRepository()->findByCompetition($idCompetition);
-        $competition = $this->repository('Competition')->find($idCompetition);
-        $isOrganizer=$userService->isOrganisatorComeptition($competition,$this->getUser());
-
-        return $this->render('race/showList.html.twig', array(
-            'races' => $races,
-            'competition'=>$competition,
-            'isOrganizer'=>$isOrganizer
-        ));
-    }
 
     /**
      * @Security("has_role('ROLE_ORGANIZER')")
@@ -90,12 +78,14 @@ class RaceController extends Controller
                 $race->addCategory($championship->getCategory());
             }
 
+            $race=$this->get(CodeService::class)->generate($race);
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($race);
             $em->flush();
             $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée.');
-    
-            return $this->redirectToRoute('race_competition_show',array('idCompetition'=>$idCompetition));
+
+            return $this->redirectToRoute('competition_show',array('idCompetition'=>$idCompetition));
         }
 
         return $this->render('race/new.html.twig', array('form' => $form->createView()));
@@ -108,19 +98,26 @@ class RaceController extends Controller
     public function newAction(Request $request, $idCompetition)
     {
         $race = new Race();
-        $form = $this->createForm(RaceType::class, $race);
+        $organizer = $this->get(UserService::class)->currentUserApp(new Organizer());
+        $form = $this->createForm(RaceType::class, $race, array('organizer'=>$organizer));
+
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
             $competition=$this->repository('Competition')->find($idCompetition);
+
+            var_dump($race);
+
             $race->setCompetition($competition);
+
+            $race=$this->get(CodeService::class)->generate($race);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($race);
             $em->flush();
             $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée.');
 
-            return $this->redirectToRoute('race_competition_show',array('idCompetition'=>$idCompetition));
+            return $this->redirectToRoute('competition_show',array('idCompetition'=>$idCompetition));
         }
 
         return $this->render('race/new.html.twig', array('form' => $form->createView()));
@@ -132,7 +129,9 @@ class RaceController extends Controller
      */
     public function editAction(Request $request, Race $race)
     {
-        $form = $this->createForm(RaceType::class, $race);
+        $race = new Race();
+        $organizer = $this->get(UserService::class)->currentUserApp(new Organizer());
+        $form = $this->createForm(RaceType::class, $race, array('organizer'=>$organizer));
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
@@ -142,7 +141,7 @@ class RaceController extends Controller
 
             $request->getSession()->getFlashBag()->add('notice', 'Course bien modifiée.');
 
-            return $this->redirectToRoute('race_competition_show',array(
+            return $this->redirectToRoute('competition_show',array(
                 'idCompetition'=>$race->getCompetition()->getId()
             ));
         }

@@ -32,9 +32,16 @@ class Competition
     /**
      * @var string
      *
-     * @ORM\Column(name="code", type="string", length=10, unique=true)
+     * @ORM\Column(name="code", type="string", length=20, unique=true)
      */
     private $code;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="string", length=255, unique=false, nullable=true)
+     */
+    private $description;
 
     /**
      * @var string
@@ -65,16 +72,16 @@ class Competition
     private $dep;
 
     /**
-     * @var \DateTime
+     * @var Date
      *
-     * @ORM\Column(name="dateStart", type="datetime", nullable=true)
+     * @ORM\Column(name="dateStart", type="date", nullable=true)
      */
     private $dateStart;
 
     /**
-     * @var \DateTime
+     * @var Date
      *
-     * @ORM\Column(name="dateEnd", type="datetime", nullable=true)
+     * @ORM\Column(name="dateEnd", type="date", nullable=true)
      */
     private $dateEnd;
 
@@ -331,5 +338,29 @@ class Competition
     public function getRaces()
     {
         return $this->races;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Competition
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 }

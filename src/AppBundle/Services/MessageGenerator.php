@@ -6,7 +6,7 @@
  * Time: 16:56
  */
 
-namespace AppBundle\Service;
+namespace AppBundle\Services;
 
 
 class MessageGenerator

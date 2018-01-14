@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Organizer;
+use AppBundle\Services\CodeService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,23 +62,20 @@ class CategoryController extends Controller
     public function newAction(Request $request, $idCompetition)
     {
         $category = new Category();
-
         $form = $this->createForm(CategoryType::class, $category);
-
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
             $organizer = $this->repository('Organizer')->findOneByUserId($this->getUser());
-
             $category->setCreateBy($organizer->getId());
-
+            $category = $this->get(CodeService::class)->generate($category);
             $em = $this->getDoctrine()->getManager();
             $em->persist($category);
             $em->flush();
 
             $request->getSession()->getFlashBag()->add('notice', 'Catégorie bien enregistrée.');
 
-            return $this->redirectToRoute('race_competition_show',array('idCompetition'=>$idCompetition));
+            return $this->redirectToRoute('competition_show',array('idCompetition'=>$idCompetition));
         }
 
         return $this->render('category/new.html.twig', array('form' => $form->createView()));

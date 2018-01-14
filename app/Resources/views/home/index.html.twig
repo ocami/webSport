@@ -19,19 +19,4 @@
 
     {{ include('competition/showList.html.twig')  }}
 
-    {% if not is_granted('ROLE_USER') %}
-        <p>Pas user</p>
-    {% endif %}
-
-    {% if is_granted('ROLE_USER') %}
-        <p>user</p>
-    {% endif %}
-
-    {% if not is_granted('ROLE_COMPETITOR') %}
-        <p>Pas competiteur</p>
-    {% endif %}
-
-    {% if is_granted('ROLE_COMPETITOR') %}
-        <p>competiteur</p>
-    {% endif %}
 {% endblock %}

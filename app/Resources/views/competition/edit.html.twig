@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} index
+{% endblock %}
+
+{% block body %}
+
+    <h1>competition</h1>
+
+    <input type="button" class="btn btn-info" value="Ajouter une description"
+           onclick="location.href = '{{ path('competition_edit_description',{'id':'id'}) }}';">
+
+    {{ form_start(form, {'attr': {'class': 'my-form-class'} }) }}
+    {{ form_widget(form) }}
+    <input type="submit" value="Create" class="btn btn-default pull-right"/>
+    {{ form_end(form) }}
+
+
+{% endblock %}

@@ -6,8 +6,26 @@
 
 {% block body %}
 
-    <h1>competition</h1>
+    <h1>{{ competition.name }}</h1>
+    Organisé par {{ competition.organizer.name }}<br>
+    {{ competition.description }}<br>
 
-    {{ competition.code }}<br>
+    {{ include('race/showList.html.twig')  }}
+
+
+    {% if isOrganizer == true %}
+        <input type="button" class="btn btn-success" value="Ajouter une course hors championat"
+               onclick="location.href = '{{ path('race_new', {'competition':competition.id} ) }}';">
+
+        <input type="button" class="btn btn-success" value="Ajouter une course  championat"
+               onclick="location.href = '{{ path('race_new_championship', {'idCompetition':competition.id}) }}';">
+
+        <input type="button" class="btn btn-success" value="Ajouter une catégorie"
+               onclick="location.href = '{{ path('category_new', {'idCompetition':competition.id}) }}';">
+
+        <input type="button" class="btn btn-success" value="Ajouter une description"
+               onclick="location.href = '{{ path('competition_edit_description', {'idCompetition':competition.id}) }}';">
+
+    {% endif %}
 
 {% endblock %}

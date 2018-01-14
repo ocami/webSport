@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+
+
 /**
  * RaceRepository
  *
@@ -10,5 +12,14 @@ namespace AppBundle\Repository;
  */
 class RaceRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    public function lastId($class)
+    {
+        return $this->createQueryBuilder('a')
+            ->select('MAX(e.id)')
+            ->from('AppBundle:'.$class, 'e')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 
 }
