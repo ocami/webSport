@@ -8,9 +8,11 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Competition;
 use AppBundle\Entity\Organizer;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\Category;
+use AppBundle\Entity\RaceCompetitor;
 use AppBundle\Entity\User;
 use AppBundle\Services\CodeService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -27,37 +29,51 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class RaceController extends Controller
 {
 
-    private function raceRepository()
-    {
-        $repo = $this->getDoctrine()->getManager()
-            ->getRepository('AppBundle:Race');
-
-        return $repo;
-    }
-
-    private function repository($class)
-    {
-        $competionRepository = $this->getDoctrine()->getManager()
-            ->getRepository('AppBundle:'.$class);
-
-        return $competionRepository;
-    }
-
 
     /**
      * @Route("/race/show/{id}", name="race_show")
      */
     public function showAction(Race $race)
     {
+        $competitorsRace = $this->getDoctrine()->getRepository(RaceCompetitor::class)->findByRace($race);
 
-        $competitorsRace = $this->repository('RaceCompetitor')->findByRace($race);
+        $racePasse = false;
 
         return $this->render('race/show.html.twig', array(
             'race' => $race,
-            'competitorsRace' => $competitorsRace
+            'cr' => $competitorsRace,
+            'racePasse' => $racePasse
         ));
     }
 
+    /**
+     * @Security("has_role('ROLE_ORGANIZER')")
+     * @Route("/race/new/{idCompetition}", name="race_new")
+     */
+    public function newAction(Request $request, $idCompetition)
+    {
+        $race = new Race();
+        $organizer = $this->get(UserService::class)->currentUserApp(Organizer::class);
+        $form = $this->createForm(RaceType::class, $race, array('organizer'=>$organizer));
+
+
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+
+            $competition=$this->getDoctrine()->getRepository(Competition::class)->find($idCompetition);
+
+            $race->setCompetition($competition);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($race);
+            $em->flush();
+            $this->get(CodeService::class)->generateCode($race);
+            $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée.');
+
+            return $this->redirectToRoute('competition_show',array('idCompetition'=>$idCompetition));
+        }
+
+        return $this->render('race/new.html.twig', array('form' => $form->createView()));
+    }
 
     /**
      * @Security("has_role('ROLE_ORGANIZER')")
@@ -70,7 +86,7 @@ class RaceController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-            $competition=$this->repository('Competition')->find($idCompetition);
+            $competition=$this->getDoctrine()->getRepository(Competition::class)->find($idCompetition);
             $race->setCompetition($competition);
 
             foreach ($race->getChampionships() as $championship)
@@ -78,43 +94,11 @@ class RaceController extends Controller
                 $race->addCategory($championship->getCategory());
             }
 
-            $race=$this->get(CodeService::class)->generate($race);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($race);
             $em->flush();
-            $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée.');
-
-            return $this->redirectToRoute('competition_show',array('idCompetition'=>$idCompetition));
-        }
-
-        return $this->render('race/new.html.twig', array('form' => $form->createView()));
-    }
-
-    /**
-     * @Security("has_role('ROLE_ORGANIZER')")
-     * @Route("/race/new/{idCompetition}", name="race_new")
-     */
-    public function newAction(Request $request, $idCompetition)
-    {
-        $race = new Race();
-        $organizer = $this->get(UserService::class)->currentUserApp(new Organizer());
-        $form = $this->createForm(RaceType::class, $race, array('organizer'=>$organizer));
-
-
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-
-            $competition=$this->repository('Competition')->find($idCompetition);
-
-            var_dump($race);
-
-            $race->setCompetition($competition);
-
-            $race=$this->get(CodeService::class)->generate($race);
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($race);
-            $em->flush();
+            $this->get(CodeService::class)->generateCode($race);
             $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée.');
 
             return $this->redirectToRoute('competition_show',array('idCompetition'=>$idCompetition));
@@ -127,10 +111,10 @@ class RaceController extends Controller
      * @Security("has_role('ROLE_ORGANIZER')")
      * @Route("/race/edit/{id}", name="race_edit")
      */
-    public function editAction(Request $request, Race $race)
+    public function editAction(Request $request, $id)
     {
-        $race = new Race();
-        $organizer = $this->get(UserService::class)->currentUserApp(new Organizer());
+        $race = $this->getDoctrine()->getRepository(Race::class)->find($id);
+        $organizer = $this->get(UserService::class)->currentUserApp(Organizer::class);
         $form = $this->createForm(RaceType::class, $race, array('organizer'=>$organizer));
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
@@ -148,5 +132,4 @@ class RaceController extends Controller
 
         return $this->render('race/new.html.twig', array('form' => $form->createView()));
     }
-
 }

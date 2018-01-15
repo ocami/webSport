@@ -21,5 +21,4 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
-
 }

@@ -12,6 +12,7 @@ use AppBundle\Entity\Category;
 use AppBundle\Entity\Competition;
 use AppBundle\Entity\Competitor;
 use AppBundle\Entity\Race;
+use AppBundle\Entity\RaceCompetitor;
 use Doctrine\ORM\EntityManagerInterface;
 use AppBundle\Services\UserService;
 
@@ -48,14 +49,27 @@ class RaceService
         return $race;
     }
 
-    public function racesCompetitorCanEntry($competition)
+    public function racesCompetitorCanEntry($races)
     {
-        foreach ($competition->getRaces() as $race)
+        foreach ($races as $race)
         {
             $race=$this->competitorCanEntry($race);
         }
 
-        return $competition;
+        return $races;
+    }
+
+    public function generate(Race $race)
+    {
+        $raceCompetitors=$this->em->getRepository(RaceCompetitor::class)->findByRace($race);
+
+        foreach ($raceCompetitors as $rc)
+        {
+            $rc->setChrono(new \DateTime('1:22:30'));
+            $this->em->persist($rc);
+        }
+
+        $this->em->flush();
     }
 
 }

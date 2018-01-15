@@ -6,7 +6,7 @@ security:
         ROLE_USER:
         ROLE_COMPETITOR:
         ROLE_ORGANIZER:
-        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_COMPETITOR, ROLE_ORGANIZER]
+        ROLE_ADMIN: [ROLE_USER, ROLE_COMPETITOR, ROLE_ORGANIZER]
 
     providers:
         fos_userbundle:

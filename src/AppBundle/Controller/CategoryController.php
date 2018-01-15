@@ -68,10 +68,10 @@ class CategoryController extends Controller
 
             $organizer = $this->repository('Organizer')->findOneByUserId($this->getUser());
             $category->setCreateBy($organizer->getId());
-            $category = $this->get(CodeService::class)->generate($category);
             $em = $this->getDoctrine()->getManager();
             $em->persist($category);
             $em->flush();
+            $this->get(CodeService::class)->generateCode($category);
 
             $request->getSession()->getFlashBag()->add('notice', 'Catégorie bien enregistrée.');
 

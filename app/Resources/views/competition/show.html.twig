@@ -15,7 +15,7 @@
 
     {% if isOrganizer == true %}
         <input type="button" class="btn btn-success" value="Ajouter une course hors championat"
-               onclick="location.href = '{{ path('race_new', {'competition':competition.id} ) }}';">
+               onclick="location.href = '{{ path('race_new', {'idCompetition':competition.id} ) }}';">
 
         <input type="button" class="btn btn-success" value="Ajouter une course  championat"
                onclick="location.href = '{{ path('race_new_championship', {'idCompetition':competition.id}) }}';">

@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} index
+{% endblock %}
+
+{% block body %}
+
+    <h1>Admin</h1>
+
+    <input type="button" class="btn btn-info" value="Créer championat"
+           onclick="location.href = '{{ path('championship_new') }}';"><br>
+
+
+    {% for race in races %}
+        <input type="button" class="btn btn-info" value="{{ race.id }}"
+               onclick="location.href = '{{ path('admin_generateRace',{'idRace': race.id}) }}';">
+    {% endfor %}
+
+{% endblock %}

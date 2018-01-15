@@ -8,13 +8,13 @@
 
     <h1>Race</h1>
 
-    {{ race.code }}<br>
+    {{ race.code }}<br><br><br>
 
 
 
-    {% for competitorRace in competitorsRace %}
+    {% for r in cr %}
 
-        {{ competitorRace.competitor.firstName }} {{ competitorRace.competitor.lastName }}<br>
+        {{ r.competitor.firstName }} {{ r.competitor.lastName }} {{ r.chrono|date('H:i:s') }} <br>
 
     {% endfor %}
 

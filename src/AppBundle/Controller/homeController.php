@@ -27,6 +27,7 @@ use AppBundle\Services\UserService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use AppBundle\Services\MessageGenerator;
 
+
 class homeController extends Controller
 {
 
@@ -48,6 +49,27 @@ class homeController extends Controller
         $competitions = $repo->findAll();
 
         return $this->render('home/index.html.twig', array('competitions' => $competitions));
+    }
+
+    /**
+     * @Route("/becomeAdmin", name="becomeAdmin")
+     */
+    public function becomeAdmin()
+    {
+
+
+        $userManager = $this->get('fos_user.user_manager');
+
+        $user = $this->getUser();
+
+        $user->addRole('ROLE_ADMIN');
+
+        $this->get(UserService::class)->refreshToken();
+
+        $userManager->updateUser($user);
+
+        return $this->render('home/test.html.twig');
+
     }
 
     /**

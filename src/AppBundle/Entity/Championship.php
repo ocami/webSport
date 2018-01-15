@@ -40,10 +40,10 @@ class Championship
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="code", type="string", length=20, unique=true, nullable=true)
+     * @ORM\Column(name="code", type="string", length=20, unique=true, nullable=true, unique=true)
      */
     private $code;
+
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Race", mappedBy="championships")

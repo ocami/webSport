@@ -42,11 +42,11 @@ class CompetitionController extends Controller
 
 
     /**
-     * @Route("/competition/show/{competition}", name="competition_show")
+     * @Route("/competition/show/{idCompetition}", name="competition_show")
      */
-    public function showAction(Competition $competition)
+    public function showAction(Competition $idCompetition)
     {
-        //$competition = $this->repository('Competition')->find($idCompetition);
+        $competition = $this->getDoctrine()->getRepository(Competition::class)->find($idCompetition);
         // if user is competitior and if competitor is in category of race => reveal Entry Button
         $races = $this->get(RaceService::class)->racesCompetitorCanEntry($competition->getRaces());
         // reveal edit action if user is organizer of this competition
@@ -85,12 +85,13 @@ class CompetitionController extends Controller
 
             $organizer->addCompetition($competition);
             $competition->setOrganizer($organizer);
-            $this->get(CodeService::class)->generate($competition);
             $em = $this->getDoctrine()->getManager();
             $em->persist($competition);
             $em->persist($organizer);
             $em->flush();
-    
+            $this->get(CodeService::class)->generateCode($competition);
+
+
             $request->getSession()->getFlashBag()->add('notice', 'Compétition bien enregistrée.');
             return $this->redirectToRoute('competition_show', array('idCompetition'=>$competition->getId()));
         }

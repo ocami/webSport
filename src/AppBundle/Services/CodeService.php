@@ -69,6 +69,50 @@ class CodeService
         return $entity;
     }
 
+    public function generateCode($entity)
+    {
+        $number = $this->codeFormat($entity->getId());
+
+        switch (get_class($entity))
+        {
+            case Organizer::class :
+                $code = 'ORGAN_'.$number;
+                break;
+
+            case Competitor::class :
+                $code = 'CPTOR_'.$number;
+                break;
+
+            case Championship::class :
+                $code = 'CSHIP_'.$number;
+                break;
+
+            case Competition::class :
+                $code = 'COMPN_'.$this->codeFormat($entity->getOrganizer()->getId()).'_'.$number;
+                break;
+
+            case Race::class :
+                $codeCompetition = $this->codeFormat($entity->getCompetition()->getId());
+
+                if($entity->getChampionships()->isEmpty())
+                    $code = 'RACEF_'.$codeCompetition.'_'.$number;
+                else
+                    $code = 'RACEC_'.$codeCompetition.'_'.$number;
+                break;
+
+            case Category::class :
+                $code = 'CATEG_'.$number;
+                break;
+        }
+
+        $entity->setCode($code);
+
+        $this->em->persist($entity);
+        $this->em->flush();
+
+        return $entity;
+    }
+
     private function lastCodeId($class)
     {
         $class=get_class($class);
@@ -86,4 +130,6 @@ class CodeService
     {
         return sprintf( "%03d", $nbr );
     }
+
+
 }
