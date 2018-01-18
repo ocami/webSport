@@ -35,7 +35,7 @@ class CompetitionController extends Controller
     private function repository($class)
     {
         $competionRepository = $this->getDoctrine()->getManager()
-            ->getRepository('AppBundle:'.$class);
+            ->getRepository('AppBundle:' . $class);
 
         return $competionRepository;
     }
@@ -47,15 +47,17 @@ class CompetitionController extends Controller
     public function showAction(Competition $idCompetition)
     {
         $competition = $this->getDoctrine()->getRepository(Competition::class)->find($idCompetition);
+        $races = $competition->getRaces();
         // if user is competitior and if competitor is in category of race => reveal Entry Button
-        $races = $this->get(RaceService::class)->racesCompetitorCanEntry($competition->getRaces());
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_COMPETITOR'))
+            $races = $this->get(RaceService::class)->racesCompetitorCanEntry($races);
         // reveal edit action if user is organizer of this competition
         $isOrganizer = $this->get(UserService::class)->isOrganizerComeptition($competition);
 
         return $this->render('competition/show.html.twig', array(
             'races' => $races,
-            'competition'=>$competition,
-            'isOrganizer'=>$isOrganizer
+            'competition' => $competition,
+            'isOrganizer' => $isOrganizer
         ));
     }
 
@@ -93,11 +95,11 @@ class CompetitionController extends Controller
 
 
             $request->getSession()->getFlashBag()->add('notice', 'Compétition bien enregistrée.');
-            return $this->redirectToRoute('competition_show', array('idCompetition'=>$competition->getId()));
+            return $this->redirectToRoute('competition_show', array('idCompetition' => $competition->getId()));
         }
         return $this->render('competition/new.html.twig', array(
             'form' => $form->createView(),
-            'organizer'=> $organizer
+            'organizer' => $organizer
         ));
     }
 
@@ -116,10 +118,10 @@ class CompetitionController extends Controller
 
             $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée.');
 
-            return $this->redirectToRoute('competition/show.html.twig', array('id'=>$competition->getId()));
+            return $this->redirectToRoute('competition/show.html.twig', array('id' => $competition->getId()));
         }
 
-        return $this->render('competition/new.html.twig', array('form' => $form->createView(),'id'=>$competition->getId()));
+        return $this->render('competition/new.html.twig', array('form' => $form->createView(), 'id' => $competition->getId()));
     }
 
 
@@ -130,18 +132,18 @@ class CompetitionController extends Controller
     public function editDescriptionAction(Request $request, $idCompetition)
     {
         $competition = $this->competionRepository()->find($idCompetition);
-        $form = $this->createForm(CompetitionDescriptionType::class, $competition );
+        $form = $this->createForm(CompetitionDescriptionType::class, $competition);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-            if($this->get(AntiSpam::class)->isTextSpam($competition->getDescription()))
+            if ($this->get(AntiSpam::class)->isTextSpam($competition->getDescription()))
                 throw new \Exception('Votre message a été détecté comme spam !');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($competition);
             $em->flush();
 
-            return $this->redirectToRoute('competition_show', array('idCompetition'=>$competition->getId()));
+            return $this->redirectToRoute('competition_show', array('idCompetition' => $competition->getId()));
         }
 
         return $this->render('competition/new.html.twig', array('form' => $form->createView()));

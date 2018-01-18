@@ -126,7 +126,7 @@ class CodeService
         return $this->codeFormat($nbr);
     }
 
-    private function codeFormat($nbr)
+    public function codeFormat($nbr)
     {
         return sprintf( "%03d", $nbr );
     }

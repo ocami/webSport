@@ -77,7 +77,7 @@ class UserService
         $this->em->persist($userApp);
         $this->em->persist($this->user);
         $this->em->flush();
-        $this->cs->generateCode($userApp);
+        $this->cs->generate($userApp);
 
         $token = $this->refreshToken();
         $this->ts->setToken($token);
@@ -95,6 +95,11 @@ class UserService
             default :
                 return new InvalidArgumentException('UserService/cureentUserApp function accept only Competitor or Organizer class');
         }
+    }
+
+    public  function getUser()
+    {
+        return $this->user;
     }
 
     public function getAdmin()

@@ -36,9 +36,9 @@ class Competition
     private $code;
 
     /**
-     * @var string
+     * @var text
      *
-     * @ORM\Column(name="description", type="string", length=255, unique=false, nullable=true)
+     * @ORM\Column(name="description", type="text", length=255, unique=false, nullable=true)
      */
     private $description;
 

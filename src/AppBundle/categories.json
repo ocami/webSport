@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Cadets",
+    "sexe": "mx",
+    "ageMax": "2010",
+    "ageMin": "2000",
+    "createBy": "1"
+  },
+  {
+    "name": "Juniors",
+    "sexe": "mx",
+    "ageMax": "2001",
+    "ageMin": "2003",
+    "createBy": "1"
+  },
+  {
+    "name": "Espoirs",
+    "sexe": "mx",
+    "ageMax": "2004",
+    "ageMin": "2000",
+    "createBy": "1"
+  },
+  {
+    "name": "Seniors",
+    "sexe": "mx",
+    "ageMax": "2000",
+    "ageMin": "1978",
+    "createBy": "1"
+  },
+  {
+    "name": "Master",
+    "sexe": "mx",
+    "ageMax": "1979",
+    "ageMin": "1950",
+    "createBy": "1"
+  }
+]

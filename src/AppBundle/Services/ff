@@ -1,0 +1,115 @@
+DELETE FROM `fos_user`;
+DELETE FROM `organizer`;
+DELETE FROM `competitor`;
+
+
+ALTER TABLE fos_user AUTO_INCREMENT=0;
+ALTER TABLE organizer AUTO_INCREMENT=0;
+ALTER TABLE competitor AUTO_INCREMENT=0;
+
+INSERT INTO `fos_user` (`id`, `username`, `username_canonical`, `email`, `email_canonical`, `enabled`, `salt`, `password`, `last_login`, `confirmation_token`, `password_requested_at`, `roles`) VALUES
+(1, 'admin', 'admin', 'admin@admin.fr', 'admin@admin.fr', 1, NULL, '$2y$13$Y68NQyxuniXKMz3.aDcGFe0wiUORH8cqTEGmY.78ILVWKIjHHFhYm', '2018-01-15 20:35:36', NULL, NULL, 'a:3:{i:0;s:15:"ROLE_COMPETITOR";i:1;s:14:"ROLE_ORGANIZER";i:2;s:10:"ROLE_ADMIN";}');
+
+
+
+INSERT INTO `competitor` (`id`, `user_id`, `code`, `FirstName`, `LastName`, `sexe`, `date`) VALUES
+(1, 1, NULL, 'AdminComp', 'AdminComp', 'm', '2000-06-27'),
+(2, 2, NULL, 'Competitor', 'Competitor', 'f', '1985-06-17'),
+(4, 4, NULL, 'OrgComp', 'OrgComp', 'm', '1956-07-11'),
+(5, 5, NULL, 'Ernestus', 'Veschambes', 'm', '1958-08-14'),
+(6, 6, NULL, 'Miltie', 'Thursby', 'm', '1964-02-06'),
+(7, 7, NULL, 'Maddalena', 'Sauvain', 'f', '2009-10-29'),
+(8, 8, NULL, 'Bondy', 'Warburton', 'f', '2004-04-25'),
+(9, 9, NULL, 'Wilek', 'Kittman', 'm', '2006-07-19'),
+(10, 10, NULL, 'Natka', 'Turk', 'm', '1979-10-04'),
+(11, 11, NULL, 'Irving', 'Willcock', 'm', '1951-07-24'),
+(12, 12, NULL, 'Jason', 'Fenty', 'm', '1961-07-23'),
+(13, 13, NULL, 'Lemar', 'Tidbold', 'm', '1959-10-11'),
+(14, 14, NULL, 'Alexio', 'Brixey', 'f', '1953-02-23'),
+(15, 15, NULL, 'Catie', 'Armer', 'm', '1954-11-24'),
+(16, 16, NULL, 'Pam', 'Rainard', 'f', '2008-05-10'),
+(17, 17, NULL, 'Sofia', 'Corzon', 'm', '2008-04-24'),
+(18, 18, NULL, 'Iona', 'Hunday', 'm', '2004-11-19'),
+(19, 19, NULL, 'Saundra', 'Fearnill', 'm', '1983-04-17'),
+(20, 20, NULL, 'Shea', 'Gosnall', 'm', '1981-11-18'),
+(21, 21, NULL, 'Bertrand', 'Ivatt', 'f', '2004-05-14'),
+(22, 22, NULL, 'Caye', 'Swadon', 'f', '1987-08-26'),
+(23, 23, NULL, 'Bone', 'Littlecote', 'f', '1991-05-21'),
+(24, 24, NULL, 'Sibeal', 'Iannuzzelli', 'f', '1958-03-16'),
+(25, 25, NULL, 'Mariann', 'Edelheit', 'f', '1977-08-18'),
+(26, 26, NULL, 'Welch', 'Mashal', 'm', '2007-08-09'),
+(27, 27, NULL, 'Connie', 'Eggins', 'f', '1959-03-23'),
+(28, 28, NULL, 'Fae', 'Pimley', 'm', '1984-12-03'),
+(29, 29, NULL, 'Alphonso', 'Mattin', 'f', '1960-08-13'),
+(30, 30, NULL, 'Alexandr', 'Layhe', 'm', '1982-06-27'),
+(31, 31, NULL, 'Yorgo', 'Tutill', 'm', '1995-02-16'),
+(32, 32, NULL, 'Aeriell', 'Crippen', 'f', '1991-05-27'),
+(33, 33, NULL, 'Winfred', 'Whiten', 'm', '1986-11-13'),
+(34, 34, NULL, 'Reynolds', 'Sanzio', 'f', '1976-02-02'),
+(35, 35, NULL, 'Mattie', 'Ankrett', 'f', '1954-09-24'),
+(36, 36, NULL, 'Buck', 'Falls', 'm', '1970-04-09'),
+(37, 37, NULL, 'Tucky', 'Boleyn', 'm', '1970-11-18'),
+(38, 38, NULL, 'Tore', 'Kobiera', 'f', '1980-11-23'),
+(39, 39, NULL, 'Pattin', 'Abramzon', 'f', '1985-04-22'),
+(40, 40, NULL, 'Mattias', 'Habens', 'f', '1977-03-24'),
+(41, 41, NULL, 'Antonie', 'Nial', 'f', '1973-03-22'),
+(42, 42, NULL, 'Edie', 'Sacco', 'm', '1985-02-13'),
+(43, 43, NULL, 'Joete', 'Counter', 'm', '1967-01-27'),
+(44, 44, NULL, 'Vivyan', 'Chatelet', 'm', '1996-08-23'),
+(45, 45, NULL, 'Bethanne', 'Duerden', 'm', '1996-06-21'),
+(46, 46, NULL, 'Sarita', 'Moggie', 'm', '1984-08-01'),
+(47, 47, NULL, 'Ingaberg', 'McCardle', 'f', '2002-04-19'),
+(48, 48, NULL, 'Bobina', 'Thomkins', 'f', '1973-06-26'),
+(49, 49, NULL, 'Ibby', 'Ratledge', 'm', '1992-08-25'),
+(50, 50, NULL, 'Kaylyn', 'Lindfors', 'm', '1978-03-25'),
+(51, 51, NULL, 'Brit', 'Gleadhell', 'f', '2000-02-21'),
+(52, 52, NULL, 'Uriah', 'Pohl', 'm', '1962-06-22'),
+(53, 53, NULL, 'Saundra', 'Burgill', 'm', '1999-01-10'),
+(54, 54, NULL, 'Filberto', 'Towse', 'f', '1963-01-24'),
+(55, 55, NULL, 'Den', 'Aizikowitz', 'm', '1956-05-11'),
+(56, 56, NULL, 'Maddie', 'Devenport', 'f', '1986-09-28'),
+(57, 57, NULL, 'Natalina', 'Race', 'f', '1981-01-31'),
+(58, 58, NULL, 'Val', 'Bateson', 'f', '1992-01-03'),
+(59, 59, NULL, 'Shana', 'McIllrick', 'f', '1971-11-02'),
+(60, 60, NULL, 'Brig', 'De Ambrosis', 'f', '1955-10-30'),
+(61, 61, NULL, 'Cirillo', 'Lumpkin', 'f', '1983-04-14'),
+(62, 62, NULL, 'Fedora', 'Riddett', 'm', '1993-09-04'),
+(63, 63, NULL, 'Blaire', 'Faber', 'm', '1995-12-30'),
+(64, 64, NULL, 'Kali', 'Guyers', 'm', '1956-10-27'),
+(65, 65, NULL, 'Heinrick', 'Golledge', 'f', '1984-02-28'),
+(66, 66, NULL, 'Mateo', 'Mengo', 'f', '1993-10-27'),
+(67, 67, NULL, 'Amalee', 'Stormouth', 'm', '1957-03-11'),
+(68, 68, NULL, 'Ulrika', 'Tarbin', 'm', '1990-04-15'),
+(69, 69, NULL, 'Marmaduke', 'Hambribe', 'f', '1969-06-05'),
+(70, 70, NULL, 'Hazel', 'Scinelli', 'm', '1975-07-28'),
+(71, 71, NULL, 'Had', 'Stirling', 'f', '1989-05-02'),
+(72, 72, NULL, 'Nancy', 'Calendar', 'm', '1967-12-04'),
+(73, 73, NULL, 'Cross', 'Hallums', 'f', '1960-09-01'),
+(74, 74, NULL, 'Krystyna', 'Margrem', 'm', '1995-07-01'),
+(75, 75, NULL, 'Fonzie', 'Dahlman', 'f', '1977-08-06'),
+(76, 76, NULL, 'Prinz', 'Ilyasov', 'f', '2005-09-09'),
+(77, 77, NULL, 'Allayne', 'Duffyn', 'f', '1979-08-31'),
+(78, 78, NULL, 'Brigg', 'Bloxsom', 'm', '1982-09-02'),
+(79, 79, NULL, 'Olympie', 'Fobidge', 'm', '2005-12-26'),
+(80, 80, NULL, 'Lurline', 'Fransson', 'f', '2007-07-30'),
+(81, 81, NULL, 'Marice', 'Berrey', 'f', '1970-02-07'),
+(82, 82, NULL, 'Wynnie', 'Rojel', 'm', '2001-03-03'),
+(83, 83, NULL, 'Alphonse', 'Pennycock', 'm', '1989-12-15'),
+(84, 84, NULL, 'Cookie', 'Boylan', 'm', '1954-02-02'),
+(85, 85, NULL, 'Tammy', 'Thirkettle', 'f', '1991-06-15'),
+(86, 86, NULL, 'Brinna', 'Lippo', 'f', '1964-04-29'),
+(87, 87, NULL, 'Gussy', 'Dwane', 'f', '2001-04-24'),
+(88, 88, NULL, 'Lucais', 'Heilds', 'm', '1997-03-02'),
+(89, 89, NULL, 'Annamaria', 'Ditts', 'm', '1967-04-30'),
+(90, 90, NULL, 'Terry', 'Torbard', 'm', '1970-06-11');
+
+insert into organizer (user_id, name) values (1, 'adminOrg');
+insert into organizer (user_id, name) values (3, 'organizer');
+insert into organizer (user_id, name) values (4, 'orgComp');
+insert into organizer (user_id, name) values (94, 'sapien non mi integer');
+insert into organizer (user_id, name) values (95, 'ipsum integer a');
+insert into organizer (user_id, name) values (96, 'pede morbi porttitor lorem');
+insert into organizer (user_id, name) values (97, 'fusce posuere');
+insert into organizer (user_id, name) values (98, 'id nulla ultrices');
+insert into organizer (user_id, name) values (99, 'blandit mi in porttitor');
+insert into organizer (user_id, name) values (100, 'integer pede justo lacinia');

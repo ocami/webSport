@@ -13,10 +13,14 @@ use AppBundle\Entity\Category;
 use AppBundle\Entity\Championship;
 use AppBundle\Entity\Competition;
 use AppBundle\Entity\Competitor;
+use AppBundle\Entity\RaceCompetitor;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Organizer;
 use AppBundle\Entity\Race;
+use AppBundle\Repository\RaceCompetitorRepository;
+use AppBundle\Services\DbService;
 use AppBundle\Services\RaceService;
+use AppBundle\Services\ToolsService;
 use AppBundle\ServicesArg\AntiSpam;
 use AppBundle\Repository\RaceRepository;
 use AppBundle\Services\CodeService;
@@ -56,8 +60,6 @@ class homeController extends Controller
      */
     public function becomeAdmin()
     {
-
-
         $userManager = $this->get('fos_user.user_manager');
 
         $user = $this->getUser();
@@ -128,7 +130,7 @@ class homeController extends Controller
     {
 
         $competition = new Competition();
-        
+
         $race = new Race();
         $race->setCode('RaceTest');
 
@@ -173,5 +175,93 @@ class homeController extends Controller
 
         return $this->render('home/test2.html.twig', array('test' => $test));
     }
+
+    /**
+     * @Route("/generateUser", name="generateUser")
+     */
+    public function generateDB()
+    {
+        $this->get(DbService::class)->generateUser();
+        $test = $this->get(ToolsService::class)->randomDate();
+        return $this->render('home/test.html.twig', array('test' => $test));
+    }
+
+
+    /**
+     * @Route("/generateRace", name="generateRace")
+     */
+    public function generateRace()
+    {
+        $this->get(DbService::class)->generateRaces();
+        $test = 'Races generate';
+
+        return $this->render('home/test.html.twig', array('test' => $test));
+    }
+
+
+    /**
+     * @Route("/generateCategories", name="generateCategories")
+     */
+    public function generateCategories()
+    {
+        $this->get(DbService::class)->genreateCategories();
+        $test = 'Categoriess generate';
+
+        return $this->render('home/test.html.twig', array('test' => $test));
+    }
+
+
+    /**
+     * @Route("/simulateRegistration/{id}", name="simulateRegistration")
+     */
+    public function simulateRegistration($id)
+    {
+        $race = $this->getDoctrine()->getRepository(Race::class)->find($id);
+        $test = $this->get(DbService::class)->simulateRegistration($race);
+
+        return $this->render('home/test.html.twig', array('test' => $test));
+    }
+
+
+    /**
+     * @Route("/simulateRace/{id}", name="simulateRace")
+     */
+    public function simulateRace($id)
+    {
+        $race = $this->getDoctrine()->getRepository(Race::class)->find($id);
+        $this->get(DbService::class)->simulateRace($race);
+        $test = 'simulateRace';
+
+        return $this->render('home/test.html.twig', array('test' => $test));
+    }
+
+    /**
+     * @Route("/categoryRanck/{id}", name="categoryRanck")
+     */
+    public function categoryRanck($id)
+    {
+        $race = $this->getDoctrine()->getRepository(Race::class)->find($id);
+        $categorie = $this->getDoctrine()->getRepository(Category::class)->find(2);
+        $cr=$this->getDoctrine()->getRepository(RaceCompetitor::class)->categoriesRanck($categorie, $race);
+        $test = $cr;
+
+        var_dump($cr);
+
+        return $this->render('home/test.html.twig', array('test' => $test));
+    }
+
+    /**
+     * @Route("/categoriesRanck/{id}", name="categoriesRanck")
+     */
+    public function categoriesRanck($id)
+    {
+        $race = $this->getDoctrine()->getRepository(Race::class)->find($id);
+        $cr=$this->get(RaceService::class)->generateRanckByCategorie($race);
+        $test = $cr;
+
+
+        return $this->render('home/test.html.twig', array('test' => $test));
+    }
+
 
 }

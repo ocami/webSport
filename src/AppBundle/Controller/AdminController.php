@@ -17,6 +17,7 @@ use AppBundle\Entity\User;
 use AppBundle\Entity\Organizer;
 use AppBundle\Entity\Race;
 use AppBundle\Services\RaceService;
+use AppBundle\Services\DbService;
 use AppBundle\ServicesArg\AntiSpam;
 use AppBundle\Repository\RaceRepository;
 use AppBundle\Services\CodeService;
@@ -26,6 +27,7 @@ use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Services\UserService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use AppBundle\Services\MessageGenerator;
+
 
 class AdminController extends Controller
 {
@@ -41,6 +43,16 @@ class AdminController extends Controller
             'races' => $races
             ));
     }
+
+    /**
+     * @Route("/admin/db", name="admin_genrate_db")
+     */
+    public function generateDB()
+    {
+        $this->get(DbService::class)->generate();
+        $this->redirectToRoute('admin_index');
+    }
+
 
     /**
      * @Route("/admin/generateRace/{idRace}", name="admin_generateRace")

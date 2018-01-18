@@ -10,7 +10,6 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
 {
     public function categoriesByOrganizer($organizer)
     {
-
         return $this->createQueryBuilder('c')
             ->where('c.createBy = :organizer')
             ->setParameter('organizer', $organizer)

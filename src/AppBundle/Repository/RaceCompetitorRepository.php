@@ -2,6 +2,10 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Category;
+use AppBundle\Entity\Race;
+use Symfony\Component\Validator\Constraints\DateTime;
+
 /**
  * RaceCompetitorRepository
  *
@@ -11,4 +15,34 @@ namespace AppBundle\Repository;
 class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
 {
 
+    public function crOrderByChrono($race)
+    {
+        return $this->createQueryBuilder('rc')
+            ->where('rc.race = :race')
+            ->setParameter('race', $race)
+            ->orderBy('rc.chrono');
+    }
+
+    public function categoriesRanck(Category $category, Race $race)
+    {
+        $rc = $this->createQueryBuilder('rc')
+            ->innerJoin('rc.competitor', 'c')
+            ->where('rc.race = :race')
+            ->andWhere('c.date >= :dateMax AND c.date >= :dateMin')
+            ->setParameter('race', $race->getId())
+            ->setParameter('dateMax', new \DateTime("01-01-" . $category->getAgeMax()))
+            ->setParameter('dateMin', new \DateTime("01-01-" . $category->getAgeMin()))
+            ->orderBy('rc.chrono');
+
+
+        if (!$category->getSexe() == 'mx') {
+            $rc = $rc->andWhere('c.sexe = :sexe')
+                ->setParameter('sexe', $category->getSexe());
+        }
+
+        $rc = $rc->getQuery()->getResult();
+
+        return $rc;
+
+    }
 }

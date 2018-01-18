@@ -36,8 +36,7 @@ class RaceService
         $race->setCompetitorCanEntry(false);
 
         foreach ($race->getCategories() as $category) {
-
-            if ($category->getSexe() == 'mx' OR $category->getSexe() == $competitor->getSexe()) {
+            if ($competitorYear <= $category->getAgeMin() AND $competitorYear >= $category->getAgeMax()) {
 
                 if ($competitorYear < $category->getAgeMin() AND $competitorYear > $category->getAgeMax()) {
                     $race->setCompetitorCanEntry(true);
@@ -51,25 +50,42 @@ class RaceService
 
     public function racesCompetitorCanEntry($races)
     {
-        foreach ($races as $race)
-        {
-            $race=$this->competitorCanEntry($race);
+        foreach ($races as $race) {
+            $race = $this->competitorCanEntry($race);
         }
 
         return $races;
     }
 
-    public function generate(Race $race)
+    public function generateRanck(Race $race)
     {
-        $raceCompetitors=$this->em->getRepository(RaceCompetitor::class)->findByRace($race);
+        $rcs = $this->em->getRepository(RaceCompetitor::class)->crOrderByChrono($race);
 
-        foreach ($raceCompetitors as $rc)
+        $i=0;
+        foreach ($rcs as $rc)
         {
-            $rc->setChrono(new \DateTime('1:22:30'));
-            $this->em->persist($rc);
+            $i++;
+            $rc = new RaceCompetitor();
+            $rc->setRanck($i);
         }
 
-        $this->em->flush();
+        return $rcs;
     }
 
+    public function generateRanckByCategorie(Race $race)
+    {
+        $categoriesRanck = new \ArrayObject();
+
+        foreach ($race->getCategories() as $category)
+        {
+            $categoryRanck = new \ArrayObject();
+            $cr = $this->em->getRepository(RaceCompetitor::class)->categoriesRanck($category, $race);
+            $categoryRanck->append($category);
+            $categoryRanck->append($cr);
+
+            $categoriesRanck->append($categoryRanck);
+        }
+
+        return $categoriesRanck;
+    }
 }
