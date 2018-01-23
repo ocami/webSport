@@ -1,9 +1,9 @@
 <div class="row">
     {% for race in races %}
         <div class="col-xs-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{{ race.name }}</h3>
+            <div class="panel panel-default" {% if race.inChampionship == true %} style="border-color: #718C00" {% endif %}>
+                <div class="panel-heading" {% if race.inChampionship == true %} style="background: #718C00" {% endif %}>
+                    <h3 class="panel-title" >{{ race.name }}</h3>
                 </div>
                 <div class="panel-body">
                     Départ le {{ race.date|date("d/m/Y") }} à {{ race.time|date('H:i') }}<br>
@@ -14,7 +14,7 @@
                     {% endfor %}
 
                 </div>
-                <div class="panel-footer">
+                <div class="panel-footer" >
                     {% if isOrganizer == true %}
                         <input type="button" class="btn-xs btn-success" value="Editer"
                                onclick="location.href = '{{ path('race_edit', {'id': race.id}) }}';">

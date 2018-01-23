@@ -8,14 +8,18 @@
 
     <h1>Race</h1>
 
-    {{ race.code }}<br><br><br>
+    {{ race.name }}<br>
 
+    {% if isOrganizer == true %}
 
+        <input type="button" class="btn btn-success" value="Clore les inscriptions"
+               onclick="location.href = '{{ path('race_enrol_closed', {'id':race.id} ) }}';">
 
-    {% for r in cr %}
+        <input type="button" class="btn btn-success" value="Importer les temps de courses"
+               onclick="location.href = '{{ path('race_competitorsTimes', {'id':race.id} ) }}';">
 
-        {{ r.competitor.firstName }} {{ r.competitor.lastName }} {{ r.chrono|date('H:i:s') }} <br>
-
-    {% endfor %}
+        <input type="button" class="btn btn-success" value="Simuler inscription"
+               onclick="location.href = '{{ path('race_simulateEnrol', {'id':race.id} ) }}';">
+    {% endif %}
 
 {% endblock %}

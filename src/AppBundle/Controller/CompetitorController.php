@@ -9,15 +9,15 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\RaceCompetitor;
-use AppBundle\Services\CodeService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use AppBundle\Services\UserService;
 use AppBundle\Entity\Competitor;
 use AppBundle\Entity\Race;
-use AppBundle\Form\CompetitorType;
+use AppBundle\Services\CodeService;
+use AppBundle\Services\UserService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Form\CompetitorType;
 
 
 class CompetitorController extends Controller
@@ -91,24 +91,22 @@ class CompetitorController extends Controller
      */
     public function addRaceAction(Request $request, Race $race)
     {
+        $competitor = $this->get(UserService::class)->currentUserApp(Competitor::class);
+        $competitorIsRegisterToRace = $this->getDoctrine()->getRepository(RaceCompetitor::class)->competitorIsRegisterToRace($race,$competitor);
 
-        $raceComp = new RaceCompetitor();
-
-        $competitor = $this->currentCompetitor();
-
-        $competitorExist = $this->repository('RaceCompetitor')->findOneBy(array('race' => $race, 'competitor' => $competitor));
-
-        if ($competitorExist != null) {
+        if ($competitorIsRegisterToRace) {
             $request->getSession()->getFlashBag()->add('notice', 'Vous êtes déjà inscrit à cette course');
             return $this->redirectToRoute('competitor_show');
         }
 
+        $raceComp = new RaceCompetitor();
         $raceComp->setCompetitor($competitor);
         $raceComp->setRace($race);
-        $request->getSession()->getFlashBag()->add('notice', 'La course à été ajoutée');
         $em = $this->getDoctrine()->getManager();
         $em->persist($raceComp);
         $em->flush();
+        $this->get(CodeService::class)->generateCode($raceComp);
+        $request->getSession()->getFlashBag()->add('notice', 'Votre inscription est enregistrée');
 
         return $this->redirectToRoute('competitor_show');
     }

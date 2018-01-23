@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} index
+{% endblock %}
+
+{% block body %}
+
+    <h1>Race</h1>
+
+    {{ race.name }}<br>
+
+    <h1>Classement général</h1>
+    {% for competitor in generalRanck %}
+        {{ competitor.number }} {{ competitor.firstName }} {{ competitor.lastName }} {{ competitor.chrono|date('H:i:s') }}<br>
+    {% endfor %}
+
+    <h1>Classement par catégorie</h1>
+    {% for r in categoriesRanck %}
+        <h3>{{ r.category.name }}</h3>
+        {% for competitor in r.competitors %}
+            {{ competitor.number }} {{ competitor.firstName }} {{ competitor.lastName }} {{ competitor.chrono|date('H:i:s') }}
+            <br>
+        {% endfor %}
+    {% endfor %}
+
+{% endblock %}

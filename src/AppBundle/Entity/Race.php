@@ -90,6 +90,25 @@ class Race
 
     /**
      * @var Boolean
+     * @ORM\Column(name="in_championship", type="boolean")
+     */
+    private $inChampionship = false;
+
+
+    /**
+     * @var Boolean
+     * @ORM\Column(name="enrol", type="boolean")
+     */
+    private $enrol = true;
+
+    /**
+     * @var Boolean
+     * @ORM\Column(name="past", type="boolean")
+     */
+    private $past = false;
+
+    /**
+     * @var Boolean
      */
     private $competitorCanEntry;
 
@@ -381,5 +400,77 @@ class Race
     public function getCompetitorCanEntry()
     {
         return $this->competitorCanEntry;
+    }
+
+    /**
+     * Set inChampionship
+     *
+     * @param boolean $inChampionship
+     *
+     * @return Race
+     */
+    public function setInChampionship($inChampionship)
+    {
+        $this->inChampionship = $inChampionship;
+
+        return $this;
+    }
+
+    /**
+     * Get inChampionship
+     *
+     * @return boolean
+     */
+    public function getInChampionship()
+    {
+        return $this->inChampionship;
+    }
+
+    /**
+     * Set enrol
+     *
+     * @param boolean $enrol
+     *
+     * @return Race
+     */
+    public function setEnrol($enrol)
+    {
+        $this->enrol = $enrol;
+
+        return $this;
+    }
+
+    /**
+     * Get enrol
+     *
+     * @return boolean
+     */
+    public function getEnrol()
+    {
+        return $this->enrol;
+    }
+
+    /**
+     * Set past
+     *
+     * @param boolean $past
+     *
+     * @return Race
+     */
+    public function setPast($past)
+    {
+        $this->past = $past;
+
+        return $this;
+    }
+
+    /**
+     * Get past
+     *
+     * @return boolean
+     */
+    public function getPast()
+    {
+        return $this->past;
     }
 }

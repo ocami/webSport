@@ -5,30 +5,12 @@
 {% endblock %}
 
 {% block body %}
-
     <h1>Test 2</h1>
 
-    {% for race in test %}
-
-        {{ race.code }}
-
-        {% if race.competitorCanEntry %}
-            <p>Inscription</p>
-        {% endif %}
-
-        {% if race.competitorCanEntry == false %}
-            <p>False</p>
-        {% endif %}
-
-        {% for category in race.categories %}
-            <P>
-                {{ category.code }} {{ category.sexe }} {{ category.ageMin }} / {{ category.ageMax }}
-
-            </P>
+    {% for r in test %}
+        <h1>{{ r.category.name }}</h1>
+        {% for competitor in r.competitors %}
+           {{ competitor.number }} {{ competitor.firstName }} {{ competitor.lastName }} {{ competitor.chrono|date('H:i:s') }} <br>
         {% endfor %}
-
     {% endfor %}
-
-
-
 {% endblock %}

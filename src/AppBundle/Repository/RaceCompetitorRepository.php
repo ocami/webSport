@@ -3,6 +3,7 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Category;
+use AppBundle\Entity\Competitor;
 use AppBundle\Entity\Race;
 use Symfony\Component\Validator\Constraints\DateTime;
 
@@ -15,34 +16,82 @@ use Symfony\Component\Validator\Constraints\DateTime;
 class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
 {
 
-    public function crOrderByChrono($race)
+    public function rcOrderByChrono($race)
     {
-        return $this->createQueryBuilder('rc')
+       $rc =  $this->createQueryBuilder('rc')
+            ->innerJoin('rc.competitor', 'c')
+            ->select('c.code, rc.number, rc.ranck, rc.chrono, c.firstName, c.lastName')
             ->where('rc.race = :race')
             ->setParameter('race', $race)
-            ->orderBy('rc.chrono');
+            ->orderBy('rc.chrono')
+            ->getQuery()->getResult();
+
+       return $rc;
     }
 
     public function categoriesRanck(Category $category, Race $race)
     {
         $rc = $this->createQueryBuilder('rc')
             ->innerJoin('rc.competitor', 'c')
+            ->select('c.code, rc.number, rc.ranck, rc.chrono, c.firstName, c.lastName')
             ->where('rc.race = :race')
-            ->andWhere('c.date >= :dateMax AND c.date >= :dateMin')
+            ->andWhere('c.date > :dateMax AND c.date < :dateMin')
             ->setParameter('race', $race->getId())
             ->setParameter('dateMax', new \DateTime("01-01-" . $category->getAgeMax()))
-            ->setParameter('dateMin', new \DateTime("01-01-" . $category->getAgeMin()))
+            ->setParameter('dateMin', new \DateTime("31-12-" . $category->getAgeMin()))
             ->orderBy('rc.chrono');
 
-
-        if (!$category->getSexe() == 'mx') {
+        if ($category->getSexe() != 'mx') {
             $rc = $rc->andWhere('c.sexe = :sexe')
                 ->setParameter('sexe', $category->getSexe());
         }
 
         $rc = $rc->getQuery()->getResult();
-
         return $rc;
+    }
 
+    public function categoriesRanck2(Category $category, Race $race)
+    {
+        $rc = $this->createQueryBuilder('rc')
+            ->innerJoin('rc.competitor', 'c')
+            ->select('rc')
+            ->where('rc.race = :race')
+            ->andWhere('c.date > :dateMax AND c.date < :dateMin')
+            ->setParameter('race', $race->getId())
+            ->setParameter('dateMax', new \DateTime("01-01-" . $category->getAgeMax()))
+            ->setParameter('dateMin', new \DateTime("31-12-" . $category->getAgeMin()))
+            ->orderBy('rc.chrono');
+
+        if ($category->getSexe() != 'mx') {
+            $rc = $rc->andWhere('c.sexe = :sexe')
+                ->setParameter('sexe', $category->getSexe());
+        }
+
+        $rc = $rc->getQuery()->getResult();
+        return $rc;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function competitorIsRegisterToRace(Race $race, Competitor $competitor)
+    {
+        if (!$this->findOneBy(array('race' => $race->getId(), 'competitor' => $competitor->getId())) == null)
+            return true;
+
+        return false;
+    }
+
+
+    public  function competitorsEnrolByLastName($race)
+    {
+        $rc = $this->createQueryBuilder('rc')
+            ->innerJoin('rc.competitor', 'c')
+            ->where('rc.race = :race')
+            ->setParameter('race', $race)
+            ->orderBy('c.lastName');
+
+        $rc = $rc->getQuery()->getResult();
+        return $rc;
     }
 }

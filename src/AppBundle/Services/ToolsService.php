@@ -33,6 +33,4 @@ class ToolsService
         return new \DateTime($date);
 
     }
-
-
 }

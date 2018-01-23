@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="race_competitor")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\RaceCompetitorRepository")
  */
-class RaceCompetitor
+class RaceCompetitor extends AbstractEntity
 {
     /**
      * @var int

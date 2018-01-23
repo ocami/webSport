@@ -10,8 +10,10 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Championship;
+use AppBundle\Entity\Competition;
 use AppBundle\Entity\Organizer;
 use AppBundle\Services\CodeService;
+use AppBundle\Services\EntityService;
 use AppBundle\Services\UserService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -21,15 +23,6 @@ use AppBundle\Form\ChampionshipType;
 
 class ChampionshipController extends Controller
 {
-
-    private function competionRepository()
-    {
-        $competionRepository = $this->getDoctrine()->getManager()
-            ->getRepository('AppBundle:Championship');
-
-        return $competionRepository;
-    }
-
     /**
      * @Route("/championship/show/{id}", name="championship_show")
      */
@@ -43,7 +36,8 @@ class ChampionshipController extends Controller
      */
     public function showAllAction()
     {
-        $championships = $this->competionRepository()->findAll();
+        $cr = $this->getDoctrine()->getRepository(Competition::class);
+        $championships = $cr->findAll();
 
         return $this->render('championship/showList.html.twig', array('championships' => $championships));
     }
@@ -54,16 +48,12 @@ class ChampionshipController extends Controller
     public function newAction(Request $request)
     {
         $championship = new Championship();
-
         $form = $this->createForm(ChampionshipType::class, $championship);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($championship);
-            $em->flush();
-            $this->get(CodeService::class)->generateCodeCode($championship);
-            $this->get(CodeService::class)->generateCodeCode($championship->getCategory());
+            $this->get(EntityService::class)->create($championship);
+            $this->get(EntityService::class)->create($championship->getCategory());
 
             $request->getSession()->getFlashBag()->add('notice', 'Championnat bien enregistrée.');
             return $this->redirectToRoute('index');
@@ -74,20 +64,18 @@ class ChampionshipController extends Controller
     /**
      * @Route("/championship/edit/{id}", name="championship_edit")
      */
-    public function editAction(Request $request, Championship $championship)
+    public function editAction(Request $request, $id)
     {
+        $championship = $this->getDoctrine()->getRepository(Championship::class)->find($id);
         $form = $this->createForm(ChampionshipType::class, $championship);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($championship);
-            $em->flush();
+            $this->get(EntityService::class)->update($championship);
+            $this->get(EntityService::class)->update($championship->getCategory());
 
-            $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée.');
-
-            return $this->redirectToRoute('championship/show.html.twig', array('id' => $championship->getId()));
+            $request->getSession()->getFlashBag()->add('notice', 'Championat bien enregistré.');
+            return $this->redirectToRoute('admin_index');
         }
-
         return $this->render('championship/new.html.twig', array('form' => $form->createView()));
     }
 }

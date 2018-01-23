@@ -14,6 +14,7 @@ use AppBundle\Entity\Competition;
 use AppBundle\Entity\Competitor;
 use AppBundle\Entity\Organizer;
 use AppBundle\Entity\Race;
+use AppBundle\Entity\RaceCompetitor;
 use Doctrine\ORM\EntityManagerInterface;
 
 
@@ -95,15 +96,19 @@ class CodeService
                 $codeCompetition = $this->codeFormat($entity->getCompetition()->getId());
 
                 if($entity->getChampionships()->isEmpty())
-                    $code = 'RACEF_'.$codeCompetition.'_'.$number;
-                else
-                    $code = 'RACEC_'.$codeCompetition.'_'.$number;
+                $code = 'RACEF_'.$codeCompetition.'_'.$number;
+            else
+                $code = 'RACEC_'.$codeCompetition.'_'.$number;
                 break;
 
             case Category::class :
                 $code = 'CATEG_'.$number;
                 break;
+
+            case RaceCompetitor::class ;
+                $code = 'RC_'.$this->codeFormat(($entity->getRace()->getId())).'_'.$this->codeFormat(($entity->getCompetitor()->getId()));
         }
+
 
         $entity->setCode($code);
 
@@ -112,6 +117,7 @@ class CodeService
 
         return $entity;
     }
+
 
     private function lastCodeId($class)
     {

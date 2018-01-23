@@ -43,29 +43,4 @@ class AdminController extends Controller
             'races' => $races
             ));
     }
-
-    /**
-     * @Route("/admin/db", name="admin_genrate_db")
-     */
-    public function generateDB()
-    {
-        $this->get(DbService::class)->generate();
-        $this->redirectToRoute('admin_index');
-    }
-
-
-    /**
-     * @Route("/admin/generateRace/{idRace}", name="admin_generateRace")
-     */
-    public function generateRace(Request $request, $idRace)
-    {
-        $race = $this->getDoctrine()->getRepository(Race::class)->find($idRace);
-
-        $this->get(RaceService::class)->generate($race);
-
-        return $this->redirectToRoute('race_show', array('id'=>$idRace));
-
-    }
-
-
 }

@@ -14,7 +14,7 @@ class RaceChampionshipType extends AbstractType
             ->remove('categories')//->add('categories')
             ->add('championships', EntityType::class, array(
                 'class'        => 'AppBundle:Championship',
-                'choice_label' => 'code',
+                'choice_label' => 'name',
                 'multiple'     => true,
                 'expanded'     => true
             ))

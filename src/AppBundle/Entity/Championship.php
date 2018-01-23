@@ -209,7 +209,7 @@ class Championship
      */
     public function setCategory(\AppBundle\Entity\Category $category = null)
     {
-        $category->setCreateBy(666);
+        $category->setCreateBy(1);
         $this->category = $category;
 
         return $this;
