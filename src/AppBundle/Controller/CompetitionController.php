@@ -23,24 +23,6 @@ use AppBundle\Services\RaceService;
 
 class CompetitionController extends Controller
 {
-
-    private function competionRepository()
-    {
-        $competionRepository = $this->getDoctrine()->getManager()
-            ->getRepository('AppBundle:Competition');
-
-        return $competionRepository;
-    }
-
-    private function repository($class)
-    {
-        $competionRepository = $this->getDoctrine()->getManager()
-            ->getRepository('AppBundle:' . $class);
-
-        return $competionRepository;
-    }
-
-
     /**
      * @Route("/competition/show/{id}", name="competition_show")
      */
@@ -65,21 +47,21 @@ class CompetitionController extends Controller
      */
     public function showAllAction()
     {
-        $competitions = $this->competionRepository()->findAll();
+        $competitions = $this->getDoctrine()->getRepository(Competition::class)->findAll();
 
         return $this->render('competition/showList.html.twig', array('competitions' => $competitions));
     }
 
     /**
-     * @Security("has_role('ROLE_ORGANIZER')")
      * @Route("/competition/new", name="competition_new")
+     * @Security("has_role('ROLE_ORGANIZER')")
      */
     public function newAction(Request $request)
     {
         $competition = new Competition();
 
         $form = $this->createForm(CompetitionType::class, $competition);
-        $organizer = $this->repository('Organizer')->findOneByUserId($this->getUser());
+        $organizer = $this->getDoctrine()->getRepository(Organizer::class)->findOneByUserId($this->getUser());
 
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
@@ -103,8 +85,8 @@ class CompetitionController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ORGANIZER')")
      * @Route("/competition/edit/{id}", name="competition_edit")
+     * @Security("has_role('ROLE_ORGANIZER')")
      */
     public function editAction(Request $request, Competition $competition)
     {
@@ -123,10 +105,9 @@ class CompetitionController extends Controller
         return $this->render('competition/new.html.twig', array('form' => $form->createView(), 'id' => $competition->getId()));
     }
 
-
     /**
-     * @Security("has_role('ROLE_ORGANIZER')")
      * @Route("/competition/edit_description/{id}", name="competition_edit_description")
+     * @Security("has_role('ROLE_ORGANIZER')")
      */
     public function editDescriptionAction(Request $request, Competition $competition)
     {
@@ -146,6 +127,4 @@ class CompetitionController extends Controller
 
         return $this->render('competition/new.html.twig', array('form' => $form->createView()));
     }
-
-
 }

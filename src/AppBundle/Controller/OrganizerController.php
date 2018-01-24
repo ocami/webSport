@@ -20,14 +20,6 @@ use AppBundle\Services\CodeService;
 
 class OrganizerController extends Controller
 {
-
-    protected $container;
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
     /**
      * @Route("/organizer/register"), name"organizer_register")
      */
@@ -37,9 +29,7 @@ class OrganizerController extends Controller
         $form = $this->createForm(OrganizerType::class, $organizer);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-
             $this->get(UserService::class)->registerUserApp($organizer);
-
             $request->getSession()->getFlashBag()->add('notice', 'Votre compte competiteur est bien enregistré');
 
             return $this->redirectToRoute('index');

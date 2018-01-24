@@ -97,13 +97,4 @@ class UserService
         }
     }
 
-    public  function getUser()
-    {
-        return $this->user;
-    }
-
-    public function getAdmin()
-    {
-        return $this->em->getRepository(Organizer::class)->find(1);
-    }
 }

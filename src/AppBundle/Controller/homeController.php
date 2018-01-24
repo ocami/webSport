@@ -36,13 +36,6 @@ use AppBundle\Services\MessageGenerator;
 class homeController extends Controller
 {
 
-    protected $container;
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
     /**
      * @Route("/", name="index")
      */

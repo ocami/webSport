@@ -8,12 +8,8 @@
 
 namespace AppBundle\Services;
 
-
-use Symfony\Component\Validator\Constraints\DateTime;
-
 class ToolsService
 {
-
     /**
      * Method to generate random date between two dates
      * @param $sStartDate

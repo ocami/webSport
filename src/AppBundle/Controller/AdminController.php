@@ -31,7 +31,6 @@ use AppBundle\Services\MessageGenerator;
 
 class AdminController extends Controller
 {
-
     /**
      * @Route("/admin/index", name="admin_index")
      */

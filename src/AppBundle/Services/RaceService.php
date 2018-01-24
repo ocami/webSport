@@ -8,17 +8,8 @@
 
 namespace AppBundle\Services;
 
-use AppBundle\Entity\Category;
-use AppBundle\Entity\Championship;
-use AppBundle\Entity\ChampionshipCompetitor;
-use AppBundle\Entity\Competition;
 use AppBundle\Entity\Competitor;
-use AppBundle\Entity\Race;
-use AppBundle\Entity\RaceCompetitor;
 use Doctrine\ORM\EntityManagerInterface;
-use AppBundle\Services\UserService;
-use phpDocumentor\Reflection\Types\Array_;
-
 
 class RaceService
 {

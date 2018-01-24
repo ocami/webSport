@@ -8,53 +8,28 @@
 
 namespace AppBundle\Services;
 
-use AppBundle\Entity\Category;
 use AppBundle\Entity\Championship;
 use AppBundle\Entity\ChampionshipCompetitor;
-use AppBundle\Repository\ChampionshipCompetitorRepository;
-use AppBundle\Entity\Competitor;
-use AppBundle\Entity\Organizer;
-use AppBundle\Entity\Competition;
-use AppBundle\Entity\User;
 use AppBundle\Entity\RaceCompetitor;
-use Proxies\__CG__\AppBundle\Entity\Race;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use AppBundle\Services\ToolsService;
-use AppBundle\Services\RaceService;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 
 class RanckService
 {
     private $ts;
-    private $ac;
     private $em;
-    private $cs;
-    private $ci;
-    private $rs;
     private $tools;
     private $user;
 
     public function __construct(
         TokenStorageInterface $ts,
-        AuthorizationCheckerInterface $ac,
         EntityManagerInterface $em,
-        CodeService $cs,
-        ContainerInterface $ci,
-        RaceService $rs,
         ToolsService $tools
-
     )
     {
         $this->ts = $ts;
-        $this->ac = $ac;
         $this->em = $em;
-        $this->cs = $cs;
-        $this->ci = $ci;
-        $this->rs = $rs;
         $this->tools = $tools;
         $this->user = $this->ts->getToken()->getUser();
     }

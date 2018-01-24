@@ -21,12 +21,10 @@ use Doctrine\ORM\EntityManagerInterface;
 class CodeService
 {
     private $em;
-    private $mg;
 
-    public function __construct(EntityManagerInterface $em, MessageGenerator $mg)
+    public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->mg = $mg;
     }
 
     public function generate($entity)
@@ -118,7 +116,6 @@ class CodeService
         return $entity;
     }
 
-
     private function lastCodeId($class)
     {
         $class=get_class($class);
@@ -136,6 +133,4 @@ class CodeService
     {
         return sprintf( "%03d", $nbr );
     }
-
-
 }

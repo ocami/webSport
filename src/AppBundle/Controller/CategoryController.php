@@ -19,23 +19,6 @@ use AppBundle\Form\CategoryType;
 
 class CategoryController extends Controller
 {
-
-    private function competionRepository()
-    {
-        $competionRepository = $this->getDoctrine()->getManager()
-            ->getRepository('AppBundle:Category');
-
-        return $competionRepository;
-    }
-
-    private function repository($class)
-    {
-        $competionRepository = $this->getDoctrine()->getManager()
-            ->getRepository('AppBundle:'.$class);
-
-        return $competionRepository;
-    }
-
     /**
      * @Route("/category/show/{id}", name="category_show")
      */
@@ -64,7 +47,7 @@ class CategoryController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-            $organizer = $this->repository('Organizer')->findOneByUserId($this->getUser());
+            $organizer = $this->getDoctrine()->getRepository(Organizer::class)->findOneByUserId($this->getUser());
             $category->setCreateBy($organizer->getId());
             $em = $this->getDoctrine()->getManager();
             $em->persist($category);

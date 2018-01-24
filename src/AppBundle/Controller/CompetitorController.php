@@ -23,30 +23,6 @@ use AppBundle\Form\CompetitorType;
 class CompetitorController extends Controller
 {
 
-    protected $container;
-
-    private function competitorRepository()
-    {
-        $competitorRepository = $this->getDoctrine()->getManager()
-            ->getRepository('AppBundle:Competitor');
-
-        return $competitorRepository;
-    }
-
-    private function repository($class)
-    {
-        $repository = $this->getDoctrine()->getManager()
-            ->getRepository('AppBundle:' . $class);
-
-        return $repository;
-    }
-
-    private function currentCompetitor()
-    {
-        return $this->competitorRepository()->findOneByUserId($this->getUser());
-    }
-
-
     /**
      * @Security("has_role('ROLE_USER')")
      * @Route("/competitor/register"), name"competitor_register")
@@ -76,8 +52,8 @@ class CompetitorController extends Controller
      */
     public function showAction()
     {
-        $competitor = $this->currentCompetitor();
-        $races = $this->repository('RaceCompetitor')->findByCompetitor($competitor);
+        $competitor = $this->get(UserService::class)->currentUserApp(Competitor::class);
+        $races = $this->getDoctrine()->getRepository(Race::class)->findByCompetitor($competitor);
 
         return $this->render('competitor/show.html.twig', array(
             'competitor' => $competitor,
@@ -108,6 +84,6 @@ class CompetitorController extends Controller
         $this->get(CodeService::class)->generateCode($raceComp);
         $request->getSession()->getFlashBag()->add('notice', 'Votre inscription est enregistrée');
 
-        return $this->redirectToRoute('competitor_show');
+        return $this->redirectToRoute('competition_show', array('id'=>$race->getCompetition()->getId()));
     }
 }

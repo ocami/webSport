@@ -155,7 +155,6 @@ class RaceController extends Controller
         return $this->redirectToRoute('race_show',array('id'=>$race->getId()));
     }
 
-
     /**
      * @Security("has_role('ROLE_ORGANIZER')")
      * @Route("/race/ranckEnrolClosed/{id}", name="race_enrol_closed")
