@@ -64,9 +64,8 @@ class ChampionshipController extends Controller
     /**
      * @Route("/championship/edit/{id}", name="championship_edit")
      */
-    public function editAction(Request $request, $id)
+    public function editAction(Request $request, Championship $championship)
     {
-        $championship = $this->getDoctrine()->getRepository(Championship::class)->find($id);
         $form = $this->createForm(ChampionshipType::class, $championship);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {

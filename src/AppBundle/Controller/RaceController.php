@@ -60,9 +60,9 @@ class RaceController extends Controller
 
     /**
      * @Security("has_role('ROLE_ORGANIZER')")
-     * @Route("/race/new/{idCompetition}", name="race_new")
+     * @Route("/race/new/{id}", name="race_new")
      */
-    public function newAction(Request $request, $idCompetition)
+    public function newAction(Request $request, Competition $competition)
     {
         $race = new Race();
         $organizer = $this->get(UserService::class)->currentUserApp(Organizer::class);
@@ -71,14 +71,11 @@ class RaceController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-            $cr = $this->getDoctrine()->getRepository(Competition::class);
-            $competition = $cr->find($idCompetition);
-
             $race->setCompetition($competition);
             $this->get(EntityService::class)->create($race);
 
             $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée.');
-            return $this->redirectToRoute('competition_show', array('idCompetition' => $idCompetition));
+            return $this->redirectToRoute('competition_show', array('id' => $competition->getId()));
         }
 
         return $this->render('race/new.html.twig', array('form' => $form->createView()));
@@ -86,17 +83,15 @@ class RaceController extends Controller
 
     /**
      * @Security("has_role('ROLE_ORGANIZER')")
-     * @Route("/race_championship/{idCompetition}", name="race_new_championship")
+     * @Route("/race_championship/{id}", name="race_new_championship")
      */
-    public function newInChampionshipAction(Request $request, $idCompetition)
+    public function newInChampionshipAction(Request $request, Competition $competition)
     {
         $race = new Race();
         $form = $this->createForm(RaceChampionshipType::class, $race);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-            $cr = $this->getDoctrine()->getRepository(Competition::class);
-            $competition = $cr->find($idCompetition);
             $race->setCompetition($competition);
             $race->setInChampionship(true);
 
@@ -107,7 +102,7 @@ class RaceController extends Controller
             $this->get(EntityService::class)->create($race);
 
             $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée.');
-            return $this->redirectToRoute('competition_show', array('idCompetition' => $idCompetition));
+            return $this->redirectToRoute('competition_show', array('id' => $competition->getId()));
         }
 
         return $this->render('race/new.html.twig', array('form' => $form->createView()));
@@ -117,9 +112,8 @@ class RaceController extends Controller
      * @Security("has_role('ROLE_ORGANIZER')")
      * @Route("/race/edit/{id}", name="race_edit")
      */
-    public function editAction(Request $request, $id)
+    public function editAction(Request $request, Race $race)
     {
-        $race = $this->getDoctrine()->getRepository(Race::class)->find($id);
         $organizer = $this->get(UserService::class)->currentUserApp(Organizer::class);
         $form = $this->createForm(RaceType::class, $race, array('organizer' => $organizer));
 
@@ -142,7 +136,7 @@ class RaceController extends Controller
             $request->getSession()->getFlashBag()->add('notice', 'Course bien modifiée.');
 
             return $this->redirectToRoute('competition_show', array(
-                'idCompetition' => $race->getCompetition()->getId()
+                'id' => $race->getCompetition()->getId()
             ));
         }
 
@@ -153,13 +147,12 @@ class RaceController extends Controller
      * @Security("has_role('ROLE_ORGANIZER')")
      * @Route("/race/simulateEnrol/{id}", name="race_simulateEnrol")
      */
-    public function simulateEnrol(Request $request, $id)
+    public function simulateEnrol(Request $request, Race $race)
     {
-        $race = $this->getDoctrine()->getRepository(Race::class)->find($id);
         $this->get(DbService::class)->simulateRaceEnrols($race);
 
         $request->getSession()->getFlashBag()->add('notice', 'Inscriptions enregistrées');
-        return $this->redirectToRoute('race_show',array('id'=>$id));
+        return $this->redirectToRoute('race_show',array('id'=>$race->getId()));
     }
 
 
@@ -167,25 +160,23 @@ class RaceController extends Controller
      * @Security("has_role('ROLE_ORGANIZER')")
      * @Route("/race/ranckEnrolClosed/{id}", name="race_enrol_closed")
      */
-    public function ranckEnrolClosed(Request $request, $id)
+    public function ranckEnrolClosed(Request $request, Race $race)
     {
-        $race = $this->getDoctrine()->getRepository(Race::class)->find($id);
         $this->get(RanckService::class)->generateCompetitorsNumber($race);
 
         $request->getSession()->getFlashBag()->add('notice', 'Cloture des inscription enregistrées');
 
-        return $this->redirectToRoute('race_show',array('id'=>$id));
+        return $this->redirectToRoute('race_show',array('id'=>$race->getId()));
     }
 
     /**
      * @Security("has_role('ROLE_ORGANIZER')")
      * @Route("/race/competitorsTimes/{id}", name="race_competitorsTimes")
      */
-    public function importCompetitorsTimes(Request $request, $id)
+    public function importCompetitorsTimes(Request $request, Race $race)
     {
-        $race = $this->getDoctrine()->getRepository(Race::class)->find($id);
         $this->get(RanckService::class)->importCompetitorsTimes($race);
 
-        return $this->redirectToRoute('race_show',array('id'=>$id));
+        return $this->redirectToRoute('race_show',array('id'=>$race->getId()));
     }
 }

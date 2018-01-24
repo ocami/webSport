@@ -9,6 +9,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Category;
+use AppBundle\Entity\Competition;
 use AppBundle\Entity\Organizer;
 use AppBundle\Services\CodeService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -40,7 +41,7 @@ class CategoryController extends Controller
      */
     public function showAction(Category $category)
     {
-        return $this->render('category/show.html.twig', array('category' => $category));
+        return $this->render('category/show.html.twig', array('category' => $category->getId()));
     }
 
     /**
@@ -54,9 +55,9 @@ class CategoryController extends Controller
     }
 
     /**
-     * @Route("/category/new/{idCompetition}", name="category_new")
+     * @Route("/category/new/{id}", name="category_new")
      */
-    public function newAction(Request $request, $idCompetition)
+    public function newAction(Request $request, Competition $competition)
     {
         $category = new Category();
         $form = $this->createForm(CategoryType::class, $category);
@@ -72,7 +73,7 @@ class CategoryController extends Controller
 
             $request->getSession()->getFlashBag()->add('notice', 'Catégorie bien enregistrée.');
 
-            return $this->redirectToRoute('competition_show',array('idCompetition'=>$idCompetition));
+            return $this->redirectToRoute('competition_show',array('id'=>$competition->getId()));
         }
 
         return $this->render('category/new.html.twig', array('form' => $form->createView()));
@@ -92,7 +93,7 @@ class CategoryController extends Controller
 
             $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée.');
 
-            return $this->redirectToRoute('category/show.html.twig',array('category'=>$category));
+            return $this->redirectToRoute('category/show.html.twig',array('category'=>$category->getId()));
         }
 
         return $this->render('category/new.html.twig', array('form' => $form->createView()));

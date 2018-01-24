@@ -14,7 +14,7 @@
 
     {% for race in races %}
         <input type="button" class="btn btn-info" value="{{ race.id }}"
-               onclick="location.href = '{{ path('admin_generateRace',{'idRace': race.id}) }}';">
+               onclick="location.href = '{{ path('admin_generateRace',{'id': race.id}) }}';">
     {% endfor %}
 
 {% endblock %}

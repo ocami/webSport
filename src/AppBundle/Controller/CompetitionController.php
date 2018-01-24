@@ -42,11 +42,10 @@ class CompetitionController extends Controller
 
 
     /**
-     * @Route("/competition/show/{idCompetition}", name="competition_show")
+     * @Route("/competition/show/{id}", name="competition_show")
      */
-    public function showAction(Competition $idCompetition)
+    public function showAction(Competition $competition)
     {
-        $competition = $this->getDoctrine()->getRepository(Competition::class)->find($idCompetition);
         $races = $competition->getRaces();
         // if user is competitior and if competitor is in category of race => reveal Entry Button
         if ($this->get('security.authorization_checker')->isGranted('ROLE_COMPETITOR'))
@@ -95,7 +94,7 @@ class CompetitionController extends Controller
 
 
             $request->getSession()->getFlashBag()->add('notice', 'Compétition bien enregistrée.');
-            return $this->redirectToRoute('competition_show', array('idCompetition' => $competition->getId()));
+            return $this->redirectToRoute('competition_show', array('id' => $competition->getId()));
         }
         return $this->render('competition/new.html.twig', array(
             'form' => $form->createView(),
@@ -127,11 +126,10 @@ class CompetitionController extends Controller
 
     /**
      * @Security("has_role('ROLE_ORGANIZER')")
-     * @Route("/competition/edit_description/{idCompetition}", name="competition_edit_description")
+     * @Route("/competition/edit_description/{id}", name="competition_edit_description")
      */
-    public function editDescriptionAction(Request $request, $idCompetition)
+    public function editDescriptionAction(Request $request, Competition $competition)
     {
-        $competition = $this->competionRepository()->find($idCompetition);
         $form = $this->createForm(CompetitionDescriptionType::class, $competition);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
@@ -143,7 +141,7 @@ class CompetitionController extends Controller
             $em->persist($competition);
             $em->flush();
 
-            return $this->redirectToRoute('competition_show', array('idCompetition' => $competition->getId()));
+            return $this->redirectToRoute('competition_show', array('id' => $competition->getId()));
         }
 
         return $this->render('competition/new.html.twig', array('form' => $form->createView()));
