@@ -5,6 +5,7 @@ namespace AppBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class CategoryType extends AbstractType
 {
@@ -15,11 +16,18 @@ class CategoryType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('sexe')
+            ->add('sexe', ChoiceType::class, array(
+                'choices' => array(
+                    'Mixte' => 'mx',
+                    'Féminin' => 'f',
+                    'Masculin' => 'm',
+                ),
+            ))
             ->add('ageMin')
-            ->add('ageMax')
-        ;
-    }/**
+            ->add('ageMax');
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)

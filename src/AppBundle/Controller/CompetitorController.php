@@ -22,10 +22,9 @@ use AppBundle\Form\CompetitorType;
 
 class CompetitorController extends Controller
 {
-
     /**
-     * @Security("has_role('ROLE_USER')")
      * @Route("/competitor/register"), name"competitor_register")
+     * @Security("has_role('ROLE_USER')")
      */
     public function registerAction(Request $request, UserService $userService)
     {
@@ -47,8 +46,8 @@ class CompetitorController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_COMPETITOR')")
      * @Route("/competitor/show", name="competitor_show")
+     * @Security("has_role('ROLE_COMPETITOR')")
      */
     public function showAction()
     {
@@ -62,8 +61,8 @@ class CompetitorController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_COMPETITOR')")
      * @Route("/competitor/addRace/{race}"), name"competitor_addRace")
+     * @Security("has_role('ROLE_COMPETITOR')")
      */
     public function addRaceAction(Request $request, Race $race)
     {

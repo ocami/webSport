@@ -8,6 +8,7 @@
 
 namespace AppBundle\Services;
 
+use AppBundle\Entity\Category;
 use AppBundle\Entity\Championship;
 use AppBundle\Entity\ChampionshipCompetitor;
 use AppBundle\Entity\RaceCompetitor;
@@ -21,7 +22,7 @@ class RanckService
     private $em;
     private $tools;
     private $user;
-
+    
     public function __construct(
         TokenStorageInterface $ts,
         EntityManagerInterface $em,
@@ -36,10 +37,9 @@ class RanckService
 
     public function generateCompetitorsNumber($race)
     {
-        $i=0;
+        $i = 0;
         $rc = $this->em->getRepository(RaceCompetitor::class)->competitorsEnrolByLastName($race);
-        foreach ($rc as $row)
-        {
+        foreach ($rc as $row) {
             $i++;
             $row->setNumber($i);
             $this->em->persist($row);
@@ -93,6 +93,25 @@ class RanckService
         }
 
         return $categoriesRanck;
+    }
+
+    public function championshipsRanck()
+    {
+        $championships = $this->em->getRepository(Championship::class)->findAll();
+        $championshipsRanck = new \ArrayObject();
+
+        foreach ($championships as $championship) {
+
+            $cc = $this->em->getRepository(ChampionshipCompetitor::class)->competitorsByCategoryOrderByPoints($championship);
+
+            $championshipRanck = array(
+                'championship' => $championship,
+                'competitors' => $cc
+            );
+            $championshipsRanck->append($championshipRanck);
+        }
+
+        return $championshipsRanck;
     }
 
     private function championshipSetPoints($race)

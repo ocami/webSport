@@ -32,10 +32,15 @@ class RaceController extends Controller
      */
     public function showAction(Race $race)
     {
+        $race = $this->getDoctrine()->getRepository(Race::class)->find($race);
+        $gr = $this->getDoctrine()->getRepository(RaceCompetitor::class)->rcOrderByChrono($race);
+        $cr = $this->get(RanckService::class)->raceCategoriesRanck($race);
         $isOrganizer = $this->get(UserService::class)->isOrganizerComeptition($race->getCompetition());
 
         return $this->render('race/show.html.twig', array(
             'race' => $race,
+            'generalRanck' => $gr,
+            'categoriesRanck' => $cr,
             'isOrganizer' => $isOrganizer
         ));
     }
@@ -59,8 +64,8 @@ class RaceController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ORGANIZER')")
      * @Route("/race/new/{id}", name="race_new")
+     * @Security("has_role('ROLE_ORGANIZER')")
      */
     public function newAction(Request $request, Competition $competition)
     {
@@ -82,8 +87,8 @@ class RaceController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ORGANIZER')")
      * @Route("/race_championship/{id}", name="race_new_championship")
+     * @Security("has_role('ROLE_ORGANIZER')")
      */
     public function newInChampionshipAction(Request $request, Competition $competition)
     {
@@ -109,8 +114,8 @@ class RaceController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ORGANIZER')")
      * @Route("/race/edit/{id}", name="race_edit")
+     * @Security("has_role('ROLE_ORGANIZER')")
      */
     public function editAction(Request $request, Race $race)
     {
@@ -144,8 +149,8 @@ class RaceController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ORGANIZER')")
      * @Route("/race/simulateEnrol/{id}", name="race_simulateEnrol")
+     * @Security("has_role('ROLE_ORGANIZER')")
      */
     public function simulateEnrol(Request $request, Race $race)
     {
@@ -156,8 +161,8 @@ class RaceController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ORGANIZER')")
      * @Route("/race/ranckEnrolClosed/{id}", name="race_enrol_closed")
+     * @Security("has_role('ROLE_ORGANIZER')")
      */
     public function ranckEnrolClosed(Request $request, Race $race)
     {
@@ -169,8 +174,8 @@ class RaceController extends Controller
     }
 
     /**
+     *  @Route("/race/competitorsTimes/{id}", name="race_competitorsTimes")
      * @Security("has_role('ROLE_ORGANIZER')")
-     * @Route("/race/competitorsTimes/{id}", name="race_competitorsTimes")
      */
     public function importCompetitorsTimes(Request $request, Race $race)
     {

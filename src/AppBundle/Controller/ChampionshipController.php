@@ -8,13 +8,10 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Category;
 use AppBundle\Entity\Championship;
 use AppBundle\Entity\Competition;
-use AppBundle\Entity\Organizer;
-use AppBundle\Services\CodeService;
 use AppBundle\Services\EntityService;
-use AppBundle\Services\UserService;
+use AppBundle\Services\RanckService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,11 +21,12 @@ use AppBundle\Form\ChampionshipType;
 class ChampionshipController extends Controller
 {
     /**
-     * @Route("/championship/show/{id}", name="championship_show")
+     * @Route("/championship/show", name="championship_show")
      */
-    public function showAction(Championship $championship)
+    public function showAction()
     {
-        return $this->render('championship/show.html.twig', array('championship' => $championship));
+        $cc = $this->get(RanckService::class)->championshipsRanck();
+        return $this->render('championship/show.html.twig', array('championshipsCompetitors' => $cc));
     }
 
     /**

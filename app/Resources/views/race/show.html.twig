@@ -6,12 +6,8 @@
 
 {% block body %}
 
-    <h1>Race</h1>
-
-    {{ race.name }}<br>
 
     {% if isOrganizer == true %}
-
         <input type="button" class="btn btn-success" value="Clore les inscriptions"
                onclick="location.href = '{{ path('race_enrol_closed', {'id':race.id} ) }}';">
 
@@ -21,5 +17,31 @@
         <input type="button" class="btn btn-success" value="Simuler inscription"
                onclick="location.href = '{{ path('race_simulateEnrol', {'id':race.id} ) }}';">
     {% endif %}
+
+    <h1>Race</h1>
+
+    {{ race.name }}<br>
+
+
+    <h1>Classement général</h1>
+    {% for competitor in generalRanck %}
+        {% if not race.enrol %}{{ competitor.number }}{% endif %}
+        {{ competitor.firstName }}
+        {{ competitor.lastName }}
+        {% if race.past %}{{ competitor.chrono|date('H:i:s') }}{% endif %} <br>
+    {% endfor %}
+
+
+    <div></div>
+    <h1>Classement par catégorie</h1>
+    {% for r in categoriesRanck %}
+        <h3>{{ r.category.name }}</h3>
+        {% for competitor in r.competitors %}
+            {% if not race.enrol %}{{ competitor.number }}{% endif %}
+            {{ competitor.firstName }}
+            {{ competitor.lastName }}
+            {% if race.past %}{{ competitor.chrono|date('H:i:s') }}{% endif %} <br>
+        {% endfor %}
+    {% endfor %}
 
 {% endblock %}

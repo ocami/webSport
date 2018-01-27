@@ -82,7 +82,6 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
         return false;
     }
 
-
     public  function competitorsEnrolByLastName($race)
     {
         $rc = $this->createQueryBuilder('rc')
@@ -94,4 +93,5 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
         $rc = $rc->getQuery()->getResult();
         return $rc;
     }
+
 }

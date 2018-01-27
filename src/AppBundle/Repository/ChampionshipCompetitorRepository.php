@@ -1,12 +1,8 @@
 <?php
 
 namespace AppBundle\Repository;
-
-use AppBundle\Entity\Category;
-use AppBundle\Entity\Competitor;
-use AppBundle\Entity\Race;
 use AppBundle\Entity\Championship;
-use Symfony\Component\Validator\Constraints\DateTime;
+
 
 /**
  * ChampionshipCompetitorRepository
@@ -16,12 +12,24 @@ use Symfony\Component\Validator\Constraints\DateTime;
  */
 class ChampionshipCompetitorRepository extends \Doctrine\ORM\EntityRepository
 {
-    /**
-     * @return boolean
-     */
-    public function competitorIsRegisterToChampionship(Championship $championship, Competitor $competitor)
+    public function competitorsByCategoryOrderByPoints(Championship $championship)
     {
-        return $this->findOneBy(array('championship' => $championship->getId(), 'competitor' => $competitor->getId()));
+        $cc = $this->createQueryBuilder('cc')
+            ->innerJoin('cc.competitor','c')
+            ->select('c.code, cc.ranck, cc.points, c.firstName, c.lastName')
+            ->where('cc.championship = :championship')
+            ->setParameter('championship',$championship->getId())
+            ->orderBy('cc.points','DESC')
+            ->getQuery()->getResult();
 
+        return $cc;
+    }
+
+    public function maFonction()
+    {
+        $cc = $this->createQueryBuilder('cc')
+            ->getQuery()->getResult();
+
+        return $cc;
     }
 }

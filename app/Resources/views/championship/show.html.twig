@@ -8,6 +8,14 @@
 
     <h1>championship</h1>
 
-    {{ championship.code }}<br>
+    {% for row in championshipsCompetitors %}
+
+        <H1>{{ row.championship.name }}</H1>
+
+        {% for c in row.competitors %}
+            {{ c.firstName }} {{ c.lastName }} {{ c.points }}<br>
+        {% endfor %}
+
+    {% endfor %}
 
 {% endblock %}
