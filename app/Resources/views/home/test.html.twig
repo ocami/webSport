@@ -1,18 +1,137 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-    {{ parent() }} index
-{% endblock %}
-
 {% block body %}
 
-    <h1>Test</h1>
+    <button onclick="displayDate()">DATE</button>
+    <button onclick="displayDemo()">DEMO</button>
+    <button onclick="displayTable()">DATA TABLE</button>
+    <button onclick="displayMaTable()">MA TABLE</button>
+    <input id="inputRace" type="text">
+    <div id="demo" class="demo"></div>
 
-
-    {% for c in test %}
-
-        {{ c.code }} {{ c.competitor.date| date('d:m:Y') }} {{ c.competitor.sexe }} {{ c.competitor.code }} <br>
-
+    {% for c in categories %}
+        <button onclick="displayMaTableJ({{ c.id }} )">{{ c.name }}</button>
     {% endfor %}
 
+    <br>
+
+    {% for c in categories %}
+        <button onclick="displayMaTableJC({{ c.id }} )">{{ c.name }}</button>
+    {% endfor %}
+
+
+
+    <table id="example" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <th>userID</th>
+            <th>userName</th>
+        </tr>
+        </thead>
+    </table>
+
+    <h1 id="category"></h1>
+
+    <table id="maTable" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <th>code</th>
+            <th>number</th>
+            <th>ranck</th>
+            <th>firstName</th>
+            <th>lastName</th>
+        </tr>
+        </thead>
+    </table>
+
+
+    <script>
+        function displayDemo() {
+            var DATA = 'race=' + $("#inputRace").val();
+            $.ajax({
+                url: "{{ path('truc') }}",
+                data: DATA,
+                success: function (result) {
+                    $("#demo").html(result);
+                }
+            });
+        }
+
+        function displayTable() {
+            var DATA = 'race=' + $("#inputRace").val();
+            $.ajax({
+                url: "{{ path('table') }}",
+                data: DATA,
+                success: function (result) {
+                    $('#example').dataTable({
+                        destroy: true,
+                        data: result,
+                        columns: [
+                            {data: 'userID'},
+                            {data: 'userName'}
+                        ]
+                    });
+                }
+            });
+        }
+
+        function displayMaTable() {
+            var DATA = 'race=' + $("#inputRace").val();
+            $.ajax({
+                url: "{{ path('dataTable') }}",
+                data: DATA,
+                success: function (result) {
+                    $('#maTable').dataTable({
+                        destroy: true,
+                        data: result,
+                        columns: [
+                            {data: 'code'},
+                            {data: 'number'},
+                            {data: 'ranck'},
+                            {data: 'firstName'},
+                            {data: 'lastName'}]
+                    });
+                }
+            });
+        }
+
+        function displayMaTableJ(category) {
+            var DATA = 'idCategory=' + category;
+            $.ajax({
+                url: "{{ path('categoryTable') }}",
+                data: DATA,
+                success: function (result) {
+                    $('#maTable').dataTable({
+                        destroy: true,
+                        data: result,
+                        columns: [
+                            {data: 'code'},
+                            {data: 'number'},
+                            {data: 'ranck'},
+                            {data: 'firstName'},
+                            {data: 'lastName'}]
+                    });
+                }
+            });
+
+
+        }
+
+        function displayMaTableJC(idCategory) {
+            var DATA = 'idCategory=' + idCategory;
+
+            $.ajax({
+                url: "{{ path('category') }}",
+                data: DATA,
+                success: function (result) {
+                    alert(result);
+                   //$('#category').text(result.code);
+                }
+            });
+
+
+
+
+        }
+    </script>
 {% endblock %}

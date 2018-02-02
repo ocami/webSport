@@ -1,0 +1,146 @@
+{
+  "0": {
+    "code": "CPTOR_044",
+    "number": 135,
+    "ranck": null,
+    "chrono": {
+      "date": "1970-01-01 02:02:46.000000",
+      "timezone_type": 3,
+      "timezone": "UTC"
+    },
+    "firstName": "Romeo",
+    "lastName": "Ruberti"
+  },
+  "1": {
+    "code": "CPTOR_067",
+    "number": 154,
+    "ranck": null,
+    "chrono": {
+      "date": "1970-01-01 02:07:39.000000",
+      "timezone_type": 3,
+      "timezone": "UTC"
+    },
+    "firstName": "Gualterio",
+    "lastName": "Sleeman"
+  },
+  "2": {
+    "code": "CPTOR_011",
+    "number": 4,
+    "ranck": null,
+    "chrono": {
+      "date": "1970-01-01 02:23:55.000000",
+      "timezone_type": 3,
+      "timezone": "UTC"
+    },
+    "firstName": "Immanuel",
+    "lastName": "Apdell"
+  },
+  "3": {
+    "code": "CPTOR_079",
+    "number": 175,
+    "ranck": null,
+    "chrono": {
+      "date": "1970-01-01 02:26:37.000000",
+      "timezone_type": 3,
+      "timezone": "UTC"
+    },
+    "firstName": "Shellysheldon",
+    "lastName": "Watsham"
+  },
+  "4": {
+    "code": "CPTOR_089",
+    "number": 92,
+    "ranck": null,
+    "chrono": {
+      "date": "1970-01-01 02:27:21.000000",
+      "timezone_type": 3,
+      "timezone": "UTC"
+    },
+    "firstName": "Alasdair",
+    "lastName": "Lovelady"
+  },
+  "5": {
+    "code": "CPTOR_023",
+    "number": 116,
+    "ranck": null,
+    "chrono": {
+      "date": "1970-01-01 02:32:55.000000",
+      "timezone_type": 3,
+      "timezone": "UTC"
+    },
+    "firstName": "Jean",
+    "lastName": "Offill"
+  },
+  "6": {
+    "code": "CPTOR_030",
+    "number": 146,
+    "ranck": null,
+    "chrono": {
+      "date": "1970-01-01 02:35:51.000000",
+      "timezone_type": 3,
+      "timezone": "UTC"
+    },
+    "firstName": "Eugenius",
+    "lastName": "Shimmings"
+  },
+  "7": {
+    "code": "CPTOR_087",
+    "number": 69,
+    "ranck": null,
+    "chrono": {
+      "date": "1970-01-01 02:58:05.000000",
+      "timezone_type": 3,
+      "timezone": "UTC"
+    },
+    "firstName": "Augy",
+    "lastName": "Herreran"
+  },
+  "8": {
+    "code": "CPTOR_041",
+    "number": 57,
+    "ranck": null,
+    "chrono": {
+      "date": "1970-01-01 03:00:23.000000",
+      "timezone_type": 3,
+      "timezone": "UTC"
+    },
+    "firstName": "Milo",
+    "lastName": "Giacovetti"
+  },
+  "9": {
+    "code": "CPTOR_036",
+    "number": 99,
+    "ranck": null,
+    "chrono": {
+      "date": "1970-01-01 03:06:41.000000",
+      "timezone_type": 3,
+      "timezone": "UTC"
+    },
+    "firstName": "Irwinn",
+    "lastName": "McCloughlin"
+  },
+  "10": {
+    "code": "CPTOR_013",
+    "number": 171,
+    "ranck": null,
+    "chrono": {
+      "date": "1970-01-01 03:10:31.000000",
+      "timezone_type": 3,
+      "timezone": "UTC"
+    },
+    "firstName": "Jud",
+    "lastName": "Waplinton"
+  },
+  "11": {
+    "code": "CPTOR_083",
+    "number": 61,
+    "ranck": null,
+    "chrono": {
+      "date": "1970-01-01 03:28:23.000000",
+      "timezone_type": 3,
+      "timezone": "UTC"
+    },
+    "firstName": "Elsworth",
+    "lastName": "Goldfinch"
+  }
+}

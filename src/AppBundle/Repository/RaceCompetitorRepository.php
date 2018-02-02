@@ -33,7 +33,8 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
     {
         $rc = $this->createQueryBuilder('rc')
             ->innerJoin('rc.competitor', 'c')
-            ->select('c.code, rc.number, rc.ranck, rc.chrono, c.firstName, c.lastName')
+            //->select('c.code, rc.number, rc.ranck, rc.chrono, c.firstName, c.lastName')
+            ->select('c.id, c.code, rc.number, rc.ranck, c.firstName, c.lastName')
             ->where('rc.race = :race')
             ->andWhere('c.date > :dateMax AND c.date < :dateMin')
             ->setParameter('race', $race->getId())

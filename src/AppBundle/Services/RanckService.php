@@ -22,7 +22,7 @@ class RanckService
     private $em;
     private $tools;
     private $user;
-    
+
     public function __construct(
         TokenStorageInterface $ts,
         EntityManagerInterface $em,
@@ -161,5 +161,16 @@ class RanckService
         );
 
         return $liste[$pos];
+    }
+
+    public function raceCategorieRanck($race, $category)
+    {
+        $data = new \ArrayObject();
+        $rc = $this->em->getRepository(RaceCompetitor::class)->categoriesRanck($category, $race);
+        $data = array();
+
+
+
+        return $rc;
     }
 }

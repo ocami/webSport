@@ -17,4 +17,5 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('admin', $this->getEntityManager()->getRepository(Organizer::class)->find(1))
             ;
     }
+
 }

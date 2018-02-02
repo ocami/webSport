@@ -20,28 +20,78 @@
 
     <h1>Race</h1>
 
+
     {{ race.name }}<br>
 
-
     <h1>Classement général</h1>
-    {% for competitor in generalRanck %}
-        {% if not race.enrol %}{{ competitor.number }}{% endif %}
-        {{ competitor.firstName }}
-        {{ competitor.lastName }}
-        {% if race.past %}{{ competitor.chrono|date('H:i:s') }}{% endif %} <br>
-    {% endfor %}
+    <table id="" class="display">
+        <thead>
+        <tr>
+            {% if not race.enrol %}
+                <th>Dossard</th>{% endif %}
+            <th>Nom</th>
+            <th>Prénom</th>
+            {% if race.past %}
+                <th>Chrono</th>{% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for competitor in generalRanck %}
+            <tr>
+                {% if not race.enrol %}
+                    <td>{{ competitor.number }}</td>{% endif %}
+                <td>{{ competitor.firstName }}</td>
+                <td>{{ competitor.lastName }}</td>
+                {% if race.past %}
+                    <td>{{ competitor.chrono|date('H:i:s') }}</td>{% endif %}
 
-
-    <div></div>
-    <h1>Classement par catégorie</h1>
-    {% for r in categoriesRanck %}
-        <h3>{{ r.category.name }}</h3>
-        {% for competitor in r.competitors %}
-            {% if not race.enrol %}{{ competitor.number }}{% endif %}
-            {{ competitor.firstName }}
-            {{ competitor.lastName }}
-            {% if race.past %}{{ competitor.chrono|date('H:i:s') }}{% endif %} <br>
+            </tr>
         {% endfor %}
+        </tbody>
+    </table>
+
+    <h1>Classement par catégorie</h1>
+
+    {% for r in categoriesRanck %}
+        <div class="col-xs-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ r.category.name }}</h3>
+                </div>
+                <div class="panel-body">
+                    <table id="" class="display">
+                        <thead>
+                        <tr>
+                            {% if not race.enrol %}
+                                <th>Dossard</th>{% endif %}
+                            <th>Nom</th>
+                            <th>Prénom</th>
+                            {% if race.past %}
+                                <th>Chrono</th>{% endif %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for competitor in r.competitors %}
+                            <tr>
+                                {% if not race.enrol %}
+                                    <td>{{ competitor.number }}</td>{% endif %}
+                                <td>{{ competitor.firstName }}</td>
+                                <td>{{ competitor.lastName }}</td>
+                                {% if race.past %}
+                                    <td>{{ competitor.chrono|date('H:i:s') }}</td>{% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     {% endfor %}
+
+    <script>
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+        });
+    </script>
 
 {% endblock %}
