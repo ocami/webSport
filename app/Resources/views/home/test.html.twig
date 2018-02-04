@@ -16,7 +16,7 @@
     <br>
 
     {% for c in categories %}
-        <button onclick="displayMaTableJC({{ c.id }} )">{{ c.name }}</button>
+        <button onclick="displayMaTableJC({{ c.id }}, '{{ c.name }}')">{{ c.name }}</button>
     {% endfor %}
 
 
@@ -35,11 +35,11 @@
     <table id="maTable" cellspacing="0" width="100%">
         <thead>
         <tr>
-            <th>code</th>
-            <th>number</th>
             <th>ranck</th>
-            <th>firstName</th>
             <th>lastName</th>
+            <th>firstName</th>
+            <th>number</th>
+            <th>chrono</th>
         </tr>
         </thead>
     </table>
@@ -105,33 +105,36 @@
                         destroy: true,
                         data: result,
                         columns: [
-                            {data: 'code'},
-                            {data: 'number'},
                             {data: 'ranck'},
+                            {data: 'code'},
                             {data: 'firstName'},
+                            {data: 'number'},
                             {data: 'lastName'}]
                     });
                 }
             });
-
-
         }
 
-        function displayMaTableJC(idCategory) {
+        function displayMaTableJC(idCategory, nameCategory) {
             var DATA = 'idCategory=' + idCategory;
-
             $.ajax({
-                url: "{{ path('category') }}",
+                url: "{{ path('categoryTable') }}",
                 data: DATA,
                 success: function (result) {
-                    alert(result);
-                   //$('#category').text(result.code);
+                    $('#maTable').dataTable({
+                        destroy: true,
+                        data: result,
+                        columns: [
+                            {data: 'ranck'},
+                            {data: 'lastName'},
+                            {data: 'firstName'},
+                            {data: 'number'},
+                            {data: 'chronoString'}]
+                    });
+
+                    $('#category').text(nameCategory)
                 }
             });
-
-
-
-
         }
     </script>
 {% endblock %}

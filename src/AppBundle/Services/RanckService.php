@@ -54,8 +54,20 @@ class RanckService
         $raceCompetitors = $this->em->getRepository(RaceCompetitor::class)->findByRace($race);
 
         foreach ($raceCompetitors as $rc) {
-            $rc->setChrono(new \DateTime('1:22:30'));
-            $rc->setChrono($this->tools->randomDate('2:00:00', '3:30:00', 'H:i:s'));
+            $time = $this->tools->randomDate('2:00:00', '3:30:00', 'H:i:s');
+            $rc->setChrono($time);
+            $rc->setChronoString($time->format('H:i:s'));
+            $this->em->persist($rc);
+        }
+
+        $this->em->flush();
+
+        $raceCompetitors = $this->em->getRepository(RaceCompetitor::class)->rcOrderByChrono($race);
+
+        $i=0;
+        foreach ($raceCompetitors as $rc) {
+            $i++;
+            $rc->setRanck($i);
             $this->em->persist($rc);
         }
 

@@ -12,10 +12,12 @@ use AppBundle\Entity\Championship;
 use AppBundle\Entity\Competition;
 use AppBundle\Services\EntityService;
 use AppBundle\Services\RanckService;
+use Proxies\__CG__\AppBundle\Entity\ChampionshipCompetitor;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Form\ChampionshipType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 
 class ChampionshipController extends Controller
@@ -74,5 +76,17 @@ class ChampionshipController extends Controller
             return $this->redirectToRoute('admin_index');
         }
         return $this->render('championship/new.html.twig', array('form' => $form->createView()));
+    }
+
+    /**
+     * @Route("championship/championship_json", name="championship_json")
+     */
+    public function race_Table(Request $request)
+    {
+        $idCategory = $request->query->get('idCategory');
+        $championship = $this->getDoctrine()->getRepository(Championship::class)->findOneByCategory($idCategory);
+        $data = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->competitorsByCategoryOrderByPoints($championship);
+
+        return new JsonResponse($data);
     }
 }

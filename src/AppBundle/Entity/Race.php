@@ -72,7 +72,6 @@ class Race
      */
     private $competition;
 
-
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Championship", inversedBy ="races")
      */
@@ -93,7 +92,6 @@ class Race
      * @ORM\Column(name="in_championship", type="boolean")
      */
     private $inChampionship = false;
-
 
     /**
      * @var Boolean

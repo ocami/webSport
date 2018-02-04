@@ -15,26 +15,44 @@ use Symfony\Component\Validator\Constraints\DateTime;
  */
 class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
 {
-
-    public function rcOrderByChrono($race)
+    /**
+     * @return array string
+     */
+    public function rcOrderByRanck($race)
     {
        $rc =  $this->createQueryBuilder('rc')
             ->innerJoin('rc.competitor', 'c')
-            ->select('c.code, rc.number, rc.ranck, rc.chrono, c.firstName, c.lastName')
+            ->select('c.code, rc.number, rc.ranck, rc.chronoString, c.firstName, c.lastName')
             ->where('rc.race = :race')
             ->setParameter('race', $race)
-            ->orderBy('rc.chrono')
+            ->orderBy('rc.ranck')
             ->getQuery()->getResult();
 
        return $rc;
     }
 
+    /**
+     * @return array object
+     */
+    public function rcOrderByChrono($race)
+    {
+        $rc =  $this->createQueryBuilder('rc')
+            ->where('rc.race = :race')
+            ->setParameter('race', $race)
+            ->orderBy('rc.chrono','asc')
+            ->getQuery()->getResult();
+
+        return $rc;
+    }
+
+    /**
+     * @return array string
+     */
     public function categoriesRanck(Category $category, Race $race)
     {
         $rc = $this->createQueryBuilder('rc')
             ->innerJoin('rc.competitor', 'c')
-            //->select('c.code, rc.number, rc.ranck, rc.chrono, c.firstName, c.lastName')
-            ->select('c.id, c.code, rc.number, rc.ranck, c.firstName, c.lastName')
+            ->select('c.id, c.code, rc.number, rc.ranck, rc.chronoString, c.firstName, c.lastName')
             ->where('rc.race = :race')
             ->andWhere('c.date > :dateMax AND c.date < :dateMin')
             ->setParameter('race', $race->getId())
@@ -51,6 +69,9 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
         return $rc;
     }
 
+    /**
+     * @return array object
+     */
     public function categoriesRanck2(Category $category, Race $race)
     {
         $rc = $this->createQueryBuilder('rc')
@@ -83,6 +104,9 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
         return false;
     }
 
+    /**
+     * @return array object
+     */
     public  function competitorsEnrolByLastName($race)
     {
         $rc = $this->createQueryBuilder('rc')

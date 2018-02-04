@@ -25,11 +25,5 @@ class ChampionshipCompetitorRepository extends \Doctrine\ORM\EntityRepository
         return $cc;
     }
 
-    public function maFonction()
-    {
-        $cc = $this->createQueryBuilder('cc')
-            ->getQuery()->getResult();
 
-        return $cc;
-    }
 }

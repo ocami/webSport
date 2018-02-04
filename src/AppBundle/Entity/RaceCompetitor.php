@@ -32,7 +32,6 @@ class RaceCompetitor extends AbstractEntity
      */
     private $competitor;
 
-
     /**
      * @var int
      *
@@ -54,6 +53,12 @@ class RaceCompetitor extends AbstractEntity
      */
     private $chrono;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="chrono_string", type="string", nullable=true)
+     */
+    private $chronoString;
 
     /**
      * Get id
@@ -123,6 +128,30 @@ class RaceCompetitor extends AbstractEntity
     public function setChrono($chrono)
     {
         $this->chrono = $chrono;
+
+        return $this;
+    }
+
+    /**
+     * Get chrono
+     *
+     * @return \string
+     */
+    public function getChronoString()
+    {
+        return $this->chronoString;
+    }
+
+    /**
+     * Set chrono
+     *
+     * @param \DateTime $chrono
+     *
+     * @return RaceCompetitor
+     */
+    public function setChronoString($chronoString)
+    {
+        $this->chronoString = $chronoString;
 
         return $this;
     }

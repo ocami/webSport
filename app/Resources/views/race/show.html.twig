@@ -6,92 +6,203 @@
 
 {% block body %}
 
+    <input type="button" class="btn btn-success" value="Retour à la compétition"
+           onclick="location.href = '{{ path('competition_show', {'id':race.competition.id} ) }}';">
+
+    <br><br>
 
     {% if isOrganizer == true %}
-        <input type="button" class="btn btn-success" value="Clore les inscriptions"
-               onclick="location.href = '{{ path('race_enrol_closed', {'id':race.id} ) }}';">
+        {% if race.enrol == true %}
+            <input type="button" class="btn btn-success" value="Clore les inscriptions"
+                   onclick="location.href = '{{ path('race_enrol_closed', {'id':race.id} ) }}';">
 
-        <input type="button" class="btn btn-success" value="Importer les temps de courses"
-               onclick="location.href = '{{ path('race_competitorsTimes', {'id':race.id} ) }}';">
+            <input type="button" class="btn btn-success" value="Simuler inscription"
+                   onclick="location.href = '{{ path('race_simulateEnrol', {'id':race.id} ) }}';">
+        {% endif %}
 
-        <input type="button" class="btn btn-success" value="Simuler inscription"
-               onclick="location.href = '{{ path('race_simulateEnrol', {'id':race.id} ) }}';">
+        {% if race.enrol == false %}
+            <input type="button" class="btn btn-success" value="Importer les temps de courses"
+                   onclick="location.href = '{{ path('race_competitorsTimes', {'id':race.id} ) }}';">
+        {% endif %}
     {% endif %}
 
-    <h1>Race</h1>
+    <br><br>
 
-
-    {{ race.name }}<br>
-
-    <h1>Classement général</h1>
-    <table id="" class="display">
-        <thead>
-        <tr>
-            {% if not race.enrol %}
-                <th>Dossard</th>{% endif %}
-            <th>Nom</th>
-            <th>Prénom</th>
-            {% if race.past %}
-                <th>Chrono</th>{% endif %}
-        </tr>
-        </thead>
-        <tbody>
-        {% for competitor in generalRanck %}
-            <tr>
-                {% if not race.enrol %}
-                    <td>{{ competitor.number }}</td>{% endif %}
-                <td>{{ competitor.firstName }}</td>
-                <td>{{ competitor.lastName }}</td>
-                {% if race.past %}
-                    <td>{{ competitor.chrono|date('H:i:s') }}</td>{% endif %}
-
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <h1>Classement par catégorie</h1>
-
-    {% for r in categoriesRanck %}
-        <div class="col-xs-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{{ r.category.name }}</h3>
-                </div>
-                <div class="panel-body">
-                    <table id="" class="display">
-                        <thead>
-                        <tr>
-                            {% if not race.enrol %}
-                                <th>Dossard</th>{% endif %}
-                            <th>Nom</th>
-                            <th>Prénom</th>
-                            {% if race.past %}
-                                <th>Chrono</th>{% endif %}
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for competitor in r.competitors %}
-                            <tr>
-                                {% if not race.enrol %}
-                                    <td>{{ competitor.number }}</td>{% endif %}
-                                <td>{{ competitor.firstName }}</td>
-                                <td>{{ competitor.lastName }}</td>
-                                {% if race.past %}
-                                    <td>{{ competitor.chrono|date('H:i:s') }}</td>{% endif %}
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+    <button onclick="requestForTableGeneral({{ race.id }})">Classement général</button>
+    {% for c in categories %}
+        <button onclick="requestForTableCategory({{ race.id }}, {{ c.id }}, '{{ c.name }}')">{{ c.name }}</button>
     {% endfor %}
+
+    <br><br>
+
+    <h1 id="category"></h1>
+
+    <div id="loader"></div>
+
+    <div id="tables">
+        {% if race.inChampionship == true %}
+            <div id="buttons"></div>
+
+        {% endif %}
+
+        <div id="tableRace">
+            <table id="dataTableRace" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th>Dossard</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Classement</th>
+                    <th>Temps</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+
+        <div id="tableChampionship">
+            <table id="dataTableChampionship" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th>Classement</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Points</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
 
     <script>
         $(document).ready(function () {
-            $('#table_id').DataTable();
+            requestForTableGeneral({{ race.id }});
+            $('#tables').css('display', 'none');
+            $('#loader').css('display', 'block');
         });
-    </script>
 
+        function requestForTableGeneral(idRace) {
+            var path = "{{ path('race_Table') }}";
+            var request = {idRace: idRace};
+            displayTable(path, request);
+            load(true);
+            etat('general');
+        }
+
+        function requestForTableCategory(idRace, idCategory, nameCategory) {
+            var path = "{{ path('race_categoryTable') }}";
+            var request = {idRace: idRace, idCategory: idCategory};
+            displayTable(path, request);
+            $('#category').text(nameCategory);
+            $('#buttons').children("button").remove();
+            $('#buttons').append("<button id=\"championshipButton\" onclick=\"requestForTableChampionship("+idRace+", "+idCategory+", ' "+nameCategory+" ')\">Championat</button>");
+            load(true);
+            etat('category');
+
+        }
+
+        function requestForTableChampionship(idRace, idCategory, nameCategory) {
+            $("#raceButton").click(function () {
+                requestForTableCategory(21,idCategory,'le nom');
+            });
+            var path = "{{ path('championship_json') }}";
+            var request = {idCategory: idCategory};
+            displayTableChampionship(path, request);
+            $('#buttons').children("button").remove();
+            $('#buttons').append("<button id=\"raceButton\" onclick=\"requestForTableCategory("+idRace+", "+idCategory+",' "+nameCategory+" ')\">Course</button>");
+            load(true);
+            etat('championship');
+        }
+
+        function displayTable(path, request) {
+            $.ajax({
+                url: path,
+                data: request,
+                success: function (result) {
+                    $('#dataTableRace').dataTable({
+                        destroy: true,
+                        data: result,
+                        order: [[3, "asc"]],
+                        columns: [
+                            {data: 'number'},
+                            {data: 'lastName'},
+                            {data: 'firstName'},
+                            {data: 'ranck'},
+                            {data: 'chronoString'}]
+                    });
+
+                    load(false);
+                }
+            });
+        }
+
+        function displayTableChampionship(path, request) {
+            $.ajax({
+                url: path,
+                data: request,
+                success: function (result) {
+                    $('#dataTableChampionship').dataTable({
+                        destroy: true,
+                        data: result,
+                        order: [[3, "dsc"]],
+                        columns: [
+                            {data: 'ranck'},
+                            {data: 'lastName'},
+                            {data: 'firstName'},
+                            {data: 'points'}]
+                    });
+
+                    load(false);
+                }
+            });
+        }
+
+
+        function etat(stat) {
+            switch (stat) {
+                case 'category':
+                    $('#championshipButton').css('display', 'block');
+                    $('#raceButton').css('display', 'none');
+                    $('#tableRace').css('display', 'block');;
+                    $('#tableChampionship').css('display', 'none');
+                    break;
+                case 'championship':
+                    $('#championshipButton').css('display', 'none');
+                    $('#raceButton').css('display', 'block');
+                    $('#tableRace').css('display', 'none');
+                    $('#tableChampionship').css('display', 'block');
+                    break;
+                case 'general':
+                    $('#championshipButton').css('display', 'none');
+                    $('#raceButton').css('display', 'none');
+                    $('#tableRace').css('display', 'block');
+                    $('#tableChampionship').css('display', 'none');
+                    $('#category').text("Classement général");
+                    break;
+                default:
+                    $('#championshipButton').css('display', 'none');
+                    $('#raceButton').css('display', 'none');
+                    $('#tableRace').css('display', 'block');
+                    $('#tableChampionship').css('display', 'none');
+                    alert('category');
+            }
+        }
+
+        function load(stat) {
+            switch (stat) {
+                case true:
+                    $('#tables').css('display', 'none');
+                    $('#loader').css('display', 'block');
+                    ;
+                    break;
+                case false:
+                    $('#tables').css('display', 'block');
+                    $('#loader').css('display', 'none');
+                    break;
+                default:
+            }
+        }
+
+
+    </script>
 {% endblock %}

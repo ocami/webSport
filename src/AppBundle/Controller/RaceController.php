@@ -11,6 +11,9 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Competition;
 use AppBundle\Entity\Organizer;
 use AppBundle\Entity\Race;
+use AppBundle\Entity\Category;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Services\DbService;
 use AppBundle\Services\UserService;
 use AppBundle\Services\EntityService;
@@ -32,15 +35,12 @@ class RaceController extends Controller
      */
     public function showAction(Race $race)
     {
-        $race = $this->getDoctrine()->getRepository(Race::class)->find($race);
-        $gr = $this->getDoctrine()->getRepository(RaceCompetitor::class)->rcOrderByChrono($race);
-        $cr = $this->get(RanckService::class)->raceCategoriesRanck($race);
-        $isOrganizer = $this->get(UserService::class)->isOrganizerComeptition($race->getCompetition());
+        $isOrganizer = true;
+        $categories = $race->getCategories();
 
         return $this->render('race/show.html.twig', array(
             'race' => $race,
-            'generalRanck' => $gr,
-            'categoriesRanck' => $cr,
+            'categories' => $categories,
             'isOrganizer' => $isOrganizer
         ));
     }
@@ -50,15 +50,12 @@ class RaceController extends Controller
      */
     public function showRanckAction(Race $race)
     {
-        $race = $this->getDoctrine()->getRepository(Race::class)->find($race);
-        $gr = $this->getDoctrine()->getRepository(RaceCompetitor::class)->rcOrderByChrono($race);
-        $cr = $this->get(RanckService::class)->raceCategoriesRanck($race);
-        $isOrganizer = $this->get(UserService::class)->isOrganizerComeptition($race->getCompetition());
+        $isOrganizer = true;
+        $categories = $race->getCategories();
 
         return $this->render('race/showRanck.html.twig', array(
             'race' => $race,
-            'generalRanck' => $gr,
-            'categoriesRanck' => $cr,
+            'categories' => $categories,
             'isOrganizer' => $isOrganizer
         ));
     }
@@ -146,6 +143,36 @@ class RaceController extends Controller
         }
 
         return $this->render('race/new.html.twig', array('form' => $form->createView()));
+    }
+
+    /**
+     * @Route("race/categoryTable", name="race_categoryTable")
+     */
+    public function categoryTable(Request $request)
+    {
+        $idRace = $request->query->get('idRace');
+        $idCategory = $request->query->get('idCategory');
+
+        $category = $this->getDoctrine()->getRepository(Category::class)->find($idCategory);
+        $race = $this->getDoctrine()->getRepository(Race::class)->find($idRace);
+
+        $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->categoriesRanck($category, $race);
+
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("race/race_Table", name="race_Table")
+     */
+    public function race_Table(Request $request)
+    {
+        $idRace = $request->query->get('idRace');
+
+        $race = $this->getDoctrine()->getRepository(Race::class)->find($idRace);
+
+        $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->rcOrderByRanck($race);
+
+        return new JsonResponse($data);
     }
 
     /**

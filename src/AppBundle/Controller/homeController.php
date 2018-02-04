@@ -19,6 +19,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Services\UserService;
 use AppBundle\Services\MessageGenerator;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 
 class homeController extends Controller
@@ -152,26 +156,10 @@ class homeController extends Controller
         $idCategory = $request->query->get('idCategory');
 
         $category = $this->getDoctrine()->getRepository(Category::class)->find($idCategory);
-        $race = $this->getDoctrine()->getRepository(Race::class)->find(1);
+        $race = $this->getDoctrine()->getRepository(Race::class)->find(17);
 
         $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->categoriesRanck($category, $race);
 
-
         return new JsonResponse($data);
     }
-
-    /**
-     * @Route("/category", name="category")
-     */
-    public function category(Request $request)
-    {
-        $idCategory = $request->query->get('idCategory');
-        $category = $this->getDoctrine()->getRepository(Category::class)->find($idCategory);
-
-        $json = json_encode($category);
-
-        var_dump($json);
-        return new Response($json);
-    }
-
 }

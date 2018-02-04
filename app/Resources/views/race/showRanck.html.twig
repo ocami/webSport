@@ -6,22 +6,102 @@
 
 {% block body %}
 
-    <h1>Race</h1>
+    <input type="button" class="btn btn-success" value="Retour à la compétition"
+           onclick="location.href = '{{ path('competition_show', {'id':race.competition.id} ) }}';">
 
-    {{ race.name }}<br>
+    <br><br>
 
-    <h1>Classement général</h1>
-    {% for competitor in generalRanck %}
-        {{ competitor.number }} {{ competitor.firstName }} {{ competitor.lastName }} {{ competitor.chrono|date('H:i:s') }}<br>
+    {% if isOrganizer == true %}
+        {% if race.enrol == true %}
+            <input type="button" class="btn btn-success" value="Clore les inscriptions"
+                   onclick="location.href = '{{ path('race_enrol_closed', {'id':race.id} ) }}';">
+
+            <input type="button" class="btn btn-success" value="Simuler inscription"
+                   onclick="location.href = '{{ path('race_simulateEnrol', {'id':race.id} ) }}';">
+        {% endif %}
+
+        {% if race.enrol == false %}
+            <input type="button" class="btn btn-success" value="Importer les temps de courses"
+                   onclick="location.href = '{{ path('race_competitorsTimes', {'id':race.id} ) }}';">
+        {% endif %}
+    {% endif %}
+
+    <br><br>
+
+    <button onclick="requestForTable({{ race.id }})">Classement général</button>
+    {% for c in categories %}
+        <button onclick="requestForTableCategory({{ race.id }}, {{ c.id }}, '{{ c.name }}')">{{ c.name }}</button>
     {% endfor %}
 
-    <h1>Classement par catégorie</h1>
-    {% for r in categoriesRanck %}
-        <h3>{{ r.category.name }}</h3>
-        {% for competitor in r.competitors %}
-            {{ competitor.number }} {{ competitor.firstName }} {{ competitor.lastName }} {{ competitor.chrono|date('H:i:s') }}
-            <br>
-        {% endfor %}
-    {% endfor %}
+    <br><br>
 
+    <h1 id="category"></h1>
+
+    <div id="loader"></div>
+    <div id="maDiv">
+        <table id="dataTable" cellspacing="0" width="100%">
+            <thead>
+            <tr>
+                <th>Dossard</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Classement</th>
+                <th>Temps</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+
+    <script>
+
+        $(document).ready(function () {
+            requestForTable({{ race.id }});
+            $('#maDiv').css('display', 'none');
+            $('#loader').css('display', 'block');
+        });
+
+        function requestForTable(idRace) {
+            var path = "{{ path('race_Table') }}";
+            var request = {idRace: idRace};
+            displayTable(path, request);
+            $('#category').text("Classement général");
+            $('#maDiv').css('display', 'none');
+            $('#loader').css('display', 'block');
+        }
+
+        function requestForTableCategory(idRace, idCategory, nameCategory) {
+            var path = "{{ path('race_categoryTable') }}";
+            var request = {idRace: idRace, idCategory: idCategory};
+            displayTable(path, request);
+            $('#category').text(nameCategory);
+            $('#maDiv').css('display', 'none');
+            $('#loader').css('display', 'block');
+        }
+
+        function displayTable(path, request) {
+            $.ajax({
+                url: path,
+                data: request,
+                success: function (result) {
+                    $('#dataTable').dataTable({
+                        destroy: true,
+                        data: result,
+                        order: [[3, "asc"]],
+                        columns: [
+                            {data: 'number'},
+                            {data: 'lastName'},
+                            {data: 'firstName'},
+                            {data: 'ranck'},
+                            {data: 'chronoString'}]
+                    });
+
+                    $('#maDiv').css('display', 'block');
+                    $('#loader').css('display', 'none');
+
+
+                }
+            });
+        }
+
+    </script>
 {% endblock %}
