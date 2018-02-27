@@ -18,9 +18,9 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
     /**
      * @return array string
      */
-    public function rcOrderByRanck($race)
+    public function rcOrderByRanckToString($race)
     {
-       $rc =  $this->createQueryBuilder('rc')
+        $rc = $this->createQueryBuilder('rc')
             ->innerJoin('rc.competitor', 'c')
             ->select('c.code, rc.number, rc.ranck, rc.chronoString, c.firstName, c.lastName')
             ->where('rc.race = :race')
@@ -28,7 +28,7 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
             ->orderBy('rc.ranck')
             ->getQuery()->getResult();
 
-       return $rc;
+        return $rc;
     }
 
     /**
@@ -36,10 +36,10 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
      */
     public function rcOrderByChrono($race)
     {
-        $rc =  $this->createQueryBuilder('rc')
+        $rc = $this->createQueryBuilder('rc')
             ->where('rc.race = :race')
             ->setParameter('race', $race)
-            ->orderBy('rc.chrono','asc')
+            ->orderBy('rc.chrono', 'asc')
             ->getQuery()->getResult();
 
         return $rc;
@@ -48,7 +48,7 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
     /**
      * @return array string
      */
-    public function categoriesRanck(Category $category, Race $race)
+    public function categoriesRanckToString(Category $category, Race $race)
     {
         $rc = $this->createQueryBuilder('rc')
             ->innerJoin('rc.competitor', 'c')
@@ -72,7 +72,7 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
     /**
      * @return array object
      */
-    public function categoriesRanck2(Category $category, Race $race)
+    public function categoriesRanck(Category $category, Race $race)
     {
         $rc = $this->createQueryBuilder('rc')
             ->innerJoin('rc.competitor', 'c')
@@ -107,7 +107,7 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
     /**
      * @return array object
      */
-    public  function competitorsEnrolByLastName($race)
+    public function competitorsEnrolByLastName($race)
     {
         $rc = $this->createQueryBuilder('rc')
             ->innerJoin('rc.competitor', 'c')
@@ -117,6 +117,37 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
 
         $rc = $rc->getQuery()->getResult();
         return $rc;
+    }
+
+    /**
+     * @return array string
+     */
+    public function byCompetitor(Competitor $competitor)
+    {
+
+        $rc = $this->createQueryBuilder('rc')
+            ->innerJoin('rc.race', 'r')
+            ->innerJoin('r.competition', 'compet')
+            ->select('r.id, r.passed, r.name, r.date, rc.ranck, rc.chronoString, compet.ville')
+            ->where('rc.competitor = :idCompetitor')
+            ->setParameter('idCompetitor', $competitor->getId());
+
+        $racesPassed = $rc
+            ->andWhere('r.passed=:bool')
+            ->setParameter('bool', true)
+            ->orderBy('r.date','DESC')
+            ->getQuery()->getResult();
+
+        $racesNoPassed = $rc
+            ->andWhere('r.passed=:bool')
+            ->setParameter('bool', false)
+            ->orderBy('r.date','ASC')
+            ->getQuery()->getResult();
+
+
+        $races = array('racePassed'=>$racesPassed,'raceNoPassed'=>$racesNoPassed);
+
+        return $races;
     }
 
 }

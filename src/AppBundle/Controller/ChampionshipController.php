@@ -23,12 +23,16 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class ChampionshipController extends Controller
 {
     /**
-     * @Route("/championship/show", name="championship_show")
+     * @Route("/championship/show/{id}", name="championship_show")
      */
-    public function showAction()
+    public function showAction(Championship $championship)
     {
-        $cc = $this->get(RanckService::class)->championshipsRanck();
-        return $this->render('championship/show.html.twig', array('championshipsCompetitors' => $cc));
+        $championships = $this->getDoctrine()->getRepository(Championship::class)->findAll();
+
+        return $this->render('championship/show.html.twig', array(
+            'championship' => $championship,
+            'championships' => $championships
+        ));
     }
 
     /**
@@ -85,8 +89,26 @@ class ChampionshipController extends Controller
     {
         $idCategory = $request->query->get('idCategory');
         $championship = $this->getDoctrine()->getRepository(Championship::class)->findOneByCategory($idCategory);
-        $data = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->competitorsByCategoryOrderByPoints($championship);
+        $data = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->competitorsOrderByPointsToString($championship);
 
         return new JsonResponse($data);
     }
+
+    /**
+     * @Route("championship/getAllJson", name="championship_getAllJson")
+     */
+    public function getAllJson(Request $request)
+    {
+        $categories = $this->getDoctrine()->getRepository(Championship::class)->toString();
+
+        for ($i=0;$i < count($categories); $i++)
+        {
+            $id = $categories[$i]['id'];
+            $path = $this->redirectToRoute('championship_show', array('id'=>$id));
+            $categories[$i]['path'] = $path->getTargetUrl();
+        }
+
+        return new JsonResponse($categories);
+    }
+
 }

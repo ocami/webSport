@@ -9,6 +9,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Category;
+use AppBundle\Entity\Championship;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\RaceCompetitor;
 use AppBundle\Services\RanckService;
@@ -77,17 +78,22 @@ class homeController extends Controller
     }
 
     /**
-     * @Route("/test/{id}", name="test")
+     * @Route("/test", name="test")
      */
-    public function test(Request $request, Race $race)
+    public function test()
     {
-        $test = 'test';
-        $categories = $race->getCategories();
+        /*
+        $category = $this->getDoctrine()->getRepository(Category::class)->find(1);
+        $race = $this->getDoctrine()->getRepository(Race::class)->find(1);
 
-        return $this->render('home/test.html.twig', array(
-            'test' => $test,
-            'categories' => $categories
-        ));
+        $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->categoriesRanckToString($category, $race);
+
+        return new JsonResponse($data);
+        */
+
+        $categories = $this->getDoctrine()->getRepository(Championship::class)->toString();
+
+        return new JsonResponse($categories);
     }
 
     /**
@@ -142,7 +148,7 @@ class homeController extends Controller
         $category = $this->getDoctrine()->getRepository(Category::class)->find(1);
         $race = $this->getDoctrine()->getRepository(Race::class)->find(1);
 
-        $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->categoriesRanck($category, $race);
+        $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->categoriesRanckToString($category, $race);
 
         return new JsonResponse($data);
     }
@@ -158,7 +164,7 @@ class homeController extends Controller
         $category = $this->getDoctrine()->getRepository(Category::class)->find($idCategory);
         $race = $this->getDoctrine()->getRepository(Race::class)->find(17);
 
-        $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->categoriesRanck($category, $race);
+        $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->categoriesRanckToString($category, $race);
 
         return new JsonResponse($data);
     }

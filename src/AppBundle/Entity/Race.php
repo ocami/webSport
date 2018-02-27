@@ -101,9 +101,9 @@ class Race
 
     /**
      * @var Boolean
-     * @ORM\Column(name="past", type="boolean")
+     * @ORM\Column(name="passed", type="boolean")
      */
-    private $past = false;
+    private $passed = false;
 
     /**
      * @var Boolean
@@ -449,26 +449,26 @@ class Race
     }
 
     /**
-     * Set past
+     * Set passed
      *
-     * @param boolean $past
+     * @param boolean $passed
      *
      * @return Race
      */
-    public function setPast($past)
+    public function setPassed($passed)
     {
-        $this->past = $past;
+        $this->passed = $passed;
 
         return $this;
     }
 
     /**
-     * Get past
+     * Get passed
      *
      * @return boolean
      */
-    public function getPast()
+    public function getPassed()
     {
-        return $this->past;
+        return $this->passed;
     }
 }

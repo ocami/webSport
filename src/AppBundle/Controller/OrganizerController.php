@@ -17,6 +17,7 @@ use AppBundle\Entity\Organizer;
 use AppBundle\Form\OrganizerType;
 use AppBundle\Services\UserService;
 use AppBundle\Services\CodeService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class OrganizerController extends Controller
 {
@@ -37,6 +38,20 @@ class OrganizerController extends Controller
 
         return $this->render('organizer/register.html.twig', array(
             'form' => $form->createView(),
+        ));
+    }
+
+    /**
+     * @Security("has_role('ROLE_ORGANIZER')")
+     * @Route("organizer/show"), name"organizer_show")
+     */
+    public function show(Request $request)
+    {
+        $organizer = $this->get(UserService::class)->currentUserApp(Organizer::class);
+
+        return $this->render('organizer/show.html.twig', array(
+            'organizer' => $organizer,
+            'user' => $this->getUser()
         ));
     }
 }

@@ -11,8 +11,12 @@ use AppBundle\Entity\Championship;
  * repository methods below.
  */
 class ChampionshipCompetitorRepository extends \Doctrine\ORM\EntityRepository
+
 {
-    public function competitorsByCategoryOrderByPoints(Championship $championship)
+    /**
+     * @return array string
+     */
+    public function competitorsOrderByPointsToString(Championship $championship)
     {
         $cc = $this->createQueryBuilder('cc')
             ->innerJoin('cc.competitor','c')
@@ -25,5 +29,34 @@ class ChampionshipCompetitorRepository extends \Doctrine\ORM\EntityRepository
         return $cc;
     }
 
+    /**
+     * @return array object
+     */
+    public function ccOrderByPoints(Championship $championship)
+    {
+        $cc = $this->createQueryBuilder('cc')
+            ->where('cc.championship = :championship')
+            ->setParameter('championship',$championship->getId())
+            ->orderBy('cc.points','DESC')
+            ->getQuery()->getResult();
 
+        return $cc;
+    }
+
+    /**
+     * @return array string
+     */
+    public function ccOrderByRanckToString($category)
+    {
+        $rc =  $this->createQueryBuilder('cc')
+            ->innerJoin('cc.competitor', 'c')
+            ->innerJoin('rc.championship', 'ch')
+            ->select('c.code, c.firstName, c.lastName, cc.ranck, cc.points')
+            ->where('ch.category = :category')
+            ->setParameter('category', $category)
+            ->orderBy('cc.ranck')
+            ->getQuery()->getResult();
+
+        return $rc;
+    }
 }

@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} index
+{% endblock %}
+
+{% block body %}
+
+    <button id="raceDisplayButton" onclick="raceDisplayPassed()">Courses passées</button>
+
+    <div id="racesNoPassed">
+        <h2>Courses à venir</h2>
+        {% for race in raceNoPassed %}
+            <p>
+            <li>Nom : {{ race.name }}</li>
+            <li>Date : {{ race.date |date('d/m/Y') }}</li>
+            </p>
+            <input type="button" class="btn btn-info" value="lien"
+                   onclick="location.href = '{{ path('race_show',{'id': race.id}) }}';">
+        {% endfor %}
+    </div>
+
+    <div id="racesPassed">
+        <h2>Courses passées</h2>
+        {% for race in racePassed %}
+            <p>
+            <li>Nom : {{ race.name }}</li>
+            <li>Date : {{ race.date |date('d/m/Y') }}</li>
+            <li>Classement général : {{ race.ranck }}</li>
+            <li>Temps : {{ race.chronoString }}</li>
+            </p>
+            <input type="button" class="btn btn-info" value="lien"
+                   onclick="location.href = '{{ path('race_show',{'id': race.id}) }}';">
+        {% endfor %}
+    </div>
+
+
+    <script>
+
+        function raceDisplayPassed() {
+            $('#raceDisplayButton').text("Courses passées");
+            $('#raceDisplayButton').attr("onclick","raceDisplayNoPassed()");
+            $('#racesPassed').css('display',"none");
+            $('#racesNoPassed').css('display',"block");
+        }
+
+        function raceDisplayNoPassed() {
+            $('#raceDisplayButton').text("Courses à venir");
+            $('#raceDisplayButton').attr("onclick","raceDisplayPassed()");
+            $('#racesPassed').css('display',"block");
+            $('#racesNoPassed').css('display',"none");
+        }
+
+    </script>
+
+
+{% endblock %}

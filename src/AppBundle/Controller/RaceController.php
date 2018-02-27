@@ -9,9 +9,11 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Competition;
+use AppBundle\Entity\Competitor;
 use AppBundle\Entity\Organizer;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\Category;
+use AppBundle\Repository\RaceCompetitorRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Services\DbService;
@@ -35,7 +37,7 @@ class RaceController extends Controller
      */
     public function showAction(Race $race)
     {
-        $isOrganizer = true;
+        $isOrganizer = $this->get(UserService::class)->isOrganizerRace($race);
         $categories = $race->getCategories();
 
         return $this->render('race/show.html.twig', array(
@@ -57,6 +59,22 @@ class RaceController extends Controller
             'race' => $race,
             'categories' => $categories,
             'isOrganizer' => $isOrganizer
+        ));
+    }
+
+    /**
+     * @Security("has_role('ROLE_COMPETITOR')")
+     * @Route("/race/competitor", name="races_by_competitor")
+     */
+    public function showByCompetitor()
+    {
+        $competitor = $this->get(UserService::class)->currentUserApp(Competitor::class);
+
+        $races = $this->getDoctrine()->getRepository(RaceCompetitor::class)->byCompetitor($competitor);
+
+        return $this->render('competitor/showRaces.html.twig', array(
+            'racePassed' => $races['racePassed'],
+            'raceNoPassed' => $races['raceNoPassed']
         ));
     }
 
@@ -156,7 +174,7 @@ class RaceController extends Controller
         $category = $this->getDoctrine()->getRepository(Category::class)->find($idCategory);
         $race = $this->getDoctrine()->getRepository(Race::class)->find($idRace);
 
-        $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->categoriesRanck($category, $race);
+        $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->categoriesRanckToString($category, $race);
 
         return new JsonResponse($data);
     }
@@ -170,7 +188,7 @@ class RaceController extends Controller
 
         $race = $this->getDoctrine()->getRepository(Race::class)->find($idRace);
 
-        $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->rcOrderByRanck($race);
+        $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->rcOrderByRanckToString($race);
 
         return new JsonResponse($data);
     }
@@ -194,9 +212,7 @@ class RaceController extends Controller
     public function ranckEnrolClosed(Request $request, Race $race)
     {
         $this->get(RanckService::class)->generateCompetitorsNumber($race);
-
-        $request->getSession()->getFlashBag()->add('notice', 'Cloture des inscription enregistrées');
-
+        $request->getSession()->getFlashBag()->add('notice', 'Inscriptions cloturées');
         return $this->redirectToRoute('race_show',array('id'=>$race->getId()));
     }
 

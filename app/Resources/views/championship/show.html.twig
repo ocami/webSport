@@ -4,18 +4,89 @@
     {{ parent() }} index
 {% endblock %}
 
+{% block admin_menu %}
+    <button class="btn-xs btn-success" onclick="location.href = '{{ path('championship_new') }}'">Ajouter un championat</button>
+{% endblock %}
+
 {% block body %}
 
-    <h1>championship</h1>
-
-    {% for row in championshipsCompetitors %}
-
-        <H1>{{ row.championship.name }}</H1>
-
-        {% for c in row.competitors %}
-            {{ c.firstName }} {{ c.lastName }} {{ c.points }}<br>
-        {% endfor %}
-
+    {% for c in championships %}
+        <button onclick="requestForTableChampionships({{ c.category.id }}, '{{ c.name }}')">{{ c.name }}</button>
     {% endfor %}
+
+    <br><br>
+
+    <h1 id="H1championship"></h1>
+
+    <div id="loader"></div>
+
+    <div id="tables">
+        <div id="tableChampionship">
+            <table id="dataTableChampionship" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th>Classement</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Points</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#loader').css('display', 'block');
+            requestForTableChampionships({{ championship.id }}, "{{ championship.name }}");
+        });
+
+        function requestForTableChampionships(idCategory, nameChampionship) {
+            load(true);
+            var path = "{{ path('championship_json') }}";
+            var request = {idCategory: idCategory};
+            displayTableChampionship(path, request);
+            $('#H1championship').text(nameChampionship);
+        }
+
+        function displayTableChampionship(path, request) {
+            $.ajax({
+                url: path,
+                data: request,
+                success: function (result) {
+                    $('#dataTableChampionship').dataTable({
+                        destroy: true,
+                        data: result,
+                        order: [[3, "dsc"]],
+                        columns: [
+                            {data: 'ranck'},
+                            {data: 'lastName'},
+                            {data: 'firstName'},
+                            {data: 'points'}]
+                    });
+
+                    load(false);
+                }
+            });
+        }
+
+        function load(stat) {
+            switch (stat) {
+                case true:
+                    $('#tables').css('display', 'none');
+                    $('#loader').css('display', 'block');
+                    ;
+                    break;
+                case false:
+                    $('#tables').css('display', 'block');
+                    $('#loader').css('display', 'none');
+                    break;
+                default:
+                    $('#tables').css('display', 'block');
+                    $('#loader').css('display', 'none');
+            }
+        }
+
+    </script>
 
 {% endblock %}

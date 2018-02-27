@@ -33,7 +33,6 @@ class ChampionshipCompetitor
      */
     private $competitor;
 
-
     /**
      * @var int
      *

@@ -47,10 +47,28 @@ class CompetitionController extends Controller
      */
     public function showAllAction()
     {
-        $competitions = $this->getDoctrine()->getRepository(Competition::class)->findAll();
+        $competitions = $this->getDoctrine()->getRepository(Competition::class)->byDate();
 
-        return $this->render('competition/showList.html.twig', array('competitions' => $competitions));
+        return $this->render('competition/showList.html.twig', array(
+            'competitionsPassed' => $competitions['competitionsPassed'],
+            'competitionsNoPassed' => $competitions['competitionsNoPassed']
+        ));
     }
+
+    /**
+     * @Route("/competition/show_byOrganizer", name="competition_show_byOrganizer")
+     */
+    public function showByOrganizer()
+    {
+        $organizer = $this->get(UserService::class)->currentUserApp(Organizer::class);
+        $competitions = $this->getDoctrine()->getRepository(Competition::class)->byOrganizer($organizer);
+
+        return $this->render('competition/showList.html.twig', array(
+            'competitionsPassed' => $competitions['competitionsPassed'],
+            'competitionsNoPassed' => $competitions['competitionsNoPassed']
+        ));
+    }
+
 
     /**
      * @Route("/competition/new", name="competition_new")

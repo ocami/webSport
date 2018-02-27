@@ -8,15 +8,6 @@
 
     <h1>Home</h1>
 
-    <input type="button" class="btn btn-info" value="Deconnection"
-           onclick="location.href = '{{ path('fos_user_security_logout') }}';">
 
-    <input type="button" class="btn btn-info" value="Créer competiteur"
-           onclick="location.href = '{{ path('redirectBeforeRegister',{'toCreate':'competitor'}) }}';">
-
-    <input type="button" class="btn btn-info" value="Créer organisateur"
-           onclick="location.href = '{{ path('redirectBeforeRegister',{'toCreate':'organizer'}) }}';">
-
-    {{ include('competition/showList.html.twig')  }}
 
 {% endblock %}

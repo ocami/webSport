@@ -34,9 +34,7 @@ class CompetitorController extends Controller
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
             $this->get(UserService::class)->registerUserApp($competitor);
-
             $request->getSession()->getFlashBag()->add('notice', 'Votre compte competiteur est bien enregistré');
-
             return $this->redirectToRoute('index');
         }
 
@@ -46,17 +44,16 @@ class CompetitorController extends Controller
     }
 
     /**
-     * @Route("/competitor/show", name="competitor_show")
      * @Security("has_role('ROLE_COMPETITOR')")
+     * @Route("competitor/show"), name"competitor_show")
      */
-    public function showAction()
+    public function show(Request $request)
     {
         $competitor = $this->get(UserService::class)->currentUserApp(Competitor::class);
-        $races = $this->getDoctrine()->getRepository(Race::class)->findByCompetitor($competitor);
 
         return $this->render('competitor/show.html.twig', array(
             'competitor' => $competitor,
-            'races' => $races
+            'user' => $this->getUser()
         ));
     }
 

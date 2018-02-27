@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Cadets masculin",
+    "id": 1,
+    "path": "\/webSport\/web\/app_dev.php\/championship\/show\/1"
+  },
+  {
+    "name": "Juniors masculin",
+    "id": 2,
+    "path": "\/webSport\/web\/app_dev.php\/championship\/show\/2"
+  },
+  {
+    "name": "Espoirs masculin",
+    "id": 3,
+    "path": "\/webSport\/web\/app_dev.php\/championship\/show\/3"
+  },
+  {
+    "name": "Seniors masculin",
+    "id": 4,
+    "path": "\/webSport\/web\/app_dev.php\/championship\/show\/4"
+  },
+  {
+    "name": "Master masculin",
+    "id": 5,
+    "path": "\/webSport\/web\/app_dev.php\/championship\/show\/5"
+  },
+  {
+    "name": "Cadets f\u00e9minine",
+    "id": 6,
+    "path": "\/webSport\/web\/app_dev.php\/championship\/show\/6"
+  },
+  {
+    "name": "Juniors f\u00e9minine",
+    "id": 7,
+    "path": "\/webSport\/web\/app_dev.php\/championship\/show\/7"
+  },
+  {
+    "name": "Espoirs f\u00e9minine",
+    "id": 8,
+    "path": "\/webSport\/web\/app_dev.php\/championship\/show\/8"
+  },
+  {
+    "name": "Seniors f\u00e9minine",
+    "id": 9,
+    "path": "\/webSport\/web\/app_dev.php\/championship\/show\/9"
+  },
+  {
+    "name": "Master f\u00e9minine",
+    "id": 10,
+    "path": "\/webSport\/web\/app_dev.php\/championship\/show\/10"
+  }
+]

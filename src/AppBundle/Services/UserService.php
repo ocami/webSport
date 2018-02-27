@@ -57,7 +57,7 @@ class UserService
 
     public function isOrganizerRace($race)
     {
-        return $this->isOrganizerComeptition($race->getCompetition);
+        return $this->isOrganizerComeptition($race->getCompetition());
     }
 
     public function registerUserApp($userApp)

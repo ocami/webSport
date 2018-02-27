@@ -4,41 +4,33 @@
     {{ parent() }} index
 {% endblock %}
 
-{% block breadcrumb %}
-    <ol class="breadcrumb">
-        <li><a href="{{ path('competition_show_all') }}">Toutes les compétitions</a></li>
-        <li><a href="{{ path('competition_show', {'id':race.competition.id} ) }}">{{ race.competition.name }}</a></li>
-        <li class="active">{{ race.name }}</li>
-    </ol>
-{% endblock %}
+{% block body %}
 
-{% block organizer_menu %}
+    <input type="button" class="btn btn-success" value="Retour à la compétition"
+           onclick="location.href = '{{ path('competition_show', {'id':race.competition.id} ) }}';">
+
+    <br><br>
+
     {% if isOrganizer == true %}
         {% if race.enrol == true %}
-            <input type="button" class="btn-xs btn-success" value="Clore les inscriptions"
+            <input type="button" class="btn btn-success" value="Clore les inscriptions"
                    onclick="location.href = '{{ path('race_enrol_closed', {'id':race.id} ) }}';">
 
-            <input type="button" class="btn-xs btn-success" value="Simuler inscription"
+            <input type="button" class="btn btn-success" value="Simuler inscription"
                    onclick="location.href = '{{ path('race_simulateEnrol', {'id':race.id} ) }}';">
         {% endif %}
 
         {% if race.enrol == false %}
-            <input type="button" class="btn-xs btn-success" value="Importer les temps de courses"
+            <input type="button" class="btn btn-success" value="Importer les temps de courses"
                    onclick="location.href = '{{ path('race_competitorsTimes', {'id':race.id} ) }}';">
         {% endif %}
     {% endif %}
-{% endblock %}
 
+    <br><br>
 
-
-{% block body %}
-
-    <br>
-
-
-    <button class="btn-xs btn-primary" onclick="requestForTableGeneral({{ race.id }})">Classement général</button>
-        {% for c in categories %}
-        <button class="btn-xs btn-info" onclick="requestForTableCategory({{ race.id }}, {{ c.id }}, '{{ c.name }}')">{{ c.name }}</button>
+    <button onclick="requestForTableGeneral({{ race.id }})">Classement général</button>
+    {% for c in categories %}
+        <button onclick="requestForTableCategory({{ race.id }}, {{ c.id }}, '{{ c.name }}')">{{ c.name }}</button>
     {% endfor %}
 
     <br><br>
@@ -109,6 +101,9 @@
         }
 
         function requestForTableChampionship(idRace, idCategory, nameCategory) {
+            $("#raceButton").click(function () {
+                requestForTableCategory(21,idCategory,'le nom');
+            });
             var path = "{{ path('championship_json') }}";
             var request = {idCategory: idCategory};
             displayTableChampionship(path, request);
@@ -134,6 +129,7 @@
                             {data: 'ranck'},
                             {data: 'chronoString'}]
                     });
+
                     load(false);
                 }
             });

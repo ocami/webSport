@@ -1,0 +1,106 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Web Sport</a>
+        </div>
+
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="#">Actualités</a></li>
+                <li><a href="{{ path('competition_show_all') }}">Compétitions</a></li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Championats<span class="caret"></span></a>
+                    <ul class="dropdown-menu championdhips-menu"></ul>
+                </li>
+
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+
+                {% if app.user %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">Mon compte<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+
+                            {% if is_granted('ROLE_COMPETITOR') %}
+                                <li><a href="{{ path('app_competitor_show') }}">Infos perso</a></li>
+                                <li><a href="{{ path('races_by_competitor') }}">Mes courses</a></li>
+                                <li><a href="#">Mes statistiques</a></li>
+                            {% endif %}
+
+                            {% if is_granted('ROLE_ORGANIZER') %}
+                                <li><a href="{{ path('app_organizer_show') }}">Infos organisateur</a></li>
+                                <li><a href="{{ path('competition_show_byOrganizer') }}">Mes compétitions</a></li>
+                                <li><a href="{{ path('category_show_byOrganizer') }}">Mes catégories</a></li>
+                            {% endif %}
+
+                            {% if is_granted('ROLE_COMPETITOR') == false %}
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'competitor'}) }}">Devenir compétiteur</a></li>
+                            {% endif %}
+
+                            {% if is_granted('ROLE_ORGANIZER') == false %}
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'organizer'}) }}">Devenir organisateur</a></li>
+                            {% endif %}
+
+                        </ul>
+                    </li>
+
+                    <button type="button" class="btn btn-default navbar-btn"
+                            onclick="location.href = '{{ path('fos_user_security_logout') }}';">Déconnexion
+                    </button>
+                {% else %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">Créer un compte<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'competitor'}) }}">Competiteur</a>
+                            </li>
+                            <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'organizer'}) }}">Organisateur</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <button type="button" class="btn btn-default navbar-btn"
+                            onclick="location.href = '{{ path('fos_user_security_login') }}';">Connexion
+                    </button>
+                {% endif %}
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+
+<script>
+    $(document).ready(function () {
+
+        var li = document.createElement("LI");
+
+        $.getJSON("{{ asset('json/navbar_championship.json') }}", function (result) {
+            $.each(result, function (key, championship) {
+                var a = document.createElement("A");
+                var textLI = document.createTextNode(championship.name);
+                a.href = championship.path;
+                a.appendChild(textLI);
+                li.appendChild(a);
+                $('.championdhips-menu').append(li);
+
+            });
+
+        });
+    });
+</script>

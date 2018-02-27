@@ -6,16 +6,12 @@
 
 {% block body %}
 
-    <h1>competitor</h1>
+    <p>Identifiant : {{ user.username }}</p>
+    <p>Mail : {{ user.email }}</p>
 
-    {{ competitor.firstName }}<br>
-    {{ competitor.lastName }}<br>
-
-    {% for race in races %}
-
-        {{ race.number }} {{ race.race.code }}  <br>
-
-    {% endfor %}
-
+    <p>Prénom : {{ competitor.firstName }}</p>
+    <p>Nom : {{ competitor.lastName }}</p>
+    <p>Sexe : {{ competitor.sexe }}</p>
+    <p>Date de naissance : {{ competitor.date|date("d/m/Y") }}</p>
 
 {% endblock %}

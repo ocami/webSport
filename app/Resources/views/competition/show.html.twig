@@ -1,5 +1,26 @@
 {% extends 'base.html.twig' %}
 
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path('competition_show_all') }}">Toutes les compétitions</a></li>
+        <li class="active">{{ competition.name }}</li>
+    </ol>
+{% endblock %}
+
+{% block organizer_menu %}
+    <input type="button" class="btn-xs btn-success" value="Ajouter une course hors championat"
+           onclick="location.href = '{{ path('race_new', {'id':competition.id} ) }}';">
+
+    <input type="button" class="btn-xs btn-success" value="Ajouter une course  championat"
+           onclick="location.href = '{{ path('race_new_championship', {'id':competition.id}) }}';">
+
+    <input type="button" class="btn-xs btn-success" value="Ajouter une catégorie"
+           onclick="location.href = '{{ path('category_new', {'id':competition.id}) }}';">
+
+    <input type="button" class="btn-xs btn-success" value="Ajouter une description"
+           onclick="location.href = '{{ path('competition_edit_description', {'id':competition.id}) }}';">
+{% endblock %}
+
 {% block title %}
     {{ parent() }} index
 {% endblock %}

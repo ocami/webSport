@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} index
+{% endblock %}
+
+{% block body %}
+
+   <p>Identifiant : {{ user.username }}</p>
+   <p>Mail : {{ user.email }}</p>
+
+   <p>Organisation : {{ organizer.name }}</p>
+   <p>Code : {{ organizer.code }}</p>
+
+
+{% endblock %}

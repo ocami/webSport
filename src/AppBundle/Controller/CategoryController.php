@@ -16,6 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Form\CategoryType;
+use AppBundle\Services\UserService;
 
 class CategoryController extends Controller
 {
@@ -35,6 +36,17 @@ class CategoryController extends Controller
         $categorys = $this->repo()->findAll();
 
         return $this->render('category/showList.html.twig', array('categorys' => $categorys));
+    }
+
+    /**
+     * @Route("/category/show_byOrganizer", name="category_show_byOrganizer")
+     */
+    public function showByOrganizer()
+    {
+        $organizer = $this->get(UserService::class)->currentUserApp(Organizer::class);
+        $categories = $this->getDoctrine()->getRepository(Category::class)->findByCreateBy($organizer);
+
+        return $this->render('category/showList.html.twig', array('categories' => $categories));
     }
 
     /**

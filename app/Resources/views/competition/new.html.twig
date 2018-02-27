@@ -1,18 +1,88 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-    {{ parent() }} index
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.css">
 {% endblock %}
+
+{% block title %}
+    Ajout Competétition
+{% endblock %}
+
+
 
 {% block body %}
 
-    <h1>competition</h1>
+    <h1>Ajouter une compétition</h1>
+
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+
+    {{ form_row(form.name) }}
+    {{ form_row(form.ville) }}
+    {{ form_row(form.adress) }}
+    {{ form_row(form.dep) }}
+
+    <label>Date</label>
+
+    <div class="row">
+        <div class="col-lg-offset-1 col-sm-4">
+            {{ form_row(form.dateStart) }}
+        </div>
+
+        <div class="col-lg-offset-1 col-sm-4">
+            {{ form_row(form.dateEnd) }}
+        </div>
+    </div>
 
 
-    {{ form_start(form, {'attr': {'class': 'my-form-class'} }) }}
-    {{ form_widget(form) }}
-    <input type="submit" value="Create" class="btn btn-default pull-right"/>
+
+    <input type="submit" value="Valider" class="btn btn-default pull-right"/>
+
     {{ form_end(form) }}
 
+
+    {% block javascripts %}
+        {{ parent() }}
+        <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
+
+        <script>
+
+
+            jQuery(document).ready(function () {
+                $.fn.datepicker.dates['fr'] = {
+                    days: ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
+                    daysShort: ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."],
+                    daysMin: ["D", "L", "M", "M", "J", "V", "S"],
+                    months: ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
+                    monthsShort: ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."],
+                    today: "Aujourd'hui",
+                    clear: "Clear",
+                    format: "dd/mm/yy",
+                    titleFormat: "MM yyyy", /* Leverages same syntax as 'format' */
+                    weekStart: 1,
+
+                };
+
+
+
+                    $('.datepicker').datepicker({
+                    language: 'fr',
+                    todayBtn: 'linked',
+                    autoclose: true,
+                    todayHighlight: true
+                });
+            });
+
+            $('.dpStart').on('changeDate', function () {
+                var startDate = $('.dpStart').datepicker('getDate');
+                $('.dpEnd').datepicker(
+                    'setStartDate', startDate
+                );
+            });
+        </script>
+
+    {% endblock %}
 
 {% endblock %}

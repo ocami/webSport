@@ -44,7 +44,6 @@ class Championship
      */
     private $code;
 
-
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Race", mappedBy="championships")
      */
@@ -60,9 +59,6 @@ class Championship
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\Category", cascade={"persist"})
      */
     private $category;
-
-
-
 
 
     /**

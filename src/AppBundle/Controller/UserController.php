@@ -8,6 +8,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,9 +37,9 @@ class UserController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_USER')")
-     * @Route("/redirectAfterRegister", name="redirectAfterRegister")
-     */
+ * @Security("has_role('ROLE_USER')")
+ * @Route("/redirectAfterRegister", name="redirectAfterRegister")
+ */
     public function redirectAfterRegisterAction(Request $request)
     {
         $toCreate = $request->getSession()->get('toCreate');
@@ -64,4 +65,14 @@ class UserController extends Controller
                 return $this->redirectToRoute('index');
         }
     }
+
+    /**
+     * @Security("has_role('ROLE_USER')")
+     * @Route("/user/show/{id}", name="user_show")
+     */
+    public function Show(Request $request, User $user)
+    {
+
+    }
+
 }

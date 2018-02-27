@@ -74,7 +74,7 @@ class RanckService
         if ($race->getInChampionship())
             $this->championshipSetPoints($race);
 
-        $race->setPast(true);
+        $race->setPassed(true);
         $this->em->flush();
     }
 
@@ -96,7 +96,7 @@ class RanckService
         $categoriesRanck = new \ArrayObject();
 
         foreach ($race->getCategories() as $category) {
-            $rc = $this->em->getRepository(RaceCompetitor::class)->categoriesRanck($category, $race);
+            $rc = $this->em->getRepository(RaceCompetitor::class)->categoriesRanckToString($category, $race);
             $categoryRanck = array(
                 'category' => $category,
                 'competitors' => $rc
@@ -114,7 +114,7 @@ class RanckService
 
         foreach ($championships as $championship) {
 
-            $cc = $this->em->getRepository(ChampionshipCompetitor::class)->competitorsByCategoryOrderByPoints($championship);
+            $cc = $this->em->getRepository(ChampionshipCompetitor::class)->competitorsOrderByPointsToString($championship);
 
             $championshipRanck = array(
                 'championship' => $championship,
@@ -130,7 +130,7 @@ class RanckService
     {
         foreach ($race->getCategories() as $category) {
 
-            $rcByCategory = $this->em->getRepository(RaceCompetitor::class)->categoriesRanck2($category, $race);
+            $rcByCategory = $this->em->getRepository(RaceCompetitor::class)->categoriesRanck($category, $race);
             $championship = $this->em->getRepository(Championship::class)->findOneByCategory($category);
 
             $i = 0;
@@ -146,8 +146,26 @@ class RanckService
 
                 $i++;
                 $cc->setPoints($cc->getPoints() + $this->point($i));
-                $cc->setRanck($cc->getRanck() + 1);
                 $this->em->persist($cc);
+            }
+        }
+
+        $this->em->flush();
+        $this->championshipUpdateRanck($race);
+    }
+
+    private function championshipUpdateRanck($race)
+    {
+        foreach ($race->getCategories() as $category) {
+            $championship = $this->em->getRepository(Championship::class)->findOneByCategory($category);
+            $ccs = $this->em->getRepository(ChampionshipCompetitor::class)->ccOrderByPoints($championship);
+
+            $i = 0;
+            foreach ($ccs as $row) {
+
+                $i++;
+                $row->setRanck($i);
+                $this->em->persist($row);
             }
         }
 
@@ -161,15 +179,44 @@ class RanckService
 
         $liste = array(
             1 => 100,
-            2 => 75,
-            3 => 50,
-            4 => 40,
-            5 => 30,
-            6 => 25,
-            7 => 20,
-            8 => 15,
-            9 => 10,
-            10 => 5
+            2 => 90,
+            3 => 80,
+            4 => 70,
+            5 => 60,
+            6 => 50,
+            7 => 45,
+            8 => 40,
+            9 => 35,
+            10 => 30,
+            11 => 29,
+            12 => 28,
+            13 => 27,
+            14 => 26,
+            15 => 25,
+            16 => 24,
+            17 => 23,
+            18 => 22,
+            19 => 21,
+            20 => 20,
+            21 => 19,
+            22 => 18,
+            23 => 17,
+            24 => 16,
+            25 => 15,
+            26 => 14,
+            27 => 13,
+            28 => 12,
+            29 => 11,
+            30 => 10,
+            31 => 9,
+            32 => 8,
+            33 => 7,
+            34 => 6,
+            35 => 5,
+            36 => 4,
+            37 => 3,
+            38 => 2,
+            39 => 1
         );
 
         return $liste[$pos];
@@ -178,7 +225,7 @@ class RanckService
     public function raceCategorieRanck($race, $category)
     {
         $data = new \ArrayObject();
-        $rc = $this->em->getRepository(RaceCompetitor::class)->categoriesRanck($category, $race);
+        $rc = $this->em->getRepository(RaceCompetitor::class)->categoriesRanckToString($category, $race);
         $data = array();
 
 
