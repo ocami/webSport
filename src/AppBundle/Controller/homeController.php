@@ -28,7 +28,6 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class homeController extends Controller
 {
-
     /**
      * @Route("/", name="index")
      */
@@ -167,5 +166,21 @@ class homeController extends Controller
         $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->categoriesRanckToString($category, $race);
 
         return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/jsonTest", name="jsonTest")
+     */
+    public function jsonTest(Request $request)
+    {
+        return $this->render('home/jsonTest.html.twig');
+    }
+
+    /**
+     * @Route("/typeaheadTest", name="typeaheadTest")
+     */
+    public function typeaheadTest(Request $request)
+    {
+        return $this->render('home/typeaheadTest.html.twig');
     }
 }

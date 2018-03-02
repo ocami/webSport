@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+    <title>Json</title>
+
+
+</head>
+
+<body>
+
+<p>1</p></p><p id="demo"></p>
+<p>2</p>
+<p id="demo2"></p>
+<p>3</p>
+<p id="demo3"></p>
+<p>4</p>
+<p id="demo4"></p>
+<p>5</p>
+<p id="demo5"></p>
+<p>6</p>
+<p id="demo6"></p>
+<p>7</p>
+<p id="demo6"></p>
+
+
+<script src="{{ asset('js/jquery.min.js') }}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+
+    //111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111////
+    var text = '{ "employees" : [' +
+        '{ "firstName":"John" , "lastName":"Doe" },' +
+        '{ "firstName":"Anna" , "lastName":"Smith" },' +
+        '{ "firstName":"Peter" , "lastName":"Jones" } ]}';
+
+    var obj = JSON.parse(text);
+
+    $("#demo").text(obj.employees[1].firstName + " " + obj.employees[1].lastName);
+
+    //222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
+
+    var string = '';
+    for (var i in obj.employees) {
+        string += obj.employees[i].firstName + " " + obj.employees[i].lastName + "";
+    }
+
+    $("#demo2").text(string);
+
+    //333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
+
+    var fruits = new Array("Banana", "Orange", "Apple", "Mango");
+
+    fruits.push('lemon');
+
+    $("#demo3").text(fruits);
+
+
+    //444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444
+
+    var noms = new Array();
+
+    for (var i in obj.employees) {
+        var employe = {nom: obj.employees[i].firstName, prenom: obj.employees[i].lastName};
+        noms.push(employe);
+    }
+
+    var string = '';
+    for (var i in noms) {
+        string += noms[i].nom + " " + noms[i].prenom + " / "
+    }
+
+    $("#demo4").text(string);
+
+
+    //555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555
+
+
+    $(document).ready(function () {
+        $("#demo5").load("{{ asset('text/demo_test.txt') }}");
+
+
+    });
+
+
+    //666666666666666666666666666666666666666666666666666666
+
+    $.get("{{ asset('text/demo_test.txt') }}", function (data, status) {
+        $("#demo6").text(data);
+
+        console.log(data);
+
+
+    });
+
+
+    //7777777777777777777777777777777777777777777777777777777777777777
+
+    $.get("{{ asset('https://api-adresse.data.gouv.fr/search/?q=renn') }}", function (data, status) {
+
+
+        var cities = new Array();
+
+
+        for (var i in data.features) {
+            var cityData = {
+                label: data.features[i].properties.city + " " + data.features[i].properties.postcode,
+                city: data.features[i].properties.city,
+                postcode: data.features[i].properties.postcode
+            };
+            cities.push(cityData);
+        }
+
+
+
+
+
+    });
+
+    //8888888888888888888888888888888888888888888888888888888888888888888888888888888
+
+    $.get("{{ asset('json/ville.json') }}", function (data, status) {
+
+
+        var cities = new Array();
+
+
+        for (var i in data.villes) {
+            var cityData = {
+                label: data.villes[i].Nom_commune + " " + data.villes[i].Code_postal,
+                city: data.villes[i].Nom_commune,
+                postcode: data.villes[i].Code_postal
+            };
+            cities.push(cityData);
+
+        }
+
+        //console.log(cities);
+
+
+        console.log(cities[0].label)
+
+    });
+
+
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.css">
+
+    <link rel="stylesheet" href="{{ asset('css/typeaheadjs.css') }}"/>
+
+    <style>
+
+        #scrollable-dropdown-menu .tt-dropdown-menu {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+    </style>
+
+
+{% endblock %}
+
+{% block title %}
+    Ajout Competétition
+{% endblock %}
+
+
+
+{% block body %}
+
+
+    <div id="montruc">
+        <input class="typeahead" type="text">
+    </div>
+<br>
+<br>
+<br>
+<br>
+    <div id="scrollable-dropdown-menu">
+        <input class="typeahead" type="text" placeholder="Countries">
+    </div>
+
+
+{% endblock %}
+
+    {% block javascripts %}
+        {{ parent() }}
+        <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
+        <script src="{{ asset('js/typeahead.bundle.js') }}"></script>
+
+
+
+        <script>
+
+
+
+
+            //11111111111111111111111111111111111111111111111111111111111111111111111111
+            var substringMatcher = function (strs) {
+                return function findMatches(q, cb) {
+                    var matches, substringRegex;
+
+                    // an array that will be populated with substring matches
+                    matches = [];
+
+                    // regex used to determine if a string contains the substring `q`
+                    substrRegex = new RegExp(q, 'i');
+
+                    // iterate through the pool of strings and for any string that
+                    // contains the substring `q`, add it to the `matches` array
+                    $.each(strs, function (i, str) {
+                        if (substrRegex.test(str)) {
+                            matches.push(str);
+                        }
+                    });
+
+                    cb(matches);
+                };
+            };
+
+
+            //0000000000000000000000000000000000000000000000000000000000000000000000000
+            $.get("{{ asset('json/ville.json') }}", function (data, status) {
+
+
+                var cities = new Array();
+                var citiesListe = new Array();
+
+
+
+                for (var i in data.villes) {
+                    var cityData = {
+                        label: data.villes[i].Nom_commune + " " + data.villes[i].Code_postal,
+                        city: data.villes[i].Nom_commune,
+                        postcode: data.villes[i].Code_postal
+                    };
+                    cities.push(cityData);
+                    citiesListe.push(data.villes[i].Nom_commune + " " + data.villes[i].Code_postal);
+
+                }
+
+                //console.log(cities);
+
+               
+
+                $('#scrollable-dropdown-menu .typeahead').typeahead(null, {
+                    name: 'villes',
+                    limit: 20,
+                    source: substringMatcher(citiesListe)
+                });
+                console.log(cities[0].label)
+
+            });
+
+
+        </script>
+
+    {% endblock %}
+
