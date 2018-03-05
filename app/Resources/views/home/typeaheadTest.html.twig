@@ -6,13 +6,16 @@
           href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.css">
 
     <link rel="stylesheet" href="{{ asset('css/typeaheadjs.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/jquery-ui.css') }}"/>
 
     <style>
 
-        #scrollable-dropdown-menu .tt-dropdown-menu {
+        #city_form .tt-dropdown-menu {
             max-height: 150px;
             overflow-y: auto;
         }
+
+
     </style>
 
 
@@ -21,23 +24,41 @@
 {% block title %}
     Ajout Competétition
 {% endblock %}
-
-
-
 {% block body %}
+    <h2 id="message"></h2>
 
-
-    <div id="montruc">
-        <input class="typeahead" type="text">
+    <div class="localize_form row">
+        <div id="dep_form_edit" class="form_edit">
+            <input id="dep_input" class="typeahead col-xs-5" type="text" placeholder="Département">
+            <button class="col-xs-2 next_step" value="dep" onclick="nextStep('depValidate')">Suivant</button>
+        </div>
+        <div id="dep_form_show" class="form_show">
+            <p id="dep_show" class="col-xs-5"></p>
+            <button class="col-xs-2 edit_bt" onclick="returnStep('dep')">Modifier</button>
+        </div>
     </div>
-<br>
-<br>
-<br>
-<br>
-    <div id="scrollable-dropdown-menu">
-        <input class="typeahead" type="text" placeholder="Countries">
+    <br>
+    <div class="localize_form row">
+        <div id="city_form_edit" class="form_edit">
+            <input id="city_input" class="typeahead col-xs-5" type="text" placeholder="Ville">
+            <button class="col-xs-2 next_step" value="city" onclick="nextStep('cityValidate')">Suivant</button>
+        </div>
+        <div id="city_form_show" class="form_show">
+            <p id="city_show" class="col-xs-5"></p>
+            <button class="col-xs-2  edit_bt" onclick="returnStep('depValidate')">Modifier</button>
+        </div>
     </div>
-
+    <br>
+    <div class="localize_form row">
+        <div id="address_form_edit" class="form_edit">
+            <input id="address_input" class="typeahead col-xs-5" type="text" placeholder="Adresse">
+            <button class="col-xs-2 next_step" value="address" onclick="nextStep('addressValidate')">Suivant</button>
+        </div>
+        <div id="address_form_show" class="form_show">
+            <p id="address_show" class="col-xs-5"></p>
+            <button class="col-xs-2 edit_bt" onclick="returnStep('cityValidate')">Modifier</button>
+        </div>
+    </div>
 
 {% endblock %}
 
@@ -45,15 +66,10 @@
         {{ parent() }}
         <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
         <script src="{{ asset('js/typeahead.bundle.js') }}"></script>
-
-
+        <script src="{{ asset('js/jqueryui.min.js') }}"></script>
 
         <script>
 
-
-
-
-            //11111111111111111111111111111111111111111111111111111111111111111111111111
             var substringMatcher = function (strs) {
                 return function findMatches(q, cb) {
                     var matches, substringRegex;
@@ -76,40 +92,231 @@
                 };
             };
 
+            var formsEdit = $(".form_edit");
+            var formsShow = $(".form_show");
 
-            //0000000000000000000000000000000000000000000000000000000000000000000000000
-            $.get("{{ asset('json/ville.json') }}", function (data, status) {
+            var depFormEdit = $("#dep_form_edit");
+            var depFormShow = $("#dep_form_show");
+            var depInput = $("#dep_input");
+            var depShow = $("#dep_show");
+
+            var cityFormEdit = $("#city_form_edit");
+            var cityFormShow = $("#city_form_show");
+            var cityInput = $("#city_input");
+            var cityShow = $("#city_show");
+
+            var addressFormEdit = $("#address_form_edit");
+            var addressFormShow = $("#address_form_show");
+            var addressInput = $("#address_input");
+            var addressShow = $("#address_show");
+
+            var cityCode;
+            var autocompleteAddressList;
 
 
-                var cities = new Array();
-                var citiesListe = new Array();
-
-
-
-                for (var i in data.villes) {
-                    var cityData = {
-                        label: data.villes[i].Nom_commune + " " + data.villes[i].Code_postal,
-                        city: data.villes[i].Nom_commune,
-                        postcode: data.villes[i].Code_postal
-                    };
-                    cities.push(cityData);
-                    citiesListe.push(data.villes[i].Nom_commune + " " + data.villes[i].Code_postal);
-
-                }
-
-                //console.log(cities);
-
-               
-
-                $('#scrollable-dropdown-menu .typeahead').typeahead(null, {
-                    name: 'villes',
-                    limit: 20,
-                    source: substringMatcher(citiesListe)
-                });
-                console.log(cities[0].label)
-
+            $(document).ready(function () {
+                formsEdit.hide();
+                formsShow.hide();
+                nextStep('dep');
             });
 
+            function nextStep(step) {
+
+                formsEdit.hide();
+
+                switch (step) {
+
+                    case 'dep' :
+                        depFormEdit.show();
+                        depAutocomplete();
+                        break;
+
+                    case 'depValidate' :
+                        depValidate();
+                        break;
+
+                    case 'city' :
+                        depShow.text(depInput.val());
+                        depFormShow.show();
+                        cityFormEdit.show();
+                        break;
+
+                    case 'cityValidate' :
+                        cityValidate();
+                        break;
+
+                    case 'address' :
+                        cityFormShow.show();
+                        addressFormEdit.show();
+                        break;
+
+                    case 'addressValidate' :
+                        addressValidate();
+                        break;
+
+                    case 'confirm' :
+                        addressShow.text(addressInput.val());
+                        addressFormShow.show();
+                        getCityData();
+                        break;
+                }
+            }
+
+
+            function returnStep(step) {
+                console.log(step);
+
+                switch (step) {
+                    case 'dep' :
+                        depInput.typeahead("destroy");
+                        depInput.val('');
+                        depFormShow.hide();
+
+                    case  'depValidate' :
+                        cityInput.typeahead("destroy");
+                        cityInput.val('')
+                        cityFormShow.hide();
+
+                    case  'cityValidate' :
+                        addressInput.val('');
+                        addressFormShow.hide();
+                }
+                nextStep(step);
+
+            }
+
+
+            //Dep**************************************************************
+            function depValidate() {
+
+                var dep = depInput.val().slice(0, 2);
+
+                $.get("{{ asset('json/departements3.json') }}", function (data, status) {
+                    if (jQuery.inArray(dep, data) !== -1) {
+                        cityAutocomplete(dep);
+                        nextStep('city');
+                        $('#message').text('');
+                    } else {
+                        nextStep('dep');
+                        $('#message').text('Veuillez sélectionner un département dans la liste');
+                    }
+                });
+
+            }
+
+            function depAutocomplete() {
+                $.get("{{ asset('json/departements2.json') }}", function (data, status) {
+
+                    depInput.typeahead(null, {
+                        name: 'departement',
+                        limit: 20,
+                        source: substringMatcher(data)
+                    });
+                });
+            }
+
+            //City*************************************************************
+            function cityValidate() {
+
+                var citySlug = cityInput.val();
+                $.ajax({
+                    url: "{{ path('address_getCitiesData') }}",
+                    data: {ville_slug: citySlug},
+                    dataType: "json",
+                    success: function (data) {
+
+                        var cityData = data[0];
+
+                        if (data.length > 0 && citySlug == cityData.villeSlug) {
+
+                            cityCode = cityData.villeCodeCommune;
+                            cityShow.text(cityData.villeNomReel);
+                            $('#message').text('');
+
+                            addressAutocomplete(cityData.villeCodeCommune);
+                            nextStep('address');
+
+                        } else {
+                            $('#message').text('Veuillez sélectionner une ville dans la liste');
+                            nextStep('city');
+                        }
+                    }
+                });
+            }
+
+            function cityAutocomplete(dep) {
+                $.ajax({
+                    url: "{{ path('address_getCitiesSlugByDep') }}",
+                    data: {dep: dep},
+                    dataType: "json",
+                    success: function (data) {
+
+
+                        var cities = new Array();
+                        $.each(data, function (index, city) {
+                            cities.push(city.villeSlug)
+                        })
+
+
+                        cityInput.typeahead(null, {
+                            name: 'villes',
+                            limit: 20,
+                            source: substringMatcher(cities)
+                        });
+                    }
+                });
+            }
+
+            //Address**********************************************************
+            function addressAutocomplete(cityCode) {
+                addressInput.autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: "https://api-adresse.data.gouv.fr/search/?citycode=" + cityCode,
+                            data: {q: request.term},
+                            dataType: "json",
+                            success: function (data) {
+                                response($.map(data.features, function (item) {
+                                    return {label: item.properties.name, value: item.properties.name};
+                                }));
+                                autocompleteAddressList = data.features;
+                            }
+                        });
+                    }
+                });
+            }
+
+            function addressValidate() {
+                $.ajax({
+                    url: "https://api-adresse.data.gouv.fr/search/?q=rennes",
+                    data: {q: addressInput.val()},
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.features.length > 0 && data.features[0].properties.name == addressInput.val()) {
+                            nextStep('confirm');
+                            $('#message').text('');
+                        } else {
+                            $('#message').text('Veuillez sélectionner une adresse dans la liste');
+                            nextStep('address');
+                        }
+                    }
+                });
+            }
+
+            //Confirm**********************************************************
+
+            function getCityData() {
+                var address = $('#address_input').val();
+
+                $.ajax({
+                    url: "https://api-adresse.data.gouv.fr/search/?citycode=" + cityCode,
+                    data: {q: address},
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data);
+                    }
+                });
+            }
 
         </script>
 
