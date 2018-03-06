@@ -183,4 +183,14 @@ class homeController extends Controller
     {
         return $this->render('home/typeaheadTest.html.twig');
     }
+
+    /**
+     * @Route("/carteTest", name="carteTest")
+     */
+    public function carteTest(Request $request)
+    {
+        return $this->render('home/carteTest.html.twig');
+    }
+
+
 }
