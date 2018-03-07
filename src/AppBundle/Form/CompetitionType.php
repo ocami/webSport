@@ -22,15 +22,6 @@ class CompetitionType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'Nom',
             ])
-            ->add('ville', TextType::class, [
-                'label' => 'Ville',
-            ])
-            ->add('adress', TextType::class, [
-                'label' => 'Adresse',
-            ])
-            ->add('dep', TextType::class, [
-                'label' => 'Département',
-            ])
             ->add('dateStart', DateType::class, [
                 'label' => 'Du',
                 'widget' => 'single_text',

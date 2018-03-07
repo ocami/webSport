@@ -56,8 +56,6 @@ class Address
      */
     private $villeCodeCommune;
 
-
-
     /**
      * Get id
      *
@@ -117,6 +115,5 @@ class Address
     {
         return $this->villeCodeCommune;
     }
-
 }
 

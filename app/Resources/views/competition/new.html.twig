@@ -5,7 +5,19 @@
     <link rel="stylesheet"
           href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.css">
 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+          integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+          crossorigin=""/>
+
     <link rel="stylesheet" href="{{ asset('css/typeaheadjs.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/jquery-ui.css') }}"/>
+
+    <style>
+        #mapid {
+            height: 180px;
+        }
+
+    </style>
 
 
 {% endblock %}
@@ -24,9 +36,6 @@
     {{ form_errors(form) }}
 
     {{ form_row(form.name) }}
-    {{ form_row(form.ville) }}
-    {{ form_row(form.adress) }}
-    {{ form_row(form.dep) }}
 
     <label>Date</label>
 
@@ -40,27 +49,69 @@
         </div>
     </div>
 
-
-
     <input type="submit" value="Valider" class="btn btn-default pull-right"/>
 
     {{ form_end(form) }}
 
-    <div id="the-basics">
-        <input class="typeahead" type="text" placeholder="States of USA">
+    <h2 id="message"></h2>
+
+    <div class="localize_form row">
+        <div id="dep_form_edit" class="form_edit">
+            <h3>Département</h3>
+            <input id="dep_input" class="typeahead col-xs-5" type="text" placeholder="ex : 29 Finistère">
+            <button class="col-xs-2 next_step" value="dep" onclick="nextStep('depValidate')">Suivant</button>
+        </div>
+        <div id="dep_form_show" class="form_show">
+            <h3>Département</h3>
+            <p id="dep_show" class="col-xs-5"></p>
+            <button class="col-xs-2 edit_bt" onclick="returnStep('dep')">Modifier</button>
+        </div>
     </div>
+    <br>
+    <div class="localize_form row">
+
+        <div id="city_form_edit" class="form_edit">
+            <h3>Villes</h3>
+            <input id="city_input" class="typeahead col-xs-5" type="text" placeholder="ex : rennes">
+            <button class="col-xs-2 next_step" value="city" onclick="nextStep('cityValidate')">Suivant</button>
+        </div>
+        <div id="city_form_show" class="form_show">
+            <h3>Villes</h3>
+            <p id="city_show" class="col-xs-5"></p>
+            <button class="col-xs-2  edit_bt" onclick="returnStep('depValidate')">Modifier</button>
+        </div>
+    </div>
+    <br>
+    <div class="localize_form row">
+        <div id="address_form_edit" class="form_edit">
+            <h3>Adrresse</h3>
+            <input id="address_input" class="typeahead col-xs-5" type="text" placeholder="ex : 28 rue Lulu">
+            <button class="col-xs-2 next_step" value="address" onclick="nextStep('addressValidate')">Suivant</button>
+        </div>
+        <div id="address_form_show" class="form_show">
+            <h3>Adrresse</h3>
+            <p id="address_show" class="col-xs-5"></p>
+            <button class="col-xs-2 edit_bt" onclick="returnStep('cityValidate')">Modifier</button>
+        </div>
+    </div>
+
+    <div id="mapid"></div>
+
 
 {% endblock %}
 
     {% block javascripts %}
         {{ parent() }}
+        <script src="{{ asset('js/jqueryui.min.js') }}"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
+        <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+                integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+                crossorigin=""></script>
         <script src="{{ asset('js/typeahead.bundle.js') }}"></script>
-
 
         <script>
 
-
+            //datepicker************************************************************************************************
             jQuery(document).ready(function () {
                 $.fn.datepicker.dates['fr'] = {
                     days: ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
@@ -84,14 +135,12 @@
                     todayHighlight: true
                 });
             });
-
             $('.dpStart').on('changeDate', function () {
                 var startDate = $('.dpStart').datepicker('getDate');
                 $('.dpEnd').datepicker(
                     'setStartDate', startDate
                 );
             });
-
 
             var substringMatcher = function (strs) {
                 return function findMatches(q, cb) {
@@ -115,26 +164,291 @@
                 };
             };
 
-            var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
-                'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
-                'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
-                'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
-                'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
-                'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-                'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
-                'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
-                'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
-            ];
+            var formsEdit = $(".form_edit");
+            var formsShow = $(".form_show");
 
-            $('#the-basics .typeahead').typeahead({
-                    hint: true,
-                    highlight: true,
-                    minLength: 1
-                },
-                {
-                    name: 'states',
-                    source: substringMatcher(states)
+            var depFormEdit = $("#dep_form_edit");
+            var depFormShow = $("#dep_form_show");
+            var depInput = $("#dep_input");
+            var depShow = $("#dep_show");
+
+            var cityFormEdit = $("#city_form_edit");
+            var cityFormShow = $("#city_form_show");
+            var cityInput = $("#city_input");
+            var cityShow = $("#city_show");
+
+            var addressFormEdit = $("#address_form_edit");
+            var addressFormShow = $("#address_form_show");
+            var addressInput = $("#address_input");
+            var addressShow = $("#address_show");
+
+            var map = $('#mapid');
+
+            var cityCode;
+            var autocompleteAddressList;
+
+
+            $(document).ready(function () {
+                formsEdit.hide();
+                formsShow.hide();
+                nextStep('dep');
+            });
+
+            function nextStep(step) {
+
+                formsEdit.hide();
+
+                switch (step) {
+
+                    case 'dep' :
+                        depFormEdit.show();
+                        depAutocomplete();
+                        break;
+
+                    case 'depValidate' :
+                        depValidate();
+                        break;
+
+                    case 'city' :
+                        depShow.text(depInput.val());
+                        depFormShow.show();
+                        cityFormEdit.show();
+                        break;
+
+                    case 'cityValidate' :
+                        cityValidate();
+                        break;
+
+                    case 'address' :
+                        cityFormShow.show();
+                        addressFormEdit.show();
+                        break;
+
+                    case 'addressValidate' :
+                        addressValidate();
+                        break;
+
+                    case 'confirm' :
+                        addressShow.text(addressInput.val());
+                        addressFormShow.show();
+                        getCityData();
+                        break;
+                }
+            }
+
+            function returnStep(step) {
+                switch (step) {
+                    case 'dep' :
+                        depInput.typeahead("destroy");
+                        depInput.val('');
+                        depFormShow.hide();
+
+                    case  'depValidate' :
+                        cityInput.typeahead("destroy");
+                        cityInput.val('')
+                        cityFormShow.hide();
+
+                    case  'cityValidate' :
+                        addressInput.val('');
+                        addressFormShow.hide();
+                        map.hide();
+                }
+                nextStep(step);
+            }
+
+
+            //Dep**************************************************************
+            function depValidate() {
+
+                var dep = depInput.val().slice(0, 2);
+
+                $.get("{{ asset('json/departements3.json') }}", function (data, status) {
+                    if (jQuery.inArray(dep, data) !== -1) {
+                        cityAutocomplete(dep);
+                        nextStep('city');
+                        $('#message').text('');
+                    } else {
+                        nextStep('dep');
+                        $('#message').text('Veuillez sélectionner un département dans la liste');
+                    }
                 });
+            }
+
+            function depAutocomplete() {
+                $.get("{{ asset('json/departements2.json') }}", function (data, status) {
+
+                    depInput.typeahead(null, {
+                        name: 'departement',
+                        limit: 20,
+                        source: substringMatcher(data)
+                    });
+                });
+            }
+
+            //City*************************************************************
+            function cityValidate() {
+                var citySlug = cityInput.val();
+                $.ajax({
+                    url: "{{ path('address_getCitiesData') }}",
+                    data: {ville_slug: citySlug},
+                    dataType: "json",
+                    success: function (data) {
+
+                        var cityData = data[0];
+
+                        if (data.length > 0 && citySlug == cityData.villeSlug) {
+
+                            cityCode = cityData.villeCodeCommune;
+                            cityShow.text(cityData.villeNomReel);
+                            $('#message').text('');
+
+                            addressAutocomplete(cityData.villeCodeCommune);
+                            nextStep('address');
+
+                        } else {
+                            $('#message').text('Veuillez sélectionner une ville dans la liste');
+                            nextStep('city');
+                        }
+                    }
+                });
+            }
+
+            function cityAutocomplete(dep) {
+                $.ajax({
+                    url: "{{ path('address_getCitiesSlugByDep') }}",
+                    data: {dep: dep},
+                    dataType: "json",
+                    success: function (data) {
+
+                        var cities = new Array();
+                        $.each(data, function (index, city) {
+                            cities.push(city.villeSlug)
+                        })
+
+                        cityInput.typeahead(null, {
+                            name: 'villes',
+                            limit: 20,
+                            source: substringMatcher(cities)
+                        });
+                    }
+                });
+            }
+
+            //Address**********************************************************
+            function addressAutocomplete(cityCode) {
+                addressInput.autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: "https://api-adresse.data.gouv.fr/search/?citycode=" + cityCode,
+                            data: {q: request.term},
+                            dataType: "json",
+                            success: function (data) {
+                                response($.map(data.features, function (item) {
+                                    return {label: item.properties.name, value: item.properties.name};
+                                }));
+                                autocompleteAddressList = data.features;
+                            }
+                        });
+                    }
+                });
+            }
+
+            function addressValidate() {
+                $.ajax({
+                    url: "https://api-adresse.data.gouv.fr/search/?q=rennes",
+                    data: {q: addressInput.val()},
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.features.length > 0 && data.features[0].properties.name == addressInput.val()) {
+                            nextStep('confirm');
+                            $('#message').text('');
+                        } else {
+                            $('#message').text('Veuillez sélectionner une adresse dans la liste');
+                            nextStep('address');
+                        }
+                    }
+                });
+            }
+
+            //Confirm**********************************************************
+
+            var localizationData;
+
+            function getCityData() {
+                var address = $('#address_input').val();
+
+                $.ajax({
+                    url: "https://api-adresse.data.gouv.fr/search/?citycode=" + cityCode,
+                    data: {q: address},
+                    dataType: "json",
+                    success: function (data) {
+                        //console.log(data.features[0]);
+                        var f = data.features[0];
+                        localizationData = {
+                            id : f.properties.id,
+                            number: f.properties.housenumber,
+                            street: f.properties.street,
+                            postCode: f.properties.postcode,
+                            city: f.properties.city,
+                            x: f.geometry.coordinates[1],
+                            y: f.geometry.coordinates[0]
+                        }
+
+                        openMap(localizationData.x,localizationData.y)
+                        console.log(localizationData);
+                    }
+                });
+            }
+
+
+            //Map**********************************************************
+
+            function openMap(x, y) {
+
+
+                var mymap = L.map('mapid').setView([x, y], 25);
+
+                var marker = L.marker([x, y]).addTo(mymap);
+
+
+                L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+                    maxZoom: 18
+                }).addTo(mymap);
+
+            }
+
+            //Date**********************************************************
+            jQuery(document).ready(function () {
+                $.fn.datepicker.dates['fr'] = {
+                    days: ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
+                    daysShort: ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."],
+                    daysMin: ["D", "L", "M", "M", "J", "V", "S"],
+                    months: ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
+                    monthsShort: ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."],
+                    today: "Aujourd'hui",
+                    clear: "Clear",
+                    format: "dd/mm/yy",
+                    titleFormat: "MM yyyy", /* Leverages same syntax as 'format' */
+                    weekStart: 1,
+
+                };
+
+                $('.datepicker').datepicker({
+                    language: 'fr',
+                    todayBtn: 'linked',
+                    autoclose: true,
+                    todayHighlight: true
+                });
+            });
+
+            $('.dpStart').on('changeDate', function () {
+                var startDate = $('.dpStart').datepicker('getDate');
+                $('.dpEnd').datepicker(
+                    'setStartDate', startDate
+                );
+            });
+
 
 
         </script>

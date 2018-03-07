@@ -191,6 +191,4 @@ class homeController extends Controller
     {
         return $this->render('home/carteTest.html.twig');
     }
-
-
 }
