@@ -50,27 +50,6 @@ class Competition
     private $name;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="ville", type="string", length=255)
-     */
-    private $ville;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="address", type="string", length=255)
-     */
-    private $adress;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="dep", type="integer")
-     */
-    private $dep;
-
-    /**
      * @var Date
      *
      * @ORM\Column(name="dateStart", type="date", nullable=true)
@@ -83,6 +62,12 @@ class Competition
      * @ORM\Column(name="dateEnd", type="date", nullable=true)
      */
     private $dateEnd;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Location", inversedBy ="competitions", cascade="persist")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $location;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Organizer", inversedBy ="competitions")
@@ -279,6 +264,30 @@ class Competition
     public function getDateEnd()
     {
         return $this->dateEnd;
+    }
+
+    /**
+     * Set location
+     *
+     * @param \AppBundle\Entity\Location $location
+     *
+     * @return Competition
+     */
+    public function setLocation(\AppBundle\Entity\Location $location)
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * Get location
+     *
+     * @return \AppBundle\Entity\Location
+     */
+    public function getLocation()
+    {
+        return $this->location;
     }
 
     /**

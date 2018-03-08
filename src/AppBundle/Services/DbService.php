@@ -114,6 +114,8 @@ class DbService
             $this->em->persist($competitor);
         }
         $this->em->flush();
+
+        return 'ajout compétiteurs masuclin : OK';
     }
 
     public function generateCompetitorsF()
@@ -148,6 +150,8 @@ class DbService
             $this->em->persist($competitor);
         }
         $this->em->flush();
+
+        return 'ajout compétiteurs féminin : OK';
     }
 
     public function generateOrganizers()
@@ -177,6 +181,8 @@ class DbService
             $this->em->flush();
             $this->cs->generateCode($organizer);
         }
+
+        return 'ajout organisateurs : OK';
     }
 
     public function generateChampionship()

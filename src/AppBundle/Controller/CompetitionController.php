@@ -9,6 +9,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Competition;
+use AppBundle\Entity\Location;
 use AppBundle\Entity\Organizer;
 use AppBundle\Services\CodeService;
 use AppBundle\Services\UserService;
@@ -69,7 +70,6 @@ class CompetitionController extends Controller
         ));
     }
 
-
     /**
      * @Route("/competition/new", name="competition_new")
      * @Security("has_role('ROLE_ORGANIZER')")
@@ -81,11 +81,21 @@ class CompetitionController extends Controller
         $form = $this->createForm(CompetitionType::class, $competition);
         $organizer = $this->getDoctrine()->getRepository(Organizer::class)->findOneByUserId($this->getUser());
 
+        $location = new Location();
+
+        $location->setDataId('monid');
+        $location->setNumber('8');
+        $location->setStreet('8');
+        $location->setPostCode('8');
+        $location->setCity('8');
+        $location->setX(1.252525);
+        $location->setY(1.252526);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
             $organizer->addCompetition($competition);
             $competition->setOrganizer($organizer);
+            $competition->setLocation($location);
             $em = $this->getDoctrine()->getManager();
             $em->persist($competition);
             $em->persist($organizer);
