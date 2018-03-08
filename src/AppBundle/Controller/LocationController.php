@@ -23,7 +23,6 @@ class LocationController extends Controller
 {
     /**
      * @Route("/location/new", name="location_new")
-     * @Security("has_role('ROLE_ORGANIZER')")
      */
     public function newAction(Request $request)
     {
@@ -31,7 +30,9 @@ class LocationController extends Controller
 
         var_dump($location);
 
-        return $this->render('home/test');
+        return 'bien recu';
+
+        //return $this->render('home/test');
 
         /*
 
