@@ -21,6 +21,7 @@ class CompetitionType extends AbstractType
 
             ->add('name', TextType::class, [
                 'label' => 'Nom',
+                'attr' => ['class' => 'compettitionName']
             ])
             ->add('dateStart', DateType::class, [
                 'label' => 'Du',
@@ -36,7 +37,7 @@ class CompetitionType extends AbstractType
                 'format' => 'dd/MM/yyyy',
                 'attr' => ['class' => 'datepicker dpEnd']
             ])
-
+            ->add('location',TextType::class)
             ;
     }/**
      * {@inheritdoc}

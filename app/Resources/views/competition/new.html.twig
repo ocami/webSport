@@ -20,14 +20,13 @@
         .to_load div#preloader {
             position: fixed;
             left: 0;
-            top:4em;
+            top: 4em;
             z-index: 999;
             width: 100%;
             height: 100%;
             overflow: visible;
             background: #ffffff url('https://www.createwebsite.net/wp-content/uploads/2015/09/GD.gif') no-repeat center center;
         }
-
 
 
     </style>
@@ -47,6 +46,10 @@
 
 
         <h1>Ajouter une compétition</h1>
+
+
+
+
 
         {{ form_start(form) }}
         {{ form_errors(form) }}
@@ -171,6 +174,7 @@
             var autocompleteAddressList;
             var cityCode;
 
+
             var alert = $("#location_form_alert");
 
             var substringMatcher = function (strs) {
@@ -259,7 +263,6 @@
                     data: {dep: dep},
                     dataType: "json",
                     success: function (data) {
-
                         var cities = new Array();
                         $.each(data, function (index, city) {
                             cities.push(city.villeSlug)
@@ -322,7 +325,6 @@
                     data: {q: address},
                     dataType: "json",
                     success: function (data) {
-                        //console.log(data.features[0]);
                         var f = data.features[0];
                         localizationData = {
                             id: f.properties.id,
@@ -334,8 +336,8 @@
                             y: f.geometry.coordinates[0]
                         }
 
-                        openMap(localizationData.x, localizationData.y)
-                        console.log(localizationData);
+                        openMap(localizationData.x, localizationData.y);
+                        locationFlush(localizationData);
                     }
                 });
             }
@@ -396,7 +398,7 @@
 
             function nextStep(step) {
                 formsEdit.hide();
-                console.log(step);
+
                 switch (step) {
 
                     case 'dep' :
@@ -431,7 +433,7 @@
                         console.log('confirm')
                         addressShow.text(addressInput.val());
                         addressFormShow.show();
-                        locationFlush();
+                        getCityData();
                         break;
                 }
             }
@@ -456,18 +458,30 @@
                 nextStep(step);
             }
 
-            function locationFlush() {
-                var location = getCityData();
+
+            function locationFlush(locationData) {
+                var competition = {
+                    name: $('.compettitionName').val(),
+                    dateStart: $('.dpStart').val(),
+                    dateEnd: $('.dpEnd').val(),
+                };
+
+                var data = {
+                    competition : competition,
+                    location : locationData
+                }
 
                 $.ajax({
                     url: "{{ path('location_new') }}",
-                    data: {location: location},
+                    data: {
+                        location: data
+                    },
                     dataType: "json",
-                    success: function (data) {
-
-                       console.log(data);
+                    success: function (response) {
+                        console.log(response);
                     }
                 });
+
 
             }
 
