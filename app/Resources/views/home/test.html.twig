@@ -1,7 +1,63 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+<style>
+    #plan1{
+        background: #ffffff url('https://epay.khcbonline.net/regportal/images/Preloader_1.gif') no-repeat center center;
+        width: 100%;
+        height: 5em;
+        position: absolute;
+        z-index:1;
+    }
+    #plan2{
+        background-color: #3845ff;
+        width: 100%;
+        height: 5em;
+        position: relative;
+        z-index:0;
+    }
+</style>
+
+
+
+{% endblock %}
+
+
 {% block body %}
 
-    <h1>TEST</h1>
+
+    <div class="row dessus"> <h1>Salut la compagnie</h1></div>
+    <div class="row">
+        <div class="col-xs-offset-1 col-xs-5" >
+            <div id="plan1"></div>
+            <div id="plan2"></div>
+        </div>
+        <div class="col-xs-6 cote"></div>
+    </div>
+    <div class="row dessous"> <h1>Salut la compagnie</h1></div>
+
+    <button></button>
+
+    <div></div>
+
+
+
+
+    <h1>Import</h1>
+
+    {{ message }}
+
+
+
+<script>
+
+    $("button").click(function(){
+        $('#plan1').fadeOut();
+    });
+
+</script>
+
+
 
 {% endblock %}

@@ -5,7 +5,7 @@
         </div>
         <div class="panel-body">
 
-            {{ competition.ville }} du {{ competition.dateStart|date("d/m/Y") }} au {{ competition.dateEnd|date("d/m/Y") }}<br>
+            {{ competition.location.city }} du {{ competition.dateStart|date("d/m/Y") }} au {{ competition.dateEnd|date("d/m/Y") }}<br>
             Organisé par {{ competition.organizer.name }}<br>
 
             {% for race in competition.races %}

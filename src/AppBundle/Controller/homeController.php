@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Championship;
+use AppBundle\Entity\Competition;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\RaceCompetitor;
 use AppBundle\Services\DbService;
@@ -34,13 +35,69 @@ class homeController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $repo = $this->getDoctrine()->getManager()
-            ->getRepository('AppBundle:Competition');
 
-        $competitions = $repo->findAll();
+        $jsonPastCompetition = array();
 
-        return $this->render('home/index.html.twig', array('competitions' => $competitions));
+        $properties = array(
+            'name' => 'la compétition',
+            'description' => 'la description',
+        );
+
+        $geometry = array(
+            "type" => "Point",
+            "coordinates" => array(2.43896484375, 46.52863469527167)
+        );
+
+        $feature = array(
+            "type" => "Feature",
+            "properties" => $properties,
+            "geometry" => $geometry,
+        );
+
+        array_push($jsonPastCompetition, $feature);
+
+
+        return $this->render('home/index.html.twig', array('competitions' => $jsonPastCompetition));
     }
+
+
+    /**
+     * @Route("/geoJson", name="geoJson")
+     */
+    public function geoJson(Request $request)
+    {
+
+        $competitions = $this->getDoctrine()->getRepository(Competition::class)->findAll();
+
+        $jsonPastCompetition = array();
+
+        foreach ($competitions as $competition) {
+
+
+            $properties = array(
+                'name' => $competition->getName(),
+                'description' => 'un trucR',
+            );
+
+            $geometry = array(
+                "type" => "Point",
+                "coordinates" => array($competition->getLocation()->getY(),$competition->getLocation()->getX())
+            );
+
+
+            $feature = array(
+                "type" => "Feature",
+                "properties" => $properties,
+                "geometry" => $geometry,
+            );
+
+            array_push($jsonPastCompetition, $feature);
+
+        }
+
+        return new JsonResponse($jsonPastCompetition);
+    }
+
 
     /**
      * @Route("/becomeAdmin", name="becomeAdmin")
@@ -64,15 +121,49 @@ class homeController extends Controller
     /**
      * @Route("/data_import", name="data_import")
      */
-    public function test()
+    public function data_import()
     {
         $message = 'mon message';
 
         $ds = $this->get(DbService::class);
 
-        $message = $ds->generateOrganizers ();
+        $message = $ds->generateOrganizers();
 
         return $this->render('home/dataImport.html.twig', array(
+            'message' => $message
+        ));
+    }
+
+    /**
+     * @Route("/test", name="test")
+     */
+    public function test()
+    {
+        $message = 'mon message';
+
+
+        $str = file_get_contents('..\web\gpx\trace.json');
+
+        $trace = json_decode($str, true);
+
+        $tabDistance = $trace[0]['tabDistance'];
+
+        $km = 0;
+
+        for($i=0;$i < count($tabDistance);$i++)
+        {
+            for ($x=0;$x<count($tabDistance[$i]);$x++)
+            {
+                $km += $tabDistance[$i][$x];
+                //var_dump($tabDistance[$i][$x]);
+
+            }
+
+        }
+
+        var_dump($km);
+
+        return $this->render('home/test.html.twig', array(
             'message' => $message
         ));
     }

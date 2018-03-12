@@ -32,15 +32,22 @@ class LocationController extends Controller
         $locationData = $Data['location'];
         $competitionData = $Data['competition'];
 
-        $location = new Location();
+        var_dump($Data);
 
-        $location->setDataId($locationData['id']);
-        $location->setNumber($locationData['number']);
-        $location->setStreet($locationData['street']);
-        $location->setPostCode($locationData['postCode']);
-        $location->setCity($locationData['city']);
-        $location->setX($locationData['x']);
-        $location->setY($locationData['y']);
+        $location = $this->getDoctrine()->getRepository(Location::class)->findOneByDataId($locationData['id']);
+
+        if ($location==null)
+        {
+            $location = new Location();
+            $location->setDataId($locationData['id']);
+            $location->setNumber(0);
+            $location->setStreet($locationData['street']);
+            $location->setPostCode($locationData['postCode']);
+            $location->setCity($locationData['city']);
+            $location->setX($locationData['x']);
+            $location->setY($locationData['y']);
+        }
+
 
         $organizer = $this->getDoctrine()->getRepository(Organizer::class)->findOneByUserId($this->getUser());
 
@@ -51,8 +58,6 @@ class LocationController extends Controller
         $competition->setDateEnd(new \DateTime($competitionData['dateEnd']));
         $competition->setLocation($location);
         $competition->setOrganizer($organizer);
-
-
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($location);
