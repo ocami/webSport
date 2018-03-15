@@ -7,31 +7,67 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
           integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
           crossorigin=""/>
+    <link rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.css">
 {% endblock %}
 
     {% block body %}
+        <h1>Ajouter une compétition</h1>
 
-        <div id="location_alert" class="alert alert-warning" role="alert" style="display: none"></div>
+        <!-- Form name -->
+        <div class="form-group">
+            <label>Nom</label>
+            <input type="text" class="form-control competitionName">
+        </div>
+        <hr>
 
-        <div id="location_form" class="col-xs-7">
-                    <div class="form-group">
-                <label id="location_label"></label>
-                <input id="location_input" class="form-control" placeholder="Ex : 56 morbihan">
+        <!-- Form date -->
+        <label>Date</label>
+        <div class="row">
+            <div class="form-group col-lg-offset-1 col-sm-4">
+                <label>Du</label>
+                <input class="form-control datepicker dpStart">
             </div>
 
-            <button class="col-xs-2 next_step_btn btn btn-primary btn-sm"
-                    onclick="nextStep(this.value)">Suivant
-            </button>
+            <div class="form-group col-lg-offset-1 col-sm-4">
+                <label>Au</label>
+                <input class="form-control datepicker dpEnd">
+            </div>
         </div>
+        <hr>
 
-        <div id="location_show" class="col-xs-5"></div>
+        <!-- Form location -->
+        <div class="row">
+            <label>Localisation</label><br>
+
+            <div id="location_alert" class="alert alert-warning" role="alert" style="display: none"></div>
+
+            <div id="location_form" class="col-xs-offset-1 col-xs-6">
+                <div class="form-group">
+                    <label id="location_label"></label>
+                    <input id="location_input" class="form-control" placeholder="Ex : 56 morbihan">
+                </div>
+
+                <button class="next_step_btn col-xs-2  btn btn-primary btn-sm"
+                        onclick="nextStep(this.value)">Suivant
+                </button>
+            </div>
+
+            <div id="location_show" class="col-xs-5"></div>
+        </div>
+        <!--End  Form location -->
+
+        <button class="btn btn-primary btn-md pull-right"
+                onclick="competitionFlush()">Enregistrer la compétion
+        </button>
+
 
     {% endblock %}
 
    {% block javascripts %}
        {{ parent() }}
 
-       <! address typeahead********************************************************************************************>
+       <! location form********************************************************************************************>
        <script src="{{ asset('js/jqueryui.min.js') }}"></script>
        <script>
            var depCode;
@@ -94,6 +130,7 @@
 
            function returnStep(step) {
                locationInput.val('');
+               locationBtn.show();
                $('#location_form .form-group').show();
                $('.location_map').remove();
 
@@ -290,4 +327,52 @@
                }).addTo(mymap);
            }
        </script>
+
+       <! datepicker***************************************************************************************************>
+       <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
+       <script src="{{ asset('datepicker/datepicker-fr.js') }}"></script>
+       <script>
+           $('.datepicker').datepicker({
+               language: 'fr',
+               format: 'dd-mm-yyyy',
+               todayBtn: 'linked',
+               autoclose: true,
+               todayHighlight: true
+           });
+
+           $('.dpStart').on('changeDate', function () {
+               var startDate = $('.dpStart').datepicker('getDate');
+               $('.dpEnd').datepicker(
+                   'setStartDate', startDate
+               );
+           });
+       </script>
+
+       <! Flush********************************************************************************************>
+       <script>
+           function competitionFlush() {
+               var competition = {
+                   name: $('.competitionName').val(),
+                   dateStart: $('.dpStart').val(),
+                   dateEnd: $('.dpEnd').val(),
+               };
+
+               var data = {
+                   competition: competition,
+                   location: locationData
+               };
+
+               $.ajax({
+                   url: "{{ path('location_new') }}",
+                   data: {
+                       location: data
+                   },
+                   dataType: "json",
+                   success: function (response) {
+                       console.log(response);
+                   }
+               });
+           }
+       </script>
+
    {% endblock %}
