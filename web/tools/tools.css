@@ -1,0 +1,47 @@
+.fullPage {
+    height: 90vh;
+    width: 100%;
+    position: absolute;
+    background-color: #FFFFFF;
+    z-index: 999;
+    overflow: visible;
+    left: 0;
+    top: 4em;
+}
+
+.fullPage > .loader {
+    height: 55vh; /* equals max image height */
+    width: 100%;
+    white-space: nowrap; /* this is required unless you put the helper span closely near the img */
+    text-align: center;
+    margin: 1em 0;
+    z-index: 999;
+    overflow: visible;
+    background: #ffffff url('https://loading.io/spinners/fidget-spinner/lg.fidget-spinner.gif') no-repeat center center;
+    background-size: 20%;
+}
+
+.loader-div {
+    height: 55vh; /* equals max image height */
+    width: 100%;
+    white-space: nowrap; /* this is required unless you put the helper span closely near the img */
+    text-align: center;
+    margin: 1em 0;
+    z-index: 998;
+    overflow: visible;
+    background: #ffffff url('https://media.giphy.com/media/xUPGciElNYVE4PKc4o/giphy.gif') no-repeat center center;
+    background-size: 65%;
+}
+
+.fullPage-alert-img{
+    background: #ffffff url('https://vignette.wikia.nocookie.net/camphalfbloodroleplay/images/5/5a/Checkmark.png/revision/latest?cb=20120103192321') no-repeat center center;
+    background-size: 60%;
+    margin-top: 30vh;
+    height: 5em;
+}
+
+.fullPage-alert > .alert {
+    margin-top: 30vh;
+    font-weight: bold;
+    text-align: center;
+}

@@ -168,4 +168,15 @@ class homeController extends Controller
         ));
     }
 
+    /**
+     * @Route("/load", name="load")
+     */
+    public function load()
+    {
+
+        return $this->render('home/load.html.twig');
+    }
+
+
+
 }
