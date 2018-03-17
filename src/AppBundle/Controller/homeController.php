@@ -69,14 +69,22 @@ class homeController extends Controller
 
         $competitions = $this->getDoctrine()->getRepository(Competition::class)->findAll();
 
-        $jsonPastCompetition = array();
+        $pastCompetitions = array();
+        $futureCompetitions = array();
 
         foreach ($competitions as $competition) {
 
+            $description  =
+                "<b>".$competition->getName()."</b><br>Du "
+                .$competition->getDateStart()->format('d-m')." au "
+                .$competition->getDateEnd()->format('d-m').
+                "<br> <a href='".
+                $this->generateUrl('competition_show', array('id'=>$competition->getId())).
+                "'>Voir cette compétition</a>";
 
             $properties = array(
                 'name' => $competition->getName(),
-                'description' => 'un trucR',
+                'description' => $description,
             );
 
             $geometry = array(
@@ -84,18 +92,27 @@ class homeController extends Controller
                 "coordinates" => array($competition->getLocation()->getY(),$competition->getLocation()->getX())
             );
 
-
             $feature = array(
                 "type" => "Feature",
                 "properties" => $properties,
                 "geometry" => $geometry,
             );
 
-            array_push($jsonPastCompetition, $feature);
-
+            if($competition->getDateEnd() < new \DateTime())
+            {
+                array_push($pastCompetitions, $feature);
+            }else{
+                array_push($futureCompetitions, $feature);
+            }
         }
 
-        return new JsonResponse($jsonPastCompetition);
+        $data = array(
+            "pastCompetitions" => $pastCompetitions,
+            "futureCompetitions" => $futureCompetitions
+        );
+
+
+        return new JsonResponse($data);
     }
 
 
@@ -178,5 +195,13 @@ class homeController extends Controller
     }
 
 
+    /**
+     * @Route("/map", name="map")
+     */
+    public function map()
+    {
+
+        return $this->render('home/map.html.twig');
+    }
 
 }
