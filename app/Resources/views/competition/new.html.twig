@@ -2,7 +2,8 @@
 TO DO
     LOCATION FORM
     *suivant touche entrer
-    *faire api a part pour renvoyer ville par département ou json
+    *faire api a part pour renvoyer ville par département ou json => permet de mettre fichier Json a part
+        actuellement impossible a cause asset
     *différencier label value
 
     GENERAL
@@ -21,6 +22,7 @@ TO DO
           crossorigin=""/>
     <link rel="stylesheet"
           href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="{{ asset('tools/tools.css') }}"/>
 {% endblock %}
 
     {% block body %}
@@ -78,6 +80,8 @@ TO DO
 
    {% block javascripts %}
        {{ parent() }}
+
+       <script src="{{ asset('tools/tools.js') }}"></script>
 
        <! location form********************************************************************************************>
        <script src="{{ asset('js/jqueryui.min.js') }}"></script>
@@ -164,7 +168,7 @@ TO DO
 
            //Dep**************************************************************
            function depAutocomplete() {
-               $.get("{{ asset('json/departements2.json') }}", function (data, status) {
+               $.get("{{ asset('locationForm/departements2.json') }}", function (data, status) {
                    locationInput.autocomplete({
                        source: data
                    })
@@ -178,7 +182,7 @@ TO DO
                locationInput.val('');
                locationAlert.hide();
 
-               $.get("{{ asset('json/departements3.json') }}", function (data, status) {
+               $.get("{{ asset('locationForm/departements3.json') }}", function (data, status) {
                    if (jQuery.inArray(depCode, data) !== -1) {
                        nextStep('city');
                    } else {
@@ -379,7 +383,12 @@ TO DO
                    dataType: "json",
                    success: function (response) {
                        console.log(response);
-                       window.location.href = "{{ path('competition_show_byOrganizer') }}";
+
+                       messageFullPage('Votre compétition à bien enregistrée');
+
+                       setTimeout(function () {
+                           window.location.href = "{{ path('competition_show_byOrganizer') }}";
+                       }, 3000);
                    }
                });
            }
