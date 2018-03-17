@@ -161,7 +161,7 @@ class homeController extends Controller
 
         }
 
-        var_dump($km);
+        //var_dump($km);
 
         return $this->render('home/test.html.twig', array(
             'message' => $message

@@ -12,16 +12,61 @@
 
     <style>
         .fullPage {
-            min-height: 100vh;
+            min-height: 90vh;
             min-width: 100%;
             position: absolute;
             background-color: #FFFFFF;
             z-index: 999;
         }
+
+        .fullPage > .loader {
+            height: 90vh; /* equals max image height */
+            width: 100%;
+            white-space: nowrap; /* this is required unless you put the helper span closely near the img */
+            text-align: center;
+            margin: 1em 0;
+        }
+
+        .fullPage > .loader > .helper {
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+        }
+
+        .fullPage > .loader > img {
+            vertical-align: middle;
+            max-height: 90vh;
+            max-width: 100%;
+            content: url('https://loading.io/spinners/fidget-spinner/lg.fidget-spinner.gif');
+            height: 20%;
+        }
+
+        .fullPage-alert > img {
+            content: url("https://vignette.wikia.nocookie.net/camphalfbloodroleplay/images/5/5a/Checkmark.png/revision/latest?cb=20120103192321");
+            margin-top: 25vh;
+        }
+
+        .fullPage-alert > .alert {
+            margin-top: 30vh;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .loader-div {
+            background-image: url('https://media.giphy.com/media/xUPGciElNYVE4PKc4o/giphy.gif');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            z-index: 988;
+        }
+
+
+
     </style>
 
 {% endblock %}
     {% block body %}
+
 
         <div class="container">
 
@@ -29,8 +74,12 @@
 
             <!-- Form name -->
             <div class="form-group">
-                <label>Nom</label>
-                <input type="text" class="form-control competitionName">
+
+                <div class="loader-div-hide">
+                    <label>Nom</label>
+                    <input type="text" class="form-control competitionName">
+                </div>
+
             </div>
             <hr>
 
@@ -54,7 +103,7 @@
                 <label>Localisation</label><br>
 
                 <div id="location_alert" class="alert alert-warning" role="alert" style="display: none"></div>
-
+                <div class="loader-div"></div>
                 <div id="location_form" class="col-xs-offset-1 col-xs-6">
                     <div class="form-group">
                         <label id="location_label"></label>
@@ -71,33 +120,86 @@
             <!--End  Form location -->
 
             <button class="btn btn-primary btn-md pull-right"
-                    onclick="messageFullPage()">Enregistrer la compétion
+                    onclick="messageFullPage('Compétition bien enregistrée')">Enregistrer la compétion
             </button>
+
+            <button class="btn btn-primary btn-md pull-right"
+                    onclick="loaderStart()">loader
+            </button>
+
+            <button class="btn btn-primary btn-md pull-right stop-loader-div-btn">stop load div</button>
+
         </div>
 
-        <div class="fullPage" >
-            <div class="alert alert-success col-xs-offset-2 col-xs-8" role="alert">Compétion bien
-                enregistrée
-            </div>
-        </div>
+
 
     {% endblock %}
 
    {% block javascripts %}
        {{ parent() }}
        <script>
-           function messageFullPage() {
+
+           //$(".loader-div").height($(".to-load-div").height());
+
+
+           loaderStart();
+           loaderStop();
+
+           loaderDivStart($("#location_form"));
+
+           $(".stop-loader-div-btn").click(function () {
+               loaderDivStop($("#location_form"));
+           });
+
+           function messageFullPage(message) {
 
                var fullPageDiv = document.createElement('div');
-               fullPageDiv.className = 'fullPage';
+               fullPageDiv.className = 'fullPage fullPage-alert';
                var alert = document.createElement('div');
-               alert.className = 'alert alert-success col-xs-offset-2 col-xs-8';
-               alert.append('Compétiion bien enregistrée');
+               alert.className = 'alert alert-success  col-xs-7';
+               alert.append(message);
+               var img = document.createElement('img');
+               img.className = ('col-xs-offset-2 col-xs-1')
+
+               fullPageDiv.append(img);
                fullPageDiv.append(alert);
 
+               $('.container').before(fullPageDiv);
 
-
-               $(document.body).append(fullPageDiv);
+               $(window).scrollTop(0);
            }
+
+           function loaderStart() {
+               var fullPageDiv = document.createElement('div');
+               fullPageDiv.className = 'fullPage';
+               var loader = document.createElement('div');
+               loader.className = 'loader';
+               var helper = document.createElement('span');
+               helper.className = 'helper';
+               var img = document.createElement('img');
+
+               fullPageDiv.append(loader);
+               loader.append(helper);
+               loader.append(img);
+               $('.container').before(fullPageDiv);
+               $(window).scrollTop(0);
+           }
+
+           function loaderStop() {
+               $('.fullPage').fadeOut(1000);
+           }
+
+           function loaderDivStart(divToLoad) {
+               $(".loader-div").height(divToLoad.height());
+               $(".loader-div").width(divToLoad.width());
+               divToLoad.hide();
+               $(".loader-div").show();
+           }
+
+           function loaderDivStop(divToLoad) {
+               $(".loader-div").hide();
+               divToLoad.show();
+           }
+
        </script>
    {% endblock %}
