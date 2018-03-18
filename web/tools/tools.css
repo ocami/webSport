@@ -31,6 +31,7 @@
     overflow: visible;
     background: #ffffff url('https://media.giphy.com/media/xUPGciElNYVE4PKc4o/giphy.gif') no-repeat center center;
     background-size: 65%;
+    display: none;
 }
 
 .fullPage-alert-img{

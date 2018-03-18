@@ -31,13 +31,16 @@ TO DO
         <!-- Form name -->
         <div class="form-group">
             <label>Nom</label>
+            <div id="name_alert" class="alert alert-warning" role="alert" style="display: none"></div>
             <input type="text" class="form-control competitionName">
         </div>
         <hr>
 
         <!-- Form date -->
+
         <label>Date</label>
         <div class="row">
+            <div id="date_alert" class="alert alert-warning" role="alert" style="display: none"></div>
             <div class="form-group col-lg-offset-1 col-sm-4">
                 <label>Du</label>
                 <input class="form-control datepicker dpStart">
@@ -51,10 +54,10 @@ TO DO
         <hr>
 
         <!-- Form location -->
+        <label>Localisation</label><br>
         <div class="row">
-            <label>Localisation</label><br>
-
             <div id="location_alert" class="alert alert-warning" role="alert" style="display: none"></div>
+            <div class="loader-div col-xs-offset-1 col-xs-6"></div>
 
             <div id="location_form" class="col-xs-offset-1 col-xs-6">
                 <div class="form-group">
@@ -89,6 +92,7 @@ TO DO
            var depCode;
            var cityCode;
            var locationData;
+           var locationDataIsValide = false;
 
            var locationAlert = $("#location_alert");
            var locationLabel = $("#location_label");
@@ -111,6 +115,7 @@ TO DO
                        break;
 
                    case 'depValidate' :
+                       loaderDivStart($("#location_form"));
                        depValidate();
                        break;
 
@@ -119,9 +124,11 @@ TO DO
                        locationLabel.text('Ville');
                        locationInput.attr("placeholder", "Ex : nice");
                        locationBtn.val('cityValidate');
+                       loaderDivStop($("#location_form"));
                        break;
 
                    case 'cityValidate' :
+                       loaderDivStart($("#location_form"));
                        cityValidate();
                        break;
 
@@ -130,6 +137,7 @@ TO DO
                        locationLabel.text('Adresse');
                        locationInput.attr("placeholder", "Ex : 5 Promenade des Anglais");
                        locationBtn.val('addressValidate');
+                       loaderDivStop($("#location_form"));
                        break;
 
                    case 'addressValidate' :
@@ -149,6 +157,7 @@ TO DO
                locationBtn.show();
                $('#location_form .form-group').show();
                $('.location_map').remove();
+               locationDataIsValide = false;
 
                switch (step) {
                    case 'dep' :
@@ -177,19 +186,20 @@ TO DO
 
            function depValidate() {
 
-               addShowElement(locationInput.val(), 'dep');
                depCode = locationInput.val().slice(0, 2);
-               locationInput.val('');
                locationAlert.hide();
 
                $.get("{{ asset('locationForm/departements3.json') }}", function (data, status) {
                    if (jQuery.inArray(depCode, data) !== -1) {
+                       addShowElement(locationInput.val(), 'dep');
+                       locationInput.val('');
                        nextStep('city');
                    } else {
                        nextStep('dep');
                        locationAlert.text('Veuillez sélectionner un département dans la liste');
                        locationAlert.show();
                    }
+
                });
            }
 
@@ -207,7 +217,7 @@ TO DO
 
                        locationInput.autocomplete({
                            source: cities
-                       })
+                       });
 
                    }
                });
@@ -269,10 +279,11 @@ TO DO
                            var locationFeatures = data.features[0];
                            addShowElement(locationFeatures.properties.name, 'address');
                            setLocationData(locationFeatures);
+                           locationAlert.hide();
                            nextStep('confirm');
                        } else {
                            locationAlert.text('Veuillez sélectionner une adresse dans la liste');
-                           locationAlert.hide();
+                           locationAlert.show();
                            nextStep('address');
                        }
                    }
@@ -285,6 +296,7 @@ TO DO
                map.className = "location_map";
                map.setAttribute('id', 'location_map');
                $('.next_step_btn').before(map);
+               locationDataIsValide = true;
 
                openLocationMap(locationData.x, locationData.y, 'location_map');
            }
@@ -364,6 +376,7 @@ TO DO
        <! Flush********************************************************************************************>
        <script>
            function competitionFlush() {
+
                var competition = {
                    name: $('.competitionName').val(),
                    dateStart: $('.dpStart').val(),
@@ -375,6 +388,10 @@ TO DO
                    location: locationData
                };
 
+               if(!competionFlushValidate(competition)){
+                   return;
+               }
+
                $.ajax({
                    url: "{{ path('competition_new_toFlush') }}",
                    data: {
@@ -382,16 +399,54 @@ TO DO
                    },
                    dataType: "json",
                    success: function (response) {
-                       console.log(response);
-
                        messageFullPage('Votre compétition à bien enregistrée');
-
                        setTimeout(function () {
                            window.location.href = "{{ path('competition_show_byOrganizer') }}";
                        }, 3000);
                    }
                });
            }
+
+           function competionFlushValidate(competition) {
+
+               $('.alert').hide();
+               var error = 0;
+
+               if (!competition.name.trim()) {
+                   $('#name_alert').text("Vous devez renseigner un nom");
+                   $('#name_alert').show();
+                   error ++;
+               }
+
+               if (checkDate(competition.dateStart) && checkDate(competition.dateEnd)) {
+                   $('#date_alert').text("Format de date invalide");
+                   $('#date_alert').show();
+                   error ++;
+               }
+
+               function checkDate(date) {
+                   var re = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+
+                   if (date.trim() && !date.match(re)) {
+                       return false;
+                   }
+                   return true;
+               }
+
+               if (!locationDataIsValide) {
+                   console.log('perdu !!!');
+                   locationAlert.text("La localisation n'est pas complète");
+                   locationAlert.show();
+                   error ++;
+               }
+               if(error>0){
+                   return false;
+               }
+
+               return true;
+           }
+
+
        </script>
 
    {% endblock %}

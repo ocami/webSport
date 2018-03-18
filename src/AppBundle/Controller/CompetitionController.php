@@ -1,9 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 03/01/2018
- * Time: 13:31
+/** TO DO
+
+    * newToFlush
+         Créer service pour alléger la fonction ??
+
+
  */
 
 namespace AppBundle\Controller;
@@ -122,14 +123,11 @@ class CompetitionController extends Controller
         return new JsonResponse($Data);
     }
 
-
-
-
     /**
      * @Route("/competition/edit/{id}", name="competition_edit")
      * @Security("has_role('ROLE_ORGANIZER')")
      */
-    public function editAction(Request $request, Competition $competition)
+    public function edit(Request $request, Competition $competition)
     {
         $form = $this->createForm(CompetitionType::class, $competition);
 
@@ -150,7 +148,7 @@ class CompetitionController extends Controller
      * @Route("/competition/edit_description/{id}", name="competition_edit_description")
      * @Security("has_role('ROLE_ORGANIZER')")
      */
-    public function editDescriptionAction(Request $request, Competition $competition)
+    public function editDescription(Request $request, Competition $competition)
     {
         $form = $this->createForm(CompetitionDescriptionType::class, $competition);
 
@@ -167,5 +165,59 @@ class CompetitionController extends Controller
         }
 
         return $this->render('competition/new.html.twig', array('form' => $form->createView()));
+    }
+
+    /**
+     * @Route("/competition/getGeojson", name="competition_get_geojson")
+     */
+    public function getGeoJson(Request $request)
+    {
+
+        $competitions = $this->getDoctrine()->getRepository(Competition::class)->findAll();
+
+        $pastCompetitions = array();
+        $futureCompetitions = array();
+
+        foreach ($competitions as $competition) {
+
+            $description  =
+                "<b>".$competition->getName()."</b><br>Du "
+                .$competition->getDateStart()->format('d-m')." au "
+                .$competition->getDateEnd()->format('d-m').
+                "<br> <a href='".
+                $this->generateUrl('competition_show', array('id'=>$competition->getId())).
+                "'>Voir cette compétition</a>";
+
+            $properties = array(
+                'name' => $competition->getName(),
+                'description' => $description,
+            );
+
+            $geometry = array(
+                "type" => "Point",
+                "coordinates" => array($competition->getLocation()->getY(),$competition->getLocation()->getX())
+            );
+
+            $feature = array(
+                "type" => "Feature",
+                "properties" => $properties,
+                "geometry" => $geometry,
+            );
+
+            if($competition->getDateEnd() > new \DateTime())
+            {
+                array_push($pastCompetitions, $feature);
+            }else{
+                array_push($futureCompetitions, $feature);
+            }
+        }
+
+        $data = array(
+            "pastCompetitions" => $pastCompetitions,
+            "futureCompetitions" => $futureCompetitions
+        );
+
+
+        return new JsonResponse($data);
     }
 }
