@@ -110,7 +110,6 @@ class Race
      */
     private $competitorCanEntry;
 
-
     /**
      * Constructor
      */

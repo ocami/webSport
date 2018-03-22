@@ -14,6 +14,7 @@ use AppBundle\Entity\Organizer;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\Category;
 use AppBundle\Repository\RaceCompetitorRepository;
+use AppBundle\Services\CodeService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Services\DbService;
@@ -84,22 +85,46 @@ class RaceController extends Controller
      */
     public function newAction(Request $request, Competition $competition)
     {
+        $categories = $this->getDoctrine()->getRepository(Category::class)->categoriesByGender();
+
+
+        return $this->render('race/new.html.twig', array(
+            'competition' => $competition,
+            'categories' => $categories
+        ));
+    }
+
+    /**
+     * @Route("/race/new_toFlush", name="race_new_toFlush")
+     */
+    public function newToFlush(Request $request)
+    {
+        $raceData = $request->query->get('race');
+
         $race = new Race();
-        $organizer = $this->get(UserService::class)->currentUserApp(Organizer::class);
-        $form = $this->createForm(RaceType::class, $race, array('organizer' => $organizer));
+        $competition = $this->getDoctrine()->getRepository(Competition::class)->find($raceData['competition']);
 
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+        $race->setName($raceData['name']);
+        $race->setKm($raceData['distance']);
+        $race->setCompetition($competition);
 
-            $race->setCompetition($competition);
-            $this->get(EntityService::class)->create($race);
-
-            $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée.');
-            return $this->redirectToRoute('competition_show', array('id' => $competition->getId()));
+        
+        foreach ($raceData['categories'] as $categoryId)
+        {
+            $category = $this->getDoctrine()->getRepository(Category::class)->find($categoryId);
+            $race->addCategory($category);
         }
 
-        return $this->render('race/new.html.twig', array('form' => $form->createView()));
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($race);
+        $em->flush();
+        $this->get(CodeService::class)->generateCode($race);
+
+        return new JsonResponse($race);
     }
+
+
 
     /**
      * @Route("/race_championship/{id}", name="race_new_championship")

@@ -29,13 +29,12 @@ class RaceType extends AbstractType
             ->add('categories', EntityType::class, array(
                 'class' => 'AppBundle:Category',
                 'choice_label' => 'name',
-                'multiple'     => true,
-                'expanded'     => true,
-                'query_builder' => function(CategoryRepository $cr) use($organizer) {
+                'multiple' => true,
+                'expanded' => true,
+                'query_builder' => function (CategoryRepository $cr) use ($organizer) {
                     return $cr->categoriesByOrganizer($organizer);
                 }
-                ))
-        ;
+            ));
     }
 
     /**

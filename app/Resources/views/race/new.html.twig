@@ -1,16 +1,217 @@
+{#
+TO DO
+    LOCATION FORM
+    *suivant touche entrer
+    *faire api a part pour renvoyer ville par département ou json => permet de mettre fichier Json a part
+        actuellement impossible a cause asset
+    *différencier label value
+
+    GENERAL
+    *Bouton validé actif que si tout les champs sont ok
+    *pop-up votre compétition à bien été enregistrée
+#}
+
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="{{ asset('tools/tools.css') }}"/>
+
+
+    <style>
+        fieldset.scheduler-border {
+            border: 1px groove #ddd !important;
+            padding: 0 1.4em 1.4em 1.4em !important;
+            margin: 0 0 1.5em 0 !important;
+            -webkit-box-shadow: 0px 0px 0px 0px #ababab;
+            box-shadow: 0px 0px 0px 0px #ababab;
+        }
+
+        legend.scheduler-border {
+            font-size: 1.2em !important;
+            font-weight: bold !important;
+            text-align: left !important;
+            width: auto;
+            padding: 0 10px;
+            border-bottom: none;
+        }
+    </style>
+
+
+
+{% endblock %}
+
 {% block title %}
-    {{ parent() }} index
+    {{ parent() }} Ajouter course
 {% endblock %}
 
 {% block body %}
-
     <h1>Race</h1>
 
-    {{ form_start(form, {'attr': {'class': 'my-form-class'} }) }}
-    {{ form_widget(form) }}
-    <input type="submit" value="Create" class="btn btn-default pull-right"/>
-    {{ form_end(form) }}
+    <div class="form-group">
+        <label for="email">Nom</label>
+        <input type="email" class="form-control" id="race_name">
+    </div>
+    <hr>
+
+    <div class="form-group">
+        <label for="email">Distance (km)</label>
+        <input type="email" class="form-control" id="race_distance">
+    </div>
+    <hr>
+
+    <label>Catégories</label><br><br>
+    <div class="alert alert-warning alert-categories" role="alert" style="display: none"></div>
+
+    <label><input class="cbCategories cbCategories-all" type="checkbox" name="all">Toutes catégories</label><br><br>
+
+    {% for key,gender in categories %}
+        <fieldset class="col-xs-6 scheduler-border categories-fieldset">
+            <legend class="scheduler-border">{{ key }}</legend>
+            <div class="control-group">
+                {% for c in gender %}
+                    <label><input class="cbCategories category-{{ c.id }} category-once" type="checkbox"
+                                  name="{{ c.code }}"
+                                  value="{{ c.id }}">{{ c.name }}</label>
+                {% endfor %}
+            </div>
+        </fieldset>
+    {% endfor %}
+
+    <br>
+
+    <div class="row">
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <div class='input-group date' id='datetimepicker3'>
+                    <input type='text' class="form-control" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-time"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+
+
+    <br>
+    <button class="btn btn-primary btn-md pull-right" onclick="raceFlush()">Enregistrer la course</button>
+
 
 {% endblock %}
+
+ {% block javascripts %}
+     {{ parent() }}
+
+     <script src="{{ asset('tools/tools.js') }}"></script>
+
+     <! checkbox********************************************************************************************************>
+     <script src="{{ asset('js/jqueryui.min.js') }}"></script>
+     <script>
+
+         var cbAll = $('.cbCategories-all');
+
+         function raceFlush() {
+
+             var race = {
+                 name : $('#race_name').val(),
+                 distance :$('#race_distance').val(),
+                 categories: getCategories(),
+                 competition: {{ competition.id }}
+             };
+
+             if(!raceFlushValidate(race)){
+                 return;
+             }
+
+             $.ajax({
+                 url: "{{ path('race_new_toFlush') }}",
+                 data: {
+                     race: race
+                 },
+                 dataType: "json",
+                 success: function (response) {
+                     messageFullPage('Votre course à bien enregistrée');
+                 }
+             });
+
+             function raceFlushValidate(race) {
+
+                 $('.alert').hide();
+                 var error = 0;
+
+                 /*
+                 if (!competition.name.trim()) {
+                     $('#name_alert').text("Vous devez renseigner un nom");
+                     $('#name_alert').show();
+                     error ++;
+                 }
+                 */
+                 if(error>0){
+                     return false;
+                 }
+
+                 return true;
+             }
+
+         }
+
+         function getCategories() {
+
+             var categories = [];
+
+             $('.category-once').each(function () {
+                 if (this.checked) {
+                     categories.push($(this).val());
+                 }
+             });
+
+             if (categories.length === 0) {
+                 $('.alert-categories').text('Vous devez choisir une catégorie minimum');
+                 $('.alert-categories').show();
+
+             }
+
+             return categories;
+
+         }
+
+         // Initalize widgets
+         $(function () {
+             $(".cbCategories").checkboxradio();
+         });
+
+         $('.cbCategories').click(function () {
+                 $('.alert-categories').hide();
+             }
+         );
+
+         cbAll.change(function () {
+             if (this.checked) {
+                 $(".category-once").prop('checked',true).checkboxradio('refresh')
+
+             } else {
+                 $(".category-once").prop('checked',false).checkboxradio('refresh')
+             }
+         });
+
+     </script>
+
+      <! datepicker***************************************************************************************************>
+       <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
+       <script src="{{ asset('datepicker/datepicker-fr.js') }}"></script>
+       <script>
+           $('#datetimepicker3').datepicker({
+               language: 'fr',
+               format: 'dd-mm-yyyy',
+               todayBtn: 'linked',
+               autoclose: true,
+               todayHighlight: true
+           });
+
+
+       </script>
+
+
+ {% endblock %}

@@ -88,11 +88,11 @@ class homeController extends Controller
      */
     public function data_import()
     {
-        $message = 'mon message';
+        $message = 'categories ok';
 
         $ds = $this->get(DbService::class);
 
-        $message = $ds->generateOrganizers();
+        $message = $ds->generateChampionship();
 
         return $this->render('home/dataImport.html.twig', array(
             'message' => $message

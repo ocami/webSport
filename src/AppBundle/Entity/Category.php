@@ -8,13 +8,11 @@
 
 namespace AppBundle\Entity;
 
-
 use AppBundle\Services\CodeService;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use AppBundle\Repository\CategoryRepository;
-
 
 /**
  * category
