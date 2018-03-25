@@ -37,7 +37,7 @@ class RaceNewType extends AbstractType
         // ... render the form
     }
 
-
+    
     /**
      * {@inheritdoc}
      */
