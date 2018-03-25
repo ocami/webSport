@@ -17,7 +17,8 @@ TO DO
     {{ parent() }}
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="{{ asset('tools/tools.css') }}"/>
-
+    <link rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.css">
 
     <style>
         fieldset.scheduler-border {
@@ -36,9 +37,33 @@ TO DO
             padding: 0 10px;
             border-bottom: none;
         }
+
+        .time-input input {
+            height: 100%;
+            width: 100%;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .time-input .separator {
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .date-show {
+            font-size: 20px;
+            text-align: center;
+            margin-top: 2em;
+            margin-bottom: 2em;
+        }
+
+        #datepicker {
+            float: none;
+            margin: 0 auto;
+        }
+
+
     </style>
-
-
 
 {% endblock %}
 
@@ -49,83 +74,174 @@ TO DO
 {% block body %}
     <h1>Race</h1>
 
-    <div class="form-group">
-        <label for="email">Nom</label>
-        <input type="email" class="form-control" id="race_name">
-    </div>
-    <hr>
+    <form action="{{ path('race_new', {'id':competition.id}) }}" method="post" id="race-form" data-toggle="validator" role="form">
 
-    <div class="form-group">
-        <label for="email">Distance (km)</label>
-        <input type="email" class="form-control" id="race_distance">
-    </div>
-    <hr>
+        <!--Name-->
+        <div class="form-group has-feedback">
+            <label for="name" class="control-label">Nom</label>
+            <input id="name" type="text" pattern="^[_A-z0-9]{1,}$" minlength="3" maxlength="25" class="form-control"
+                   data-error="Utiliser uniquement des caractères alpha-numériques [A-z 0-9]. Entre 3 et 25 caractères"
+                   required>
+            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+            <div class="help-block with-errors">Entre 3 et 25 caractères alaphanumériques</div>
 
-    <label>Catégories</label><br><br>
-    <div class="alert alert-warning alert-categories" role="alert" style="display: none"></div>
-
-    <label><input class="cbCategories cbCategories-all" type="checkbox" name="all">Toutes catégories</label><br><br>
-
-    {% for key,gender in categories %}
-        <fieldset class="col-xs-6 scheduler-border categories-fieldset">
-            <legend class="scheduler-border">{{ key }}</legend>
-            <div class="control-group">
-                {% for c in gender %}
-                    <label><input class="cbCategories category-{{ c.id }} category-once" type="checkbox"
-                                  name="{{ c.code }}"
-                                  value="{{ c.id }}">{{ c.name }}</label>
-                {% endfor %}
-            </div>
-        </fieldset>
-    {% endfor %}
-
-    <br>
-
-    <div class="row">
-        <div class='col-sm-6'>
-            <div class="form-group">
-                <div class='input-group date' id='datetimepicker3'>
-                    <input type='text' class="form-control" />
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-time"></span>
-                    </span>
-                </div>
-            </div>
         </div>
+        <hr>
+        <!--Distance-->
+        <div class="form-group has-feedback">
+            <label for="distance" class="control-label">Distance</label>
+            <input id="distance" type="text" pattern="^[_0-9]{1,}$" minlength="1" maxlength="4" class="form-control"
+                   required>
+            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+            <div class="help-block with-errors">En km entre 1 et 999,99</div>
+        </div>
+        <hr>
+        <!--Date Time-->
+        <div class="form-group has-feedback">
+            <label for="date-time" class="control-label">Date</label>
+            <input id="date-time" style="display: none" type="text" minlength="1" class="form-control"  required
+                   data-error="Format de date non valide">
+        </div>
+        {% include 'tools/time_input.html.twig' %}
+        <hr>
+        <!--Categories -->
+        <div class="form-group has-feedback">
+            <label for="categories" class="control-label">Categories</label>
+            <input id="categories" style="display: none" type="text" minlength="1" class="form-control" 
+                   required>
+        </div>
+        {% include 'tools/cb_categories.html.twig' %}
 
+        <!--Submit -->
+        <div class="form-group">
+            <button class="btn btn-primary">Valider cette course</button>
+        </div>
+    </form>
 
-
-    <br>
-    <button class="btn btn-primary btn-md pull-right" onclick="raceFlush()">Enregistrer la course</button>
-
-
+        <button onclick="raceFlush()"  class="btn btn-primary">Valider cette course</button>
 {% endblock %}
 
  {% block javascripts %}
      {{ parent() }}
 
      <script src="{{ asset('tools/tools.js') }}"></script>
+     <script src="{{ asset('js/validator.js') }}"></script>
 
-     <! checkbox********************************************************************************************************>
+     <! checkbox categories********************************************************************************************************>
      <script src="{{ asset('js/jqueryui.min.js') }}"></script>
      <script>
 
          var cbAll = $('.cbCategories-all');
+         var cbOnce = $('.category-once');
+         var cbForm = $('#categories');
 
+         var categories;
+
+         // Initalize
+         cbAll.checkboxradio();
+         cbOnce.checkboxradio();
+
+         cbAll.click(function () {
+             if (this.checked)
+                 cbOnce.prop('checked', true).checkboxradio('refresh')
+              else
+                 cbOnce.prop('checked', false).checkboxradio('refresh')
+
+             categoriesUpdate();
+         });
+
+         cbOnce.click(function () {
+             categoriesUpdate()
+         });
+
+         function categoriesUpdate() {
+             var i = 0;
+             categories = [];
+             $('.category-once').each(function () {
+                 i++;
+                 if (this.checked)
+                     categories.push($(this).val());
+             });
+
+             if (categories.length < i)
+                 cbAll.prop('checked', false).checkboxradio('refresh');
+
+             if (categories.length > 0)
+                 cbForm.val(JSON.stringify(categories));
+             else
+                 cbForm.val('');
+
+             cbForm.trigger('change');
+         }
+     </script>
+
+     <! datepicker***************************************************************************************************>
+     <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
+     <script src="{{ asset('datepicker/datepicker-fr.js') }}"></script>
+     <script>
+         var dp = $('#datepicker');
+
+         dp.datepicker({
+             useCurrent: true,
+             language: 'fr',
+             format: 'dd-mm-yyyy',
+             startDate: "{{ competition.dateStart | date('d-m-Y') }}",
+             endDate: "{{ competition.dateEnd | date('d-m-Y') }}"
+         });
+         dp.datepicker('update', "{{ competition.dateStart | date('d-m-Y') }}");
+         dateString();
+
+         dp.on('changeDate', function () {
+             dateString();
+         });
+
+         function dateString() {
+             $('.date-show').text(
+                 dp.datepicker('getUTCDate').toLocaleDateString('fr-FR', {
+                         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                     }
+                 ));
+         }
+     </script>
+
+     <! TimePicker***************************************************************************************************>
+     <script>
+         $('.time-input input').change(function () {
+             var hour = $('#time-hour').val();
+             var minute = $('#time-minute').val();
+             var dt = $('#date-time');
+
+             if ($.isNumeric(hour) && $.isNumeric(minute)) {
+                 if (hour <= 23 && minute <= 59) {
+                     dt.val(dp.datepicker('getFormattedDate') + '-' + hour + '-' + minute);
+                 } else {
+                     dt.val('');
+                 }
+             } else {
+                 console.log('none isnumeric');
+                 console.log('false');
+                 dt.val('');
+             }
+             dt.trigger('change');
+         });
+     </script>
+
+     <! Flush***************************************************************************************************>
+     <script>
          function raceFlush() {
 
              var race = {
-                 name : $('#race_name').val(),
-                 distance :$('#race_distance').val(),
-                 categories: getCategories(),
+                 name: $('#name').val(),
+                 distance: $('#distance').val(),
+                 dateTime: $('#date-time').val(),
+                 categories: $('#categories').val(),
                  competition: {{ competition.id }}
              };
 
-             if(!raceFlushValidate(race)){
-                 return;
-             }
+             console.log(race);
 
-             $.ajax({
+             {#
+                          $.ajax({
                  url: "{{ path('race_new_toFlush') }}",
                  data: {
                      race: race
@@ -136,82 +252,8 @@ TO DO
                  }
              });
 
-             function raceFlushValidate(race) {
-
-                 $('.alert').hide();
-                 var error = 0;
-
-                 /*
-                 if (!competition.name.trim()) {
-                     $('#name_alert').text("Vous devez renseigner un nom");
-                     $('#name_alert').show();
-                     error ++;
-                 }
-                 */
-                 if(error>0){
-                     return false;
-                 }
-
-                 return true;
-             }
-
+             #}
          }
-
-         function getCategories() {
-
-             var categories = [];
-
-             $('.category-once').each(function () {
-                 if (this.checked) {
-                     categories.push($(this).val());
-                 }
-             });
-
-             if (categories.length === 0) {
-                 $('.alert-categories').text('Vous devez choisir une catégorie minimum');
-                 $('.alert-categories').show();
-
-             }
-
-             return categories;
-
-         }
-
-         // Initalize widgets
-         $(function () {
-             $(".cbCategories").checkboxradio();
-         });
-
-         $('.cbCategories').click(function () {
-                 $('.alert-categories').hide();
-             }
-         );
-
-         cbAll.change(function () {
-             if (this.checked) {
-                 $(".category-once").prop('checked',true).checkboxradio('refresh')
-
-             } else {
-                 $(".category-once").prop('checked',false).checkboxradio('refresh')
-             }
-         });
 
      </script>
-
-      <! datepicker***************************************************************************************************>
-       <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
-       <script src="{{ asset('datepicker/datepicker-fr.js') }}"></script>
-       <script>
-           $('#datetimepicker3').datepicker({
-               language: 'fr',
-               format: 'dd-mm-yyyy',
-               todayBtn: 'linked',
-               autoclose: true,
-               todayHighlight: true
-           });
-
-
-       </script>
-
-
  {% endblock %}

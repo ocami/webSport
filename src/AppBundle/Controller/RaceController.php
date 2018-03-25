@@ -87,6 +87,41 @@ class RaceController extends Controller
     {
         $categories = $this->getDoctrine()->getRepository(Category::class)->categoriesByGender();
 
+        if ($request->isMethod('POST')) {
+
+            /**
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($category);
+            $em->flush();
+            $this->get(CodeService::class)->generateCode($category);
+            **/
+
+            $race = new Race();
+            $categories = $request->query->get('categories');
+
+            var_dump($request->query);
+
+            var_dump('----------------');
+
+            $categories = json_decode($request->query->get('categories'), true);
+
+            var_dump($categories);
+
+
+            $race->setName($request->query->get('name'));
+            $race->setKm($request->get('distance'));
+            $race->setDate($request->get('name'));
+
+            foreach ($categories as $category){
+                $race->addCategory($this->getDoctrine()->getRepository(Category::class)->find($category));
+            }
+
+            var_dump($race);
+
+            $request->getSession()->getFlashBag()->add('notice', 'Votre course est bien enregistrée');
+            return $this->redirectToRoute('competition_show',array('id'=>$competition->getId()));
+        }
+
 
         return $this->render('race/new.html.twig', array(
             'competition' => $competition,

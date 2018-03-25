@@ -60,10 +60,6 @@ class homeController extends Controller
         return $this->render('home/index.html.twig', array('competitions' => $jsonPastCompetition));
     }
 
-
-
-
-
     /**
      * @Route("/becomeAdmin", name="becomeAdmin")
      */
@@ -106,15 +102,11 @@ class homeController extends Controller
     {
         $message = 'mon message';
 
-
+/* distance course
         $str = file_get_contents('..\web\gpx\trace.json');
-
         $trace = json_decode($str, true);
-
         $tabDistance = $trace[0]['tabDistance'];
-
         $km = 0;
-
         for($i=0;$i < count($tabDistance);$i++)
         {
             for ($x=0;$x<count($tabDistance[$i]);$x++)
@@ -125,9 +117,8 @@ class homeController extends Controller
             }
 
         }
-
         //var_dump($km);
-
+*/
         return $this->render('home/test.html.twig', array(
             'message' => $message
         ));

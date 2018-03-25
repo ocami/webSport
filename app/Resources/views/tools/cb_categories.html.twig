@@ -1,0 +1,14 @@
+<label><input class="cbCategories cbCategories-all" type="checkbox" name="all">Toutes catégories</label><br><br>
+
+{% for key,gender in categories %}
+    <fieldset class="col-xs-6 scheduler-border categories-fieldset">
+        <legend class="scheduler-border">{{ key }}</legend>
+        <div class="control-group">
+            {% for c in gender %}
+                <label><input class="cbCategories category-{{ c.id }} category-once" type="checkbox"
+                              name="{{ c.code }}"
+                              value="{{ c.id }}">{{ c.name }}</label>
+            {% endfor %}
+        </div>
+    </fieldset>
+{% endfor %}
