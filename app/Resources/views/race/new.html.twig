@@ -17,6 +17,7 @@ TO DO
     {{ parent() }}
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="{{ asset('tools/tools.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('myDateTime/myDateTime.css') }}"/>
     <link rel="stylesheet"
           href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.css">
 
@@ -38,30 +39,14 @@ TO DO
             border-bottom: none;
         }
 
-        .time-input input {
-            height: 100%;
-            width: 100%;
-            text-align: center;
-            font-size: 20px;
-        }
+        .abcd {
+            border-radius: 30px 30px 30px 30px;
+            -moz-border-radius: 30px 30px 30px 30px;
+            -webkit-border-radius: 30px 30px 30px 30px;
+            border: 8px solid #c8d424;
 
-        .time-input .separator {
-            font-size: 20px;
-            text-align: center;
+            padding: 1em 1em 1em 1em;
         }
-
-        .date-show {
-            font-size: 20px;
-            text-align: center;
-            margin-top: 2em;
-            margin-bottom: 2em;
-        }
-
-        #datepicker {
-            float: none;
-            margin: 0 auto;
-        }
-
 
     </style>
 
@@ -71,55 +56,68 @@ TO DO
     {{ parent() }} Ajouter course
 {% endblock %}
 
-{% block body %}
-    <h1>Race</h1>
+ {% block body %}
 
-    <form action="{{ path('race_new', {'id':competition.id}) }}" method="post" id="race-form" data-toggle="validator" role="form">
+     {{ form_start(form, {'attr': {'data-toggle': 'validator', 'role':'form'}}) }}
 
-        <!--Name-->
-        <div class="form-group has-feedback">
-            <label for="name" class="control-label">Nom</label>
-            <input id="name" type="text" pattern="^[_A-z0-9]{1,}$" minlength="3" maxlength="25" class="form-control"
-                   data-error="Utiliser uniquement des caractères alpha-numériques [A-z 0-9]. Entre 3 et 25 caractères"
-                   required>
-            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-            <div class="help-block with-errors">Entre 3 et 25 caractères alaphanumériques</div>
+     <!--Name-->
+     <div class="form-group has-feedback abcd">
+         <label for="name" class="control-label">Nom</label>
+         {{ form_widget(form.name, {'attr':
+             {'id':"name",
+                 'type':"text",
+                 'pattern':"^[_A-z0-9]{1,}$",
+                 'minlength':"3",
+                 'maxlength':"25",
+                 'class':"form-control",
+                 'data-error':"Utiliser uniquement des caractères alpha-numériques [A-z 0-9]. Entre 3 et 25 caractères",
+                 'required':'true'}}) }}
+         <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+         <div class="help-block with-errors">Entre 3 et 25 caractères alaphanumériques</div>
 
-        </div>
-        <hr>
-        <!--Distance-->
-        <div class="form-group has-feedback">
-            <label for="distance" class="control-label">Distance</label>
-            <input id="distance" type="text" pattern="^[_0-9]{1,}$" minlength="1" maxlength="4" class="form-control"
-                   required>
-            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-            <div class="help-block with-errors">En km entre 1 et 999,99</div>
-        </div>
-        <hr>
-        <!--Date Time-->
-        <div class="form-group has-feedback">
-            <label for="date-time" class="control-label">Date</label>
-            <input id="date-time" style="display: none" type="text" minlength="1" class="form-control"  required
-                   data-error="Format de date non valide">
-        </div>
-        {% include 'tools/time_input.html.twig' %}
-        <hr>
-        <!--Categories -->
-        <div class="form-group has-feedback">
-            <label for="categories" class="control-label">Categories</label>
-            <input id="categories" style="display: none" type="text" minlength="1" class="form-control" 
-                   required>
-        </div>
-        {% include 'tools/cb_categories.html.twig' %}
+     </div>
 
-        <!--Submit -->
-        <div class="form-group">
-            <button class="btn btn-primary">Valider cette course</button>
-        </div>
-    </form>
+     <!--Distance-->
+     <div class="form-group has-feedback abcd">
+         {{ form_widget(form.distance, {'attr':{
+             'style':"display: none",
+             'type':"number",
+             'min':"1",
+             'class':"form-control distance-input",
+             'required':'true'}}) }}
+         {% include 'race/widget/distance.html.twig' %}
+     </div>
 
-        <button onclick="raceFlush()"  class="btn btn-primary">Valider cette course</button>
-{% endblock %}
+     <!--Categories -->
+     <div class="form-group has-feedback abcd">
+         <label for="categories" class="control-label">Categories</label><br><br>
+         {{ form_widget(form.categoriesString, {'attr':  {
+             'type':"text",
+             'min':"1",
+             'style':"display: none",
+             'class':"form-control categories-input",
+             'required':'true'}}) }}
+
+         {% include 'race/widget/categories.html.twig' %}
+     </div>
+
+     <!--Date Time-->
+     <div class="form-group has-feedback ">
+         <label for="date-time" class="control-label">Date</label>
+         {{ form_widget(form.dateString, {'attr':  {
+             'type':"text",
+             'min':"1",
+             'style':"display: block",
+             'class':"form-control date-time-input result",
+             'data-error':"Format de date non valide",
+             'required':'true'}}) }}
+
+         <div id="myDateTime" class="col-xs-6"></div>
+     </div>
+
+     {{ form_end(form) }}
+
+ {% endblock %}
 
  {% block javascripts %}
      {{ parent() }}
@@ -127,13 +125,21 @@ TO DO
      <script src="{{ asset('tools/tools.js') }}"></script>
      <script src="{{ asset('js/validator.js') }}"></script>
 
+     <! distance********************************************************************************************************>
+     <script>
+         $('#distance-widget').change(function () {
+             $('.distance-input').val($('#distance-widget').val())
+         })
+
+     </script>
+
      <! checkbox categories********************************************************************************************************>
      <script src="{{ asset('js/jqueryui.min.js') }}"></script>
      <script>
 
          var cbAll = $('.cbCategories-all');
          var cbOnce = $('.category-once');
-         var cbForm = $('#categories');
+         var catInput = $('.categories-input');
 
          var categories;
 
@@ -144,7 +150,7 @@ TO DO
          cbAll.click(function () {
              if (this.checked)
                  cbOnce.prop('checked', true).checkboxradio('refresh')
-              else
+             else
                  cbOnce.prop('checked', false).checkboxradio('refresh')
 
              categoriesUpdate();
@@ -153,6 +159,20 @@ TO DO
          cbOnce.click(function () {
              categoriesUpdate()
          });
+
+         {% for category in race.categories %}
+         $('.category-once').each(function () {
+
+             if ($(this).val() == {{ category.id }} ) {
+                 $(this).prop('checked', true).checkboxradio('refresh');
+                 console.log({{ category.id }})
+             }
+             categoriesUpdate();
+
+         });
+
+         {% endfor %}
+
 
          function categoriesUpdate() {
              var i = 0;
@@ -167,93 +187,37 @@ TO DO
                  cbAll.prop('checked', false).checkboxradio('refresh');
 
              if (categories.length > 0)
-                 cbForm.val(JSON.stringify(categories));
+                 catInput.val(JSON.stringify(categories));
              else
-                 cbForm.val('');
+                 catInput.val('');
 
-             cbForm.trigger('change');
+             catInput.trigger('change');
          }
      </script>
 
      <! datepicker***************************************************************************************************>
      <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
      <script src="{{ asset('datepicker/datepicker-fr.js') }}"></script>
+     <script src="{{ asset('myDateTime/myDataTime.js') }}"></script>
+
      <script>
-         var dp = $('#datepicker');
 
-         dp.datepicker({
-             useCurrent: true,
-             language: 'fr',
-             format: 'dd-mm-yyyy',
-             startDate: "{{ competition.dateStart | date('d-m-Y') }}",
-             endDate: "{{ competition.dateEnd | date('d-m-Y') }}"
+         {% if race.dateTime is null %}
+         defaultDate = "{{ race.competition.dateStart | date('Y-m-d') }}";
+         defaultHour = 15;
+         defaultMinute = 45;
+         {% else %}
+         defaultDate = {{ race.dateTime | date('Y-m-d') }};
+         defaultHour = {{ race.dateTime | date('H') }};
+         defaultMinute = {{ race.dateTime | date('i') }};
+         {% endif %}
+
+         myDatapiker({
+             startDate: "{{ race.competition.dateStart | date('Y-m-d') }}",
+             endDate: "{{ race.competition.dateEnd | date('Y-m-d') }}",
+             defaultDate: defaultDate,
+             defaultHour: defaultHour,
+             defaultMinute: defaultMinute
          });
-         dp.datepicker('update', "{{ competition.dateStart | date('d-m-Y') }}");
-         dateString();
-
-         dp.on('changeDate', function () {
-             dateString();
-         });
-
-         function dateString() {
-             $('.date-show').text(
-                 dp.datepicker('getUTCDate').toLocaleDateString('fr-FR', {
-                         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-                     }
-                 ));
-         }
-     </script>
-
-     <! TimePicker***************************************************************************************************>
-     <script>
-         $('.time-input input').change(function () {
-             var hour = $('#time-hour').val();
-             var minute = $('#time-minute').val();
-             var dt = $('#date-time');
-
-             if ($.isNumeric(hour) && $.isNumeric(minute)) {
-                 if (hour <= 23 && minute <= 59) {
-                     dt.val(dp.datepicker('getFormattedDate') + '-' + hour + '-' + minute);
-                 } else {
-                     dt.val('');
-                 }
-             } else {
-                 console.log('none isnumeric');
-                 console.log('false');
-                 dt.val('');
-             }
-             dt.trigger('change');
-         });
-     </script>
-
-     <! Flush***************************************************************************************************>
-     <script>
-         function raceFlush() {
-
-             var race = {
-                 name: $('#name').val(),
-                 distance: $('#distance').val(),
-                 dateTime: $('#date-time').val(),
-                 categories: $('#categories').val(),
-                 competition: {{ competition.id }}
-             };
-
-             console.log(race);
-
-             {#
-                          $.ajax({
-                 url: "{{ path('race_new_toFlush') }}",
-                 data: {
-                     race: race
-                 },
-                 dataType: "json",
-                 success: function (response) {
-                     messageFullPage('Votre course à bien enregistrée');
-                 }
-             });
-
-             #}
-         }
-
      </script>
  {% endblock %}

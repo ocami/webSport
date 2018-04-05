@@ -6,8 +6,8 @@
                     <h3 class="panel-title" >{{ race.name }}</h3>
                 </div>
                 <div class="panel-body">
-                    Départ le {{ race.date|date("d/m/Y") }} à {{ race.time|date('H:i') }}<br>
-                    Distance : {{ race.km }}<br>
+                    Départ le {{ race.dateTime|date("d/m/Y") }} à {{ race.dateTime|date('H:i') }}<br>
+                    Distance : {{ race.distance }}<br>
                     Catégories :<br>
                     {% for category in race.categories %}
                         <span style="margin-left: 1em">{{ category.name }} {{ category.sexe }} {{ category.ageMax }} / {{ category.ageMin }}</span><br>

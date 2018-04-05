@@ -8,8 +8,10 @@
 
 namespace AppBundle\Services;
 
+use AppBundle\Entity\Category;
 use AppBundle\Entity\Competitor;
 use AppBundle\Entity\Organizer;
+use AppBundle\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -24,7 +26,10 @@ class UserService
     private $cs;
     private $user;
 
-    public function __construct(TokenStorageInterface $ts, AuthorizationCheckerInterface $ac, EntityManagerInterface $em, CodeService $cs)
+    public function __construct(TokenStorageInterface $ts,
+                                AuthorizationCheckerInterface $ac,
+                                EntityManagerInterface $em,
+                                CodeService $cs)
     {
         $this->ts = $ts;
         $this->ac = $ac;
@@ -97,4 +102,25 @@ class UserService
         }
     }
 
+    /**
+     * @param Competitor $competitor
+     * @return Category
+     */
+    public function getCategoryCompetitor()
+    {
+        $categories = $this->em->getRepository(Category::class)->findAll();
+        $competitor = $this->currentUserApp(Competitor::class);
+        $competitorYear = $competitor->getDate()->format('Y');
+
+        foreach ($categories as $category) {
+
+            if ($competitorYear < $category->getAgeMin()
+                && $competitorYear > $category->getAgeMax()
+                && $category->getSexe() == $competitor->getSexe()
+            )
+                return  $competitor->setCategory($category);
+        }
+
+        return $competitor;
+    }
 }

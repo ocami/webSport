@@ -6,6 +6,11 @@
  * Time: 17:05
  */
 
+/**TO DO
+ *
+ * - decalage entre user et competitor
+ *
+ */
 namespace AppBundle\Services;
 
 use AppBundle\Entity\Category;
@@ -88,7 +93,7 @@ class DbService
         $json = file_get_contents("../src/AppBundle/nameM.json");
         $datas = json_decode($json, true);
 
-        $i = 1;
+        $i = 0;
         foreach ($datas as $data) {
             $i++;
             if ($i == 91)
@@ -124,7 +129,7 @@ class DbService
         $json = file_get_contents("../src/AppBundle/nameF.json");
         $datas = json_decode($json, true);
 
-        $i = 91;
+        $i = 90;
         foreach ($datas as $data) {
             $i++;
             if ($i == 181)

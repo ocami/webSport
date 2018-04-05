@@ -54,7 +54,6 @@ class Competitor
      */
     private $lastName;
 
-
     /**
      * @var string
      *
@@ -69,7 +68,6 @@ class Competitor
      */
     private $date;
 
-
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\ChampionshipCompetitor",mappedBy="competitor")
      */
@@ -80,6 +78,10 @@ class Competitor
      */
     private $races;
 
+    /**
+     * @var Category
+     */
+    private $category;
 
     /**
      * Constructor
@@ -255,8 +257,6 @@ class Competitor
         return $this->championships;
     }
 
-
-
     /**
      * Add race
      *
@@ -292,12 +292,12 @@ class Competitor
     }
 
     /**
-     * Set code
-     *
-     * @param string $code
-     *
-     * @return Competitor
-     */
+ * Set code
+ *
+ * @param string $code
+ *
+ * @return Competitor
+ */
     public function setCode($code)
     {
         $this->code = $code;
@@ -313,5 +313,29 @@ class Competitor
     public function getCode()
     {
         return $this->code;
+    }
+
+    /**
+     * Set category
+     *
+     * @param string $category
+     *
+     * @return Competitor
+     */
+    public function setCategory($category)
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * Get category
+     *
+     * @return string
+     */
+    public function getCategory()
+    {
+        return $this->category;
     }
 }

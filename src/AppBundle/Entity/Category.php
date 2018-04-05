@@ -76,7 +76,6 @@ class Category
      */
     private $races;
 
-
     /**
      * Constructor
      */

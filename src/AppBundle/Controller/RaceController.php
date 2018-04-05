@@ -29,6 +29,7 @@ use AppBundle\Entity\Post;
 use AppBundle\Form\RaceType;
 use AppBundle\Form\RaceChampionshipType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use AppBundle\Form\RaceNewType;
 
 
 class RaceController extends Controller
@@ -87,45 +88,37 @@ class RaceController extends Controller
     {
         $categories = $this->getDoctrine()->getRepository(Category::class)->categoriesByGender();
 
-        if ($request->isMethod('POST')) {
+        $race = new Race();
+        $race-> setCompetition($competition);
+        $form = $this->createForm(RaceNewType::class, $race);
 
-            /**
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($category);
-            $em->flush();
-            $this->get(CodeService::class)->generateCode($category);
-            **/
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-            $race = new Race();
-            $categories = $request->query->get('categories');
+            $categoriesId = json_decode($race->getCategoriesString());
 
-            var_dump($request->query);
-
-            var_dump('----------------');
-
-            $categories = json_decode($request->query->get('categories'), true);
-
-            var_dump($categories);
-
-
-            $race->setName($request->query->get('name'));
-            $race->setKm($request->get('distance'));
-            $race->setDate($request->get('name'));
-
-            foreach ($categories as $category){
-                $race->addCategory($this->getDoctrine()->getRepository(Category::class)->find($category));
+            foreach($categoriesId as $categoryId){
+                $race->addCategory($this->getDoctrine()->getRepository(Category::class)->find($categoryId));
             }
 
-            var_dump($race);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($race);
+            $em->persist($competition);
+            $em->flush();
+            $this->get(CodeService::class)->generateCode($race);
 
-            $request->getSession()->getFlashBag()->add('notice', 'Votre course est bien enregistrée');
-            return $this->redirectToRoute('competition_show',array('id'=>$competition->getId()));
+            $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée');
+
+            return $this->render('race/new.html.twig', array(
+                'race' => $race,
+                'categories' => $categories,
+                'form' => $form->createView()
+            ));
         }
 
-
         return $this->render('race/new.html.twig', array(
-            'competition' => $competition,
-            'categories' => $categories
+            'race' => $race,
+            'categories' => $categories,
+            'form' => $form->createView()
         ));
     }
 

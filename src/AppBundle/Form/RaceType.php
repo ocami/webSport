@@ -11,6 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use AppBundle\Services\MessageGenerator;
 use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class RaceType extends AbstractType
 {
@@ -34,7 +35,9 @@ class RaceType extends AbstractType
                 'query_builder' => function (CategoryRepository $cr) use ($organizer) {
                     return $cr->categoriesByOrganizer($organizer);
                 }
-            ));
+            ))
+            ->add('send', SubmitType::class)
+        ;
     }
 
     /**

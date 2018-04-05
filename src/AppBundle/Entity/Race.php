@@ -46,25 +46,25 @@ class Race
     private $name;
 
     /**
-     * @var int
+     * @var float
      *
-     * @ORM\Column(name="km", type="integer", nullable=true)
+     * @ORM\Column(name="distance", type="float", nullable=true)
      */
-    private $km;
+    private $distance;
 
     /**
-     * @var Date
+     * @var string
      *
-     * @ORM\Column(name="date", type="date", nullable=true)
+     * @ORM\Column(name="date_string", type="string", nullable=true)
      */
-    private $date;
+    private $dateString;
 
     /**
-     * @var Time
+     * @var \DateTime
      *
-     * @ORM\Column(name="time", type="time", nullable=true)
+     * @ORM\Column(name="dateTime", type="datetime", nullable=true)
      */
-    private $time;
+    private $dateTime;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Competition", inversedBy ="races")
@@ -81,6 +81,13 @@ class Race
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Category", inversedBy ="races")
      */
     private $categories;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="categories_string", type="string", nullable=true)
+     */
+    private $categoriesString;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\RaceCompetitor",mappedBy="race")
@@ -178,75 +185,75 @@ class Race
     }
 
     /**
-     * Set km
+     * Set distance
      *
-     * @param integer $km
+     * @param float $distance
      *
      * @return Race
      */
-    public function setKm($km)
+    public function setDistance($distance)
     {
-        $this->km = $km;
+        $this->distance = $distance;
 
         return $this;
     }
 
     /**
-     * Get km
+     * Get distance
      *
      * @return integer
      */
-    public function getKm()
+    public function getDistance()
     {
-        return $this->km;
+        return $this->distance;
     }
 
     /**
-     * Set date
+     * Set dateString
      *
-     * @param \DateTime $date
+     * @param string $dateString
      *
      * @return Race
      */
-    public function setDate($date)
+    public function setDateString($dateString)
     {
-        $this->date = $date;
+        $this->dateString = $dateString;
+        $this->dateTime = new \DateTime($dateString);
 
         return $this;
     }
 
     /**
-     * Get date
+     * Get dateString
      *
-     * @return \DateTime
+     * @return string
      */
-    public function getDate()
+    public function getDateString()
     {
-        return $this->date;
+        return $this->dateString;
     }
 
     /**
-     * Set time
+     * Set dateTime
      *
-     * @param \DateTime $time
+     * @param \DateTime $dateTime
      *
      * @return Race
      */
-    public function setTime($time)
+    public function setDateTime($dateTime)
     {
-        $this->time = $time;
-
+        $this->dateTime = $dateTime;
         return $this;
     }
 
     /**
-     * Get time
+     * Get dateTime
      *
      * @return \DateTime
      */
-    public function getTime()
+    public function getDateTime()
     {
-        return $this->time;
+        return $this->dateTime;
     }
 
     /**
@@ -308,6 +315,29 @@ class Race
     }
 
     /**
+     * Set categoriesString
+     *
+     * @param string $categoriesString
+     *
+     * @return Race
+     */
+    public function setCategoriesString($categoriesString)
+    {
+        $this->categoriesString = $categoriesString;
+        return $this;
+    }
+
+    /**
+     * Get categoriesString
+     *
+     * @return string
+     */
+    public function getCategoriesString()
+    {
+        return $this->categoriesString;
+    }
+
+    /**
      * Add category
      *
      * @param \AppBundle\Entity\Category $category
@@ -340,7 +370,6 @@ class Race
     {
         return $this->categories;
     }
-
 
 
     /**
