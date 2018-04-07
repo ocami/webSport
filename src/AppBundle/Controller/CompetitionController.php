@@ -13,6 +13,7 @@ use AppBundle\Entity\Competition;
 use AppBundle\Entity\Location;
 use AppBundle\Entity\Organizer;
 use AppBundle\Services\CodeService;
+use AppBundle\Services\GeoJsonService;
 use AppBundle\Services\UserService;
 use AppBundle\ServicesArg\AntiSpam;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -172,52 +173,9 @@ class CompetitionController extends Controller
      */
     public function getGeoJson(Request $request)
     {
+        $competitor = $request->query->get('competitor');
 
-        $competitions = $this->getDoctrine()->getRepository(Competition::class)->findAll();
-
-        $pastCompetitions = array();
-        $futureCompetitions = array();
-
-        foreach ($competitions as $competition) {
-
-            $description  =
-                "<b>".$competition->getName()."</b><br>Du "
-                .$competition->getDateStart()->format('d-m')." au "
-                .$competition->getDateEnd()->format('d-m').
-                "<br> <a href='".
-                $this->generateUrl('competition_show', array('id'=>$competition->getId())).
-                "'>Voir cette compétition</a>";
-
-            $properties = array(
-                'name' => $competition->getName(),
-                'description' => $description,
-            );
-
-            $geometry = array(
-                "type" => "Point",
-                "coordinates" => array($competition->getLocation()->getY(),$competition->getLocation()->getX())
-            );
-
-            $feature = array(
-                "type" => "Feature",
-                "properties" => $properties,
-                "geometry" => $geometry,
-            );
-
-            if($competition->getDateEnd() > new \DateTime())
-            {
-                array_push($pastCompetitions, $feature);
-            }else{
-                array_push($futureCompetitions, $feature);
-            }
-        }
-
-        $data = array(
-            "pastCompetitions" => $pastCompetitions,
-            "futureCompetitions" => $futureCompetitions
-        );
-
-
-        return new JsonResponse($data);
+        return new JsonResponse($this->get(GeoJsonService::class)->competitions($competitor));
     }
+
 }

@@ -97,7 +97,12 @@ class RaceController extends Controller
             $categoriesId = json_decode($race->getCategoriesString());
 
             foreach($categoriesId as $categoryId){
-                $race->addCategory($this->getDoctrine()->getRepository(Category::class)->find($categoryId));
+                $category  = $this->getDoctrine()->getRepository(Category::class)->find($categoryId);
+
+                $race->addCategory($category);
+
+                if(!$competition->getCategories()->contains($category))
+                    $competition->addCategory($category);
             }
 
             $em = $this->getDoctrine()->getManager();
@@ -151,8 +156,6 @@ class RaceController extends Controller
 
         return new JsonResponse($race);
     }
-
-
 
     /**
      * @Route("/race_championship/{id}", name="race_new_championship")

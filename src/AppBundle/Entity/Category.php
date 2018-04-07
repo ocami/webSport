@@ -77,11 +77,17 @@ class Category
     private $races;
 
     /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Competition", mappedBy ="categories")
+     */
+    private $competitions;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->races = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->competitions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -271,6 +277,50 @@ class Category
     {
         return $this->races;
     }
+
+    /**
+     * Add competition
+     *
+     * @param \AppBundle\Entity\Competition $competition
+     *
+     * @return category
+     */
+    public function addCompetition(\AppBundle\Entity\Competition $competition)
+    {
+        $this->competitions[] = $competition;
+
+        return $this;
+    }
+
+    /**
+     * Remove competition
+     *
+     * @param \AppBundle\Entity\Competition $competition
+     */
+    public function removeCompetition(\AppBundle\Entity\Competition $competition)
+    {
+        $this->competitions->removeElement($competition);
+    }
+
+    /**
+     * Get competitions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCompetitions()
+    {
+        return $this->competitions;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 
     /**

@@ -14,6 +14,7 @@ use AppBundle\Entity\Competition;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\RaceCompetitor;
 use AppBundle\Form\RaceNewType;
+use AppBundle\Services\CompetitionService;
 use AppBundle\Services\DbService;
 use AppBundle\Services\RanckService;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -41,32 +42,12 @@ class homeController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $jsonPastCompetition = array();
-
-        $properties = array(
-            'name' => 'la compétition',
-            'description' => 'la description',
-        );
-
-        $geometry = array(
-            "type" => "Point",
-            "coordinates" => array(2.43896484375, 46.52863469527167)
-        );
-
-        $feature = array(
-            "type" => "Feature",
-            "properties" => $properties,
-            "geometry" => $geometry,
-        );
-
+        $competitor = null;
         if ($this->get('security.authorization_checker')->isGranted('ROLE_COMPETITOR'))
             $competitor = $this->get(UserService::class)->getCategoryCompetitor();
 
-        array_push($jsonPastCompetition, $feature);
-
         return $this->render('home/index.html.twig', array(
-            'competitions' => $jsonPastCompetition,
-            'competitor' => $competitor
+            'competitor' => $competitor,
         ));
     }
 

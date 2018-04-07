@@ -2,72 +2,39 @@
 /**
  * Created by PhpStorm.
  * User: alex
- * Date: 14/01/2018
- * Time: 08:21
+ * Date: 10/01/2018
+ * Time: 20:18
  */
 
 namespace AppBundle\Services;
 
+use AppBundle\Entity\Category;
+use AppBundle\Entity\Championship;
+use AppBundle\Entity\Competition;
 use AppBundle\Entity\Competitor;
+use AppBundle\Entity\Organizer;
+use AppBundle\Entity\Race;
+use AppBundle\Entity\RaceCompetitor;
 use Doctrine\ORM\EntityManagerInterface;
+
 
 class RaceService
 {
     private $em;
-    private $us;
 
-    public function __construct(EntityManagerInterface $em, UserService $us)
+    public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->us = $us;
     }
 
-    public function competitorCanEntry($race)
+
+    public function generateCode($entity)
     {
-        $competitor = $this->us->currentUserApp(Competitor::class);
-        $competitorYear = $competitor->getDate()->format('Y');
 
-        $race->setCompetitorCanEntry(false);
 
-        foreach ($race->getCategories() as $category) {
-            if ($competitorYear <= $category->getAgeMin() AND $competitorYear >= $category->getAgeMax()) {
 
-                if ($competitorYear < $category->getAgeMin() AND $competitorYear > $category->getAgeMax()) {
-                    $race->setCompetitorCanEntry(true);
-                    return $race;
-                }
 
-            }
-        }
-        return $race;
-    }
 
-    public function competitorCanRegister($race)
-    {
-        $competitor = $this->us->currentUserApp(Competitor::class);
-        $competitorYear = $competitor->getDate()->format('Y');
-
-        $race->setCompetitorCanEntry(false);
-
-        foreach ($race->getCategories() as $category) {
-            if ($competitorYear <= $category->getAgeMin() AND $competitorYear >= $category->getAgeMax()) {
-
-                if ($competitorYear < $category->getAgeMin() AND $competitorYear > $category->getAgeMax()) {
-                    $race->setCompetitorCanEntry(true);
-                    return $race;
-                }
-
-            }
-        }
-        return $race;
-    }
-
-    public function racesCompetitorCanEntry($races)
-    {
-        foreach ($races as $race) {
-            $race = $this->competitorCanEntry($race);
-        }
-        return $races;
     }
 
 }

@@ -37,11 +37,8 @@ class AddressController extends Controller
      */
     public function getCitiesData(Request $request)
     {
-
         $villeSlug = $request->query->get('ville_slug');
-
         $city = $this->getDoctrine()->getRepository(Address::class)->citiesDataToString($villeSlug);
-
         return new JsonResponse($city);
     }
 

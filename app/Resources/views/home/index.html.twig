@@ -15,12 +15,19 @@
         #indexMap {
             height: 400px;
         }
+
+        .leaflet-popup-img{
+            height: 3em;
+        }
+
     </style>
 {% endblock %}
 
 {% block body %}
 
-    {{ competitor.category.name }} <br><br>
+    {% if is_granted('ROLE_AUTEUR') %}
+        {{ competitor.category.name }} <br><br>
+    {% endif %}
 
     <div class="col-xs-offset-1 col-xs-10" id="indexMap"></div>
 
@@ -65,9 +72,21 @@
 
         });
 
+        //circle
+        var circle = L.circle({
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5,
+            radius: 500
+        });
+
+
+        competitor = {{ competitor.id }};
+
         // data********************************************************************************************************>
         $.ajax({
             url: "{{ path('competition_get_geojson') }}",
+            data: { competitor : competitor },
             dataType: "json",
             success: function (data) {
                 mapConstructor(data);
@@ -78,14 +97,15 @@
         function mapConstructor(data) {
 
             //Build layers **************************************************************************************************>
-            var FuturCompetitionLayer = layerBuild(data.futureCompetitions,pastIcon);
-            var PastCompetitionLayer = layerBuild(data.pastCompetitions,futureIcon);
+            var FuturCompetitionLayer = layerBuild(data.futureCompetitions, pastIcon);
+            var PastCompetitionLayer = layerBuild(data.pastCompetitions, futureIcon);
+            var competitorLayer = layerBuildCircle(data.competitorCanRegister, circle);
 
             //Build map **************************************************************************************************>
             var map = L.map('indexMap', {
                 center: [46.52863469527167, 2.43896484375],
                 zoom: 5,
-                layers: [osmLayer, PastCompetitionLayer, FuturCompetitionLayer]
+                layers: [osmLayer, PastCompetitionLayer, FuturCompetitionLayer, competitorLayer]
             });
 
             //Layers Control **************************************************************************************************>
@@ -112,6 +132,22 @@
                 return layer.feature.properties.description;
             });
         }
+
+
+
+        function layerBuildCircle(data, circle) {
+            return L.geoJSON(data, {
+                pointToLayer: function (geoJsonPoint, latlng) {
+                    return L.circle(latlng,{
+                        color: 'red',
+                        fillColor: '#f03',
+                        fillOpacity: 0.5,
+                        radius: 500
+                    });
+                }
+            });
+        }
+
     </script>
 
 {% endblock %}

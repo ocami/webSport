@@ -81,11 +81,17 @@ class Competition
     private $races;
 
     /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Category", inversedBy ="competitions")
+     */
+    private $categories;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->races = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -370,5 +376,40 @@ class Competition
     public function getDescription()
     {
         return $this->description;
+    }
+
+
+    /**
+     * Add category
+     *
+     * @param \AppBundle\Entity\Category $category
+     *
+     * @return Race
+     */
+    public function addCategory(\AppBundle\Entity\Category $category)
+    {
+        $this->categories[] = $category;
+        $category->addCompetition($this);
+        return $this;
+    }
+
+    /**
+     * Remove category
+     *
+     * @param \AppBundle\Entity\Category $category
+     */
+    public function removeCategory(\AppBundle\Entity\Category $category)
+    {
+        $this->categories->removeElement($category);
+    }
+
+    /**
+     * Get categories
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCategories()
+    {
+        return $this->categories;
     }
 }
