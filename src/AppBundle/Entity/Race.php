@@ -102,6 +102,12 @@ class Race
 
     /**
      * @var Boolean
+     * @ORM\Column(name="request_in_championship", type="boolean")
+     */
+    private $requestInChampionship = false;
+
+    /**
+     * @var Boolean
      * @ORM\Column(name="enrol", type="boolean")
      */
     private $enrol = true;
@@ -429,12 +435,12 @@ class Race
     }
 
     /**
-     * Set inChampionship
-     *
-     * @param boolean $inChampionship
-     *
-     * @return Race
-     */
+ * Set inChampionship
+ *
+ * @param boolean $inChampionship
+ *
+ * @return Race
+ */
     public function setInChampionship($inChampionship)
     {
         $this->inChampionship = $inChampionship;
@@ -450,6 +456,30 @@ class Race
     public function getInChampionship()
     {
         return $this->inChampionship;
+    }
+
+    /**
+     * Set requestInChampionship
+     *
+     * @param boolean $requestInChampionship
+     *
+     * @return Race
+     */
+    public function setRequestInChampionship($requestInChampionship)
+    {
+        $this->requestInChampionship = $requestInChampionship;
+
+        return $this;
+    }
+
+    /**
+     * Get requestInChampionship
+     *
+     * @return boolean
+     */
+    public function getRequestInChampionship()
+    {
+        return $this->requestInChampionship;
     }
 
     /**

@@ -111,8 +111,6 @@ class homeController extends Controller
                 //var_dump($km);
         */
 
-        $race = new Race();
-        $form = $this->createForm(RaceNewType::class, $race);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
@@ -141,7 +139,6 @@ class homeController extends Controller
 
         return $this->render('home/test.html.twig', array(
             'message' => $message,
-            'form' => $form->createView()
         ));
     }
 

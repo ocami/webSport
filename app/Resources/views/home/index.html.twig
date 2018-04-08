@@ -80,13 +80,9 @@
             radius: 500
         });
 
-
-        competitor = {{ competitor.id }};
-
         // data********************************************************************************************************>
         $.ajax({
             url: "{{ path('competition_get_geojson') }}",
-            data: { competitor : competitor },
             dataType: "json",
             success: function (data) {
                 mapConstructor(data);
@@ -132,8 +128,6 @@
                 return layer.feature.properties.description;
             });
         }
-
-
 
         function layerBuildCircle(data, circle) {
             return L.geoJSON(data, {

@@ -18,6 +18,7 @@ use AppBundle\Entity\RaceCompetitor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\RouterInterface;
 use AppBundle\Services\UserService;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 
 class GeoJsonService
@@ -27,14 +28,19 @@ class GeoJsonService
     private $router;
     private $us;
 
-    public function __construct(EntityManagerInterface $em, RouterInterface $router, UserService $us)
+    public function __construct(
+        EntityManagerInterface $em,
+        RouterInterface $router,
+        UserService $us,
+        AuthorizationChecker $ac)
     {
         $this->em = $em;
         $this->router = $router;
         $this->us = $us;
+        $this->ac = $ac;
     }
 
-    public function competiton($competition, $competitor)
+    public function competiton(Competition $competition)
     {
         $description =
             "<b>" . $competition->getName() . "</b><br>Du "
@@ -46,8 +52,7 @@ class GeoJsonService
             <img class='leaflet-popup-img' src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXi35igLJx_E5h8IZ032FB1XSldp8d6h4iVUm9BXWI8Mi7O17Hcg'/>
             
 ";
-
-        if ($competitor != null) {
+        if ($this->ac->isGranted('ROLE_COMPETITOR')){
             $competitor = $this->us->getCategoryCompetitor();
 
             if ($competition->getCategories()->contains($competitor->getCategory()))
@@ -94,7 +99,7 @@ class GeoJsonService
         return $feature;
     }
 
-    public function competitions($competitor)
+    public function competitions()
     {
         $pastCompetitions = array();
         $futureCompetitions = array();
@@ -105,9 +110,9 @@ class GeoJsonService
         foreach ($competitions as $competition) {
 
             if ($competition->getDateEnd() > new \DateTime()) {
-                array_push($pastCompetitions, $this->competiton($competition, $competitor));
+                array_push($pastCompetitions, $this->competiton($competition));
             } else {
-                array_push($futureCompetitions, $this->competiton($competition, $competitor));
+                array_push($futureCompetitions, $this->competiton($competition));
                 //array_push($containsCompetitorCategoryCompetitions, $this->competitorCanRegister($competition));
             }
         }

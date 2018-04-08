@@ -29,6 +29,7 @@ class RaceNewType extends AbstractType
             ->add('distance')
             ->add('dateString')
             ->add('categoriesString')
+            ->add('requestInChampionship')
         ;
     }
 

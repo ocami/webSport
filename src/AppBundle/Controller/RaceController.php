@@ -15,6 +15,7 @@ use AppBundle\Entity\Race;
 use AppBundle\Entity\Category;
 use AppBundle\Repository\RaceCompetitorRepository;
 use AppBundle\Services\CodeService;
+use AppBundle\Services\RaceService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Services\DbService;
@@ -65,8 +66,8 @@ class RaceController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_COMPETITOR')")
      * @Route("/race/competitor", name="races_by_competitor")
+     * @Security("has_role('ROLE_COMPETITOR')")
      */
     public function showByCompetitor()
     {
@@ -94,22 +95,7 @@ class RaceController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-            $categoriesId = json_decode($race->getCategoriesString());
-
-            foreach($categoriesId as $categoryId){
-                $category  = $this->getDoctrine()->getRepository(Category::class)->find($categoryId);
-
-                $race->addCategory($category);
-
-                if(!$competition->getCategories()->contains($category))
-                    $competition->addCategory($category);
-            }
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($race);
-            $em->persist($competition);
-            $em->flush();
-            $this->get(CodeService::class)->generateCode($race);
+            $this->get(RaceService::class)->raceFlush($race);
 
             $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée');
 
@@ -125,63 +111,6 @@ class RaceController extends Controller
             'categories' => $categories,
             'form' => $form->createView()
         ));
-    }
-
-    /**
-     * @Route("/race/new_toFlush", name="race_new_toFlush")
-     */
-    public function newToFlush(Request $request)
-    {
-        $raceData = $request->query->get('race');
-
-        $race = new Race();
-        $competition = $this->getDoctrine()->getRepository(Competition::class)->find($raceData['competition']);
-
-
-        $race->setName($raceData['name']);
-        $race->setKm($raceData['distance']);
-        $race->setCompetition($competition);
-
-        
-        foreach ($raceData['categories'] as $categoryId)
-        {
-            $category = $this->getDoctrine()->getRepository(Category::class)->find($categoryId);
-            $race->addCategory($category);
-        }
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($race);
-        $em->flush();
-        $this->get(CodeService::class)->generateCode($race);
-
-        return new JsonResponse($race);
-    }
-
-    /**
-     * @Route("/race_championship/{id}", name="race_new_championship")
-     * @Security("has_role('ROLE_ORGANIZER')")
-     */
-    public function newInChampionshipAction(Request $request, Competition $competition)
-    {
-        $race = new Race();
-        $form = $this->createForm(RaceChampionshipType::class, $race);
-
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-
-            $race->setCompetition($competition);
-            $race->setInChampionship(true);
-
-            foreach ($race->getChampionships() as $championship) {
-                $race->addCategory($championship->getCategory());
-            }
-
-            $this->get(EntityService::class)->create($race);
-
-            $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée.');
-            return $this->redirectToRoute('competition_show', array('id' => $competition->getId()));
-        }
-
-        return $this->render('race/new.html.twig', array('form' => $form->createView()));
     }
 
     /**
