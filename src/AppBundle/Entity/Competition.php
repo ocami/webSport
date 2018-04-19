@@ -378,7 +378,6 @@ class Competition
         return $this->description;
     }
 
-
     /**
      * Add category
      *

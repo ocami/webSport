@@ -10,6 +10,99 @@
         <link rel="stylesheet" href="{{ asset('css/main.css') }}"/>
         <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"/>
         <link rel="stylesheet" href="{{ asset('css/jquery.dataTables.css') }}"/>
+
+
+        <style>
+            .navbar-primary {
+                background-color: #333;
+                bottom: 0px;
+                left: 0px;
+                position: absolute;
+                top: 51px;
+                width: 200px;
+                height : 100vh;
+                z-index: 8;
+                overflow: hidden;
+                -webkit-transition: all 0.1s ease-in-out;
+                -moz-transition: all 0.1s ease-in-out;
+                transition: all 0.1s ease-in-out;
+            }
+
+            .navbar-primary.collapsed {
+                width: 60px;
+            }
+
+            .navbar-primary.collapsed .glyphicon {
+                font-size: 22px;
+            }
+
+            .navbar-primary.collapsed .nav-label {
+                display: none;
+            }
+
+            .btn-expand-collapse {
+                position: absolute;
+                display: block;
+                left: 0px;
+                bottom: 0;
+                width: 100%;
+                padding: 8px 0;
+                border-top: solid 1px #666;
+                color: grey;
+                font-size: 20px;
+                text-align: center;
+            }
+
+            .btn-expand-collapse:hover,
+            .btn-expand-collapse:focus {
+                background-color: #222;
+                color: white;
+            }
+
+            .btn-expand-collapse:active {
+                background-color: #111;
+            }
+
+            .navbar-primary-menu,
+            .navbar-primary-menu li {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+            }
+
+            .navbar-primary-menu li a {
+                display: block;
+                padding: 10px 18px;
+                text-align: left;
+                border-bottom: solid 1px #444;
+                color: #ccc;
+            }
+
+            .navbar-primary-menu li a:hover {
+                background-color: #000;
+                text-decoration: none;
+                color: white;
+            }
+
+            .navbar-primary-menu li a .glyphicon {
+                margin-right: 6px;
+            }
+
+            .navbar-primary-menu li a:hover .glyphicon {
+                color: orchid;
+            }
+
+            .main-content {
+                margin-top: 60px;
+                margin-left: 200px;
+                padding: 20px;
+            }
+
+            .collapsed + .main-content {
+                margin-left: 60px;
+            }
+        </style>
+
     {% endblock %}
 
     <script src="{{ asset('js/jquery.min.js') }}"></script>
@@ -17,24 +110,26 @@
 
 <body>
 
+
 {% include 'navbar/general.html.twig' %}
 
-{% block breadcrumb %}
-{% endblock %}
 
-{% if is_granted('ROLE_ORGANIZER') %}
-    <div id="organizer_menu">
-        {% block organizer_menu %}
-        {% endblock %}
-    </div>
-{% endif %}
 
-{% if is_granted('ROLE_ADMIN') %}
-    <div id="admin_menu">
-        {% block admin_menu %}
-        {% endblock %}
-    </div>
-{% endif %}
+<div class="main-content">
+
+    {% if is_granted('ROLE_ORGANIZER') %}
+        <div id="organizer_menu">
+            {% block organizer_menu %}
+            {% endblock %}
+        </div>
+    {% endif %}
+
+    {% if is_granted('ROLE_ADMIN') %}
+        {#
+        {% include 'navbar/admin.html.twig' %}
+        #}
+
+    {% endif %}
 
     {% for label, messages in app.flashes %}
         {% for message in messages %}
@@ -43,23 +138,34 @@
             </div>
         {% endfor %}
     {% endfor %}
-<div class="container">
 
-    {% block body %}
-    {% endblock %}
 
-</div>
-<hr>
+    <div class="container-fluid">
 
-<footer>
-    <p>The sky's the limit © {{ 'now'|date('Y') }} and beyond.</p>
-</footer>
+        {% block body %}
+        {% endblock %}
+
+    </div>
+
+    <hr>
+
+    <footer>
+        <p>The sky's the limit © {{ 'now'|date('Y') }} and beyond.</p>
+    </footer>
 </div>
 
 {% block javascripts %}
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/jquery.dataTables.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
+
+
+    <script>
+        $('.btn-expand-collapse').click(function (e) {
+            $('.navbar-primary').toggleClass('collapsed');
+        });
+    </script>
+
 {% endblock %}
 
 </body>

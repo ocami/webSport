@@ -8,24 +8,10 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\AppBundle;
-use AppBundle\Entity\Category;
-use AppBundle\Entity\Championship;
-use AppBundle\Entity\Competition;
-use AppBundle\Entity\Competitor;
-use AppBundle\Entity\User;
-use AppBundle\Entity\Organizer;
 use AppBundle\Entity\Race;
-use AppBundle\Services\RaceService;
-use AppBundle\Services\DbService;
-use AppBundle\ServicesArg\AntiSpam;
-use AppBundle\Repository\RaceRepository;
-use AppBundle\Services\CodeService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use AppBundle\Services\UserService;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use AppBundle\Services\MessageGenerator;
 
 
@@ -40,6 +26,18 @@ class AdminController extends Controller
 
         return $this->render('admin/index.html.twig', array(
             'races' => $races
-            ));
+        ));
+    }
+
+    /**
+     * @Route("/admin/races", name="admin_races")
+     */
+    public function racesAction(Request $request)
+    {
+        $races = $this->getDoctrine()->getRepository(Race::class)->findAll();
+
+        return $this->render('admin/races.html.twig', array(
+            'races' => $races
+        ));
     }
 }

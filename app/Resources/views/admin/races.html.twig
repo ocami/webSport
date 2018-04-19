@@ -1,0 +1,156 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.2.5/css/select.bootstrap.min.css"/>
+
+    <style>
+
+
+        #example span {
+            display: none;
+        }
+
+        #example .championship {
+            white-space: nowrap; /* this is required unless you put the helper span closely near the img */
+            text-align: center;
+            overflow: visible;
+            /*background: #ffffff url('https://image.flaticon.com/icons/svg/291/291201.svg') no-repeat center center;*/
+            background:  url('http://robwilson.tv/wordpress/wp-content/uploads/2008/12/Question-mark.png') no-repeat center center;
+            background-size: 25%;
+        }
+    </style>
+
+
+{% endblock %}
+
+
+{% block title %}
+    {{ parent() }} Admin-races
+{% endblock %}
+
+{% block body %}
+
+    <h1>Admin races</h1>
+
+    <table id="example" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <th></th>
+            <th>id</th>
+            <th>Nom</th>
+            <th>Ville</th>
+            <th>Orga.</th>
+            <th>Date</th>
+            <th>Champ.</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for race in races %}
+            <tr>
+                <td></td>
+                <td>{{ race.id }}</td>
+                <td>{{ race.name }}</td>
+                <td>{{ race.competition.location.postCode }} {{ race.competition.location.city }}</td>
+                <td>{{ race.name }}</td>
+                <td><span>{{ race.dateTime | date("Ymd") }}</span> {{ race.dateTime | date("d/m/Y") }}</td>
+                <td {% if race.requestInChampionship == 1 %} class="championship" {% endif %}>
+                    <span>{{ race.requestInChampionship }}</span></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    <div class="raceSelected"></div>
+    <button type="button" class="btn btn-dark prev">Dark</button>
+    <button type="button" class="btn btn-dark next">Dark</button>
+
+
+{% endblock %}
+ {% block javascripts %}
+     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+     <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+     <script src="https://cdn.datatables.net/select/1.2.5/js/dataTables.select.min.js"></script>
+     <script src="https://cdn.datatables.net/plug-ins/1.10.16/sorting/date-de.js"></script>
+
+     <script>
+
+         var raceSeclected;
+         var indexSelected;
+
+         var table = $('#example').DataTable({
+             select: {
+                 style: 'single',
+                 selector: 'td:first-child'
+             },
+             columns: [
+                 {data: 'checkbox'},
+                 {data: 'id'},
+                 {data: 'name'},
+                 {data: 'organizer'},
+                 {data: 'city'},
+                 {data: 'date'},
+                 {data: 'championship'}
+             ],
+             columnDefs: [
+                 {
+                     targets: 0,
+                     orderable: false,
+                     className: 'select-checkbox',
+                     width: "5%"
+                 },
+                 {
+                     targets: 1,
+                     visible: false
+                 },
+                 {
+                     targets: 5,
+                     width: "20%"
+                 },
+                 {
+                     targets: 6,
+                     width: "5%"
+                 }
+             ]
+         });
+
+         table.on('select', function (e, dt, type, indexes) {
+             var rowData = table.rows(indexes).data().toArray();
+             raceSeclected = rowData[0]['id'];
+             indexSelected = table.row(indexes).index();
+         })
+
+         $('.prev').click(function () {
+             var index = indexSelected + 1;
+             table.row(':eq('+index+')', { page: 'all' }).select();
+         });
+
+         $('.next').click(function () {
+             var index = indexSelected - 1;
+             table.row(':eq('+index+')', { page: 'all' }).select();
+         });
+
+         {#
+                  $.ajax({
+            url: "{{ path('race_json') }}",
+             success: function (result) {
+                 console.log(result);
+                 $('#table_id').dataTable({
+                     destroy: true,
+                     data: result,
+                     order: [3, "dsc"],
+                     columns: [
+                         {data: 'code'},
+                         {data: 'name'}
+                     ]
+                 });
+             }
+         });
+
+         #}
+     </script>
+ {% endblock %}

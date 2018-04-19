@@ -211,4 +211,14 @@ class RaceController extends Controller
 
         return $this->redirectToRoute('race_show',array('id'=>$race->getId()));
     }
+
+    /**
+     * @Route("race/race_json", name="race_json")
+     */
+    public function racesJson()
+    {
+        $races = $this->getDoctrine()->getRepository(Race::class)->toString();
+
+        return new JsonResponse($races);
+    }
 }

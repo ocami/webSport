@@ -21,7 +21,7 @@ function loaderStart() {
     var loader = document.createElement('div');
     loader.className = 'loader';
     fullPageDiv.append(loader);
-    $('.container').before(fullPageDiv);
+    $('.container-fluid').before(fullPageDiv);
     $(window).scrollTop(0);
 }
 

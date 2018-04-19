@@ -3,7 +3,6 @@
 namespace AppBundle\Repository;
 
 
-
 /**
  * RaceRepository
  *
@@ -17,10 +16,25 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
     {
         return $this->createQueryBuilder('a')
             ->select('MAX(e.id)')
-            ->from('AppBundle:'.$class, 'e')
+            ->from('AppBundle:' . $class, 'e')
             ->getQuery()
             ->getSingleScalarResult();
     }
 
+    public function toString()
+    {
+        $races = $this->createQueryBuilder('r')
+            ->innerJoin('r.competition', 'c')
+            //->select('r.code, r.name, r.dateString, r.inChampionship, c.code')
+            ->select('r.id, r.name, r.dateTime')
+            ->getQuery()->getResult();
+
+        for ($i = 0; $i < count($races); $i++) {
+            $races[$i]['checkbox'] = '';
+            $races[$i]['date'] = date_format($races[$i]['dateTime'], 'd-m-Y');;
+        }
+
+        return $races;
+    }
 
 }
