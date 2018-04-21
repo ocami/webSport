@@ -311,17 +311,6 @@ class Category
     {
         return $this->competitions;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
 
     /**
      * @Assert\Callback

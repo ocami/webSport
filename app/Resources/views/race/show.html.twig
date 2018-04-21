@@ -1,18 +1,45 @@
-{% extends 'base.html.twig' %}
 
-{% block title %}
-    {{ parent() }} index
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+          integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+          crossorigin=""/>
+
+    <style>
+        .isChampionship {
+            width: 10em;
+            height: 4em;
+        }
+
+        .inChampionship {
+            white-space: nowrap; /* this is required unless you put the helper span closely near the img */
+            text-align: center;
+            overflow: visible;
+            /*background: #ffffff url('https://image.flaticon.com/icons/svg/291/291201.svg') no-repeat center center;*/
+            background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXi35igLJx_E5h8IZ032FB1XSldp8d6h4iVUm9BXWI8Mi7O17Hcg') no-repeat center center;
+            background-size: 25%;
+        }
+
+    </style>
+
+
+
 {% endblock %}
 
+
 {% block breadcrumb %}
+    {#
     <ol class="breadcrumb">
         <li><a href="{{ path('competition_show_all') }}">Toutes les compétitions</a></li>
         <li><a href="{{ path('competition_show', {'id':race.competition.id} ) }}">{{ race.competition.name }}</a></li>
         <li class="active">{{ race.name }}</li>
     </ol>
+    #}
 {% endblock %}
 
 {% block organizer_menu %}
+    {#
     {% if isOrganizer == true %}
         {% if race.enrol == true %}
             <input type="button" class="btn-xs btn-success" value="Clore les inscriptions"
@@ -27,183 +54,95 @@
                    onclick="location.href = '{{ path('race_competitorsTimes', {'id':race.id} ) }}';">
         {% endif %}
     {% endif %}
+    #}
+
 {% endblock %}
 
 {% block body %}
 
-    <br>
+    <h2 style="text-align: center"><span class="competition"></span> / <span class="race_name"></span></h2>
+    <div>Organisateur : <span class="organizer"></span></div>
 
+    <div style="margin-top: 2em">
+        <div class="row" style="text-align: center">
+            <div class="col-xs-6 date" style="font-size: 20px">
+                <div class="date-day"></div>
+                <div class="date-hour"></div>
+            </div>
 
-    <button class="btn-xs btn-primary" onclick="requestForTableGeneral({{ race.id }})">Classement général</button>
-        {% for c in categories %}
-        <button class="btn-xs btn-info" onclick="requestForTableCategory({{ race.id }}, {{ c.id }}, '{{ c.name }}')">{{ c.name }}</button>
-    {% endfor %}
+            <div class="col-xs-4" style="font-size: 20px"><span class="distance"></span> Km</div>
 
-    <br><br>
-
-    <h1 id="category"></h1>
-
-    <div id="loader"></div>
-
-    <div id="tables">
-        {% if race.inChampionship == true %}
-            <div id="buttons"></div>
-        {% endif %}
-
-        <div id="tableRace">
-            <table id="dataTableRace" cellspacing="0" width="100%">
-                <thead>
-                <tr>
-                    <th>Dossard</th>
-                    <th>Nom</th>
-                    <th>Prénom</th>
-                    <th>Classement</th>
-                    <th>Temps</th>
-                </tr>
-                </thead>
-            </table>
+            <div class="col-xs-2 isChampionship"></div>
         </div>
 
-        <div id="tableChampionship">
-            <table id="dataTableChampionship" cellspacing="0" width="100%">
-                <thead>
-                <tr>
-                    <th>Classement</th>
-                    <th>Nom</th>
-                    <th>Prénom</th>
-                    <th>Points</th>
-                </tr>
-                </thead>
-            </table>
+        <div class="row" style="margin-top: 1em">
+            <div class="col-xs-3 location" style="font-size: 18px">
+                <div class="adress"></div>
+                <div class="city"></div>
+            </div>
+            <div id="mapId" class="col-xs-4"></div>
+
+            <div class="col-xs-5">
+                <ul class="col-xs-6 categories1"></ul>
+                <ul class="col-xs-6 categories2"></ul>
+            </div>
         </div>
     </div>
 
 
-    <script>
-        $(document).ready(function () {
-            requestForTableGeneral({{ race.id }});
-            $('#tables').css('display', 'none');
-            $('#loader').css('display', 'block');
-        });
 
-        function requestForTableGeneral(idRace) {
-            var path = "{{ path('race_Table') }}";
-            var request = {idRace: idRace};
-            displayTable(path, request);
-            load(true);
-            etat('general');
-        }
 
-        function requestForTableCategory(idRace, idCategory, nameCategory) {
-            var path = "{{ path('race_categoryTable') }}";
-            var request = {idRace: idRace, idCategory: idCategory};
-            displayTable(path, request);
-            $('#category').text(nameCategory);
-            $('#buttons').children("button").remove();
-            $('#buttons').append("<button id=\"championshipButton\" onclick=\"requestForTableChampionship("+idRace+", "+idCategory+", ' "+nameCategory+" ')\">Championat</button>");
-            load(true);
-            etat('category');
-
-        }
-
-        function requestForTableChampionship(idRace, idCategory, nameCategory) {
-            var path = "{{ path('championship_json') }}";
-            var request = {idCategory: idCategory};
-            displayTableChampionship(path, request);
-            $('#buttons').children("button").remove();
-            $('#buttons').append("<button id=\"raceButton\" onclick=\"requestForTableCategory("+idRace+", "+idCategory+",' "+nameCategory+" ')\">Course</button>");
-            load(true);
-            etat('championship');
-        }
-
-        function displayTable(path, request) {
-            $.ajax({
-                url: path,
-                data: request,
-                success: function (result) {
-                    $('#dataTableRace').dataTable({
-                        destroy: true,
-                        data: result,
-                        order: [[3, "asc"]],
-                        columns: [
-                            {data: 'number'},
-                            {data: 'lastName'},
-                            {data: 'firstName'},
-                            {data: 'ranck'},
-                            {data: 'chronoString'}]
-                    });
-                    load(false);
-                }
-            });
-        }
-
-        function displayTableChampionship(path, request) {
-            $.ajax({
-                url: path,
-                data: request,
-                success: function (result) {
-                    $('#dataTableChampionship').dataTable({
-                        destroy: true,
-                        data: result,
-                        order: [[3, "dsc"]],
-                        columns: [
-                            {data: 'ranck'},
-                            {data: 'lastName'},
-                            {data: 'firstName'},
-                            {data: 'points'}]
-                    });
-
-                    load(false);
-                }
-            });
-        }
-
-        function etat(stat) {
-            switch (stat) {
-                case 'category':
-                    $('#championshipButton').css('display', 'block');
-                    $('#raceButton').css('display', 'none');
-                    $('#tableRace').css('display', 'block');
-                    $('#tableChampionship').css('display', 'none');
-                    break;
-                case 'championship':
-                    $('#championshipButton').css('display', 'none');
-                    $('#raceButton').css('display', 'block');
-                    $('#tableRace').css('display', 'none');
-                    $('#tableChampionship').css('display', 'block');
-                    break;
-                case 'general':
-                    $('#championshipButton').css('display', 'none');
-                    $('#raceButton').css('display', 'none');
-                    $('#tableRace').css('display', 'block');
-                    $('#tableChampionship').css('display', 'none');
-                    $('#category').text("Classement général");
-                    break;
-                default:
-                    $('#championshipButton').css('display', 'none');
-                    $('#raceButton').css('display', 'none');
-                    $('#tableRace').css('display', 'block');
-                    $('#tableChampionship').css('display', 'none');
-                    alert('category');
-            }
-        }
-
-        function load(stat) {
-            switch (stat) {
-                case true:
-                    $('#tables').css('display', 'none');
-                    $('#loader').css('display', 'block');
-                    ;
-                    break;
-                case false:
-                    $('#tables').css('display', 'block');
-                    $('#loader').css('display', 'none');
-                    break;
-                default:
-                    $('#tables').css('display', 'block');
-                    $('#loader').css('display', 'none');
-            }
-        }
-
-    </script>
 {% endblock %}
+
+   {% block javascripts %}
+
+       <script>
+
+           function raceShow(race) {
+               $.ajax({
+                   url: "{{ path('race_json') }}",
+                   data: {race: race},
+                   success: function (data) {
+                       hydrate(data);
+                   }
+               });
+
+               function hydrate(data) {
+                   var date = data.race.dateString.replace(/\-|\:/g, ' ');
+                   var date = date.split(" ");
+                   var date = new Date(Date.UTC(date[0], date[1], date[2], date[3] - 2, date[4], date[5]));
+
+                   $('.race_name').text(data.race.name);
+                   $('.organizer').text(data.race.organizerName);
+                   $('.competition').text(data.race.competitionName);
+                   $('.distance').text(data.race.distance);
+                   $('.date-day').text(date.toLocaleDateString('fr-FR', {
+                       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                   }));
+                   $('.date-hour').text(('0' + date.getHours()).slice(-2) + ' : ' + ('0' + date.getMinutes()).slice(-2));
+                   $('.adress').text(data.race.street);
+                   $('.city').text(data.race.postCode + ' ' + data.race.city);
+
+                   if (data.race.inChampionship == true) {
+                       $('.isChampionship').addClass('inChampionship');
+                   }
+
+                   $('.categories1').empty();
+                   $('.categories2').empty();
+                   var i = 0;
+                   $.each(data.categories, function (index, value) {
+                       if(i<5){
+                           $('.categories1').append("<li>" + value.name + "</li>");
+                       }else {
+                           $('.categories2').append("<li>" + value.name + "</li>");
+                       }
+                       i++;
+                   });
+
+               }
+           }
+
+       </script>
+
+
+   {% endblock %}

@@ -3,6 +3,7 @@
 namespace AppBundle\Repository;
 
 
+use AppBundle\Entity\Competition;
 use AppBundle\Entity\Organizer;
 
 class CompetitionRepository extends \Doctrine\ORM\EntityRepository
@@ -59,5 +60,42 @@ class CompetitionRepository extends \Doctrine\ORM\EntityRepository
         $competitions = array('competitionsPassed' => $competitionsPassed, 'competitionsNoPassed' => $competitionsNoPassed);
 
         return $competitions;
+    }
+
+
+    public function isValid(Competition $competition){
+        $nb = $this->createQueryBuilder('c')
+            ->select('count(c)')
+            ->innerJoin('c.races','r')
+            ->where('c.id = :id')
+            ->andWhere('r.valid = :bool')
+            ->setParameter('id', $competition)
+            ->setParameter('bool', 1)
+            ->getQuery()->getSingleScalarResult();
+
+        $nb =  intval($nb);
+
+        if (intval($nb) > 0)
+            return true;
+
+        return false;
+    }
+
+    public function isInChampionship(Competition $competition){
+        $nb = $this->createQueryBuilder('c')
+            ->select('count(c)')
+            ->innerJoin('c.races','r')
+            ->where('c.id = :id')
+            ->andWhere('r.inChampionship = :bool')
+            ->setParameter('id', $competition)
+            ->setParameter('bool', 1)
+            ->getQuery()->getSingleScalarResult();
+
+        $nb =  intval($nb);
+
+        if (intval($nb) > 0)
+            return true;
+
+        return false;
     }
 }

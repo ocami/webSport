@@ -36,18 +36,14 @@ use AppBundle\Form\RaceNewType;
 class RaceController extends Controller
 {
     /**
-     * @Route("/race/show/{id}", name="race_show")
+     * @Route("/race/show", name="race_show")
      */
-    public function showAction(Race $race)
+    public function showAction()
     {
-        $isOrganizer = $this->get(UserService::class)->isOrganizerRace($race);
-        $categories = $race->getCategories();
+        //$isOrganizer = $this->get(UserService::class)->isOrganizerRace($race);
 
-        return $this->render('race/show.html.twig', array(
-            'race' => $race,
-            'categories' => $categories,
-            'isOrganizer' => $isOrganizer
-        ));
+
+        return $this->render('race/show.html.twig');
     }
 
     /**
@@ -213,12 +209,16 @@ class RaceController extends Controller
     }
 
     /**
-     * @Route("race/race_json", name="race_json")
+     * @Route("/race/json", name="race_json")
      */
-    public function racesJson()
+    public function getJson(Request $request)
     {
-        $races = $this->getDoctrine()->getRepository(Race::class)->toString();
+        //$idRace = $request->query->get('idRace');
 
-        return new JsonResponse($races);
+        $race = $request->query->get('race');
+        $race = $this->getDoctrine()->getRepository(Race::class)->find($race);
+        $race =  $this->getDoctrine()->getRepository(Race::class)->toString($race);
+        return new JsonResponse($race);
     }
+
 }

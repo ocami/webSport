@@ -9,9 +9,11 @@
 namespace AppBundle\Services;
 
 use AppBundle\Entity\Competitor;
+use AppBundle\Entity\Competition;
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Race;
 use Doctrine\ORM\EntityManagerInterface;
+
 
 class RaceService
 {
@@ -26,27 +28,27 @@ class RaceService
         $this->cs = $cs;
     }
 
-    public function competitorCanEntry($race)
+    public function toString(Race $race)
     {
-        $competitor = $this->us->currentUserApp(Competitor::class);
-        $competitorYear = $competitor->getDate()->format('Y');
+        $raceToString = [];
 
-        $race->setCompetitorCanEntry(false);
+        $raceToString['race'] = [];
+        $raceToString['competition'] = [];
 
-        foreach ($race->getCategories() as $category) {
-            if ($competitorYear <= $category->getAgeMin() AND $competitorYear >= $category->getAgeMax()) {
+        $raceToString['race']['name'] = $race->getName();
+        $raceToString['race']['distance'] = $race->getDistance();
+        $raceToString['race']['inChampionship'] = $race->getInChampionship();
+        $raceToString['race']['date'] = $race->getDateString();
 
-                if ($competitorYear < $category->getAgeMin() AND $competitorYear > $category->getAgeMax()) {
-                    $race->setCompetitorCanEntry(true);
-                    return $race;
-                }
+        $raceToString['competition']['name'] = $race->getCompetition()->getName();
+        $raceToString['competition']['organizer'] = $race->getCompetition()->getOrganizer()->getName();
 
-            }
-        }
-        return $race;
+        $raceToString['location'] = $race->getCompetition()->getLocation();
+
+        return $raceToString;
     }
 
-    public function competitorCanRegister($race)
+    public function competitorCanEntry($race)
     {
         $competitor = $this->us->currentUserApp(Competitor::class);
         $competitorYear = $competitor->getDate()->format('Y');
@@ -74,17 +76,37 @@ class RaceService
         return $races;
     }
 
-    public function raceFlush(Race $race){
+    public function competitorCanRegister($race)
+    {
+        $competitor = $this->us->currentUserApp(Competitor::class);
+        $competitorYear = $competitor->getDate()->format('Y');
 
+        $race->setCompetitorCanEntry(false);
+
+        foreach ($race->getCategories() as $category) {
+            if ($competitorYear <= $category->getAgeMin() AND $competitorYear >= $category->getAgeMax()) {
+
+                if ($competitorYear < $category->getAgeMin() AND $competitorYear > $category->getAgeMax()) {
+                    $race->setCompetitorCanEntry(true);
+                    return $race;
+                }
+
+            }
+        }
+        return $race;
+    }
+
+    public function raceFlush(Race $race)
+    {
         $categoriesId = json_decode($race->getCategoriesString());
         $competition = $race->getCompetition();
 
-        foreach($categoriesId as $category){
-            $category  = $this->em->getRepository(Category::class)->find($category);
+        foreach ($categoriesId as $category) {
+            $category = $this->em->getRepository(Category::class)->find($category);
 
             $race->addCategory($category);
 
-            if(!$competition->getCategories()->contains($category))
+            if (!$competition->getCategories()->contains($category))
                 $competition->addCategory($category);
         }
 
@@ -94,7 +116,30 @@ class RaceService
         $this->cs->generateCode($race);
     }
 
+    public function adminSuperviseUpdate($data)
+    {
+        //Race update
+        $race = $this->em->getRepository(Race::class)->find($data['race']);
 
+        $race->setSupervised(true);
+        $race->setValid($data['valid']);
+        $race->setInChampionship($data['inChampionship']);
 
+        if($data['inChampionship'])
+            $race->setRequestInChampionship(false);
+
+        $this->em->persist($race);
+        $this->em->flush($race);
+
+        //Competition update
+        $cr = $this->em->getRepository(Competition::class);
+        $competition = $race->getCompetition();
+
+        $competition->setValid($cr->isValid($competition));
+        $competition->setInChampionship($cr->isInChampionship($competition));
+
+        $this->em->persist($competition);
+        $this->em->flush($competition);
+    }
 
 }

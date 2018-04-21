@@ -86,6 +86,18 @@ class Competition
     private $categories;
 
     /**
+     * @var Boolean
+     * @ORM\Column(name="valid", type="boolean")
+     */
+    private $valid = false;
+
+    /**
+     * @var Boolean
+     * @ORM\Column(name="in_championship", type="boolean")
+     */
+    private $inChampionship = false;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -152,77 +164,6 @@ class Competition
         return $this->name;
     }
 
-    /**
-     * Set ville
-     *
-     * @param string $ville
-     *
-     * @return Competition
-     */
-    public function setVille($ville)
-    {
-        $this->ville = $ville;
-
-        return $this;
-    }
-
-    /**
-     * Get ville
-     *
-     * @return string
-     */
-    public function getVille()
-    {
-        return $this->ville;
-    }
-
-    /**
-     * Set adress
-     *
-     * @param string $adress
-     *
-     * @return Competition
-     */
-    public function setAdress($adress)
-    {
-        $this->adress = $adress;
-
-        return $this;
-    }
-
-    /**
-     * Get adress
-     *
-     * @return string
-     */
-    public function getAdress()
-    {
-        return $this->adress;
-    }
-
-    /**
-     * Set dep
-     *
-     * @param integer $dep
-     *
-     * @return Competition
-     */
-    public function setDep($dep)
-    {
-        $this->dep = $dep;
-
-        return $this;
-    }
-
-    /**
-     * Get dep
-     *
-     * @return integer
-     */
-    public function getDep()
-    {
-        return $this->dep;
-    }
 
     /**
      * Set dateStart
@@ -411,4 +352,53 @@ class Competition
     {
         return $this->categories;
     }
+
+    /**
+     * Set inChampionship
+     *
+     * @param boolean $inChampionship
+     *
+     * @return Race
+     */
+    public function setInChampionship($inChampionship)
+    {
+        $this->inChampionship = $inChampionship;
+
+        return $this;
+    }
+
+    /**
+     * Get inChampionship
+     *
+     * @return boolean
+     */
+    public function getInChampionship()
+    {
+        return $this->inChampionship;
+    }
+
+    /**
+     * Set valid
+     *
+     * @param boolean $valid
+     *
+     * @return Race
+     */
+    public function setValid($valid)
+    {
+        $this->valid = $valid;
+
+        return $this;
+    }
+
+    /**
+     * Get valid
+     *
+     * @return boolean
+     */
+    public function getValid()
+    {
+        return $this->valid;
+    }
+
 }

@@ -9,10 +9,13 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Race;
+use AppBundle\Services\RaceService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Services\MessageGenerator;
+use AppBundle\Entity\Competition;
 
 
 class AdminController extends Controller
@@ -39,5 +42,15 @@ class AdminController extends Controller
         return $this->render('admin/races.html.twig', array(
             'races' => $races
         ));
+    }
+
+    /**
+     * @Route("/admin/race/supervise", name="race_admin_supervise")
+     */
+    public function raceSupervise(Request $request)
+    {
+        $this->get(RaceService::class)->adminSuperviseUpdate($request->query->all());
+
+        return new JsonResponse('super');
     }
 }

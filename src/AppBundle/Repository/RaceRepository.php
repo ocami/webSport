@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Race;
+
 
 /**
  * RaceRepository
@@ -21,20 +23,41 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
             ->getSingleScalarResult();
     }
 
-    public function toString()
+    /**
+     * @param Race $race
+     * @return Race|array
+     * contains array race and array categories
+     *
+     */
+    public function toString(Race $race)
     {
-        $races = $this->createQueryBuilder('r')
+        $race = $this->createQueryBuilder('r')
             ->innerJoin('r.competition', 'c')
+            ->innerJoin('c.organizer', 'o')
+            ->innerJoin('c.location', 'l')
             //->select('r.code, r.name, r.dateString, r.inChampionship, c.code')
-            ->select('r.id, r.name, r.dateTime')
+            ->select('r.id, r.name, r.distance, r.inChampionship, r.dateString, 
+                            c.id as competitionId, c.name as competitionName, 
+                            o.id as organizerId, o.name as organizerName,
+                            l.number, l.street, l.postCode, l.city, l.x, l.y
+                            ')
+            ->where('r.id = :id')
+            ->setParameter('id', $race)
             ->getQuery()->getResult();
 
-        for ($i = 0; $i < count($races); $i++) {
-            $races[$i]['checkbox'] = '';
-            $races[$i]['date'] = date_format($races[$i]['dateTime'], 'd-m-Y');;
-        }
+        $categories = $this->createQueryBuilder('r')
+            ->leftJoin('r.categories', 'c')
+            ->select('c.id, c.name')
+            ->where('r.id = :id')
+            ->setParameter('id', $race)
+            ->getQuery()->getResult();
 
-        return $races;
+        $race['race'] = $race[0];
+        unset($race[0]);
+
+        $race['categories'] = $categories;
+
+        return $race;
     }
 
 }

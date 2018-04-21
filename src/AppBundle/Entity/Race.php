@@ -120,6 +120,18 @@ class Race
 
     /**
      * @var Boolean
+     * @ORM\Column(name="supervised", type="boolean")
+     */
+    private $supervised = false;
+
+    /**
+     * @var Boolean
+     * @ORM\Column(name="valid", type="boolean")
+     */
+    private $valid = false;
+
+    /**
+     * @var Boolean
      */
     private $competitorCanEntry;
 
@@ -377,7 +389,6 @@ class Race
         return $this->categories;
     }
 
-
     /**
      * Add competitor
      *
@@ -529,4 +540,53 @@ class Race
     {
         return $this->passed;
     }
+
+    /**
+     * Set supervised
+     *
+     * @param boolean $supervised
+     *
+     * @return Race
+     */
+    public function setSupervised($supervised)
+    {
+        $this->supervised = $supervised;
+
+        return $this;
+    }
+
+    /**
+     * Get supervised
+     *
+     * @return boolean
+     */
+    public function getSupervised()
+    {
+        return $this->supervised;
+    }
+
+    /**
+     * Set valid
+     *
+     * @param boolean $valid
+     *
+     * @return Race
+     */
+    public function setValid($valid)
+    {
+        $this->valid = $valid;
+
+        return $this;
+    }
+
+    /**
+     * Get valid
+     *
+     * @return boolean
+     */
+    public function getValid()
+    {
+        return $this->valid;
+    }
+
 }
