@@ -46,12 +46,14 @@ class Competition
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     *
+     * @Assert\Length(min=5, minMessage="Le titre doit faire au moins {{ limit }} caractères.")
+     * @Assert\Length(max=50)
      */
     private $name;
 
     /**
      * @var Date
-     *
      * @ORM\Column(name="dateStart", type="date", nullable=true)
      */
     private $dateStart;
@@ -60,6 +62,7 @@ class Competition
      * @var Date
      *
      * @ORM\Column(name="dateEnd", type="date", nullable=true)
+     *
      */
     private $dateEnd;
 
@@ -68,6 +71,15 @@ class Competition
      * @ORM\JoinColumn(nullable=false)
      */
     private $location;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="locationString", type="string", length=1000)
+     * @Assert\Length(min=5)
+     *
+     */
+    private $locationString;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Organizer", inversedBy ="competitions")
@@ -163,7 +175,6 @@ class Competition
     {
         return $this->name;
     }
-
 
     /**
      * Set dateStart
@@ -399,6 +410,30 @@ class Competition
     public function getValid()
     {
         return $this->valid;
+    }
+
+    /**
+     * Set locationString
+     *
+     * @param string $locationString
+     *
+     * @return Competition
+     */
+    public function setLocationString($locationString)
+    {
+        $this->locationString = $locationString;
+
+        return $this;
+    }
+
+    /**
+     * Get locationString
+     *
+     * @return string
+     */
+    public function getLocationString()
+    {
+        return $this->locationString;
     }
 
 }

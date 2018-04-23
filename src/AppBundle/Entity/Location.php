@@ -28,12 +28,6 @@ class Location
      */
     private $dataId;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="number", type="integer")
-     */
-    private $number;
 
     /**
      * @var string
@@ -115,30 +109,6 @@ class Location
     public function getDataId()
     {
         return $this->dataId;
-    }
-
-    /**
-     * Set number
-     *
-     * @param integer $number
-     *
-     * @return Location
-     */
-    public function setNumber($number)
-    {
-        $this->number = $number;
-
-        return $this;
-    }
-
-    /**
-     * Get number
-     *
-     * @return int
-     */
-    public function getNumber()
-    {
-        return $this->number;
     }
 
     /**

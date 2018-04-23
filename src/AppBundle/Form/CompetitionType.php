@@ -18,28 +18,13 @@ class CompetitionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('name')
+            ->add('dateEnd', TextType::class)
+            ->add('dateStart', TextType::class)
+            ->add('locationString');
+    }
 
-            ->add('name', TextType::class, [
-                'label' => 'Nom',
-                'attr' => ['class' => 'compettitionName']
-            ])
-            ->add('dateStart', DateType::class, [
-                'label' => 'Du',
-                'widget' => 'single_text',
-                'input' => 'datetime',
-                'format' => 'dd/MM/yyyy',
-                'attr' => ['class' => 'datepicker dpStart']
-            ])
-            ->add('dateEnd', DateType::class, [
-                'label' => 'Au',
-                'widget' => 'single_text',
-                'input' => 'datetime',
-                'format' => 'dd/MM/yyyy',
-                'attr' => ['class' => 'datepicker dpEnd']
-            ])
-            ->add('location',TextType::class)
-            ;
-    }/**
+    /**
      * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)

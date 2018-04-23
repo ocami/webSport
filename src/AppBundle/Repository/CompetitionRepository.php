@@ -12,23 +12,28 @@ class CompetitionRepository extends \Doctrine\ORM\EntityRepository
     /**
      * @return array object
      */
-    public function byDate()
+    public function allValidByDate()
     {
-        $c = $this->createQueryBuilder('c')
-            ->orderBy('c.dateStart');
+        $parameters = array(
+            'isValid' => 1,
+            'today' => date('Y-m-d')
+        );
 
-        $competitionsPassed = $c
-            ->Where('c.dateEnd > :today')
-            ->setParameter('today', strtotime("now"))
+        $competitionsNoPassed = $this->createQueryBuilder('c')
+            ->orderBy('c.dateStart')
+            ->Where('c.valid = :isValid')
+            ->andWhere('c.dateEnd > :today')
+            ->setParameters($parameters)
             ->getQuery()->getResult();
 
-        $competitionsNoPassed = $c
-            ->Where('c.dateEnd < :today')
-            ->setParameter('today', strtotime("now"))
+        $competitionsPassed = $this->createQueryBuilder('c')
+            ->orderBy('c.dateStart')
+            ->Where('c.valid = :isValid')
+            ->andWhere('c.dateEnd < :today')
+            ->setParameters($parameters)
             ->getQuery()->getResult();
 
-
-        $competitions = array('competitionsPassed' => $competitionsPassed, 'competitionsNoPassed' => $competitionsNoPassed);
+        $competitions = array('competitionsPassed' => $competitionsNoPassed, 'competitionsNoPassed' => $competitionsPassed);
 
         return $competitions;
     }

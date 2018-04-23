@@ -8,24 +8,52 @@
 
 namespace AppBundle\Services;
 
-use AppBundle\Entity\Competitor;
-use AppBundle\Entity\Category;
-use AppBundle\Entity\Race;
+use AppBundle\Entity\Competition;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use AppBundle\Entity\Location;
+use AppBundle\Entity\Organizer;
+use AppBundle\Services\UserService;
 
 class CompetitionService
 {
     private $em;
     private $us;
-    private $cs;
 
-    public function __construct(EntityManagerInterface $em)
+
+    public function __construct(EntityManagerInterface $em, UserService $us)
     {
         $this->em = $em;
+        $this->us = $us;
+    }
+
+
+    public function create(Competition $competition, Organizer $organizer){
+
+        $locationData = json_decode($competition->getLocationString(),true);
+
+        $location = $this->em->getRepository(Location::class)->findOneByDataId($locationData['id']);
+
+        if ($location==null)
+        {
+            $location = new Location();
+            $location->setDataId($locationData['id']);
+            $location->setStreet($locationData['street']);
+            $location->setPostCode($locationData['postCode']);
+            $location->setCity($locationData['city']);
+            $location->setX($locationData['x']);
+            $location->setY($locationData['y']);
+        }
+
+        $competition->setDateStart(new \DateTime($competition->getDateStart()));
+        $competition->setDateEnd(new \DateTime($competition->getDateEnd()));
+        $competition->setLocation($location);
+        $competition->setOrganizer($organizer);
+
+        $em = $this->em;
+        $em->persist($location);
+        $em->persist($organizer);
+        $em->persist($competition);
+        $em->flush();
     }
 
 

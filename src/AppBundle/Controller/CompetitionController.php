@@ -1,10 +1,7 @@
 <?php
 /** TO DO
-
-    * newToFlush
-         Créer service pour alléger la fonction ??
-
-
+ * newToFlush
+ * Créer service pour alléger la fonction ??
  */
 
 namespace AppBundle\Controller;
@@ -24,6 +21,7 @@ use AppBundle\Form\CompetitionDescriptionType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use AppBundle\Services\RaceService;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use AppBundle\Services\CompetitionService;
 
 class CompetitionController extends Controller
 {
@@ -51,7 +49,7 @@ class CompetitionController extends Controller
      */
     public function showAllAction()
     {
-        $competitions = $this->getDoctrine()->getRepository(Competition::class)->byDate();
+        $competitions = $this->getDoctrine()->getRepository(Competition::class)->allValidByDate();
 
         return $this->render('competition/showList.html.twig', array(
             'competitionsPassed' => $competitions['competitionsPassed'],
@@ -74,54 +72,29 @@ class CompetitionController extends Controller
     }
 
     /**
-     * @Route("/competition/new_form", name="competition_new_form")
+     * @Route("/competition/new", name="competition_new")
      * @Security("has_role('ROLE_ORGANIZER')")
      */
-    public function newForm()
+    public function newAction(Request $request)
     {
-        return $this->render('competition/new.html.twig');
-    }
+        $competition = new Competition();
+        $form = $this->createForm(CompetitionType::class, $competition);
 
-    /**
-     * @Route("/competition/new_toFlush", name="competition_new_toFlush")
-     */
-    public function newToFlush(Request $request)
-    {
-        $Data = $request->query->get('location');
-        $locationData = $Data['location'];
-        $competitionData = $Data['competition'];
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-        $location = $this->getDoctrine()->getRepository(Location::class)->findOneByDataId($locationData['id']);
+            $organizer = $this->getDoctrine()->getRepository(Organizer::class)->findOneByUserId($this->getUser());
 
-        if ($location==null)
-        {
-            $location = new Location();
-            $location->setDataId($locationData['id']);
-            $location->setNumber(0);
-            $location->setStreet($locationData['street']);
-            $location->setPostCode($locationData['postCode']);
-            $location->setCity($locationData['city']);
-            $location->setX($locationData['x']);
-            $location->setY($locationData['y']);
+            $this->get(CompetitionService::class)->create($competition, $organizer);
+
+            $request->getSession()->getFlashBag()->add('notice', 'Compétition bien enregistrée');
+
+            return $this->redirectToRoute('competition_show_byOrganizer');
         }
 
-        $organizer = $this->getDoctrine()->getRepository(Organizer::class)->findOneByUserId($this->getUser());
-
-        $competition = new Competition();
-
-        $competition->setName($competitionData['name']);
-        $competition->setDateStart(new \DateTime($competitionData['dateStart']));
-        $competition->setDateEnd(new \DateTime($competitionData['dateEnd']));
-        $competition->setLocation($location);
-        $competition->setOrganizer($organizer);
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($location);
-        $em->persist($organizer);
-        $em->persist($competition);
-        $em->flush();
-
-        return new JsonResponse($Data);
+        return $this->render('competition/new.html.twig', array(
+            'competition' => $competition,
+            'form' => $form->createView()
+        ));
     }
 
     /**
@@ -130,42 +103,29 @@ class CompetitionController extends Controller
      */
     public function edit(Request $request, Competition $competition)
     {
+
         $form = $this->createForm(CompetitionType::class, $competition);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($competition);
-            $em->flush();
+//        $competition->setDateStart($competition->getDateStart()->format('Y-m-d'));
+//        $competition->setDateEnd($competition->getDateEnd()->format('Y-m-d'));
 
-            $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée.');
-
-            return $this->redirectToRoute('competition/show.html.twig', array('id' => $competition->getId()));
-        }
-
-        return $this->render('competition/new.html.twig', array('form' => $form->createView(), 'id' => $competition->getId()));
-    }
-
-    /**
-     * @Route("/competition/edit_description/{id}", name="competition_edit_description")
-     * @Security("has_role('ROLE_ORGANIZER')")
-     */
-    public function editDescription(Request $request, Competition $competition)
-    {
-        $form = $this->createForm(CompetitionDescriptionType::class, $competition);
+      //  var_dump($competition);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-            if ($this->get(AntiSpam::class)->isTextSpam($competition->getDescription()))
-                throw new \Exception('Votre message a été détecté comme spam !');
+            $organizer = $this->getDoctrine()->getRepository(Organizer::class)->findOneByUserId($this->getUser());
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($competition);
-            $em->flush();
+            $this->get(CompetitionService::class)->create($competition, $organizer);
 
-            return $this->redirectToRoute('competition_show', array('id' => $competition->getId()));
+            $request->getSession()->getFlashBag()->add('notice', 'Compétition bien enregistrée');
+
+            return $this->redirectToRoute('competition_show_byOrganizer');
         }
 
-        return $this->render('competition/new.html.twig', array('form' => $form->createView()));
+        return $this->render('competition/new.html.twig', array(
+            'competition' => $competition,
+            'form' => $form->createView()
+        ));
     }
 
     /**
@@ -177,5 +137,4 @@ class CompetitionController extends Controller
 
         return new JsonResponse($this->get(GeoJsonService::class)->competitions($competitor));
     }
-
 }
