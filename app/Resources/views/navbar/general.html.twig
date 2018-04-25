@@ -1,6 +1,13 @@
+{% block stylesheets %}
+    <style>
+        .dropdown-menu {
+            z-index: 9999;
+        }
+    </style>
+{% endblock %}
+
 <nav class="navbar navbar-default">
     <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                     data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -26,7 +33,6 @@
                     <ul class="dropdown-menu championdhips-menu"></ul>
                 </li>
 
-
             </ul>
             <ul class="nav navbar-nav navbar-right">
 
@@ -50,12 +56,14 @@
 
                             {% if is_granted('ROLE_COMPETITOR') == false %}
                                 <li role="separator" class="divider"></li>
-                                <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'competitor'}) }}">Devenir compétiteur</a></li>
+                                <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'competitor'}) }}">Devenir
+                                        compétiteur</a></li>
                             {% endif %}
 
                             {% if is_granted('ROLE_ORGANIZER') == false %}
                                 <li role="separator" class="divider"></li>
-                                <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'organizer'}) }}">Devenir organisateur</a></li>
+                                <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'organizer'}) }}">Devenir
+                                        organisateur</a></li>
                             {% endif %}
 
                         </ul>
@@ -83,7 +91,6 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
-
 
 <script>
     $(document).ready(function () {

@@ -5,12 +5,12 @@ namespace AppBundle\Repository;
 
 use AppBundle\Entity\Competition;
 use AppBundle\Entity\Organizer;
+use phpDocumentor\Reflection\Types\Integer;
 
 class CompetitionRepository extends \Doctrine\ORM\EntityRepository
 {
-
     /**
-     * @return array object
+     * @return array of competitions separed in passed and not passed
      */
     public function allValidByDate()
     {
@@ -33,74 +33,76 @@ class CompetitionRepository extends \Doctrine\ORM\EntityRepository
             ->setParameters($parameters)
             ->getQuery()->getResult();
 
-        $competitions = array('competitionsPassed' => $competitionsNoPassed, 'competitionsNoPassed' => $competitionsPassed);
+        $competitions = array('competitionsPassed' => $competitionsPassed, 'competitionsNoPassed' => $competitionsNoPassed);
 
         return $competitions;
     }
 
     /**
-     * @return array object
+     * @return array of competitions separed in passed and not passed
+     *
+     * @param int $organizerId
+     *
      */
-    public function byOrganizer(Organizer $organizer)
+    public function byOrganizer($organizerId)
     {
-        $c = $this->createQueryBuilder('c');
+        $parameters = array(
+            'organizer' => $organizerId,
+            'today' => date('Y-m-d')
+        );
 
-        $competitionsPassed = $c
-            ->where('c.organizer = :organizer')
+        $competitionsNoPassed = $this->createQueryBuilder('c')
+            ->orderBy('c.dateStart')
+            ->Where('c.organizer = :organizer')
             ->andWhere('c.dateEnd > :today')
-            ->setParameter('organizer', $organizer)
-            ->setParameter('today', strtotime("now"))
-            ->orderBy('c.dateStart', 'DESC')
+            ->setParameters($parameters)
             ->getQuery()->getResult();
 
-        $competitionsNoPassed = $c
-            ->where('c.organizer = :organizer')
+        $competitionsPassed = $this->createQueryBuilder('c')
+            ->orderBy('c.dateStart')
+            ->Where('c.organizer = :organizer')
             ->andWhere('c.dateEnd < :today')
-            ->setParameter('organizer', $organizer)
-            ->setParameter('today', strtotime("now"))
-            ->orderBy('c.dateStart', 'ASC')
+            ->setParameters($parameters)
             ->getQuery()->getResult();
-
 
         $competitions = array('competitionsPassed' => $competitionsPassed, 'competitionsNoPassed' => $competitionsNoPassed);
 
         return $competitions;
     }
 
+    /* public function isValid(Competition $competition){
+         $nb = $this->createQueryBuilder('c')
+             ->select('count(c)')
+             ->innerJoin('c.races','r')
+             ->where('c.id = :id')
+             ->andWhere('r.valid = :bool')
+             ->setParameter('id', $competition)
+             ->setParameter('bool', 1)
+             ->getQuery()->getSingleScalarResult();
 
-    public function isValid(Competition $competition){
-        $nb = $this->createQueryBuilder('c')
-            ->select('count(c)')
-            ->innerJoin('c.races','r')
-            ->where('c.id = :id')
-            ->andWhere('r.valid = :bool')
-            ->setParameter('id', $competition)
-            ->setParameter('bool', 1)
-            ->getQuery()->getSingleScalarResult();
+         $nb =  intval($nb);
 
-        $nb =  intval($nb);
+         if (intval($nb) > 0)
+             return true;
 
-        if (intval($nb) > 0)
-            return true;
+         return false;
+     }
 
-        return false;
-    }
+     public function isInChampionship(Competition $competition){
+         $nb = $this->createQueryBuilder('c')
+             ->select('count(c)')
+             ->innerJoin('c.races','r')
+             ->where('c.id = :id')
+             ->andWhere('r.inChampionship = :bool')
+             ->setParameter('id', $competition)
+             ->setParameter('bool', 1)
+             ->getQuery()->getSingleScalarResult();
 
-    public function isInChampionship(Competition $competition){
-        $nb = $this->createQueryBuilder('c')
-            ->select('count(c)')
-            ->innerJoin('c.races','r')
-            ->where('c.id = :id')
-            ->andWhere('r.inChampionship = :bool')
-            ->setParameter('id', $competition)
-            ->setParameter('bool', 1)
-            ->getQuery()->getSingleScalarResult();
+         $nb =  intval($nb);
 
-        $nb =  intval($nb);
+         if (intval($nb) > 0)
+             return true;
 
-        if (intval($nb) > 0)
-            return true;
-
-        return false;
-    }
+         return false;
+     }*/
 }

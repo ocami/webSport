@@ -1,36 +1,45 @@
 {% extends 'base.html.twig' %}
 
-{% block breadcrumb %}
-    <ol class="breadcrumb">
-        <li><a href="{{ path('competition_show_all') }}">Toutes les compétitions</a></li>
-        <li class="active">{{ competition.name }}</li>
-    </ol>
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        .competition-show .address {
+            margin-top: 2em;
+        }
+    </style>
+
 {% endblock %}
 
 {% block organizer_menu %}
     <input type="button" class="btn-xs btn-success" value="Ajouter une course"
            onclick="location.href = '{{ path('race_new', {'id':competition.id} ) }}';">
 
-
-    <input type="button" class="btn-xs btn-success" value="Ajouter une catégorie"
-           onclick="location.href = '{{ path('category_new', {'id':competition.id}) }}';">
-
-    <input type="button" class="btn-xs btn-success" value="Ajouter une description"
-           onclick="location.href = '{{ path('competition_edit_description', {'id':competition.id}) }}';">
+    <input type="button" class="btn-xs btn-success" value="Editer"
+           onclick="location.href = '{{ path('competition_edit', {'id':competition.id} ) }}';">
 {% endblock %}
 
 {% block title %}
-    {{ parent() }} index
+    {{ parent() }} {{ competition.name }}
 {% endblock %}
 
 {% block body %}
 
-    <h1>{{ competition.name }}</h1>
-    Organisé par {{ competition.organizer.name }}<br>
-    {{ competition.description }}<br>
+    <div class="row competition-show">
 
-    {{ include('race/showList.html.twig')  }}
+        <h1 class="col-xs-12 col-sm-6">{{ competition.name }}</h1>
 
+        <div class="col-xs-12 col-sm-6 address">
+            {{ competition.location.street }}<br>
+            {{ competition.location.postCode }} {{ competition.location.city }}<br><br>
+        </div>
 
+        <span>Organisé par {{ competition.organizer.name }}</span> <br>
+
+        <h4 style="text-align: center">Du {{ competition.dateStart|date("d/m/Y") }}
+            au {{ competition.dateEnd|date("d/m/Y") }}</h4>
+
+        {{ include('race/showList.html.twig') }}
+    </div>
 
 {% endblock %}

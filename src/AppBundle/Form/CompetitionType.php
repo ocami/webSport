@@ -19,8 +19,8 @@ class CompetitionType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('dateEnd', TextType::class)
-            ->add('dateStart', TextType::class)
+            ->add('dateEnd')
+            ->add('dateStart')
             ->add('locationString');
     }
 

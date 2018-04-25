@@ -40,3 +40,15 @@ function loaderDivStop(divToLoad) {
     $(".loader-div").hide();
     divToLoad.show();
 }
+
+function parseDateUsToFr(date) {
+
+    var d = new Date(date);
+    var dd = ('0' + d.getDate()).slice(-2);
+    var mm = d.getMonth() + 1;
+    var mm = ('0' + mm).slice(-2);
+    var yy = d.getFullYear();
+    var newdate = dd + "-" + mm + "-" + yy;
+
+    return newdate;
+}

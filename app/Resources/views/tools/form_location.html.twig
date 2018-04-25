@@ -118,6 +118,8 @@ TO DO
 
            }
 
+
+
            function returnStep(step) {
                locationInput.val('');
                locationBtn.show();
@@ -274,6 +276,7 @@ TO DO
 
            //Other************************************************************
            function addShowElement(text, step) {
+
                var div = document.createElement("div");
                div.className = "form_show row show_" + step;
                var txt = document.createElement("p");
@@ -303,6 +306,23 @@ TO DO
                    x: f.geometry.coordinates[1],
                    y: f.geometry.coordinates[0]
                }
+           }
+
+           function locationUpdate(dep, city, address, x, y) {
+               locationBtn.hide();
+               $('#location_form .form-group').hide();
+
+               addShowElement(dep, 'dep');
+               addShowElement(city, 'city');
+               addShowElement(address, 'address');
+
+               var map = document.createElement("div");
+               map.className = "location_map";
+               map.setAttribute('id', 'location_map');
+               $('.next_step_btn').before(map);
+               locationDataIsValide = true;
+
+               openLocationMap(x, y, 'location_map');
            }
 
        </script>

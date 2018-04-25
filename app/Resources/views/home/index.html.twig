@@ -72,13 +72,6 @@
 
         });
 
-        //circle
-        var circle = L.circle({
-            color: 'red',
-            fillColor: '#f03',
-            fillOpacity: 0.5,
-            radius: 500
-        });
 
         // data********************************************************************************************************>
         $.ajax({
@@ -89,19 +82,17 @@
             }
         });
 
-
         function mapConstructor(data) {
 
             //Build layers **************************************************************************************************>
             var FuturCompetitionLayer = layerBuild(data.futureCompetitions, pastIcon);
             var PastCompetitionLayer = layerBuild(data.pastCompetitions, futureIcon);
-            var competitorLayer = layerBuildCircle(data.competitorCanRegister, circle);
 
             //Build map **************************************************************************************************>
             var map = L.map('indexMap', {
                 center: [46.52863469527167, 2.43896484375],
                 zoom: 5,
-                layers: [osmLayer, PastCompetitionLayer, FuturCompetitionLayer, competitorLayer]
+                layers: [osmLayer, PastCompetitionLayer, FuturCompetitionLayer]
             });
 
             //Layers Control **************************************************************************************************>
@@ -110,8 +101,8 @@
                 "watercolorLayer": watercolorLayer
             };
             var overlayMaps = {
-                "A venir": PastCompetitionLayer,
-                "Passées": FuturCompetitionLayer
+                "A venir": FuturCompetitionLayer,
+                "Passées": PastCompetitionLayer
             };
 
             L.control.layers(baseMaps, overlayMaps).addTo(map);
@@ -129,18 +120,7 @@
             });
         }
 
-        function layerBuildCircle(data, circle) {
-            return L.geoJSON(data, {
-                pointToLayer: function (geoJsonPoint, latlng) {
-                    return L.circle(latlng,{
-                        color: 'red',
-                        fillColor: '#f03',
-                        fillOpacity: 0.5,
-                        radius: 500
-                    });
-                }
-            });
-        }
+
 
     </script>
 

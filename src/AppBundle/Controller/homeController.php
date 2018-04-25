@@ -44,7 +44,7 @@ class homeController extends Controller
     {
         $competitor = null;
         if ($this->get('security.authorization_checker')->isGranted('ROLE_COMPETITOR'))
-            $competitor = $this->get(UserService::class)->getCategoryCompetitor();
+            $competitor = $this->get(UserService::class)->setCategoryCompetitor();
 
         return $this->render('home/index.html.twig', array(
             'competitor' => $competitor,
@@ -112,30 +112,10 @@ class homeController extends Controller
         */
 
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-
-            $categoriesId = json_decode($race->getCategoriesString());
-
-            foreach ($categoriesId as $categoryId) {
-                $race->addCategory($this->getDoctrine()->getRepository(Category::class)->find($categoryId));
-            }
-
-            var_dump($race);
-
-
-            /*
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($race);
-            $em->flush();
-            $this->get(CodeService::class)->generateCode($race);
-*/
-            $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée');
-
             return $this->render('home/test.html.twig', array(
                 'message' => $message,
-                'form' => $form->createView()
             ));
-        }
+
 
         return $this->render('home/test.html.twig', array(
             'message' => $message,
@@ -150,7 +130,6 @@ class homeController extends Controller
 
         return $this->render('home/load.html.twig');
     }
-
 
     /**
      * @Route("/map", name="map")

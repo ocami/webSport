@@ -15,113 +15,145 @@ TO DO
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet"
-          href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.css">
-
-
-
+    <link rel="stylesheet" href="{{ asset('datepicker/css/bootstrap-datepicker.css') }}"/>
 {% endblock %}
 
-    {% block body %}
+{% block title %}
+    {{ parent() }} Ajout compétition
+{% endblock %}
 
-        {{ form_start(form, {'attr': {'data-toggle': 'validator', 'role':'form'}}) }}
+{% block body %}
 
-        <!--Name-->
-        <div class="form-group has-feedback ">
-            <label for="name" class="control-label">Nom</label>
-            {{ form_widget(form.name, {'attr': {'id':"name", 'class':"form-control"}}) }}
-            <div class="help-block with-errors">Entre 3 et 50 caractères alaphanumériques</div>
-        </div>
-        <hr>
+    {{ form_start(form, {'attr': {'data-toggle': 'validator', 'role':'form'}}) }}
 
-        <!--Dates-->
-        <label>Date</label>
-        <div class="row">
-            <!--DateStart-->
-            <div class="form-group has-feedback col-lg-offset-1 col-sm-4">
-                <label for="dateStart" class="control-label">Du</label>
-                {{ form_widget(form.dateStart, {'attr': {'id':"dateStart", 'class':"form-control input-date-start", 'style':"display: block"}}) }}
-                <input class="form-control datepicker dpStart">
-            </div>
+    <!--Name-->
+    <div class="form-group has-feedback ">
+        <label class="control-label">Nom</label>
+        {{ form_widget(form.name, {'attr': {'class':"form-control"}}) }}
+        <div class="help-none with-errors">Entre 3 et 50 caractères alaphanumériques</div>
+    </div>
+    <hr>
 
-            <!--DateEnd-->
-            <div class="form-group has-feedback col-lg-offset-1 col-sm-4">
-                <label for="dateEnd" class="control-label">Au</label>
-                {{ form_widget(form.dateEnd, {'attr': {'id':"dateEnd", 'class':"form-control input-date-end", 'style':"display: block"}}) }}
-                <input class="form-control datepicker dpEnd">
-            </div>
-        </div>
-        <hr>
+    <!--Dates-->
+    <label>Date</label>
 
-        <!--Location-->
-        <div class="form-group has-feedback ">
-            <label for="location" class="control-label">Localisation</label>
-            {{ form_widget(form.locationString, {'attr': {'id':"location", 'class':"form-control location-input", 'style':"display: block", 'minlength':"3"}}) }}
+    <div class="row">
+        <!--DateStart-->
+        <div class="form-group has-feedback col-lg-offset-1 col-sm-4">
+            <label for="dateStart" class="control-label">Du</label>
+            {{ form_widget(form.dateStart, {'attr': {'class':"form-control input-date-start", 'style':"display: none"}}) }}
+            <div class="help-none with-errors"></div>
+            <input class="form-control datepicker dpStart">
         </div>
 
-        {% include('tools/form_location.html.twig') %}
-
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary pull-right">Submit</button>
+        <!--DateEnd-->
+        <div class="form-group has-feedback col-lg-offset-1 col-sm-4">
+            <label class="control-label">Au</label>
+            {{ form_widget(form.dateEnd, {'attr': { 'class':"form-control input-date-end", 'style':"display: none"}}) }}
+            <div class="help-none with-errors"></div>
+            <input class="form-control datepicker dpEnd">
         </div>
+    </div>
+    <hr>
 
-        {{ form_end(form) }}
+    <!--Location-->
+    <div class="form-group has-feedback ">
+        <label class="control-label">Localisation</label>
+        {{ form_widget(form.locationString, {'attr': { 'class':"form-control location-input", 'style':"display: none", 'minlength':"3"}}) }}
+    </div>
 
+    {% include('tools/form_location.html.twig') %}
 
+    <!--Submit-->
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary pull-right">Valider</button>
+    </div>
 
-    {% endblock %}
+    {{ form_end(form) }}
+{% endblock %}
 
-   {% block javascripts %}
-       {{ parent() }}
-       <script src="{{ asset('js/validator.js') }}"></script>
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/validator.js') }}"></script>
+    <script src="{{ asset('datepicker/js/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ asset('datepicker/js/datepicker-fr.js') }}"></script>
 
-       <! datepicker***************************************************************************************************>
-       <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
-       <script src="{{ asset('datepicker/datepicker-fr.js') }}"></script>
-       <script>
+    <script>
 
-           var inputDateStart = $('.input-date-start');
-           var inputDateEnd = $('.input-date-end');
+        //datepicker/////////////////////////////////////////////////////////////////////////////////////////////////
+        var inputDateStart = $('.input-date-start');
+        var inputDateEnd = $('.input-date-end');
 
-           $('.datepicker').datepicker({
-               language: 'fr',
-               format: 'dd-mm-yyyy',
-               todayBtn: 'linked',
-               autoclose: true,
-               todayHighlight: true
-           });
+        $('.datepicker').datepicker({
+            language: 'fr',
+            format: 'dd-mm-yyyy',
+            todayBtn: 'linked',
+            autoclose: true,
+            todayHighlight: true
+        });
 
-           $('.dpStart').on('changeDate', function () {
-               var startDate = changeFormatDate($('.dpStart').datepicker('getFormattedDate'));
-               inputDateStart.val(startDate);
-               inputDateStart.trigger('change');
-               $('.dpEnd').datepicker(
-                   'setStartDate', $('.dpStart').datepicker('getDate')
-               );
-           });
+        $('.dpStart').on('changeDate', function () {
+            var startDate = parseDateFrToUs($('.dpStart').datepicker('getFormattedDate'));
+            inputDateStart.val(startDate);
+            inputDateStart.trigger('change');
+            $('.dpEnd').datepicker(
+                'setStartDate', $('.dpStart').datepicker('getDate')
+            );
+        });
 
-           $('.dpEnd').on('changeDate', function () {
-               var startDate = changeFormatDate($('.dpEnd').datepicker('getFormattedDate'));
-               inputDateEnd.val(startDate);
-               inputDateEnd.trigger('change');
-               $('.dpStart').datepicker(
-                   'setEndDate', $('.dpEnd').datepicker('getDate')
-               );
-           });
+        $('.dpEnd').on('changeDate', function () {
+            var startDate = parseDateFrToUs($('.dpEnd').datepicker('getFormattedDate'));
+            inputDateEnd.val(startDate);
+            inputDateEnd.trigger('change');
+            $('.dpStart').datepicker(
+                'setEndDate', $('.dpEnd').datepicker('getDate')
+            );
+        });
 
+        //IF UPDATE//////////////////////////////////////////////////////////////////////////////////////////////////
 
-           function changeFormatDate(date) {
+        {% if update is defined %}
+        var cDateS = "{{ competition.dateStart }}";
+        var cDateE = "{{ competition.dateEnd }}";
+        var city = "{{ competition.location.city }}";
+        var address = "{{ competition.location.street }}";
+        var dep = "{{ competition.location.postCode }}";
+        var x = "{{ competition.location.x }}";
+        var y = "{{ competition.location.y }}";
 
-               var date= date;
-               var d=new Date(date.split("-").reverse().join("-"));
-               var dd=d.getDate();
-               var mm=d.getMonth()+1;
-               var yy=d.getFullYear();
-               var newdate =yy+"-"+mm+"-"+dd;
+        locationUpdate(dep, city, address, x, y);
 
-               return newdate;
-           }
+        $('.dpStart').datepicker('update', parseDateUsToFr(cDateS));
+        $('.dpEnd').datepicker('update', parseDateUsToFr(cDateE));
 
-       </script>
+        {% endif %}
 
-   {% endblock %}
+        //Tools//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        function parseDateFrToUs(date) {
+
+            var d = new Date(date.split("-").reverse().join("-"));
+            var dd = ('0' + d.getDate()).slice(-2);
+            var mm = d.getMonth() + 1;
+            var mm = ('0' + mm).slice(-2);
+            var yy = d.getFullYear();
+            var newdate = yy + "-" + mm + "-" + dd;
+
+            return newdate;
+        }
+
+        function parseDateUsToFr(date) {
+
+            var d = new Date(date);
+            var dd = ('0' + d.getDate()).slice(-2);
+            var mm = d.getMonth() + 1;
+            var mm = ('0' + mm).slice(-2);
+            var yy = d.getFullYear();
+            var newdate = dd + "-" + mm + "-" + yy;
+
+            return newdate;
+        }
+
+    </script>
+
+{% endblock %}

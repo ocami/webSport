@@ -1,17 +1,100 @@
-<div class="col-xs-6">
+{% block stylesheets %}
+
+    <style>
+        .panel-cup {
+            height: 70px;
+        }
+
+        .panel-cup img {
+            height: 4em;
+            margin: 0.5em;
+        }
+
+        .panel-cup img {
+            height: 4em;
+            margin: 0.5em;
+        }
+
+        @media (max-width: 1000px) {
+            .panel-cup img {
+                height: 3em;
+                margin: 0.5em;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .panel-cup img {
+                height: 4em;
+                margin: 0.5em;
+            }
+        }
+
+        @media (max-width: 448px) {
+            .panel-cup img {
+                height: 3em;
+                margin: 0.5em;
+            }
+        }
+
+        @media (max-width: 385px) {
+            .panel-cup img {
+                height: 2.5em;
+                margin: 1em 0em 1em 0em;
+            }
+        }
+
+        .panel-cup .glyphicon{
+            display: block;
+            font-size: 3em;
+            margin: 1em 0em 1em 0em;
+        }
+
+
+    </style>
+
+{% endblock %}
+
+<div class="col-xs-12 col-sm-6">
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">{{ competition.name }}</h3>
         </div>
-        <div class="panel-body">
+        <div class="panel-body panel-body-competition">
 
-            {{ competition.location.city }} du {{ competition.dateStart|date("d/m/Y") }} au {{ competition.dateEnd|date("d/m/Y") }}<br>
-            Organisé par {{ competition.organizer.name }}<br>
+            <h4 style="text-align: center">Du {{ competition.dateStart|date("d/m/Y") }}
+                au {{ competition.dateEnd|date("d/m/Y") }}</h4>
 
-            {% for race in competition.races %}
-                <span style="margin-left: 1em" >{{ race.name }}</span><br>
-            {% endfor %}
+            <div class="row">
+                <div class="col-xs-7">
+                    {{ competition.location.street }}<br>
+                    {{ competition.location.postCode }} {{ competition.location.city }}<br><br>
+                    <span style="font-size: smaller">Organisé par {{ competition.organizer.name }}</span>
+                </div>
 
+                <div class="col-xs-5">
+                    <div class='panel-cup'>
+                        {% if competition.inChampionship  %}
+                            <img src="{{ asset('img/cup.jpg') }}"/>
+                        {% endif %}
+
+                        {% if for == 'compeitor' %}
+                            {% if competition.competitorCanRegister == true %}
+                                <img src="{{ asset('img/canRegister.png ') }}"/>
+                            {% endif %}
+                        {% endif %}
+
+                        {% if for == 'organizer' %}
+                            {% if competition.valid %}
+                                <img src="{{ asset('img/checked.png ') }}"/>
+                            {% else %}
+                                <img src="{{ asset('img/cancel.png ') }}"/>
+                            {% endif %}
+                        {% endif %}
+
+                    </div>
+                    <div style="text-align: center">{{ competition.races|length }} courses</div>
+                </div>
+            </div>
         </div>
         <div class="panel-footer">
             <input type="button" class="btn-xs btn-info" value="Détail"

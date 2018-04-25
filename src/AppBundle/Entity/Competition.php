@@ -47,22 +47,26 @@ class Competition
      *
      * @ORM\Column(name="name", type="string", length=255)
      *
-     * @Assert\Length(min=5, minMessage="Le titre doit faire au moins {{ limit }} caractères.")
+     * @Assert\Length(min=5)
      * @Assert\Length(max=50)
      */
     private $name;
 
     /**
-     * @var Date
-     * @ORM\Column(name="dateStart", type="date", nullable=true)
+     * @var string
+     * @ORM\Column(name="dateStart", type="string", nullable=true)
+     * @Assert\Regex("/(19[5-9][0-9]|20[0-4][0-9]|2050)[-](0?[1-9]|1[0-2])[-](0?[1-9]|[12][0-9]|3[01])/")
+     * @Assert\Length(max=10)
+     * @Assert\Length(min=10)
      */
     private $dateStart;
 
     /**
-     * @var Date
-     *
-     * @ORM\Column(name="dateEnd", type="date", nullable=true)
-     *
+     * @var string
+     * @ORM\Column(name="dateEnd", type="string", nullable=true)
+     * @Assert\Regex("/(19[5-9][0-9]|20[0-4][0-9]|2050)[-](0?[1-9]|1[0-2])[-](0?[1-9]|[12][0-9]|3[01])/")
+     * @Assert\Length(max=10)
+     * @Assert\Length(min=10)
      */
     private $dateEnd;
 
@@ -82,6 +86,23 @@ class Competition
     private $locationString;
 
     /**
+     * @var Boolean
+     * @ORM\Column(name="valid", type="boolean")
+     */
+    private $valid = false;
+
+    /**
+     * @var Boolean
+     * @ORM\Column(name="in_championship", type="boolean")
+     */
+    private $inChampionship = false;
+
+    /**
+     * @var Boolean
+     */
+    private $competitorCanRegister = false;
+
+    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Organizer", inversedBy ="competitions")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -96,18 +117,6 @@ class Competition
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Category", inversedBy ="competitions")
      */
     private $categories;
-
-    /**
-     * @var Boolean
-     * @ORM\Column(name="valid", type="boolean")
-     */
-    private $valid = false;
-
-    /**
-     * @var Boolean
-     * @ORM\Column(name="in_championship", type="boolean")
-     */
-    private $inChampionship = false;
 
     /**
      * Constructor
@@ -434,6 +443,30 @@ class Competition
     public function getLocationString()
     {
         return $this->locationString;
+    }
+
+    /**
+     * Set competitorCanRegister
+     *
+     * @param boolean $competitorCanRegister
+     *
+     * @return Race
+     */
+    public function setCompetitorCanRegister($competitorCanRegister)
+    {
+        $this->competitorCanRegister = $competitorCanRegister;
+
+        return $this;
+    }
+
+    /**
+     * Get competitorCanRegister
+     *
+     * @return boolean
+     */
+    public function getCompetitorCanRegister()
+    {
+        return $this->competitorCanRegister;
     }
 
 }

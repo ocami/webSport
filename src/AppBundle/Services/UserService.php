@@ -106,7 +106,7 @@ class UserService
      * @param Competitor $competitor
      * @return Category
      */
-    public function getCategoryCompetitor()
+    public function setCategoryCompetitor()
     {
         $categories = $this->em->getRepository(Category::class)->findAll();
         $competitor = $this->currentUserApp(Competitor::class);
