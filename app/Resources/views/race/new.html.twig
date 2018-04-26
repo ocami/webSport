@@ -56,42 +56,30 @@ TO DO
     {{ parent() }} Ajouter course
 {% endblock %}
 
- {% block body %}
+{% block body %}
 
      {{ form_start(form, {'attr': {'data-toggle': 'validator', 'role':'form'}}) }}
 
      <!--Name-->
      <div class="form-group has-feedback abcd">
          <label for="name" class="control-label">Nom</label>
-         {{ form_widget(form.name, {'attr':
-             {'id':"name",
-                 'type':"text",
-                 'pattern':"^[_A-z0-9]{1,}$",
-                 'minlength':"3",
-                 'maxlength':"25",
-                 'class':"form-control",
-                 'data-error':"Utiliser uniquement des caractères alpha-numériques [A-z 0-9]. Entre 3 et 25 caractères",
-                 'required':'true'}}) }}
+         {{ form_widget(form.name, {'attr': {'class':"form-control"}}) }}
          <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-         <div class="help-block with-errors">Entre 3 et 25 caractères alaphanumériques</div>
 
+         <div class="help-block with-errors">Entre 5 et 50 caractères alaphanumériques</div>
      </div>
 
      <!--Distance-->
      <div class="form-group has-feedback abcd">
-         {{ form_widget(form.distance, {'attr':{
-             'style':"display: none",
-             'type':"number",
-             'min':"1",
-             'class':"form-control distance-input",
-             'required':'true'}}) }}
+         {{ form_widget(form.distance, {'attr': {'class':"form-control distance-input", 'style':"display: block"}}) }}
+
          {% include 'race/widget/distance.html.twig' %}
      </div>
 
      <!--Categories -->
      <div class="form-group has-feedback abcd">
          <label for="categories" class="control-label">Categories</label><br><br>
-         <div style="display: none">
+         <div style="display: block">
          {{ form_widget(form.categoriesString, {'attr':  {
              'type':"text",
              'min':"1",
@@ -108,10 +96,10 @@ TO DO
      <!--Date Time-->
      <div class="form-group has-feedback abcd">
          <label for="date-time" class="control-label">Date</label>
-         {{ form_widget(form.dateString, {'attr':  {
+         {{ form_widget(form.dateTime, {'attr':  {
              'type':"text",
              'min':"1",
-             'style':"display: none",
+             'style':"display: block",
              'class':"form-control date-time-input result",
              'data-error':"Format de date non valide",
              'required':'true'}}) }}
@@ -125,8 +113,7 @@ TO DO
      </div>
 
      {{ form_end(form) }}
-
- {% endblock %}
+{% endblock %}
 
  {% block javascripts %}
      {{ parent() }}

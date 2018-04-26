@@ -81,13 +81,13 @@ class RaceController extends Controller
      * @Route("/race/new/{id}", name="race_new")
      * @Security("has_role('ROLE_ORGANIZER')")
      */
-    public function newAction(Request $request, Competition $competition)
+    public function create(Request $request, Competition $competition)
     {
         $categories = $this->getDoctrine()->getRepository(Category::class)->categoriesByGender();
 
         $race = new Race();
         $race-> setCompetition($competition);
-        $form = $this->createForm(RaceNewType::class, $race);
+        $form = $this->createForm(RaceType::class, $race);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
@@ -113,7 +113,7 @@ class RaceController extends Controller
      * @Route("/race/edit/{id}", name="race_edit")
      * @Security("has_role('ROLE_ORGANIZER')")
      */
-    public function editAction(Request $request, Race $race)
+    public function edit(Request $request, Race $race)
     {
         $organizer = $this->get(UserService::class)->currentUserApp(Organizer::class);
         $form = $this->createForm(RaceType::class, $race, array('organizer' => $organizer));

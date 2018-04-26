@@ -35,11 +35,10 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
             ->innerJoin('r.competition', 'c')
             ->innerJoin('c.organizer', 'o')
             ->innerJoin('c.location', 'l')
-            //->select('r.code, r.name, r.dateString, r.inChampionship, c.code')
-            ->select('r.id, r.name, r.distance, r.inChampionship, r.dateString, 
+            ->select('r.id, r.name, r.distance, r.inChampionship, r.dateTime, 
                             c.id as competitionId, c.name as competitionName, 
                             o.id as organizerId, o.name as organizerName,
-                            l.number, l.street, l.postCode, l.city, l.x, l.y
+                            l.street, l.postCode, l.city, l.x, l.y
                             ')
             ->where('r.id = :id')
             ->setParameter('id', $race)

@@ -42,6 +42,9 @@ class Race
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     *
+     * @Assert\Length(max=50)
+     * @Assert\Regex("/^([a-zA-Z0-9_-àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ ]){5,50}$/")
      */
     private $name;
 
@@ -49,20 +52,17 @@ class Race
      * @var float
      *
      * @ORM\Column(name="distance", type="float", nullable=true)
+     *
+     * @Assert\Regex("/^[0-9]+(\.[0-9][0-9]?)?$/")
+     *
      */
     private $distance;
 
     /**
+     *
      * @var string
+     * @ORM\Column(name="date_time", type="string", length=255)
      *
-     * @ORM\Column(name="date_string", type="string", nullable=true)
-     */
-    private $dateString;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="dateTime", type="datetime", nullable=true)
      */
     private $dateTime;
 
@@ -227,34 +227,9 @@ class Race
     }
 
     /**
-     * Set dateString
-     *
-     * @param string $dateString
-     *
-     * @return Race
-     */
-    public function setDateString($dateString)
-    {
-        $this->dateString = $dateString;
-        $this->dateTime = new \DateTime($dateString);
-
-        return $this;
-    }
-
-    /**
-     * Get dateString
-     *
-     * @return string
-     */
-    public function getDateString()
-    {
-        return $this->dateString;
-    }
-
-    /**
      * Set dateTime
      *
-     * @param \DateTime $dateTime
+     * @param string $dateTime
      *
      * @return Race
      */
@@ -267,7 +242,7 @@ class Race
     /**
      * Get dateTime
      *
-     * @return \DateTime
+     * @return string
      */
     public function getDateTime()
     {

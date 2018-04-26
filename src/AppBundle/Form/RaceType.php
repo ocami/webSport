@@ -11,7 +11,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use AppBundle\Services\MessageGenerator;
 use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 
 class RaceType extends AbstractType
 {
@@ -20,23 +24,12 @@ class RaceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $organizer = $options['organizer'];
-
         $builder
             ->add('name')
-            ->add('km')
-            ->add('date')
-            ->add('time')
-            ->add('categories', EntityType::class, array(
-                'class' => 'AppBundle:Category',
-                'choice_label' => 'name',
-                'multiple' => true,
-                'expanded' => true,
-                'query_builder' => function (CategoryRepository $cr) use ($organizer) {
-                    return $cr->categoriesByOrganizer($organizer);
-                }
-            ))
-            ->add('send', SubmitType::class)
+            ->add('distance')
+            ->add('dateTime')
+            ->add('categoriesString')
+            ->add('requestInChampionship')
         ;
     }
 
@@ -47,7 +40,7 @@ class RaceType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'AppBundle\Entity\Race',
-            'organizer' => null
+            'allow_extra_fields' => true
         ));
     }
 
@@ -58,6 +51,4 @@ class RaceType extends AbstractType
     {
         return 'appbundle_race';
     }
-
-
 }
