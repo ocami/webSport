@@ -136,6 +136,12 @@ class Race
     private $competitorCanEntry;
 
     /**
+     * @var Boolean
+     * @ORM\Column(name="full_cat", type="boolean")
+     */
+    private $fullCat = false;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -564,4 +570,27 @@ class Race
         return $this->valid;
     }
 
+    /**
+     * Set fullCat
+     *
+     * @param boolean $fullCat
+     *
+     * @return Race
+     */
+    public function setFullCat($fullCat)
+    {
+        $this->fullCat = $fullCat;
+
+        return $this;
+    }
+
+    /**
+     * Get fullCat
+     *
+     * @return boolean
+     */
+    public function getFullCat()
+    {
+        return $this->fullCat;
+    }
 }

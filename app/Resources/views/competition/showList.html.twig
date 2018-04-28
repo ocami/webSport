@@ -23,7 +23,7 @@
         <h2>A venir</h2>
         <div class="row">
             {% for competition in competitionsNoPassed %}
-                {% include 'competition/model.html.twig' %}
+                {% include 'competition/modelList.twig' %}
             {% endfor %}
         </div>
     </div>
@@ -31,7 +31,7 @@
         <h2>Passées</h2>
         <div class="row">
             {% for competition in competitionsPassed %}
-                {% include 'competition/model.html.twig' %}
+                {% include 'competition/modelList.html.twig' %}
             {% endfor %}
         </div>
     </div>

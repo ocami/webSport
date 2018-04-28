@@ -33,4 +33,13 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
 
         return array('Masculin'=>$m,'Féminine'=>$f);
     }
+
+    public function count(){
+
+        $nbRC = $this->createQueryBuilder('c')
+            ->select('COUNT(c)')
+            ->getQuery()->getSingleScalarResult();
+
+        return $nbRC;
+    }
 }

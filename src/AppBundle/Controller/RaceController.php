@@ -38,18 +38,15 @@ class RaceController extends Controller
     /**
      * @Route("/race/show", name="race_show")
      */
-    public function showAction()
+    public function show()
     {
-        //$isOrganizer = $this->get(UserService::class)->isOrganizerRace($race);
-
-
         return $this->render('race/show.html.twig');
     }
 
     /**
      * @Route("/race/showRanck/{id}", name="race_ranck_show")
      */
-    public function showRanckAction(Race $race)
+    public function showRanck(Race $race)
     {
         $isOrganizer = true;
         $categories = $race->getCategories();
@@ -91,15 +88,11 @@ class RaceController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-            $this->get(RaceService::class)->raceFlush($race);
+            $this->get(RaceService::class)->create($race);
 
             $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée');
 
-            return $this->render('race/new.html.twig', array(
-                'race' => $race,
-                'categories' => $categories,
-                'form' => $form->createView()
-            ));
+            return $this->redirectToRoute('competition_show', array('id' => $competition->getId()));
         }
 
         return $this->render('race/new.html.twig', array(
@@ -213,11 +206,9 @@ class RaceController extends Controller
      */
     public function getJson(Request $request)
     {
-        //$idRace = $request->query->get('idRace');
-
         $race = $request->query->get('race');
         $race = $this->getDoctrine()->getRepository(Race::class)->find($race);
-        $race =  $this->getDoctrine()->getRepository(Race::class)->toString($race);
+        $race = $this->getDoctrine()->getRepository(Race::class)->toString($race);
         return new JsonResponse($race);
     }
 

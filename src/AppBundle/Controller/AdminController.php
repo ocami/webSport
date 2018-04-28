@@ -35,10 +35,9 @@ class AdminController extends Controller
     /**
      * @Route("/admin/races", name="admin_races")
      */
-    public function racesAction(Request $request)
+    public function races(Request $request)
     {
-        $races = $this->getDoctrine()->getRepository(Race::class)->findAll();
-
+        $races = $this->getDoctrine()->getRepository(Race::class)->findBySupervised(false);
         return $this->render('admin/races.html.twig', array(
             'races' => $races
         ));

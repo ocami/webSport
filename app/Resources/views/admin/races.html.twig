@@ -64,21 +64,25 @@
         {% endfor %}
 
 
-
-
         </tbody>
     </table>
 
-    <div class="buttons">
-        <button type="button" class="btn btn-dark next glyphicon glyphicon-chevron-left"></button>
-        <button type="button" class="btn btn-dark prev glyphicon glyphicon-chevron-right"></button>
-        <button type="button" class="btn btn-dark valid">Valider</button>
-        <button type="button" class="btn btn-dark refuse">Refuser</button>
-        <label><input class="cb-Championship" type="checkbox">Championat</label>
 
+
+    <div class="race-show">
+        <div class="buttons">
+            <button type="button" class="btn btn-dark next glyphicon glyphicon-chevron-left"></button>
+            <button type="button" class="btn btn-dark prev glyphicon glyphicon-chevron-right"></button>
+            <button type="button" class="btn btn-dark valid">Valider</button>
+            <button type="button" class="btn btn-dark refuse">Refuser</button>
+            <label><input class="cb-Championship" type="checkbox">Championat</label>
+
+        </div>
+
+
+        {% include '/race/show.html.twig' %}
     </div>
 
-    {% include '/race/show.html.twig' %}
 
 
 {% endblock %}
@@ -103,11 +107,24 @@
          var indexSelected;
          var rowData;
          var cb = $('.cb-Championship');
-         
+
          //initialize///////////////////////////////////////////////////////////////////////////////////////
          cb.checkboxradio(); //jquery-ui
 
          var table = $('#example').DataTable({
+             "info":     false,
+             "language" : {
+                 "search": "Rechercher:",
+                 "lengthMenu": "Voir _MENU_ courses  par page",
+                 "zeroRecords": "Aucune courses non traitées",
+                 "paginate": {
+                     "first":      "Premier",
+                     "last":       "Dernier",
+                     "next":       "Suivant",
+                     "previous":   "précédent"
+                 },
+             },
+
              select: {
                  style: 'single',
                  selector: 'td:first-child'
@@ -146,6 +163,9 @@
          if (table.data().count()) {
              tableSelectRow(0);
              preRaceShow(0);
+             $('.race-show').show();
+         } else {
+             $('.race-show').hide();
          }
 
          //Event///////////////////////////////////////////////////////////////////////////////////////
@@ -174,37 +194,47 @@
              if (cb.prop('checked'))
                  inChampionship = 1;
 
-             raceUpdate(raceSeclected,1,inChampionship);
+             raceUpdate(raceSeclected, 1, inChampionship);
          });
 
          $('.refuse').click(function () {
-             raceUpdate(raceSeclected,0,0);
+             raceUpdate(raceSeclected, 0, 0);
          });
-
 
          //functions///////////////////////////////////////////////////////////////////////////////////////
 
          function preRaceShow(index) {
-             rowData = table.rows(index).data().toArray()[0];
-             raceSeclected = rowData['id'];
-             indexSelected = table.row(index).index();
 
-             cbChampionshipRefresh();
+             $('.race-show').hide();
 
-             raceShow(raceSeclected); //views/race/show.html.twig
+
+             if (table.data().count()) {
+                 rowData = table.rows(index).data().toArray()[0];
+                 raceSeclected = rowData['id'];
+                 indexSelected = table.row(index).index();
+
+                 cbChampionshipRefresh();
+
+                 raceShow(raceSeclected); //views/race/show.html.twig
+
+                 $('.race-show').show();
+             }
          }
 
          function raceUpdate(raceSeclected, valid, inChampionship) {
              $.ajax({
                  url: "{{ path('race_admin_supervise') }}",
-                 data: {race: raceSeclected, valid : valid, inChampionship : inChampionship},
+                 data: {race: raceSeclected, valid: valid, inChampionship: inChampionship},
                  success: function (data) {
+                     console.log('raceUpdate success');
+                     table.row(indexSelected).remove().draw();
+                     tableSelectRow(0);
+                     preRaceShow(0);
                  }
              });
          }
 
          //functions///////////////////////////////////////////////////////////////////////////////////////
-
 
          function cbChampionshipRefresh() {
              $('.cbChampionship').remove();

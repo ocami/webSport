@@ -10,6 +10,7 @@ use AppBundle\Entity\Competition;
 use AppBundle\Entity\Organizer;
 use AppBundle\Services\GeoJsonService;
 use AppBundle\Services\UserService;
+use Proxies\__CG__\AppBundle\Entity\Race;
 use SebastianBergmann\CodeCoverage\Report\Html\Renderer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -28,7 +29,11 @@ class CompetitionController extends Controller
      */
     public function show(Competition $competition)
     {
-        $races = $competition->getRaces();
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ORGANIZER'))
+            $races = $competition->getRaces();
+        else
+            $races = $this->getDoctrine()->getRepository(\AppBundle\Entity\Race::class)->findByValid(true);
+
         // if user is competitior and if competitor is in category of race => reveal Entry Button
         if ($this->get('security.authorization_checker')->isGranted('ROLE_COMPETITOR'))
             $races = $this->get(RaceService::class)->racesCompetitorCanEntry($races);

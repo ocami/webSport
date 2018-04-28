@@ -96,12 +96,18 @@ class RaceService
         return $race;
     }
 
-    public function raceFlush(Race $race)
+    public function competitorIsRegister($race){
+
+    }
+
+    public function create(Race $race)
     {
         $categoriesId = json_decode($race->getCategoriesString());
         $competition = $race->getCompetition();
 
+        $i = 0;
         foreach ($categoriesId as $category) {
+            $i++;
             $category = $this->em->getRepository(Category::class)->find($category);
 
             $race->addCategory($category);
@@ -109,6 +115,11 @@ class RaceService
             if (!$competition->getCategories()->contains($category))
                 $competition->addCategory($category);
         }
+
+        $nbC = $this->em->getRepository(Category::class)->count();
+
+        if ($nbC == $i)
+            $race->setFullCat(true);
 
         $this->em->persist($race);
         $this->em->persist($competition);
@@ -118,14 +129,13 @@ class RaceService
 
     public function adminSuperviseUpdate($data)
     {
-        //Race update
         $race = $this->em->getRepository(Race::class)->find($data['race']);
 
         $race->setSupervised(true);
         $race->setValid($data['valid']);
         $race->setInChampionship($data['inChampionship']);
 
-        if($data['inChampionship'])
+        if ($data['inChampionship'])
             $race->setRequestInChampionship(false);
 
         $this->em->persist($race);

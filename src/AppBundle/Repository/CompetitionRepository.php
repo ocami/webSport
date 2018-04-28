@@ -70,7 +70,7 @@ class CompetitionRepository extends \Doctrine\ORM\EntityRepository
         return $competitions;
     }
 
-    /* public function isValid(Competition $competition){
+     public function isValid(Competition $competition){
          $nb = $this->createQueryBuilder('c')
              ->select('count(c)')
              ->innerJoin('c.races','r')
@@ -104,5 +104,5 @@ class CompetitionRepository extends \Doctrine\ORM\EntityRepository
              return true;
 
          return false;
-     }*/
+     }
 }

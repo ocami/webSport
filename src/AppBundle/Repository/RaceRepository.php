@@ -2,6 +2,7 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Competition;
 use AppBundle\Entity\Race;
 
 
@@ -58,5 +59,4 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
 
         return $race;
     }
-
 }

@@ -109,19 +109,15 @@
 
                function hydrate(data) {
                    var date = data.race.dateTime.replace(/\-|\:/g, ' ');
-                   console.log("hey");
-                   console.log(data.race.dateTime);
                    var date = date.split(" ");
-                   console.log("ho");
 
-                   console.log(date);
                    var date = new Date(Date.UTC(date[0], date[1], date[2], date[3] - 2, date[4], date[5]));
 
                    $('.race_name').text(data.race.name);
                    $('.organizer').text(data.race.organizerName);
                    $('.competition').text(data.race.competitionName);
                    $('.distance').text(data.race.distance);
-                   $('.date-day').text(date.toLocaleDateTime('fr-FR', {
+                   $('.date-day').text(date.toLocaleDateString('fr-FR', {
                        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
                    }));
                    $('.date-hour').text(('0' + date.getHours()).slice(-2) + ' : ' + ('0' + date.getMinutes()).slice(-2));
