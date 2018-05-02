@@ -50,7 +50,7 @@ class CompetitorController extends Controller
      */
     public function show(Request $request)
     {
-        $competitor = $this->get(UserService::class)->currentUserApp(Competitor::class);
+        $competitor = $this->get(UserService::class)->getCompetitor();
 
         return $this->render('competitor/show.html.twig', array(
             'competitor' => $competitor,
@@ -64,7 +64,7 @@ class CompetitorController extends Controller
      */
     public function addRace(Request $request, Race $race)
     {
-        $competitor = $this->get(UserService::class)->currentUserApp(Competitor::class);
+        $competitor = $this->get(UserService::class)->getCompetitor();
         $competitorIsRegisterToRace = $this->getDoctrine()->getRepository(RaceCompetitor::class)->competitorIsRegisterToRace($race,$competitor);
 
         if ($competitorIsRegisterToRace) {

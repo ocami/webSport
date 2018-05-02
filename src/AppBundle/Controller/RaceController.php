@@ -132,7 +132,7 @@ class RaceController extends Controller
      */
     public function showByCompetitor()
     {
-        $competitor = $this->get(UserService::class)->currentUserApp(Competitor::class);
+        $competitor = $this->get(UserService::class)->getCompetitor();
 
         $races = $this->getDoctrine()->getRepository(RaceCompetitor::class)->byCompetitor($competitor);
 

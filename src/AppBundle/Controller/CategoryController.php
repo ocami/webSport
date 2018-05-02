@@ -43,7 +43,7 @@ class CategoryController extends Controller
      */
     public function showByOrganizer()
     {
-        $organizer = $this->get(UserService::class)->currentUserApp(Organizer::class);
+        $organizer = $this->get(UserService::class)->getOrganizer();
         $categories = $this->getDoctrine()->getRepository(Category::class)->findByCreateBy($organizer);
 
         return $this->render('category/showList.html.twig', array('categories' => $categories));

@@ -44,10 +44,10 @@ class UserService
         $this->user = $this->ts->getToken()->getUser();
 
         if ($this->ac->isGranted('ROLE_ORGANIZER'))
-            $this->organizer = $this->currentUserApp(Organizer::class);
+            $this->organizer = $this->em->getRepository(Organizer::class)->findOneByUserId($this->user);
 
         if ($this->ac->isGranted('ROLE_COMPETITOR'))
-            $this->competitor = $this->currentUserApp(Competitor::class);
+            $this->competitor = $this->em->getRepository(Competitor::class)->findOneByUserId($this->user);
     }
 
 
@@ -202,19 +202,19 @@ class UserService
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public function currentUserApp($userApp)
-    {
-        switch ($userApp) {
-            case Competitor::class :
-                return $this->em->getRepository(Competitor::class)->findOneByUserId($this->user);
-
-            case Organizer::class :
-                return $this->em->getRepository(Organizer::class)->findOneByUserId($this->user);
-
-            default :
-                return new InvalidArgumentException('UserService/cureentUserApp function accept only Competitor or Organizer class');
-        }
-    }
+//    public function currentUserApp($userApp)
+//    {
+//        switch ($userApp) {
+//            case Competitor::class :
+//                return $this->em->getRepository(Competitor::class)->findOneByUserId($this->user);
+//
+//            case Organizer::class :
+//                return $this->em->getRepository(Organizer::class)->findOneByUserId($this->user);
+//
+//            default :
+//                return new InvalidArgumentException('UserService/cureentUserApp function accept only Competitor or Organizer class');
+//        }
+//    }
 
 
 }

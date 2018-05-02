@@ -47,7 +47,7 @@ class OrganizerController extends Controller
      */
     public function show(Request $request)
     {
-        $organizer = $this->get(UserService::class)->currentUserApp(Organizer::class);
+        $organizer = $this->get(UserService::class)->getOrganizer();
 
         return $this->render('organizer/show.html.twig', array(
             'organizer' => $organizer,
