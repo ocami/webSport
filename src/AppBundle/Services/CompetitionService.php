@@ -56,6 +56,9 @@ class CompetitionService
 
             if (count($competition->getCategories()) == $nbC)
                 $competition->setFullCat(true);
+
+
+
         }
 
         return $competitions;
@@ -169,9 +172,6 @@ class CompetitionService
         return $feature;
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
     /**
      * Check if competition contains race for which competitor can register
      *
@@ -187,41 +187,5 @@ class CompetitionService
 
         return $competition;
     }
-
-//    /**
-//     * Call function competitorCanRegister() foreach competition of array
-//     *
-//     * @param array of competitions
-//     * @param Competitor $competitor
-//     *
-//     * @return array of competitions
-//     */
-//    private function competitorCanRegisterList($competitions, Competitor $competitor)
-//    {
-//        for ($i = 0; $i < count($competitions); $i++) {
-//            $competitions[$i] = $this->competitorCanRegister($competitions[$i], $competitor);
-//        }
-//
-//        return $competitions;
-//    }
-//
-//    /**
-//     * Return array of Competitions if are valid, foreach set Competition.competitorCanRegister if current user is competitor
-//     *
-//     *@return \ArrayObject
-//     */
-//    public function showAll()
-//    {
-//        $competitions = $this->em->getRepository(Competition::class)->allValidByDate();
-//
-//        if ($this->ac->isGranted('ROLE_COMPETITOR')){
-//            $competitions['competitionsNoPassed'] = $this->competitorCanRegisterList(
-//                $competitions['competitionsNoPassed'],
-//                $this->us->currentUserApp(Competitor::class)
-//            );
-//        }
-//
-//        return $competitions;
-//    }
 
 }

@@ -1,56 +1,28 @@
 {% block stylesheets %}
 
+    <link rel="stylesheet" href="{{ asset('css/panel.css') }}"/>
     <style>
-        .panel-cup {
-            height: 70px;
+        .panel-body .nbRace {
+            display: block;
+            text-align: right;
+            font-weight: bold;
         }
-
-        .panel-cup img {
-            height: 4em;
-            margin: 0.5em;
-        }
-
-        .panel-cup img {
-            height: 4em;
-            margin: 0.5em;
-        }
-
-        @media (max-width: 1000px) {
-            .panel-cup img {
-                height: 3em;
-                margin: 0.5em;
-            }
-        }
-
-        @media (max-width: 767px) {
-            .panel-cup img {
-                height: 4em;
-                margin: 0.5em;
-            }
-        }
-
-        @media (max-width: 448px) {
-            .panel-cup img {
-                height: 3em;
-                margin: 0.5em;
-            }
-        }
-
-        @media (max-width: 385px) {
-            .panel-cup img {
-                height: 2.5em;
-                margin: 1em 0em 1em 0em;
-            }
-        }
-
     </style>
 
 {% endblock %}
-
 <div class="col-xs-12 col-sm-6">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title">{{ competition.name }}</h3>
+            <span class="panel-title">{{ competition.name }} </span>
+            <span class="pull-right">
+                {% if competition.inChampionship %}
+                    <img src="{{ asset('img/cup.jpg') }}" class="img-circle">
+                {% endif %}
+
+                {% if competition.valid %}
+                    {{ competition.competitorRegister|registerImg }}
+                {% endif %}
+            </span>
         </div>
         <div class="panel-body panel-body-competition">
 
@@ -58,41 +30,42 @@
                 au {{ competition.dateEnd|date("d/m/Y") }}</h4>
 
             <div class="row">
+
                 <div class="col-xs-7">
                     {{ competition.location.street }}<br>
                     {{ competition.location.postCode }} {{ competition.location.city }}<br><br>
+                    <span class="nbRace">{{ competition.nbValidRaces }} courses</span>
                     <span style="font-size: smaller">Organisé par {{ competition.organizer.name }}</span>
                 </div>
 
-                <div class="col-xs-5">
-                    <div class='panel-cup'>
-                        {% if competition.inChampionship %}
-                            <img src="{{ asset('img/cup.jpg') }}"/>
-                        {% endif %}
-
-                        {% if competition.competitorRegister == 1 %}
-                            <img src="{{ asset('img/canRegister.png') }}" class="img-circle">
-                        {% endif %}
-
-                        {% if competition.competitorRegister == 2 %}
-                            <img src="{{ asset('img/race_start.png') }}" class="img-circle">
-                        {% endif %}
-
-                        {% if competition.isOrganizer %}
-                            {% if competition.valid %}
-                                <img src="{{ asset('img/checked.png ') }}"/>
-                            {% else %}
-                                <img src="{{ asset('img/cancel.png ') }}"/>
-                            {% endif %}
-                        {% endif %}
-                    </div>
-                    <div style="text-align: center">{{ competition.nbValidRaces }} courses</div>
+                <div class="col-xs-4">
+                    {% if competition.fullCat %}
+                        <div class="category">
+                            Toute catégories
+                        </div>
+                    {% else %}
+                        <div class="categories">
+                            {% for category in competition.categories %}
+                                <span style="margin-left: 1em">{{ category.name }}</span><br>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
         <div class="panel-footer">
             <input type="button" class="btn-xs btn-info" value="Détail"
                    onclick="location.href = '{{ path('competition_show', {'id': competition.id}) }}';">
+
+                {% if competition.isOrganizer == true %}
+                    <input type="button" class="btn-xs btn-success" value="Editer"
+                           onclick="location.href = '{{ path('competition_edit', {'id': competition.id}) }}';">
+
+                    <input type="button" class="btn-xs btn-success" value="Ajouter une course"
+                           onclick="location.href = '{{ path('race_new', {'id':competition.id} ) }}';">
+
+                    {{ competition.valid|validImg }}
+                {% endif %}
         </div>
     </div>
 </div>

@@ -1,27 +1,6 @@
 {% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/panel.css') }}"/>
     <style>
-        .panel-body .categories {
-            height: 6em;
-            overflow-y: scroll;
-            overflow-x: hidden;
-        }
-
-        .panel-body {
-            padding-bottom: 0em;
-            padding-top: 0.5em;
-        }
-
-        .panel-body .category {
-            height: 6em;
-            padding-top: 2em;
-            font-weight: bold;
-        }
-
-        .panel-body-race h4 {
-            text-align: center;
-            font-weight: bold;
-        }
-
         .race-description span {
             line-height: 2;
         }
@@ -31,24 +10,6 @@
                 font-size: 15px;
                 font-weight: bold;
             }
-        }
-
-        @media (max-width: 400px) {
-            /*.race-description {*/
-            /*font-size: 16px;*/
-            /*font-weight: bold;*/
-            .panel-body {
-                padding: 0 0 0 0px;
-            }
-
-        }
-
-        .panel-heading img {
-            height: 2em;
-        }
-
-        .panel-footer img {
-            height: 2em;
         }
     </style>
 
@@ -60,18 +21,12 @@
                 <div class="panel-heading">
                     <span class="panel-title">{{ race.name }} </span>
                     <span class="pull-right">
+                        {% if race.inChampionship %}
+                            <img src="{{ asset('img/cup.jpg') }}" class="img-circle">
+                        {% endif %}
+
                         {% if race.valid %}
-                            {% if race.inChampionship %}
-                                <img src="{{ asset('img/cup.jpg') }}" class="img-circle">
-                            {% endif %}
-
-                            {% if race.competitorRegister == 1 %}
-                                <img src="{{ asset('img/canRegister.png') }}" class="img-circle">
-                            {% endif %}
-
-                            {% if race.competitorRegister == 2 %}
-                                <img src="{{ asset('img/race_start.png') }}" class="img-circle">
-                            {% endif %}
+                            {{ race.competitorRegister|registerImg }}
                         {% endif %}
                     </span>
                 </div>
@@ -119,20 +74,14 @@
                         {% endif %}
                     {% endif %}
 
-                    {% if is_granted('ROLE_ORGANIZER') %}
-                        {% if race.isOrganizer == true %}
-                            <input type="button" class="btn-xs btn-success" value="Editer"
-                                   onclick="location.href = '{{ path('race_edit', {'id': race.id}) }}';">
+                    {% if race.isOrganizer == true %}
+                        <input type="button" class="btn-xs btn-success" value="Editer"
+                               onclick="location.href = '{{ path('race_edit', {'id': race.id}) }}';">
 
-                            {% if race.supervised %}
-                                {% if race.valid %}
-                                    <img src="{{ asset('img/checked.png ') }}" class="img-circle pull-right">
-                                {% else %}
-                                    <img src="{{ asset('img/cancel.png ') }}" class="img-circle pull-right">
-                                {% endif %}
-                            {% else %}
-                                <img src="{{ asset('img/question.png ') }}" class="img-circle pull-right">
-                            {% endif %}
+                        {% if race.supervised %}
+                            {{ competition.valid|validImg }}
+                        {% else %}
+                            <img src="{{ asset('img/question.png ') }}" class="img-circle pull-right">
                         {% endif %}
                     {% endif %}
                 </div>

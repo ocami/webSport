@@ -121,20 +121,27 @@ class UserService
 
     public function addUserDataInRaces($races)
     {
-
         if($this->user == 'anon.')
             return $races;
 
         foreach ($races as $race) {
-            if (!is_null($this->organizer))
-                if ($this->isOrganizerCompetition($race->getCompetition()))
-                    $race->setIsOrganizer(true);
-
-            if (!is_null($this->competitor))
-                $race->setCompetitorRegister($this->RaceRegisterStatus($race));
-
+            $this->addUserDataInRace($race);
         }
         return $races;
+    }
+
+    public function addUserDataInRace(Race $race){
+        if($this->user == 'anon.')
+            return $race;
+
+        if (!is_null($this->organizer))
+            if ($this->isOrganizerCompetition($race->getCompetition()))
+                $race->setIsOrganizer(true);
+
+        if (!is_null($this->competitor))
+            $race->setCompetitorRegister($this->RaceRegisterStatus($race));
+
+        return $race;
     }
 
     public function addUserDataInCompetitions($competitions)

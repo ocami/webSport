@@ -96,7 +96,7 @@ class DbService
         $i = 0;
         foreach ($datas as $data) {
             $i++;
-            if ($i == 91)
+            if ($i == 51)
                 break;
             $competitor = new Competitor();
             $user = new User();
@@ -129,10 +129,10 @@ class DbService
         $json = file_get_contents("../src/AppBundle/nameF.json");
         $datas = json_decode($json, true);
 
-        $i = 90;
+        $i = 50;
         foreach ($datas as $data) {
             $i++;
-            if ($i == 181)
+            if ($i == 101)
                 break;
             $competitor = new Competitor();
             $user = new User();

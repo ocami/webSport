@@ -4,8 +4,16 @@
     {{ parent() }} index
 {% endblock %}
 
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path('competition_show_all') }}">Toutes les compétitions</a></li>
+        <li><a href="{{ path('competition_show', {'id':race.competition.id} ) }}">{{ race.competition.name }}</a></li>
+        <li class="active">{{ race.name }}</li>
+    </ol>
+{% endblock %}
+
 {% block organizer_menu %}
-    {% if race.isOrganizer == true %}
+    {% if isOrganizer == true %}
         {% if race.enrol == true %}
             <input type="button" class="btn-xs btn-success" value="Clore les inscriptions"
                    onclick="location.href = '{{ path('race_enrol_closed', {'id':race.id} ) }}';">
@@ -23,8 +31,11 @@
 
 {% block body %}
 
+    <br>
+
+
     <button class="btn-xs btn-primary" onclick="requestForTableGeneral({{ race.id }})">Classement général</button>
-    {% for c in race.categories %}
+    {% for c in categories %}
         <button class="btn-xs btn-info" onclick="requestForTableCategory({{ race.id }}, {{ c.id }}, '{{ c.name }}')">{{ c.name }}</button>
     {% endfor %}
 

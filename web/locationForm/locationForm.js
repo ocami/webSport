@@ -134,9 +134,6 @@ function cityValidate() {
         data: {ville_slug: citySlug},
         dataType: "json",
         success: function (data) {
-            console.log(data);
-
-
             var cityData = data[0];
 
             if (data.length > 0 && citySlug == cityData.villeSlug) {
@@ -222,8 +219,6 @@ function addShowElement(text, step) {
     div.append(btn);
 
     $('#location_show').append(div);
-
-
 }
 
 function setLocationData(locationFeatures) {

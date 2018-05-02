@@ -33,7 +33,7 @@ class CompetitionController extends Controller
         else
             $races = $this->getDoctrine()->getRepository(Race::class)->allValidByCompetition($competition->getId());
 
-        $races = $this->get(RaceService::class)->postSelect($races);
+        $races = $this->get(RaceService::class)->postSelectAll($races);
         $races = $this->get(UserService::class)->addUserDataInRaces($races);
 
         return $this->render('competition/show.html.twig', array(

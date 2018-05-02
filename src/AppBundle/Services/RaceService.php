@@ -83,17 +83,26 @@ class RaceService
         return $raceToString;
     }
 
-    public function postSelect($races)
+    public function postSelectAll($races)
     {
         foreach ($races as $race) {
-            $nbC = $this->em->getRepository(Category::class)->count();
-
-            if (count($race->getCategories()) == $nbC)
-                $race->setFullCat(true);
+            $this->postSelectOne($race);
         }
 
         return $races;
     }
+
+    public function postSelectOne(Race $race)
+    {
+            $nbC = $this->em->getRepository(Category::class)->count();
+
+            if (count($race->getCategories()) == $nbC)
+                $race->setFullCat(true);
+
+        return $race;
+    }
+
+
 
     public function CompetitorRegisterStatus(Race $race, $competitor)
     {

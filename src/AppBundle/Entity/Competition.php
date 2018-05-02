@@ -131,7 +131,7 @@ class Competition
     /**
      * @var Boolean
      */
-    private $isPassed = false;
+    private $isPassed;
 
     /**
      * @var Boolean
@@ -518,11 +518,12 @@ class Competition
     public function getIsPassed()
     {
         $now = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
+        $dateEnd = new \DateTime($this->dateEnd, new \DateTimeZone('Europe/Paris'));
 
-        if ($this->getDateEnd() < $now)
-            return false;
+        if ($dateEnd < $now)
+            return true;
 
-        return true;
+        return false;
     }
 
     /**

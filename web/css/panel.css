@@ -1,0 +1,35 @@
+.panel-body .categories {
+    height: 6em;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.panel-body {
+    padding-bottom: 0em;
+    padding-top: 0.5em;
+}
+
+.panel-body .category {
+    height: 6em;
+    padding-top: 2em;
+    font-weight: bold;
+}
+
+.panel-heading img {
+    height: 2em;
+}
+
+.panel-footer img {
+    height: 2em;
+}
+
+@media (max-width: 400px) {
+    .panel-body {
+        padding: 0 0 0 0px;
+    }
+}
+
+.panel-body h4 {
+    text-align: center;
+    font-weight: bold;
+}

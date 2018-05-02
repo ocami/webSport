@@ -66,7 +66,9 @@ class homeController extends Controller
 
         $userManager->updateUser($user);
 
-        return $this->render('home/test.html.twig');
+        return $this->render('home/test.html.twig', array(
+            'message' => "Role admin",
+        ));
 
     }
 
@@ -91,7 +93,10 @@ class homeController extends Controller
      */
     public function test(Request $request)
     {
-        $message = 'mon message';
+        $message = 'generateChampionship';
+
+        $this->get(DbService::class)->generateChampionship();
+
 
         /* distance course
                 $str = file_get_contents('..\web\gpx\trace.json');
@@ -112,14 +117,10 @@ class homeController extends Controller
         */
 
 
-            return $this->render('home/test.html.twig', array(
-                'message' => $message,
-            ));
-
-
         return $this->render('home/test.html.twig', array(
             'message' => $message,
         ));
+
     }
 
     /**
@@ -139,5 +140,4 @@ class homeController extends Controller
 
         return $this->render('home/map.html.twig');
     }
-
 }

@@ -23,11 +23,11 @@
         {% for competition in competitions %}
         {% if competition.isPassed %}
         <div class="competitionsPassed">
-            {% include 'competition/modelList2.twig' %}
+            {% include 'competition/modelList.twig' %}
         </div>
         {% else %}
         <div class="competitionsNoPassed">
-            {% include 'competition/modelList2.twig' %}
+            {% include 'competition/modelList.twig' %}
         </div>
         {% endif %}
         {% endfor %}
