@@ -5,6 +5,7 @@ namespace AppBundle\Repository;
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Competitor;
 use AppBundle\Entity\Race;
+use AppBundle\Entity\RaceCompetitor;
 use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
@@ -98,10 +99,28 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
      */
     public function competitorIsRegisterToRace(Race $race, Competitor $competitor)
     {
-        if (!$this->findOneBy(array('race' => $race->getId(), 'competitor' => $competitor->getId())) == null)
-            return true;
+        if(is_null($this->getRC($race, $competitor)))
+            return false;
 
-        return false;
+        return true;
+    }
+
+    /**
+     * @return object
+     */
+    public function getRC(Race $race, Competitor $competitor)
+    {
+        $rc = $this->createQueryBuilder('rc')
+            ->where('rc.race = :race')
+            ->andWhere('rc.competitor = :competitor')
+            ->setParameter('race', $race->getId())
+            ->setParameter('competitor', $competitor->getId())
+            ->getQuery()->getResult();
+
+        if (!count($rc))
+            return null;
+
+        return $rc[0];
     }
 
     /**
@@ -135,17 +154,17 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
         $racesPassed = $rc
             ->andWhere('r.passed=:bool')
             ->setParameter('bool', true)
-            ->orderBy('r.date','DESC')
+            ->orderBy('r.date', 'DESC')
             ->getQuery()->getResult();
 
         $racesNoPassed = $rc
             ->andWhere('r.passed=:bool')
             ->setParameter('bool', false)
-            ->orderBy('r.date','ASC')
+            ->orderBy('r.date', 'ASC')
             ->getQuery()->getResult();
 
 
-        $races = array('racePassed'=>$racesPassed,'raceNoPassed'=>$racesNoPassed);
+        $races = array('racePassed' => $racesPassed, 'raceNoPassed' => $racesNoPassed);
 
         return $races;
     }

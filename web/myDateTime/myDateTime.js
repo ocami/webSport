@@ -1,4 +1,5 @@
 function myDatapiker(config) {
+
     var result = $('.result');
     var myDateTime = $('#myDateTime');
 
@@ -85,5 +86,12 @@ function myDatapiker(config) {
             result.val('');
         }
         result.trigger('change');
+    }
+
+    function myDateTimeUpdate() {
+        dp.datepicker('update', config.defaultDate);
+
+        $('.time-hour').val(('0' + config.defaultHour).slice(-2))
+        $('.time-minute').val(('0' + config.defaultMinute).slice(-2))
     }
 }

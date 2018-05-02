@@ -16,6 +16,7 @@ use AppBundle\Services\UserService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Form\CompetitorType;
 
@@ -61,7 +62,7 @@ class CompetitorController extends Controller
      * @Route("/competitor/addRace/{race}"), name"competitor_addRace")
      * @Security("has_role('ROLE_COMPETITOR')")
      */
-    public function addRaceAction(Request $request, Race $race)
+    public function addRace(Request $request, Race $race)
     {
         $competitor = $this->get(UserService::class)->currentUserApp(Competitor::class);
         $competitorIsRegisterToRace = $this->getDoctrine()->getRepository(RaceCompetitor::class)->competitorIsRegisterToRace($race,$competitor);
@@ -79,6 +80,27 @@ class CompetitorController extends Controller
         $em->flush();
         $this->get(CodeService::class)->generateCode($raceComp);
         $request->getSession()->getFlashBag()->add('notice', 'Votre inscription est enregistrée');
+
+        return $this->redirectToRoute('competition_show', array('id'=>$race->getCompetition()->getId()));
+    }
+
+    /**
+     * @Route("/competitor/removeRace/{race}"), name"competitor_removeRace")
+     * @Security("has_role('ROLE_COMPETITOR')")
+     */
+    public function removeRace(Request $request, Race $race)
+    {
+        $competitor = $this->get(UserService::class)->getCompetitor();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $rc = $em->getRepository(RaceCompetitor::class)->getRC($race,$competitor);
+
+        if (!is_null($rc)){
+            $em->remove($rc);
+            $em->flush();
+            $request->getSession()->getFlashBag()->add('notice', 'Votre inscription est annulée');
+        }
 
         return $this->redirectToRoute('competition_show', array('id'=>$race->getCompetition()->getId()));
     }

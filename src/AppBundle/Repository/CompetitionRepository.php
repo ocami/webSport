@@ -14,26 +14,11 @@ class CompetitionRepository extends \Doctrine\ORM\EntityRepository
      */
     public function allValidByDate()
     {
-        $parameters = array(
-            'isValid' => 1,
-            'today' => date('Y-m-d')
-        );
-
-        $competitionsNoPassed = $this->createQueryBuilder('c')
+        $competitions = $this->createQueryBuilder('c')
             ->orderBy('c.dateStart')
             ->Where('c.valid = :isValid')
-            ->andWhere('c.dateEnd > :today')
-            ->setParameters($parameters)
+            ->setParameter('isValid',true)
             ->getQuery()->getResult();
-
-        $competitionsPassed = $this->createQueryBuilder('c')
-            ->orderBy('c.dateStart')
-            ->Where('c.valid = :isValid')
-            ->andWhere('c.dateEnd < :today')
-            ->setParameters($parameters)
-            ->getQuery()->getResult();
-
-        $competitions = array('competitionsPassed' => $competitionsPassed, 'competitionsNoPassed' => $competitionsNoPassed);
 
         return $competitions;
     }
@@ -46,31 +31,18 @@ class CompetitionRepository extends \Doctrine\ORM\EntityRepository
      */
     public function byOrganizer($organizerId)
     {
-        $parameters = array(
-            'organizer' => $organizerId,
-            'today' => date('Y-m-d')
-        );
-
-        $competitionsNoPassed = $this->createQueryBuilder('c')
+        $competitions = $this->createQueryBuilder('c')
             ->orderBy('c.dateStart')
             ->Where('c.organizer = :organizer')
-            ->andWhere('c.dateEnd > :today')
-            ->setParameters($parameters)
+            ->setParameter('organizer', $organizerId)
             ->getQuery()->getResult();
-
-        $competitionsPassed = $this->createQueryBuilder('c')
-            ->orderBy('c.dateStart')
-            ->Where('c.organizer = :organizer')
-            ->andWhere('c.dateEnd < :today')
-            ->setParameters($parameters)
-            ->getQuery()->getResult();
-
-        $competitions = array('competitionsPassed' => $competitionsPassed, 'competitionsNoPassed' => $competitionsNoPassed);
 
         return $competitions;
     }
 
-     public function isValid(Competition $competition){
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public function isValid(Competition $competition){
          $nb = $this->createQueryBuilder('c')
              ->select('count(c)')
              ->innerJoin('c.races','r')
@@ -88,21 +60,21 @@ class CompetitionRepository extends \Doctrine\ORM\EntityRepository
          return false;
      }
 
-     public function isInChampionship(Competition $competition){
-         $nb = $this->createQueryBuilder('c')
-             ->select('count(c)')
-             ->innerJoin('c.races','r')
-             ->where('c.id = :id')
-             ->andWhere('r.inChampionship = :bool')
-             ->setParameter('id', $competition)
-             ->setParameter('bool', 1)
-             ->getQuery()->getSingleScalarResult();
+      public function isInChampionship(Competition $competition){
+          $nb = $this->createQueryBuilder('c')
+              ->select('count(c)')
+              ->innerJoin('c.races','r')
+              ->where('c.id = :id')
+              ->andWhere('r.inChampionship = :bool')
+              ->setParameter('id', $competition)
+              ->setParameter('bool', 1)
+              ->getQuery()->getSingleScalarResult();
 
-         $nb =  intval($nb);
+          $nb =  intval($nb);
 
-         if (intval($nb) > 0)
-             return true;
+          if (intval($nb) > 0)
+              return true;
 
-         return false;
-     }
+          return false;
+      }
 }

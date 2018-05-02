@@ -10,22 +10,57 @@ namespace AppBundle\Services;
 
 use AppBundle\Entity\Competitor;
 use AppBundle\Entity\Competition;
+use AppBundle\Entity\RaceCompetitor;
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Race;
 use Doctrine\ORM\EntityManagerInterface;
-
+use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 class RaceService
 {
     private $em;
     private $us;
     private $cs;
+    private $ts;
+    private $ac;
 
-    public function __construct(EntityManagerInterface $em, UserService $us, CodeService $cs)
+
+    public function __construct(
+        EntityManagerInterface $em,
+        UserService $us,
+        TokenStorageInterface $ts,
+        AuthorizationChecker $ac,
+        CodeService $cs)
     {
         $this->em = $em;
         $this->us = $us;
         $this->cs = $cs;
+        $this->ts = $ts;
+        $this->ac = $ac;
+
+    }
+
+
+    public function create(Race $race)
+    {
+        $categoriesId = json_decode($race->getCategoriesString());
+        $competition = $race->getCompetition();
+
+        foreach ($categoriesId as $category) {
+            $category = $this->em->getRepository(Category::class)->find($category);
+
+            if (!$race->getCategories()->contains($category))
+                $race->addCategory($category);
+
+            if (!$competition->getCategories()->contains($category))
+                $competition->addCategory($category);
+        }
+
+        $this->em->persist($race);
+        $this->em->persist($competition);
+        $this->em->flush();
+        $this->cs->generateCode($race);
     }
 
     public function toString(Race $race)
@@ -38,7 +73,7 @@ class RaceService
         $raceToString['race']['name'] = $race->getName();
         $raceToString['race']['distance'] = $race->getDistance();
         $raceToString['race']['inChampionship'] = $race->getInChampionship();
-        $raceToString['race']['date'] = $race->getDateString();
+        $raceToString['race']['date'] = $race->getDateTime();
 
         $raceToString['competition']['name'] = $race->getCompetition()->getName();
         $raceToString['competition']['organizer'] = $race->getCompetition()->getOrganizer()->getName();
@@ -48,83 +83,27 @@ class RaceService
         return $raceToString;
     }
 
-    public function competitorCanEntry($race)
-    {
-        $competitor = $this->us->currentUserApp(Competitor::class);
-        $competitorYear = $competitor->getDate()->format('Y');
-
-        $race->setCompetitorCanEntry(false);
-
-        foreach ($race->getCategories() as $category) {
-            if ($competitorYear <= $category->getAgeMin() AND $competitorYear >= $category->getAgeMax()) {
-
-                if ($competitorYear < $category->getAgeMin() AND $competitorYear > $category->getAgeMax()) {
-                    $race->setCompetitorCanEntry(true);
-                    return $race;
-                }
-
-            }
-        }
-        return $race;
-    }
-
-    public function racesCompetitorCanEntry($races)
+    public function postSelect($races)
     {
         foreach ($races as $race) {
-            $race = $this->competitorCanEntry($race);
+            $nbC = $this->em->getRepository(Category::class)->count();
+
+            if (count($race->getCategories()) == $nbC)
+                $race->setFullCat(true);
         }
+
         return $races;
     }
 
-    public function competitorCanRegister($race)
+    public function CompetitorRegisterStatus(Race $race, $competitor)
     {
-        $competitor = $this->us->currentUserApp(Competitor::class);
-        $competitorYear = $competitor->getDate()->format('Y');
+        if ($this->em->getRepository(RaceCompetitor::class)->competitorIsRegisterToRace($race, $competitor))
+            return 2;
 
-        $race->setCompetitorCanEntry(false);
+        if ($race->getCategories()->contains($this->us->getCategoryCompetitor($competitor)))
+            return 1;
 
-        foreach ($race->getCategories() as $category) {
-            if ($competitorYear <= $category->getAgeMin() AND $competitorYear >= $category->getAgeMax()) {
-
-                if ($competitorYear < $category->getAgeMin() AND $competitorYear > $category->getAgeMax()) {
-                    $race->setCompetitorCanEntry(true);
-                    return $race;
-                }
-
-            }
-        }
-        return $race;
-    }
-
-    public function competitorIsRegister($race){
-
-    }
-
-    public function create(Race $race)
-    {
-        $categoriesId = json_decode($race->getCategoriesString());
-        $competition = $race->getCompetition();
-
-        $i = 0;
-        foreach ($categoriesId as $category) {
-            $i++;
-            $category = $this->em->getRepository(Category::class)->find($category);
-
-            $race->addCategory($category);
-
-            if (!$competition->getCategories()->contains($category))
-                $competition->addCategory($category);
-        }
-
-        $nbC = $this->em->getRepository(Category::class)->count();
-
-        if ($nbC == $i)
-            $race->setFullCat(true);
-
-        $this->em->persist($race);
-        $this->em->persist($competition);
-        $this->em->flush();
-        $this->cs->generateCode($race);
+        return 0;
     }
 
     public function adminSuperviseUpdate($data)

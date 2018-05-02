@@ -30,7 +30,6 @@ class Competition
         $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-
     /**
      * @var int
      *
@@ -47,13 +46,6 @@ class Competition
     private $code;
 
     /**
-     * @var text
-     *
-     * @ORM\Column(name="description", type="text", length=255, unique=false, nullable=true)
-     */
-    private $description;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
@@ -63,6 +55,13 @@ class Competition
      * @Assert\Regex("/^([a-zA-Z0-9_-àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ ]){5,50}$/")
      */
     private $name;
+
+    /**
+     * @var text
+     *
+     * @ORM\Column(name="description", type="text", length=255, unique=false, nullable=true)
+     */
+    private $description;
 
     /**
      * @var string
@@ -98,6 +97,11 @@ class Competition
     private $locationString;
 
     /**
+     * @var int
+     */
+    private $nbValidRaces;
+
+    /**
      * @var Boolean
      * @ORM\Column(name="valid", type="boolean")
      */
@@ -110,9 +114,29 @@ class Competition
     private $inChampionship = false;
 
     /**
+     * @var int
+     *
+     * 0 : can't register
+     * 1 : can register
+     * 2 : is register
+     *
+     */
+    private $competitorRegister;
+
+    /**
      * @var Boolean
      */
-    private $competitorCanRegister = false;
+    private $isOrganizer = false;
+
+    /**
+     * @var Boolean
+     */
+    private $isPassed = false;
+
+    /**
+     * @var Boolean
+     */
+    private $fullCat = false;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Organizer", inversedBy ="competitions")
@@ -129,8 +153,6 @@ class Competition
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Category", inversedBy ="competitions")
      */
     private $categories;
-
-
 
     /**
      * Get id
@@ -451,27 +473,105 @@ class Competition
     }
 
     /**
-     * Set competitorCanRegister
+     * Set competitorRegister
      *
-     * @param boolean $competitorCanRegister
+     * @param int $competitorRegister
      *
-     * @return Race
+     * @return Competition
      */
-    public function setCompetitorCanRegister($competitorCanRegister)
+    public function setCompetitorRegister($competitorRegister)
     {
-        $this->competitorCanRegister = $competitorCanRegister;
+        $this->competitorRegister = $competitorRegister;
 
         return $this;
     }
 
     /**
-     * Get competitorCanRegister
+     * Get competitorRegister
+     */
+    public function getCompetitorRegister()
+    {
+        return $this->competitorRegister;
+    }
+
+    /**
+     * Get valid
      *
      * @return boolean
      */
-    public function getCompetitorCanRegister()
+    public function getNbValidRaces()
     {
-        return $this->competitorCanRegister;
+        $i = 0;
+        foreach ($this->getRaces() as $race) {
+            if ($race->getValid())
+                $i++;
+        }
+
+        return $i;
     }
+
+    /**
+     * Get passed
+     *
+     * @return boolean
+     */
+    public function getIsPassed()
+    {
+        $now = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
+
+        if ($this->getDateEnd() < $now)
+            return false;
+
+        return true;
+    }
+
+    /**
+     * Set isOrganizer
+     *
+     * @param boolean $isOrganizer
+     *
+     * @return Competition
+     */
+    public function setIsOrganizer($isOrganizer)
+    {
+        $this->isOrganizer = $isOrganizer;
+
+        return $this;
+    }
+
+    /**
+     * Get isOrganizer
+     *
+     * @return boolean
+     */
+    public function getIsOrganizer()
+    {
+        return $this->isOrganizer;
+    }
+
+    /**
+     * Set fullCat
+     *
+     * @param boolean $fullCat
+     *
+     * @return Race
+     */
+    public function setFullCat($fullCat)
+    {
+        $this->fullCat = $fullCat;
+
+        return $this;
+    }
+
+    /**
+     * Get fullCat
+     *
+     * @return boolean
+     */
+    public function getFullCat()
+    {
+        return $this->fullCat;
+    }
+
 
 }

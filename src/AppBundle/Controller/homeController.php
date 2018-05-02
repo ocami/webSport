@@ -44,7 +44,7 @@ class homeController extends Controller
     {
         $competitor = null;
         if ($this->get('security.authorization_checker')->isGranted('ROLE_COMPETITOR'))
-            $competitor = $this->get(UserService::class)->setCategoryCompetitor();
+            $competitor = $this->get(UserService::class)->getCategoryCompetitor();
 
         return $this->render('home/index.html.twig', array(
             'competitor' => $competitor,

@@ -15,13 +15,28 @@ use AppBundle\Entity\Race;
 class RaceRepository extends \Doctrine\ORM\EntityRepository
 {
 
-    public function lastId($class)
+    public function allValidByDate()
+{
+    $races = $this->createQueryBuilder('r')
+        ->orderBy('r.dateTime')
+        ->Where('r.valid = :isValid')
+        ->setParameter('isValid',true)
+        ->getQuery()->getResult();
+
+    return $races;
+}
+
+    public function allValidByCompetition($competition)
     {
-        return $this->createQueryBuilder('a')
-            ->select('MAX(e.id)')
-            ->from('AppBundle:' . $class, 'e')
-            ->getQuery()
-            ->getSingleScalarResult();
+        $races = $this->createQueryBuilder('r')
+            ->orderBy('r.dateTime')
+            ->Where('r.valid = :isValid')
+            ->andWhere('r.competition = :competition')
+            ->setParameter('isValid',true)
+            ->setParameter('competition',$competition)
+            ->getQuery()->getResult();
+
+        return $races;
     }
 
     /**
@@ -58,5 +73,17 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
         $race['categories'] = $categories;
 
         return $race;
+    }
+
+
+
+
+    public function lastId($class)
+    {
+        return $this->createQueryBuilder('a')
+            ->select('MAX(e.id)')
+            ->from('AppBundle:' . $class, 'e')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

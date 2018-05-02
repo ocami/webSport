@@ -132,12 +132,22 @@ class Race
 
     /**
      * @var Boolean
+     * @ORM\Column(name="isOrganizer", type="boolean")
      */
-    private $competitorCanEntry;
+    private $isOrganizer = false;
+
+    /**
+     * @var int
+     *
+     * 0 : can't register
+     * 1 : can register
+     * 2 : is register
+     *
+     */
+    private $competitorRegister;
 
     /**
      * @var Boolean
-     * @ORM\Column(name="full_cat", type="boolean")
      */
     private $fullCat = false;
 
@@ -405,25 +415,25 @@ class Race
     }
 
     /**
-     * Set competitorCanEntry
+     * Set competitorRegister
      *
-     * @param boolean $competitorCanEntry
+     * @param int $competitorRegister
      *
      * @return Race
      */
-    public function setCompetitorCanEntry($competitorCanEntry)
+    public function setCompetitorRegister($competitorRegister)
     {
-        $this->competitorCanEntry = $competitorCanEntry;
+        $this->competitorRegister = $competitorRegister;
 
         return $this;
     }
 
     /**
-     * Get competitorCanEntry
+     * Get competitorRegister
      */
-    public function getCompetitorCanEntry()
+    public function getCompetitorRegister()
     {
-        return $this->competitorCanEntry;
+        return $this->competitorRegister;
     }
 
     /**
@@ -592,5 +602,29 @@ class Race
     public function getFullCat()
     {
         return $this->fullCat;
+    }
+
+    /**
+     * Set isOrganizer
+     *
+     * @param boolean $isOrganizer
+     *
+     * @return Race
+     */
+    public function setIsOrganizer($isOrganizer)
+    {
+        $this->isOrganizer = $isOrganizer;
+
+        return $this;
+    }
+
+    /**
+     * Get isOrganizer
+     *
+     * @return boolean
+     */
+    public function getIsOrganizer()
+    {
+        return $this->isOrganizer;
     }
 }

@@ -9,8 +9,11 @@
 namespace AppBundle\Services;
 
 use AppBundle\Entity\Category;
+use AppBundle\Entity\Competition;
 use AppBundle\Entity\Competitor;
 use AppBundle\Entity\Organizer;
+use AppBundle\Entity\Race;
+use AppBundle\Entity\RaceCompetitor;
 use AppBundle\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -25,6 +28,9 @@ class UserService
     private $em;
     private $cs;
     private $user;
+    private $competitor;
+    private $organizer;
+
 
     public function __construct(TokenStorageInterface $ts,
                                 AuthorizationCheckerInterface $ac,
@@ -36,7 +42,14 @@ class UserService
         $this->em = $em;
         $this->cs = $cs;
         $this->user = $this->ts->getToken()->getUser();
+
+        if ($this->ac->isGranted('ROLE_ORGANIZER'))
+            $this->organizer = $this->currentUserApp(Organizer::class);
+
+        if ($this->ac->isGranted('ROLE_COMPETITOR'))
+            $this->competitor = $this->currentUserApp(Competitor::class);
     }
+
 
     public function refreshToken()
     {
@@ -49,7 +62,7 @@ class UserService
         return $token;
     }
 
-    public function isOrganizerComeptition($competition)
+    public function isOrganizerCompetition($competition)
     {
         $isOrganizer = false;
 
@@ -58,11 +71,6 @@ class UserService
                 $isOrganizer = true;
 
         return $isOrganizer;
-    }
-
-    public function isOrganizerRace($race)
-    {
-        return $this->isOrganizerComeptition($race->getCompetition());
     }
 
     public function registerUserApp($userApp)
@@ -88,6 +96,112 @@ class UserService
         $this->ts->setToken($token);
     }
 
+
+
+    /**
+     * @param Competitor $competitor
+     * @return Category
+     */
+    public function getCategoryCompetitor()
+    {
+        $competitorYear = $this->competitor->getDate()->format('Y');
+
+        $categories = $this->em->getRepository(Category::class)->findAll();
+
+        foreach ($categories as $category) {
+
+            if ($competitorYear < $category->getAgeMin()
+                && $competitorYear > $category->getAgeMax()
+                && $category->getSexe() == $this->competitor->getSexe()
+            )
+                return $category;
+        }
+        return null;
+    }
+
+    public function addUserDataInRaces($races)
+    {
+
+        if($this->user == 'anon.')
+            return $races;
+
+        foreach ($races as $race) {
+            if (!is_null($this->organizer))
+                if ($this->isOrganizerCompetition($race->getCompetition()))
+                    $race->setIsOrganizer(true);
+
+            if (!is_null($this->competitor))
+                $race->setCompetitorRegister($this->RaceRegisterStatus($race));
+
+        }
+        return $races;
+    }
+
+    public function addUserDataInCompetitions($competitions)
+    {
+        if($this->user == 'anon.')
+            return $competitions;
+
+        foreach ($competitions as $competition) {
+            if (!is_null($this->organizer))
+                if ($this->isOrganizerCompetition($competition))
+                    $competition->setIsOrganizer(true);
+
+            if (!is_null($this->competitor))
+                $competition->setCompetitorRegister($this->CompetitionRegisterStatus($competition));
+        }
+        return $competitions;
+    }
+
+    public function RaceRegisterStatus(Race $race)
+    {
+        if ($this->em->getRepository(RaceCompetitor::class)->competitorIsRegisterToRace($race, $this->competitor))
+            return 2;
+
+        if ($race->getCategories()->contains($this->getCategoryCompetitor()))
+            return 1;
+
+        return 0;
+    }
+
+    public function CompetitionRegisterStatus(Competition $competition){
+
+        $r = 0;
+        foreach ($competition->getRaces() as $race){
+
+            $s = $this->RaceRegisterStatus($race);
+
+            if($s==2)
+                return 2;
+
+            if($s ==1)
+                $r = 1;
+        }
+
+        return $r;
+    }
+
+
+
+    /**
+     * @return Competitor
+     */
+    public function getCompetitor()
+    {
+        return $this->competitor;
+    }
+
+    /**
+     * @return Organizer
+     */
+    public function getOrganizer()
+    {
+        return $this->organizer;
+    }
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public function currentUserApp($userApp)
     {
         switch ($userApp) {
@@ -102,25 +216,5 @@ class UserService
         }
     }
 
-    /**
-     * @param Competitor $competitor
-     * @return Category
-     */
-    public function setCategoryCompetitor()
-    {
-        $categories = $this->em->getRepository(Category::class)->findAll();
-        $competitor = $this->currentUserApp(Competitor::class);
-        $competitorYear = $competitor->getDate()->format('Y');
 
-        foreach ($categories as $category) {
-
-            if ($competitorYear < $category->getAgeMin()
-                && $competitorYear > $category->getAgeMax()
-                && $category->getSexe() == $competitor->getSexe()
-            )
-                return  $competitor->setCategory($category);
-        }
-
-        return $competitor;
-    }
 }

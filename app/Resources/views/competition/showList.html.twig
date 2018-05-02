@@ -18,23 +18,22 @@
             Compétition passées
         </button>
     </div>
+    <br>
+    <div class="row">
+        {% for competition in competitions %}
+        {% if competition.isPassed %}
+        <div class="competitionsPassed">
+            {% include 'competition/modelList2.twig' %}
+        </div>
+        {% else %}
+        <div class="competitionsNoPassed">
+            {% include 'competition/modelList2.twig' %}
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
 
-    <div id="competitionsNoPassed">
-        <h2>A venir</h2>
-        <div class="row">
-            {% for competition in competitionsNoPassed %}
-                {% include 'competition/modelList.twig' %}
-            {% endfor %}
-        </div>
-    </div>
-    <div id="competitionsPassed">
-        <h2>Passées</h2>
-        <div class="row">
-            {% for competition in competitionsPassed %}
-                {% include 'competition/modelList.html.twig' %}
-            {% endfor %}
-        </div>
-    </div>
+
 {% endblock %}
 
     {% block javascripts %}
@@ -45,15 +44,15 @@
             function competitionDisplayPassed() {
                 $('#competitionDisplayButton').text("Compétition à venir");
                 $('#competitionDisplayButton').attr("onclick", "competitionDisplayNoPassed()");
-                $('#competitionsNoPassed').css('display', "none");
-                $('#competitionsPassed').css('display', "block");
+                $('.competitionsNoPassed').css('display', "none");
+                $('.competitionsPassed').css('display', "block");
             }
 
             function competitionDisplayNoPassed() {
                 $('#competitionDisplayButton').text("Compétition passées");
                 $('#competitionDisplayButton').attr("onclick", "competitionDisplayPassed()");
-                $('#competitionsNoPassed').css('display', "block");
-                $('#competitionsPassed').css('display', "none");
+                $('.competitionsNoPassed').css('display', "block");
+                $('.competitionsPassed').css('display', "none");
             }
 
 

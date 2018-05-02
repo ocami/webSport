@@ -53,66 +53,66 @@ TO DO
 {% endblock %}
 
 {% block title %}
-    {{ parent() }} Ajouter course
+    {{ parent() }}  {% if update is defined %} Modifier course {% else %}  Ajouter course {% endif %}
 {% endblock %}
 
 {% block body %}
 
-     {{ form_start(form, {'attr': {'data-toggle': 'validator', 'role':'form'}}) }}
+    {{ form_start(form, {'attr': {'data-toggle': 'validator', 'role':'form'}}) }}
 
-     <!--Name-->
-     <div class="form-group has-feedback abcd">
-         <label for="name" class="control-label">Nom</label>
-         {{ form_widget(form.name, {'attr': {'class':"form-control"}}) }}
-         <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+    <!--Name-->
+    <div class="form-group has-feedback abcd">
+        <label for="name" class="control-label">Nom</label>
+        {{ form_widget(form.name, {'attr': {'class':"form-control"}}) }}
+        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
 
-         <div class="help-block with-errors">Entre 5 et 50 caractères alaphanumériques</div>
-     </div>
+        <div class="help-block with-errors">Entre 5 et 50 caractères alaphanumériques</div>
+    </div>
 
-     <!--Distance-->
-     <div class="form-group has-feedback abcd">
-         {{ form_widget(form.distance, {'attr': {'class':"form-control distance-input", 'style':"display: block"}}) }}
+    <!--Distance-->
+    <div class="form-group has-feedback abcd">
+        {{ form_widget(form.distance, {'attr': {'class':"form-control distance-input", 'style':"display: none"}}) }}
 
-         {% include 'race/widget/distance.html.twig' %}
-     </div>
+        {% include 'race/widget/distance.html.twig' %}
+    </div>
 
-     <!--Categories -->
-     <div class="form-group has-feedback abcd">
-         <label for="categories" class="control-label">Categories</label><br><br>
-         <div style="display: block">
-         {{ form_widget(form.categoriesString, {'attr':  {
-             'type':"text",
-             'min':"1",
-             'class':"form-control categories-input",
-             'required':'true'}}) }}
+    <!--Categories -->
+    <div class="form-group has-feedback abcd">
+        <label for="categories" class="control-label">Categories</label><br><br>
+        <div style="display: none">
+            {{ form_widget(form.categoriesString, {'attr':  {
+                'type':"text",
+                'min':"1",
+                'class':"form-control categories-input",
+                'required':'true'}}) }}
 
-         {{ form_widget(form.requestInChampionship, {'attr':  {
-             'class':"championship-check",
-         }}) }}
-         </div>
-         {% include 'race/widget/categories.html.twig' %}
-     </div>
+            {{ form_widget(form.requestInChampionship, {'attr':  {
+                'class':"championship-check",
+            }}) }}
+        </div>
+        {% include 'race/widget/categories.html.twig' %}
+    </div>
 
-     <!--Date Time-->
-     <div class="form-group has-feedback abcd">
-         <label for="date-time" class="control-label">Date</label>
-         {{ form_widget(form.dateTime, {'attr':  {
-             'type':"text",
-             'min':"1",
-             'style':"display: block",
-             'class':"form-control date-time-input result",
-             'data-error':"Format de date non valide",
-             'required':'true'}}) }}
-         <div class="row">
-             <div id="myDateTime" class="col-sm-offset-2 col-sm-6"></div>
-         </div>
-     </div>
+    <!--Date Time-->
+    <div class="form-group has-feedback abcd">
+        <label for="date-time" class="control-label">Date</label>
+        {{ form_widget(form.dateTime, {'attr':  {
+            'type':"text",
+            'min':"1",
+            'style':"display: none",
+            'class':"form-control date-time-input result",
+            'data-error':"Format de date non valide",
+            'required':'true'}}) }}
+        <div class="row">
+            <div id="myDateTime" class="col-sm-offset-2 col-sm-6"></div>
+        </div>
+    </div>
 
-     <div class="form-group">
-         <button type="submit" class="btn btn-primary">Submit</button>
-     </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
 
-     {{ form_end(form) }}
+    {{ form_end(form) }}
 {% endblock %}
 
  {% block javascripts %}
@@ -169,7 +169,6 @@ TO DO
 
              if ($(this).val() == {{ category.id }} ) {
                  $(this).prop('checked', true).checkboxradio('refresh');
-                 console.log({{ category.id }})
              }
              categoriesUpdate();
 
@@ -202,19 +201,20 @@ TO DO
      <! datepicker***************************************************************************************************>
      <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
      <script src="{{ asset('datepicker/js/datepicker-fr.js') }}"></script>
-     <script src="{{ asset('myDateTime/myDataTime.js') }}"></script>
+     <script src="{{ asset('myDateTime/myDateTime.js') }}"></script>
 
      <script>
 
          {% if race.dateTime is null %}
          defaultDate = "{{ race.competition.dateStart | date('Y-m-d') }}";
-         defaultHour = 15;
-         defaultMinute = 45;
+         defaultHour = 12;
+         defaultMinute = 30;
          {% else %}
-         defaultDate = {{ race.dateTime | date('Y-m-d') }};
+         defaultDate = "{{ race.dateTime | date('Y-m-d') }}";
          defaultHour = {{ race.dateTime | date('H') }};
          defaultMinute = {{ race.dateTime | date('i') }};
          {% endif %}
+
 
          myDatapiker({
              startDate: "{{ race.competition.dateStart | date('Y-m-d') }}",

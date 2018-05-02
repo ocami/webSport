@@ -10,6 +10,7 @@ namespace AppBundle\Services;
 
 use AppBundle\Entity\Competition;
 use AppBundle\Entity\Competitor;
+use AppBundle\Entity\Category;
 use Doctrine\ORM\EntityManagerInterface;
 use AppBundle\Entity\Location;
 use AppBundle\Entity\Organizer;
@@ -23,6 +24,7 @@ class CompetitionService
     private $router;
     private $us;
     private $ds;
+    private $ac;
 
     public function __construct(
         EntityManagerInterface $em,
@@ -37,6 +39,26 @@ class CompetitionService
         $this->us = $us;
         $this->ac = $ac;
         $this->ds = $ds;
+    }
+
+
+    /**
+     * Set competitions attributes where depend on other class
+     *
+     * @param array
+     *
+     * @return array
+     */
+    public function postSelect($competitions)
+    {
+        foreach ($competitions as $competition) {
+            $nbC = $this->em->getRepository(Category::class)->count();
+
+            if (count($competition->getCategories()) == $nbC)
+                $competition->setFullCat(true);
+        }
+
+        return $competitions;
     }
 
     /**
@@ -77,26 +99,6 @@ class CompetitionService
     }
 
     /**
-     * Return array of Competitions if are valid, foreach set Competition.competitorCanRegister if current user is competitor
-     *
-     *@return \ArrayObject
-     */
-    public function showAll()
-    {
-        $competitions = $this->em->getRepository(Competition::class)->allValidByDate();
-
-        if ($this->ac->isGranted('ROLE_COMPETITOR')){
-            $competitions['competitionsNoPassed'] = $this->competitorCanRegisterList(
-                $competitions['competitionsNoPassed'],
-                $this->us->currentUserApp(Competitor::class)
-            );
-        }
-
-        return $competitions;
-    }
-
-    /**
-     * Same showAll() with geoJson data
      *
      *@return array
      */
@@ -105,55 +107,21 @@ class CompetitionService
         $pastCompetitions = array();
         $futureCompetitions = array();
 
-        $competitions = $this->showAll();
+        $competitions = $this->em->getRepository(Competition::class)->allValidByDate();
+        $competitions = $this->us->addUserDataInCompetitions($competitions);
 
-        foreach ($competitions['competitionsNoPassed'] as $competition) {
-            array_push($futureCompetitions, $this->popUpString($competition));
-        }
+        foreach ($competitions as $competition){
 
-        foreach ($competitions['competitionsPassed'] as $competition) {
-            array_push($pastCompetitions, $this->popUpString($competition));
+            if ($competition->getIsPassed())
+                array_push($pastCompetitions, $this->popUpString($competition));
+            else
+                array_push($futureCompetitions, $this->popUpString($competition));
         }
 
         return array(
             "pastCompetitions" => $pastCompetitions,
             "futureCompetitions" => $futureCompetitions,
         );
-    }
-
-    /**
-     * Check if competition contains race for which competitor can register
-     *
-     * @param Competition $competition
-     * @param Competitor $competitor
-     *
-     * @return Competition
-     */
-    public function competitorCanRegister(Competition $competition, Competitor $competitor)
-    {
-        $competitor = $this->us->setCategoryCompetitor($competitor);
-
-        if ($competition->getCategories()->contains($competitor->getCategory()))
-            $competition->setCompetitorCanRegister(true);
-
-        return $competition;
-    }
-
-    /**
-     * Call function competitorCanRegister() foreach competition of array
-     *
-     * @param array of competitions
-     * @param Competitor $competitor
-     *
-     * @return array of competitions
-     */
-    private function competitorCanRegisterList($competitions, Competitor $competitor)
-    {
-        for ($i = 0; $i < count($competitions); $i++) {
-            $competitions[$i] = $this->competitorCanRegister($competitions[$i], $competitor);
-        }
-
-        return $competitions;
     }
 
     /**
@@ -174,10 +142,13 @@ class CompetitionService
             "'>Voir cette compétition</a><br>";
 
         if ($competition->getInChampionship())
-            $description = $description . "<img class='leaflet-popup-img' src='..\img\cup.jpg'/>";
+            $description = $description . "<img class='leaflet-popup-img' src='../img/cup.jpg'/>";
 
-        if ($competition->getCompetitorCanRegister())
-            $description = $description . "<img class='leaflet-popup-img' src='..\img\canRegister.png'/>";
+        if ($competition->getCompetitorRegister() == 1)
+            $description = $description . "<img class='leaflet-popup-img' src='../img/canRegister.png'/>";
+
+        if ($competition->getCompetitorRegister() == 2)
+            $description = $description . "<img class='leaflet-popup-img' src='../img/race_start.png'/>";
 
         $properties = array(
             'name' => $competition->getName(),
@@ -197,5 +168,60 @@ class CompetitionService
 
         return $feature;
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * Check if competition contains race for which competitor can register
+     *
+     * @param Competition $competition
+     * @param Competitor $competitor
+     *
+     * @return Competition
+     */
+    public function competitorCanRegister(Competition $competition, Competitor $competitor)
+    {
+        if ($competition->getCategories()->contains($this->us->getCategoryCompetitor($competitor)))
+            $competition->setCompetitorCanRegister(true);
+
+        return $competition;
+    }
+
+//    /**
+//     * Call function competitorCanRegister() foreach competition of array
+//     *
+//     * @param array of competitions
+//     * @param Competitor $competitor
+//     *
+//     * @return array of competitions
+//     */
+//    private function competitorCanRegisterList($competitions, Competitor $competitor)
+//    {
+//        for ($i = 0; $i < count($competitions); $i++) {
+//            $competitions[$i] = $this->competitorCanRegister($competitions[$i], $competitor);
+//        }
+//
+//        return $competitions;
+//    }
+//
+//    /**
+//     * Return array of Competitions if are valid, foreach set Competition.competitorCanRegister if current user is competitor
+//     *
+//     *@return \ArrayObject
+//     */
+//    public function showAll()
+//    {
+//        $competitions = $this->em->getRepository(Competition::class)->allValidByDate();
+//
+//        if ($this->ac->isGranted('ROLE_COMPETITOR')){
+//            $competitions['competitionsNoPassed'] = $this->competitorCanRegisterList(
+//                $competitions['competitionsNoPassed'],
+//                $this->us->currentUserApp(Competitor::class)
+//            );
+//        }
+//
+//        return $competitions;
+//    }
 
 }

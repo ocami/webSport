@@ -36,42 +36,11 @@ use AppBundle\Form\RaceNewType;
 class RaceController extends Controller
 {
     /**
-     * @Route("/race/show", name="race_show")
+     * @Route("/race/show/{id}", name="race_show")
      */
-    public function show()
+    public function show(Race $race)
     {
-        return $this->render('race/show.html.twig');
-    }
-
-    /**
-     * @Route("/race/showRanck/{id}", name="race_ranck_show")
-     */
-    public function showRanck(Race $race)
-    {
-        $isOrganizer = true;
-        $categories = $race->getCategories();
-
-        return $this->render('race/showRanck.html.twig', array(
-            'race' => $race,
-            'categories' => $categories,
-            'isOrganizer' => $isOrganizer
-        ));
-    }
-
-    /**
-     * @Route("/race/competitor", name="races_by_competitor")
-     * @Security("has_role('ROLE_COMPETITOR')")
-     */
-    public function showByCompetitor()
-    {
-        $competitor = $this->get(UserService::class)->currentUserApp(Competitor::class);
-
-        $races = $this->getDoctrine()->getRepository(RaceCompetitor::class)->byCompetitor($competitor);
-
-        return $this->render('competitor/showRaces.html.twig', array(
-            'racePassed' => $races['racePassed'],
-            'raceNoPassed' => $races['raceNoPassed']
-        ));
+        return $this->render('race/show.html.twig', array('race'=>$race));
     }
 
     /**
@@ -108,33 +77,69 @@ class RaceController extends Controller
      */
     public function edit(Request $request, Race $race)
     {
-        $organizer = $this->get(UserService::class)->currentUserApp(Organizer::class);
-        $form = $this->createForm(RaceType::class, $race, array('organizer' => $organizer));
+        $categories = $this->getDoctrine()->getRepository(Category::class)->categoriesByGender();
 
-        if ($race->getInChampionship() == true)
-            $form = $this->createForm(RaceChampionshipType::class, $race);
+        $form = $this->createForm(RaceType::class, $race);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-            if ($race->getInChampionship() == true) {
-                foreach ($race->getCategories() as $category)
-                    $race->removeCategory($category);
+            $this->get(RaceService::class)->create($race);
 
-                foreach ($race->getChampionships() as $championship) {
-                    $race->addCategory($championship->getCategory());
-                }
-            }
+            $request->getSession()->getFlashBag()->add('notice', $race->getName().' à été modifiée');
 
-            $this->get(EntityService::class)->update($race);
-
-            $request->getSession()->getFlashBag()->add('notice', 'Course bien modifiée.');
-
-            return $this->redirectToRoute('competition_show', array(
-                'id' => $race->getCompetition()->getId()
-            ));
+            return $this->redirectToRoute('competition_show', array('id' => $race->getCompetition()->getId()));
         }
 
-        return $this->render('race/new.html.twig', array('form' => $form->createView()));
+        return $this->render('race/new.html.twig', array(
+            'update' => true,
+            'race' => $race,
+            'categories' => $categories,
+            'form' => $form->createView()
+        ));
+    }
+
+    /**
+     * @Route("/race/json", name="race_json")
+     */
+    public function getJson(Request $request)
+    {
+        $race = $request->query->get('race');
+        $race = $this->getDoctrine()->getRepository(Race::class)->find($race);
+        $race = $this->getDoctrine()->getRepository(Race::class)->toString($race);
+        return new JsonResponse($race);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @Route("/race/showRanck/{id}", name="race_ranck_show")
+     */
+    public function showRanck(Race $race)
+    {
+        $isOrganizer = true;
+        $categories = $race->getCategories();
+
+        return $this->render('race/showRanck.html.twig', array(
+            'race' => $race,
+            'categories' => $categories,
+            'isOrganizer' => $isOrganizer
+        ));
+    }
+
+    /**
+     * @Route("/race/competitor", name="races_by_competitor")
+     * @Security("has_role('ROLE_COMPETITOR')")
+     */
+    public function showByCompetitor()
+    {
+        $competitor = $this->get(UserService::class)->currentUserApp(Competitor::class);
+
+        $races = $this->getDoctrine()->getRepository(RaceCompetitor::class)->byCompetitor($competitor);
+
+        return $this->render('competitor/showRaces.html.twig', array(
+            'racePassed' => $races['racePassed'],
+            'raceNoPassed' => $races['raceNoPassed']
+        ));
     }
 
     /**
@@ -201,15 +206,6 @@ class RaceController extends Controller
         return $this->redirectToRoute('race_show',array('id'=>$race->getId()));
     }
 
-    /**
-     * @Route("/race/json", name="race_json")
-     */
-    public function getJson(Request $request)
-    {
-        $race = $request->query->get('race');
-        $race = $this->getDoctrine()->getRepository(Race::class)->find($race);
-        $race = $this->getDoctrine()->getRepository(Race::class)->toString($race);
-        return new JsonResponse($race);
-    }
+
 
 }

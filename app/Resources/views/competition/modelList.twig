@@ -66,17 +66,19 @@
 
                 <div class="col-xs-5">
                     <div class='panel-cup'>
-                        {% if competition.inChampionship  %}
+                        {% if competition.inChampionship %}
                             <img src="{{ asset('img/cup.jpg') }}"/>
                         {% endif %}
 
-                        {% if for == 'competitor' %}
-                            {% if competition.competitorCanRegister == true %}
-                                <img src="{{ asset('img/canRegister.png ') }}"/>
-                            {% endif %}
+                        {% if competition.competitorRegister == 1 %}
+                            <img src="{{ asset('img/canRegister.png') }}" class="img-circle">
                         {% endif %}
 
-                        {% if for == 'organizer' %}
+                        {% if competition.competitorRegister == 2 %}
+                            <img src="{{ asset('img/race_start.png') }}" class="img-circle">
+                        {% endif %}
+
+                        {% if competition.isOrganizer %}
                             {% if competition.valid %}
                                 <img src="{{ asset('img/checked.png ') }}"/>
                             {% else %}
@@ -84,7 +86,7 @@
                             {% endif %}
                         {% endif %}
                     </div>
-                    <div style="text-align: center">{{ competition.races|length }} courses</div>
+                    <div style="text-align: center">{{ competition.nbValidRaces }} courses</div>
                 </div>
             </div>
         </div>

@@ -10,7 +10,7 @@ use AppBundle\Entity\Competition;
 use AppBundle\Entity\Organizer;
 use AppBundle\Services\GeoJsonService;
 use AppBundle\Services\UserService;
-use Proxies\__CG__\AppBundle\Entity\Race;
+use AppBundle\Entity\Race;
 use SebastianBergmann\CodeCoverage\Report\Html\Renderer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -25,25 +25,20 @@ class CompetitionController extends Controller
 {
     /**
      * @Route("/competition/show/{id}", name="competition_show")
-     *
      */
     public function show(Competition $competition)
     {
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_ORGANIZER'))
-            $races = $competition->getRaces();
+        if($this->get(UserService::class)->isOrganizerCompetition($competition))
+            $races = $this->getDoctrine()->getRepository(Race::class)->findByCompetition($competition->getId());
         else
-            $races = $this->getDoctrine()->getRepository(\AppBundle\Entity\Race::class)->findByValid(true);
+            $races = $this->getDoctrine()->getRepository(Race::class)->allValidByCompetition($competition->getId());
 
-        // if user is competitior and if competitor is in category of race => reveal Entry Button
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_COMPETITOR'))
-            $races = $this->get(RaceService::class)->racesCompetitorCanEntry($races);
-        // reveal edit action if user is organizer of this competition
-        $isOrganizer = $this->get(UserService::class)->isOrganizerComeptition($competition);
+        $races = $this->get(RaceService::class)->postSelect($races);
+        $races = $this->get(UserService::class)->addUserDataInRaces($races);
 
         return $this->render('competition/show.html.twig', array(
-            'races' => $races,
             'competition' => $competition,
-            'isOrganizer' => $isOrganizer
+            'races' => $races
         ));
     }
 
@@ -52,27 +47,28 @@ class CompetitionController extends Controller
      */
     public function showAll()
     {
-        $competitions = $this->get(CompetitionService::class)->showAll();
+        $competitions = $this->getDoctrine()->getRepository(Competition::class)->allValidByDate();
+        $competitions = $this->get(CompetitionService::class)->postSelect($competitions);
+        $competitions = $this->get(UserService::class)->addUserDataInCompetitions($competitions);
 
         return $this->render('competition/showList.html.twig', array(
-            'for' => 'competitor',
-            'competitionsPassed' => $competitions['competitionsPassed'],
-            'competitionsNoPassed' => $competitions['competitionsNoPassed']
+            'competitions' => $competitions
         ));
     }
 
     /**
      * @Route("/competition/show_byOrganizer", name="competition_show_byOrganizer")
+     * @Security("has_role('ROLE_ORGANIZER')")
      */
     public function showByOrganizer()
     {
-        $organizer = $this->get(UserService::class)->currentUserApp(Organizer::class);
+        $organizer = $this->get(UserService::class)->getOrganizer();
         $competitions = $this->getDoctrine()->getRepository(Competition::class)->byOrganizer($organizer->getId());
+        $competitions = $this->get(CompetitionService::class)->postSelect($competitions);
+        $competitions = $this->get(UserService::class)->addUserDataInCompetitions($competitions);
 
         return $this->render('competition/showList.html.twig', array(
-            'for' => 'organizer',
-            'competitionsPassed' => $competitions['competitionsPassed'],
-            'competitionsNoPassed' => $competitions['competitionsNoPassed']
+            'competitions' => $competitions
         ));
     }
 
@@ -87,7 +83,7 @@ class CompetitionController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-            $organizer = $this->getDoctrine()->getRepository(Organizer::class)->findOneByUserId($this->getUser());
+            $organizer = $this->get(UserService::class)->getOrganizer();
 
             $this->get(CompetitionService::class)->create($competition, $organizer);
 
@@ -112,11 +108,11 @@ class CompetitionController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-            $organizer = $this->getDoctrine()->getRepository(Organizer::class)->findOneByUserId($this->getUser());
+            $organizer = $this->get(UserService::class)->getOrganizer();
 
             $this->get(CompetitionService::class)->create($competition, $organizer);
 
-            $request->getSession()->getFlashBag()->add('notice', 'Compétition bien enregistrée');
+            $request->getSession()->getFlashBag()->add('notice', $competition->getName().' modifiée');
 
             return $this->redirectToRoute('competition_show_byOrganizer');
         }
