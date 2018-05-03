@@ -12,8 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
  * @ORM\Table(name="competitor")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\CompetitorRepository")
  */
 class Competitor
 {
@@ -62,11 +62,19 @@ class Competitor
     private $sexe;
 
     /**
-     * @var \Date
-     *
-     * @ORM\Column(name="date", type="date")
+     * @var string
+     * @ORM\Column(name="date", type="string")
+     * @Assert\Regex("/(19[5-9][0-9]|20[0-4][0-9]|2050)[-](0?[1-9]|1[0-2])[-](0?[1-9]|[12][0-9]|3[01])/")
+     * @Assert\Length(max=10)
+     * @Assert\Length(min=10)
      */
     private $date;
+
+    /**
+     * @var int
+     *
+     */
+    private $age;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\ChampionshipCompetitor",mappedBy="competitor")
@@ -201,7 +209,7 @@ class Competitor
     /**
      * Set date
      *
-     * @param \DateTime $date
+     * @param string $date
      *
      * @return Competitor
      */
@@ -215,7 +223,7 @@ class Competitor
     /**
      * Get date
      *
-     * @return \DateTime
+     * @return string
      */
     public function getDate()
     {
@@ -292,12 +300,12 @@ class Competitor
     }
 
     /**
- * Set code
- *
- * @param string $code
- *
- * @return Competitor
- */
+     * Set code
+     *
+     * @param string $code
+     *
+     * @return Competitor
+     */
     public function setCode($code)
     {
         $this->code = $code;
@@ -337,5 +345,31 @@ class Competitor
     public function getCategory()
     {
         return $this->category;
+    }
+
+    /**
+     * Get age
+     *
+     * @return int
+     */
+    public function getAge()
+    {
+        $today = date("Y-m-d");
+        $competitorDate = $this->getDateObject();
+
+        $diff = date_diff($competitorDate, date_create($today));
+
+        return $diff->format('%y');
+    }
+
+    /**
+     * Get DateObject
+     *
+     * @return \DateTime
+     */
+    public function getDateObject()
+    {
+        return new \DateTime($this->date);
+
     }
 }

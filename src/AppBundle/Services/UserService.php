@@ -96,15 +96,13 @@ class UserService
         $this->ts->setToken($token);
     }
 
-
-
     /**
      * @param Competitor $competitor
      * @return Category
      */
     public function getCategoryCompetitor()
     {
-        $competitorYear = $this->competitor->getDate()->format('Y');
+        $competitorYear = $this->competitor->getDateObject()->format('Y');
 
         $categories = $this->em->getRepository(Category::class)->findAll();
 
@@ -189,13 +187,14 @@ class UserService
     }
 
 
-
     /**
      * @return Competitor
      */
     public function getCompetitor()
     {
-        return $this->competitor;
+        $competitor = $this->competitor;
+        $competitor->setCategory($this->getCategoryCompetitor());
+        return $competitor;
     }
 
     /**

@@ -112,21 +112,6 @@ class RaceController extends Controller
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * @Route("/race/showRanck2/{id}", name="race_ranck_show2")
-     */
-    public function showRanck2(Race $race)
-    {
-        $isOrganizer = true;
-        $categories = $race->getCategories();
-
-        return $this->render('race/showRanck2.html.twig', array(
-            'race' => $race,
-            'categories' => $categories,
-            'isOrganizer' => $isOrganizer
-        ));
-    }
-
-    /**
      * @Route("/race/showRanck/{id}", name="race_ranck_show")
      */
     public function showRanck(Race $race)

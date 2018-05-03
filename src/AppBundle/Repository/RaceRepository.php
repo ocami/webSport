@@ -16,15 +16,15 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
 {
 
     public function allValidByDate()
-{
-    $races = $this->createQueryBuilder('r')
-        ->orderBy('r.dateTime')
-        ->Where('r.valid = :isValid')
-        ->setParameter('isValid',true)
-        ->getQuery()->getResult();
+    {
+        $races = $this->createQueryBuilder('r')
+            ->orderBy('r.dateTime')
+            ->Where('r.valid = :isValid')
+            ->setParameter('isValid', true)
+            ->getQuery()->getResult();
 
-    return $races;
-}
+        return $races;
+    }
 
     public function allValidByCompetition($competition)
     {
@@ -32,8 +32,8 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
             ->orderBy('r.dateTime')
             ->Where('r.valid = :isValid')
             ->andWhere('r.competition = :competition')
-            ->setParameter('isValid',true)
-            ->setParameter('competition',$competition)
+            ->setParameter('isValid', true)
+            ->setParameter('competition', $competition)
             ->getQuery()->getResult();
 
         return $races;
@@ -76,7 +76,15 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
     }
 
 
+    public function firstAll($nb)
+    {
+        $r = $this->createQueryBuilder('r')
+            ->where('r.id <= :nb')
+            ->setParameter('nb', $nb)
+            ->getQuery()->getResult();
 
+        return $r;
+    }
 
     public function lastId($class)
     {

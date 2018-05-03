@@ -265,7 +265,7 @@ class DbService
 
     public function simulateRaceEnrols($race)
     {
-        $competitors = $this->em->getRepository(Competitor::class)->findAll();
+        $competitors = $this->em->getRepository(Competitor::class)->firstAll(100);
         $i = 0;
 
         foreach ($competitors as $competitor) {

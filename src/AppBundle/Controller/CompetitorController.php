@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\RaceCompetitor;
 use AppBundle\Entity\Competitor;
+use AppBundle\Repository\CompetitorRepository;
 use AppBundle\Entity\Race;
 use AppBundle\Services\CodeService;
 use AppBundle\Services\UserService;
@@ -56,6 +57,20 @@ class CompetitorController extends Controller
             'competitor' => $competitor,
             'user' => $this->getUser()
         ));
+    }
+
+    /**
+     * @Route("/competitor/jsonByUser", name="competitor_json_userId")
+     */
+    public function getJson(Request $request)
+    {
+        $userId = $request->query->get('userId');
+        $competitor = $this->getDoctrine()->getRepository(Competitor::class)->findOneBy(array('userId'=>$userId));
+        $cData = $this->getDoctrine()->getRepository(Competitor::class)->toString($competitor);
+        $cData['category'] = $this->get(UserService::class)->getCategoryCompetitor()->getName();
+        $cData['age'] = $competitor->getAge();
+
+        return new JsonResponse($cData);
     }
 
     /**

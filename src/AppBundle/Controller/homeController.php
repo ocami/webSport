@@ -93,9 +93,8 @@ class homeController extends Controller
      */
     public function test(Request $request)
     {
-        $message = 'generateChampionship';
+        $message = '';
 
-        $this->get(DbService::class)->generateChampionship();
 
 
         /* distance course
