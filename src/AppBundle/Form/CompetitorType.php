@@ -25,11 +25,7 @@ class CompetitorType extends AbstractType
             ->add('firstName')
             ->add('lastName')
             ->add('sexe')
-            ->add('date')
-            ->add('date', DateType::class, [
-                'widget' => 'single_text'
-            ])
-            ->add('save',SubmitType::class);
+            ->add('date');
     }/**
      * {@inheritdoc}
      */

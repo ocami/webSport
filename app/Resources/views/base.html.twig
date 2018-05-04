@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="{{ asset('css/main.css') }}"/>
         <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"/>
         <link rel="stylesheet" href="{{ asset('css/jquery.dataTables.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('tools/tools.css') }}"/>
     {% endblock %}
 
     <script src="{{ asset('js/jquery.min.js') }}"></script>
@@ -19,11 +20,10 @@
 <body>
 
 {% include 'navbar/general.html.twig' %}
-{% include 'modal/profile_competitor.html.twig' %}
 
-
-{% block breadcrumb %}
-{% endblock %}
+{% if is_granted('ROLE_COMPETITOR') %}
+    {% include 'modal/profile_competitor.html.twig' %}
+{% endif %}
 
 {% if is_granted('ROLE_ORGANIZER') %}
     <div id="organizer_menu">
@@ -63,6 +63,7 @@
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/jquery.dataTables.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('tools/tools.js') }}"></script>
 {% endblock %}
 
 </body>

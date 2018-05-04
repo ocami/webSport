@@ -1,6 +1,136 @@
-{% extends 'base.html.twig' %}
+{% extends 'form_layout.html.twig' %}
 
-{% block body %}
-    {{ form(form) }}
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        .gender-radio {
+            margin-top: 2em;
+        }
+    </style>
+
 {% endblock %}
 
+{% block title %}
+    {{ parent() }} Créer compte compétiteur
+{% endblock %}
+
+{% block forms_content %}
+
+    <div class="competitor-form">
+        {{ form_start(form, {'attr': {'data-toggle': 'validator', 'role':'form'}}) }}
+
+        <!--firstName-->
+        <div class="form-group has-feedback race-form-border">
+            <label for="firstName" class="control-label">Nom</label>
+            {{ form_widget(form.firstName, {'attr': {'class':"form-control"}}) }}
+            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+        </div>
+
+        <!--lastName-->
+        <div class="form-group has-feedback race-form-border">
+            <label for="lastName" class="control-label">Prénom</label>
+            {{ form_widget(form.lastName, {'attr': {'class':"form-control"}}) }}
+            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+        </div>
+
+        <!--Date & gender-->
+        <div class="row">
+
+            <!--date-->
+            <div class="form-group has-feedback col-lg-offset-1 col-sm-4">
+                <label for="date" class="control-label">Date de naissance :</label>
+                {{ form_widget(form.date, {'attr': {'class':"form-control input-date", 'style':"display: none"}}) }}
+                <div class="help-none with-errors"></div>
+                <input id="datepicker" class="form-control">
+            </div>
+
+            <!--gender-->
+            {{ form_widget(form.sexe, {'attr': {'class':"form-control gender-input", 'style':"display: none"}}) }}
+            <div class="gender-radio">
+                <label for="radio-1">Masculin</label>
+                <input class="register-radio" type="radio" name="radio-1" id="radio-1" value="m">
+                <label for="radio-2">Féminin</label>
+                <input class="register-radio" type="radio" name="radio-1" id="radio-2" value="f">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+
+    <! radio f/m*******************************************************************************************************>
+    <script>
+        $(function () {
+            var radioBtn = $(".register-radio");
+            var genderInput = $('.gender-input');
+
+            radioBtn.checkboxradio();
+
+            radioBtn.click(function () {
+                if (this.checked) {
+                    genderInput.val($(this).val());
+                    genderInput.trigger('change');
+                }
+            });
+        });
+    </script>
+
+    <! Date*******************************************************************************************************>
+    <script>
+        var inputDate = $('.input-date');
+        var dp = $('#datepicker');
+
+        dp.datepicker({
+            language: 'fr',
+            format: 'dd-mm-yyyy',
+            startView: 2,
+            autoclose: true,
+            todayHighlight: true
+        });
+
+
+        dp.on('changeDate', function () {
+            var compDate = parseDateFrToUs(dp.datepicker('getFormattedDate'));
+            inputDate.val(compDate);
+            inputDate.trigger('change');
+
+        });
+
+
+        //Tools//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        function parseDateFrToUs(date) {
+
+            var d = new Date(date.split("-").reverse().join("-"));
+            var dd = ('0' + d.getDate()).slice(-2);
+            var mm = d.getMonth() + 1;
+            var mm = ('0' + mm).slice(-2);
+            var yy = d.getFullYear();
+            var newdate = yy + "-" + mm + "-" + dd;
+
+            return newdate;
+        }
+
+        function parseDateUsToFr(date) {
+
+            var d = new Date(date);
+            var dd = ('0' + d.getDate()).slice(-2);
+            var mm = d.getMonth() + 1;
+            var mm = ('0' + mm).slice(-2);
+            var yy = d.getFullYear();
+            var newdate = dd + "-" + mm + "-" + yy;
+
+            return newdate;
+        }
+    </script>
+
+{% endblock %}

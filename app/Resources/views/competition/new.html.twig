@@ -11,72 +11,69 @@ TO DO
     *pop-up votre compétition à bien été enregistrée
 #}
 
-{% extends 'base.html.twig' %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('datepicker/css/bootstrap-datepicker.css') }}"/>
-{% endblock %}
+{% extends 'form_layout.html.twig' %}
 
 {% block title %}
     {{ parent() }} Ajout compétition
 {% endblock %}
 
-{% block body %}
+{% block forms_content %}
 
-    {{ form_start(form, {'attr': {'data-toggle': 'validator', 'role':'form'}}) }}
+    <div class="competition-form">
+        {{ form_start(form, {'attr': {'data-toggle': 'validator', 'role':'form'}}) }}
 
-    <!--Name-->
-    <div class="form-group has-feedback ">
-        <label class="control-label">Nom</label>
-        {{ form_widget(form.name, {'attr': {'class':"form-control"}}) }}
-        <div class="help-none with-errors">Entre 5 et 50 caractères alaphanumériques</div>
-    </div>
-    <hr>
+        <!--Name-->
+        <div class="form-group has-feedback ">
+            <label class="control-label">Nom</label>
+            {{ form_widget(form.name, {'attr': {'class':"form-control"}}) }}
+            <div class="help-none with-errors">Entre 5 et 50 caractères alaphanumériques</div>
+        </div>
+        <hr>
 
-    <!--Dates-->
-    <label>Date</label>
+        <!--Dates-->
+        <label>Date</label>
 
-    <div class="row">
-        <!--DateStart-->
-        <div class="form-group has-feedback col-lg-offset-1 col-sm-4">
-            <label for="dateStart" class="control-label">Du</label>
-            {{ form_widget(form.dateStart, {'attr': {'class':"form-control input-date-start", 'style':"display: none"}}) }}
-            <div class="help-none with-errors"></div>
-            <input class="form-control datepicker dpStart">
+        <div class="row">
+            <!--DateStart-->
+            <div class="form-group has-feedback col-lg-offset-1 col-sm-4">
+                <label for="dateStart" class="control-label">Du</label>
+                {{ form_widget(form.dateStart, {'attr': {'class':"form-control input-date-start", 'style':"display: none"}}) }}
+                <div class="help-none with-errors"></div>
+                <input class="form-control datepicker dpStart">
+            </div>
+
+            <!--DateEnd-->
+            <div class="form-group has-feedback col-lg-offset-1 col-sm-4">
+                <label class="control-label">Au</label>
+                {{ form_widget(form.dateEnd, {'attr': { 'class':"form-control input-date-end", 'style':"display: none"}}) }}
+                <div class="help-none with-errors"></div>
+                <input class="form-control datepicker dpEnd">
+            </div>
+        </div>
+        <hr>
+
+        <!--Location-->
+        <div class="form-group has-feedback ">
+            <label class="control-label">Localisation</label>
+            {{ form_widget(form.locationString, {'attr': { 'class':"form-control location-input", 'style':"display: none", 'minlength':"3"}}) }}
         </div>
 
-        <!--DateEnd-->
-        <div class="form-group has-feedback col-lg-offset-1 col-sm-4">
-            <label class="control-label">Au</label>
-            {{ form_widget(form.dateEnd, {'attr': { 'class':"form-control input-date-end", 'style':"display: none"}}) }}
-            <div class="help-none with-errors"></div>
-            <input class="form-control datepicker dpEnd">
+        {% include('tools/form_location.html.twig') %}
+
+        <!--Submit-->
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary pull-right">Valider</button>
         </div>
-    </div>
-    <hr>
 
-    <!--Location-->
-    <div class="form-group has-feedback ">
-        <label class="control-label">Localisation</label>
-        {{ form_widget(form.locationString, {'attr': { 'class':"form-control location-input", 'style':"display: none", 'minlength':"3"}}) }}
+        {{ form_end(form) }}
+
     </div>
 
-    {% include('tools/form_location.html.twig') %}
 
-    <!--Submit-->
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary pull-right">Valider</button>
-    </div>
-
-    {{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('js/validator.js') }}"></script>
-    <script src="{{ asset('datepicker/js/bootstrap-datepicker.js') }}"></script>
-    <script src="{{ asset('datepicker/js/datepicker-fr.js') }}"></script>
 
     <script>
 

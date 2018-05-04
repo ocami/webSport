@@ -270,7 +270,7 @@ class DbService
 
         foreach ($competitors as $competitor) {
             $i++;
-            $competitorYear = $competitor->getDate()->format('Y');
+            $competitorYear = $competitor->getDateObject()->format('Y');
 
             foreach ($race->getCategories() as $category) {
 
@@ -279,7 +279,7 @@ class DbService
                         $raceCompetitor = new RaceCompetitor();
                         $raceCompetitor->setRace($race);
                         $raceCompetitor->setCompetitor($competitor);
-                        $raceCompetitor->setNumber($i);
+                        //$raceCompetitor->setNumber($i);
                         $raceCompetitor->setCode('RC_' . $this->cs->codeFormat($race->getId()) . '_' . $this->cs->codeFormat($competitor->getId()));
                         $this->em->persist($raceCompetitor);
                         break;

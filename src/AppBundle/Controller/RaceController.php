@@ -40,6 +40,16 @@ class RaceController extends Controller
      */
     public function show(Race $race)
     {
+        $competitor = $this->get(UserService::class)->getCompetitor();
+
+        $race = $this->get(UserService::class)->addUserDataInRace($race);
+        $race = $this->get(RaceService::class)->postSelectOne($race);
+
+        return $this->render('race/show.html.twig', array(
+            'race' => $race,
+            'competitor' => $competitor
+        ));
+
         return $this->render('race/show.html.twig', array('race'=>$race));
     }
 
@@ -186,13 +196,17 @@ class RaceController extends Controller
     }
 
     /**
-     * @Route("/race/ranckEnrolClosed/{id}", name="race_enrol_closed")
+     * @Route("/race/enrolClosed/{id}", name="race_enrol_closed")
      * @Security("has_role('ROLE_ORGANIZER')")
      */
-    public function ranckEnrolClosed(Request $request, Race $race)
+    public function enrolClosed(Request $request, Race $race)
     {
         $this->get(RanckService::class)->generateCompetitorsNumber($race);
         $request->getSession()->getFlashBag()->add('notice', 'Inscriptions cloturées');
+        $race->setState(1);
+        $em =  $this->getDoctrine()->getManager();
+        $em->persist($race);
+        $em->flush();
         return $this->redirectToRoute('race_show',array('id'=>$race->getId()));
     }
 
@@ -203,6 +217,14 @@ class RaceController extends Controller
     public function importCompetitorsTimes(Request $request, Race $race)
     {
         $this->get(RanckService::class)->importCompetitorsTimes($race);
+        $race->setState(2);
+        $em =  $this->getDoctrine()->getManager();
+        $em->persist($race);
+        $em->flush();
+
+
+        return $this->render('race/show.html.twig', array('race'=>$race));
+
 
         return $this->redirectToRoute('race_show',array('id'=>$race->getId()));
     }

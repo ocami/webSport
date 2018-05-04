@@ -76,16 +76,6 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
     }
 
 
-    public function firstAll($nb)
-    {
-        $r = $this->createQueryBuilder('r')
-            ->where('r.id <= :nb')
-            ->setParameter('nb', $nb)
-            ->getQuery()->getResult();
-
-        return $r;
-    }
-
     public function lastId($class)
     {
         return $this->createQueryBuilder('a')

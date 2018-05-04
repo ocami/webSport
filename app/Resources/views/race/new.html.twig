@@ -10,17 +10,10 @@ TO DO
     *Bouton validé actif que si tout les champs sont ok
     *pop-up votre compétition à bien été enregistrée
 #}
-
-{% extends 'base.html.twig' %}
+{% extends 'form_layout.html.twig' %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="{{ asset('tools/tools.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('myDateTime/myDateTime.css') }}"/>
-    <link rel="stylesheet"
-          href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.css">
-
     <style>
         fieldset.scheduler-border {
             border: 1px groove #ddd !important;
@@ -39,7 +32,7 @@ TO DO
             border-bottom: none;
         }
 
-        .abcd {
+        .race-form-border {
             border-radius: 30px 30px 30px 30px;
             -moz-border-radius: 30px 30px 30px 30px;
             -webkit-border-radius: 30px 30px 30px 30px;
@@ -47,7 +40,6 @@ TO DO
 
             padding: 1em 1em 1em 1em;
         }
-
     </style>
 
 {% endblock %}
@@ -56,80 +48,80 @@ TO DO
     {{ parent() }}  {% if update is defined %} Modifier course {% else %}  Ajouter course {% endif %}
 {% endblock %}
 
-{% block body %}
+{% block forms_content %}
+    
+    <div class="race-form">
+        {{ form_start(form, {'attr': {'data-toggle': 'validator', 'role':'form'}}) }}
 
-    {{ form_start(form, {'attr': {'data-toggle': 'validator', 'role':'form'}}) }}
+        <!--Name-->
+        <div class="form-group has-feedback race-form-border">
+            <label for="name" class="control-label">Nom</label>
+            {{ form_widget(form.name, {'attr': {'class':"form-control"}}) }}
+            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
 
-    <!--Name-->
-    <div class="form-group has-feedback abcd">
-        <label for="name" class="control-label">Nom</label>
-        {{ form_widget(form.name, {'attr': {'class':"form-control"}}) }}
-        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+            <div class="help-block with-errors">Entre 5 et 50 caractères alaphanumériques</div>
+        </div>
 
-        <div class="help-block with-errors">Entre 5 et 50 caractères alaphanumériques</div>
-    </div>
+        <!--Distance-->
+        <div class="form-group has-feedback race-form-border">
+            {{ form_widget(form.distance, {'attr': {'class':"form-control distance-input", 'style':"display: none"}}) }}
 
-    <!--Distance-->
-    <div class="form-group has-feedback abcd">
-        {{ form_widget(form.distance, {'attr': {'class':"form-control distance-input", 'style':"display: none"}}) }}
+            {% include 'race/widget/distance.html.twig' %}
+        </div>
 
-        {% include 'race/widget/distance.html.twig' %}
-    </div>
+        <!--Categories -->
+        <div class="form-group has-feedback race-form-border">
+            <label for="categories" class="control-label">Categories</label><br><br>
+            <div style="display: none">
+                {{ form_widget(form.categoriesString, {'attr':  {
+                    'type':"text",
+                    'min':"1",
+                    'class':"form-control categories-input",
+                    'required':'true'}}) }}
 
-    <!--Categories -->
-    <div class="form-group has-feedback abcd">
-        <label for="categories" class="control-label">Categories</label><br><br>
-        <div style="display: none">
-            {{ form_widget(form.categoriesString, {'attr':  {
+                {{ form_widget(form.requestInChampionship, {'attr':  {
+                    'class':"championship-check",
+                }}) }}
+            </div>
+            {% include 'race/widget/categories.html.twig' %}
+        </div>
+
+        <!--Date Time-->
+        <div class="form-group has-feedback race-form-border">
+            <label for="date-time" class="control-label">Date</label>
+            {{ form_widget(form.dateTime, {'attr':  {
                 'type':"text",
                 'min':"1",
-                'class':"form-control categories-input",
+                'style':"display: none",
+                'class':"form-control date-time-input result",
+                'data-error':"Format de date non valide",
                 'required':'true'}}) }}
-
-            {{ form_widget(form.requestInChampionship, {'attr':  {
-                'class':"championship-check",
-            }}) }}
+            <div class="row">
+                <div id="myDateTime" class="col-sm-offset-2 col-sm-6"></div>
+            </div>
         </div>
-        {% include 'race/widget/categories.html.twig' %}
-    </div>
 
-    <!--Date Time-->
-    <div class="form-group has-feedback abcd">
-        <label for="date-time" class="control-label">Date</label>
-        {{ form_widget(form.dateTime, {'attr':  {
-            'type':"text",
-            'min':"1",
-            'style':"display: none",
-            'class':"form-control date-time-input result",
-            'data-error':"Format de date non valide",
-            'required':'true'}}) }}
-        <div class="row">
-            <div id="myDateTime" class="col-sm-offset-2 col-sm-6"></div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Submit</button>
         </div>
+
+        {{ form_end(form) }}
     </div>
 
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </div>
-
-    {{ form_end(form) }}
+    
 {% endblock %}
 
- {% block javascripts %}
+{% block javascripts %}
      {{ parent() }}
-
-     <script src="{{ asset('tools/tools.js') }}"></script>
-     <script src="{{ asset('js/validator.js') }}"></script>
-
-     <! distance********************************************************************************************************>
+    
+     <! distance*******************************************************************************************************>
      <script>
          $('#distance-widget').change(function () {
              $('.distance-input').val($('#distance-widget').val())
          })
      </script>
 
-     <! checkbox categories********************************************************************************************************>
-     <script src="{{ asset('js/jqueryui.min.js') }}"></script>
+     <! checkbox categories********************************************************************************************>
      <script>
 
          var cbAllCat = $('.cbCategories-all');
@@ -149,7 +141,7 @@ TO DO
                  champCheck.prop('checked', true).checkboxradio('refresh')
              else
                  champCheck.prop('checked', false).checkboxradio('refresh')
-         })
+         });
 
          cbAllCat.click(function () {
              if (this.checked)
@@ -198,12 +190,8 @@ TO DO
          }
      </script>
 
-     <! datepicker***************************************************************************************************>
-     <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
-     <script src="{{ asset('datepicker/js/datepicker-fr.js') }}"></script>
-     <script src="{{ asset('myDateTime/myDateTime.js') }}"></script>
-
-     <script>
+    <! DateTime********************************************************************************************************>
+    <script>
 
          {% if race.dateTime is null %}
          defaultDate = "{{ race.competition.dateStart | date('Y-m-d') }}";

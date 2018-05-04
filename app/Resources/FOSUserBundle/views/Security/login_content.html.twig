@@ -1,0 +1,41 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+
+
+<div class="col-xs-offset-2 col-xs-8 col-md-offset-3 col-md-6 col-lg-offset-4 col-lg-4">
+
+    {% if error %}
+        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    <form action="{{ path("fos_user_security_check") }}" method="post" data-toggle="validator" role="form">
+        {% if csrf_token %}
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
+        {% endif %}
+
+        <div class="form-group has-feedback">
+            <label for="username" class="control-label">Identifiant</label>
+            <input type="text" id="username" name="_username" class="form-control" value="{{ last_username }}"
+                   required="required"/>
+            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+        </div>
+
+        <div class="form-group has-feedback">
+            <label for="password" class="control-label">Mot de passe</label>
+            <input type="password" id="password" name="_password" required="required" class="form-control"/>
+            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+        </div>
+
+        <div class="form-group">
+            <input type="checkbox" id="remember_me" name="_remember_me" value="on"/>
+            <label for="remember_me">Se souvenir de moi</label>
+        </div>
+
+        <div class="form-group">
+            <input class="btn btn-primary" type="submit" id="_submit" name="_submit" value="Valider"/>
+        </div>
+    </form>
+
+
+</div>
+

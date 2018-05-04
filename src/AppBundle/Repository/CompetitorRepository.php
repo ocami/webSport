@@ -38,8 +38,15 @@ class CompetitorRepository extends \Doctrine\ORM\EntityRepository
 
 
         return $c[0];
+    }
 
+    public function firstAll($nb)
+    {
+        $c = $this->createQueryBuilder('c')
+            ->where('c.id <= :nb')
+            ->setParameter('nb', $nb)
+            ->getQuery()->getResult();
 
-
+        return $c;
     }
 }

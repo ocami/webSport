@@ -152,6 +152,18 @@ class Race
     private $fullCat = false;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="state", type="integer")
+     * 
+     * 1 : open enrol
+     * 2 : close enrol
+     * 3 : passed / ranck
+     * 
+     */
+    private $state = 0;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -626,5 +638,29 @@ class Race
     public function getIsOrganizer()
     {
         return $this->isOrganizer;
+    }
+
+    /**
+     * Set state
+     *
+     * @param int $state
+     *
+     * @return Race
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * Get state
+     *
+     * @return int
+     */
+    public function getState()
+    {
+        return $this->state;
     }
 }
