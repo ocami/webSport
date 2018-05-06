@@ -16,6 +16,7 @@ use AppBundle\Entity\RaceCompetitor;
 use AppBundle\Form\RaceNewType;
 use AppBundle\Services\CompetitionService;
 use AppBundle\Services\DbService;
+use AppBundle\Services\RaceService;
 use AppBundle\Services\RanckService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,11 +44,12 @@ class homeController extends Controller
     public function indexAction(Request $request)
     {
         $competitor = null;
+
         if ($this->get('security.authorization_checker')->isGranted('ROLE_COMPETITOR'))
             $competitor = $this->get(UserService::class)->getCategoryCompetitor();
 
         return $this->render('home/index.html.twig', array(
-            'competitor' => $competitor,
+            'competitor' => $competitor
         ));
     }
 

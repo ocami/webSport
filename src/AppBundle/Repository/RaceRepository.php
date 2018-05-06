@@ -84,4 +84,17 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+
+    public function countNotSupervisedRaces()
+    {
+        $nb = $this->createQueryBuilder('r')
+            ->select('count(r.id)')
+            ->where('r.supervised = :supervised')
+            ->setParameter('supervised', 0)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $nb;
+    }
 }

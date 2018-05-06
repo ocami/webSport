@@ -3,6 +3,41 @@
         .dropdown-menu {
             z-index: 9999;
         }
+
+        badge {
+            padding: 1px 9px 2px;
+            font-size: 12.025px;
+            font-weight: bold;
+            white-space: nowrap;
+            color: #ffffff;
+            background-color: #999999;
+            -webkit-border-radius: 9px;
+            -moz-border-radius: 9px;
+            border-radius: 9px;
+        }
+
+        .badge:hover {
+            color: #ffffff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .badge-warning {
+            background-color: #a91c1f;
+        }
+
+        .badge-warning:hover {
+            background-color: #c6504b;
+        }
+
+        .badge-success {
+            background-color: #468847;
+        }
+
+        .badge-success:hover {
+            background-color: #356635;
+        }
+
     </style>
 {% endblock %}
 
@@ -36,6 +71,11 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
 
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li><a href="{{ path('admin_races') }}"><span class="badge badge-success"></span></a></li>
+                {% endif %}
+
+
                 {% if app.user %}
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -43,7 +83,8 @@
                         <ul class="dropdown-menu">
 
                             {% if is_granted('ROLE_COMPETITOR') %}
-                                <li><a class="profile-href"  href="#" data-toggle="modal" data-target="#competitor-modal">Mon profile</a></li>
+                                <li><a class="profile-href" href="#" data-toggle="modal"
+                                       data-target="#competitor-modal">Mon profile</a></li>
                                 <li><a href="{{ path('races_by_competitor') }}">Mes courses</a></li>
                                 <li><a href="#">Mes statistiques</a></li>
                             {% endif %}
@@ -92,22 +133,68 @@
     </div><!-- /.container-fluid -->
 </nav>
 
-<script>
-    $(document).ready(function () {
 
-        var li = document.createElement("LI");
+{% block javascripts %}
 
-        $.getJSON("{{ asset('json/navbar_championship.json') }}", function (result) {
-            $.each(result, function (key, championship) {
-                var a = document.createElement("A");
-                var textLI = document.createTextNode(championship.name);
-                a.href = championship.path;
-                a.appendChild(textLI);
-                li.appendChild(a);
-                $('.championdhips-menu').append(li);
+    <script>
+        $(document).ready(function () {
+
+            var li = document.createElement("LI");
+
+            $.getJSON("{{ asset('json/navbar_championship.json') }}", function (result) {
+                $.each(result, function (key, championship) {
+                    var a = document.createElement("A");
+                    var textLI = document.createTextNode(championship.name);
+                    a.href = championship.path;
+                    a.appendChild(textLI);
+                    li.appendChild(a);
+                    $('.championdhips-menu').append(li);
+
+                });
 
             });
-
         });
-    });
-</script>
+
+
+        {% if is_granted('ROLE_ADMIN') %}
+
+        $.ajax({
+            url: "{{ path('race_countNotSupervised') }}",
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+
+                badgeCountRace(data);
+            }
+        });
+
+        function badgeCountRace(nb) {
+            var badge = $('.badge');
+            badge.text(nb);
+
+            if(nb == 0){
+                badge.attr({
+                    "title" : "Pas de nouvelle course à valider",
+                    "class" : "badge badge-success"
+                });
+            }else {
+                badge.attr({
+                    "title" : "Nouvelles courses à valider",
+                    "class" : "badge badge-warning"
+                });
+            }
+        }
+
+
+        {% endif %}
+
+
+    </script>
+
+
+
+
+
+{% endblock %}
+
+

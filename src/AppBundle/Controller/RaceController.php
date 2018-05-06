@@ -40,7 +40,11 @@ class RaceController extends Controller
      */
     public function show(Race $race)
     {
-        $competitor = $this->get(UserService::class)->getCompetitor();
+        $competitor = null;
+
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_COMPETITOR'))
+            $competitor = $this->get(UserService::class)->getCompetitor();
+
 
         $race = $this->get(UserService::class)->addUserDataInRace($race);
         $race = $this->get(RaceService::class)->postSelectOne($race);
@@ -229,4 +233,13 @@ class RaceController extends Controller
         return $this->redirectToRoute('race_show',array('id'=>$race->getId()));
     }
 
+    /**
+     * @Route("race/countNotSupervised", name="race_countNotSupervised")
+     */
+    public function countNotSupervisedRaces(Request $request)
+    {
+        $nbNewRace = $this->getDoctrine()->getRepository(Race::class)->countNotSupervisedRaces();
+
+        return new JsonResponse($nbNewRace);
+    }
 }
