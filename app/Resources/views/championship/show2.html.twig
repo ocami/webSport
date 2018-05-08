@@ -1,49 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.2.5/css/select.bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"/>
-
-
-    <style>
-
-        .btn-category {
-            padding: 1em;
-            height: 2em;
-        }
-
-    </style>
-
-{% endblock %}
-
-
 {% block title %}
     {{ parent() }} index
 {% endblock %}
 
-{#{% block admin_menu %}
+{% block admin_menu %}
     <button class="btn-xs btn-success" onclick="location.href = '{{ path('championship_new') }}'">Ajouter un championat</button>
-{% endblock %}#}
+{% endblock %}
 
 {% block body %}
 
-
-    <!--buttons categories-->
-    <div class="row">
-        {% for c in championships %}
-            <div class="btn-category col-xs-3 col-lg-2">
-                <button
-                        class="btn-xs btn-info col-xs-12 btn-{{ c.id }}"
-                        onclick="requestForTableChampionships({{ c.category.id }}, '{{ c.name }}')"
-                        href="#tables">
-                    {{ c.name }}</button>
-            </div>
-        {% endfor %}
-    </div>
+    {% for c in championships %}
+        <button onclick="requestForTableChampionships({{ c.category.id }}, '{{ c.name }}')">{{ c.name }}</button>
+    {% endfor %}
 
     <br><br>
 
+    <h1 id="H1championship"></h1>
 
     <div id="loader"></div>
 
@@ -66,15 +39,6 @@
         $(document).ready(function () {
             $('#loader').css('display', 'block');
             requestForTableChampionships({{ championship.id }}, "{{ championship.name }}");
-            $('.btn-{{ championship.category.id }}').attr('class','btn-xs btn-primary col-xs-12');
-        });
-
-        //buttons change
-        $('.btn-info').click(function () {
-
-            $('.btn-category > button').attr('class','btn-xs btn-info col-xs-12');
-
-            $(this).attr('class','btn-xs btn-primary col-xs-12');
         });
 
         function requestForTableChampionships(idCategory, nameChampionship) {
@@ -86,27 +50,12 @@
         }
 
         function displayTableChampionship(path, request) {
-
-            var language = {
-                "search": "Rechercher:",
-                "lengthMenu": "Voir _MENU_ compétiteurs  par page",
-                "zeroRecords": "Aucune inscription",
-                "paginate": {
-                    "first": "Premier",
-                    "last": "Dernier",
-                    "next": "Suivant",
-                    "previous": "précédent"
-                }
-            };
-
-
             $.ajax({
                 url: path,
                 data: request,
                 success: function (result) {
                     $('#dataTableChampionship').dataTable({
                         destroy: true,
-                        language : language,
                         data: result,
                         order: [[3, "dsc"]],
                         columns: [

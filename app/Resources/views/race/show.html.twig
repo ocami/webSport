@@ -77,10 +77,15 @@
                    onclick="location.href = '{{ path('race_simulateEnrol', {'id':race.id} ) }}';">
         {% endif %}
 
-        {% if race.enrol == false %}
+        {% if race.state == 1 %}
             <input type="button" class="btn-xs btn-success" value="Importer les temps de courses"
                    onclick="location.href = '{{ path('race_competitorsTimes', {'id':race.id} ) }}';">
         {% endif %}
+
+
+
+
+
     {% endif %}
 {% endblock %}
 
@@ -438,8 +443,6 @@
 
                 };
 
-
-
                 rowTable.empty();
                 rowTable.append("<th>Gen.</th>");
                 rowTable.append("<th>Nom</th>");
@@ -500,8 +503,10 @@
                         {data: 'lastName'},
                         {data: 'firstName'},
                         {data: 'chronoString'},
-                        {data: 'ranck'},
-                        {data: 'points'},
+                        {data: 'ranck'}
+                        {% if race.inchampionship %},
+                        {data: 'points'}
+                        {% endif %}
                     ]
 
                 };
@@ -512,7 +517,10 @@
                 rowTable.append("<th>Prénom</th>");
                 rowTable.append("<th>Chrono</th>");
                 rowTable.append("<th>Gen.</th>");
+                {% if race.inchampionship %}
                 rowTable.append("<th>Point</th>");
+                {% endif %}
+
             }
         }
 

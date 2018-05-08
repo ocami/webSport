@@ -49,6 +49,7 @@ class RaceController extends Controller
         $race = $this->get(UserService::class)->addUserDataInRace($race);
         $race = $this->get(RaceService::class)->postSelectOne($race);
 
+
         return $this->render('race/show.html.twig', array(
             'race' => $race,
             'competitor' => $competitor
@@ -248,8 +249,6 @@ class RaceController extends Controller
         $em =  $this->getDoctrine()->getManager();
         $em->persist($race);
         $em->flush();
-
-        return $this->render('race/show.html.twig', array('race'=>$race));
 
         return $this->redirectToRoute('race_show',array('id'=>$race->getId()));
     }

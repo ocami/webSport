@@ -43,16 +43,7 @@ class RanckService
 
     public function importCompetitorsTimes($race)
     {
-        $raceCompetitors = $this->em->getRepository(RaceCompetitor::class)->findByRace($race);
-
-        foreach ($raceCompetitors as $rc) {
-            $time = $this->tools->randomDate('2:00:00', '3:30:00', 'H:i:s');
-            $rc->setChrono($time);
-            $rc->setChronoString($time->format('H:i:s'));
-            $this->em->persist($rc);
-        }
-
-        $this->em->flush();
+        $this->genrateTime($race);
 
         $raceCompetitors = $this->em->getRepository(RaceCompetitor::class)->rcOrderByChrono($race);
         $arrayCountRaceCat = array();
@@ -82,16 +73,82 @@ class RanckService
 
                     $rc->setRanckCategory($count);
 
-                    if($race->getInChampionship())
+                    if ($race->getInChampionship())
                         $rc->setPoints($this->point($count));
 
                 }
                 $this->em->persist($rc);
             }
         }
+
+
+        if ($race->getInChampionship())
+            $this->championshipSetPoints($race);
+
+
+        $race->setPassed(true);
+        $race->setState(3);
+        $this->em->persist($race);
+
         $this->em->flush();
     }
 
+    public function genrateTime($race)
+    {
+        $raceCompetitors = $this->em->getRepository(RaceCompetitor::class)->findByRace($race);
+
+        $base = 260;
+        $arrayICat = array(
+            1 => 24,
+            2 => 16,
+            3 => 8,
+            4 => 0,
+            5 => 8,
+            6 => 32,
+            7 => 24,
+            8 => 16,
+            9 => 8,
+            10 => 16,
+        );
+        $arrayILevel = array(
+            1 => 1.2,
+            2 => 1,
+            3 => 0.8,
+        );
+
+        foreach ($raceCompetitors as $rc) {
+
+            $competitor = $rc->getCompetitor();
+            $y = substr($competitor->getDate(), -10, 4);
+            $competitorCat = $this->cs->getCategory($y, $competitor->getSexe())->getId();
+
+
+            $competitorLevel = $competitor->getLevel();
+
+            $iCat = $arrayICat[$competitorCat];
+            if (!$iCat == 0)
+                $iCat = 1 + ($iCat / 100);
+            else
+                $iCat = 1;
+
+
+            $level = $arrayILevel[$competitorLevel];
+
+            $random = random_int(0, 25);
+            $random = 1 + ($random / 100);
+
+            $time = $base * $race->getDistance() * $iCat * $level * $random;
+
+            $rc->setChrono(new \DateTime(gmdate("H:i:s", $time)));
+            $rc->setChronoString(gmdate("H:i:s", $time));
+            $this->em->persist($rc);
+
+            //var_dump(date("H:i:s", $time));
+        }
+
+        $this ->em->flush();
+
+    }
 
     public function importCompetitorsTimes2($race)
     {

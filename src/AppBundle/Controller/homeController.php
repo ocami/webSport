@@ -154,7 +154,11 @@ class homeController extends Controller
 
 
         $time = $base * $race->getDistance() *$iCat * $level * $random;
+        var_dump(gmdate("H:i:s", $time));
+        var_dump(new \DateTime(gmdate("H:i:s", $time)));
         $time = date("H:i:s", $time);
+
+
 
 //        $time = $base * $race->getDistance();
 //        $time = date("H:i:s", $time);
