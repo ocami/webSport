@@ -11,8 +11,10 @@ namespace AppBundle\Services;
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Championship;
 use AppBundle\Entity\ChampionshipCompetitor;
+use AppBundle\Entity\Race;
 use AppBundle\Entity\RaceCompetitor;
 use Doctrine\ORM\EntityManagerInterface;
+use Proxies\__CG__\AppBundle\Entity\Competitor;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 
@@ -20,34 +22,24 @@ class RanckService
 {
     private $ts;
     private $em;
+    private $cs;
     private $tools;
     private $user;
 
     public function __construct(
         TokenStorageInterface $ts,
         EntityManagerInterface $em,
+        CategoryService $cs,
         ToolsService $tools
     )
     {
         $this->ts = $ts;
         $this->em = $em;
+        $this->cs = $cs;
         $this->tools = $tools;
         $this->user = $this->ts->getToken()->getUser();
     }
 
-    public function generateCompetitorsNumber($race)
-    {
-        $i = 0;
-        $rc = $this->em->getRepository(RaceCompetitor::class)->competitorsEnrolByLastName($race);
-        foreach ($rc as $row) {
-            $i++;
-            $row->setNumber($i);
-            $this->em->persist($row);
-        }
-        $race->setEnrol(false);
-        $this->em->persist($race);
-        $this->em->flush();
-    }
 
     public function importCompetitorsTimes($race)
     {
@@ -63,8 +55,57 @@ class RanckService
         $this->em->flush();
 
         $raceCompetitors = $this->em->getRepository(RaceCompetitor::class)->rcOrderByChrono($race);
+        $arrayCountRaceCat = array();
 
-        $i=0;
+        foreach ($race->getCategories() as $cat) {
+            $arrayCountRaceCat[$cat->getId()] = 0;
+        }
+
+        $i = 0;
+        $cpt = 0;
+        foreach ($raceCompetitors as $rc) {
+            $i++;
+            $competitor = $rc->getCompetitor();
+
+            $rc->setRanck($i);
+
+            foreach ($race->getCategories() as $cat) {
+
+                $y = substr($competitor->getDate(), -10, 4);
+                $competitorCat = $this->cs->getCategory($y, $competitor->getSexe());
+                $competitor->setCategory($this->cs->getCategory($y, $competitor->getSexe()));
+
+                if ($competitorCat == $cat) {
+                    $cpt++;
+                    $arrayCountRaceCat[$cat->getId()]++;
+                    $count = $arrayCountRaceCat[$cat->getId()];
+
+                    $rc->setPoints($this->point($count));
+                    $rc->setRanckCategory($count);
+                }
+                $this->em->persist($rc);
+            }
+        }
+        $this->em->flush();
+    }
+
+
+    public function importCompetitorsTimes2($race)
+    {
+        $raceCompetitors = $this->em->getRepository(RaceCompetitor::class)->findByRace($race);
+
+        foreach ($raceCompetitors as $rc) {
+            $time = $this->tools->randomDate('2:00:00', '3:30:00', 'H:i:s');
+            $rc->setChrono($time);
+            $rc->setChronoString($time->format('H:i:s'));
+            $this->em->persist($rc);
+        }
+
+        $this->em->flush();
+
+        $raceCompetitors = $this->em->getRepository(RaceCompetitor::class)->rcOrderByChrono($race);
+
+        $i = 0;
         foreach ($raceCompetitors as $rc) {
             $i++;
             $rc->setRanck($i);
@@ -77,6 +118,22 @@ class RanckService
         $race->setPassed(true);
         $this->em->flush();
     }
+
+
+    public function generateCompetitorsNumber($race)
+    {
+        $i = 0;
+        $rc = $this->em->getRepository(RaceCompetitor::class)->competitorsEnrolByLastName($race);
+        foreach ($rc as $row) {
+            $i++;
+            $row->setNumber($i);
+            $this->em->persist($row);
+        }
+        $race->setEnrol(false);
+        $this->em->persist($race);
+        $this->em->flush();
+    }
+
 
     public function raceRanck($race)
     {
@@ -227,7 +284,6 @@ class RanckService
         $data = new \ArrayObject();
         $rc = $this->em->getRepository(RaceCompetitor::class)->categoriesRanckToString($category, $race);
         $data = array();
-
 
 
         return $rc;

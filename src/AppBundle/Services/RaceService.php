@@ -102,8 +102,6 @@ class RaceService
         return $race;
     }
 
-
-
     public function CompetitorRegisterStatus(Race $race, $competitor)
     {
         if ($this->em->getRepository(RaceCompetitor::class)->competitorIsRegisterToRace($race, $competitor))

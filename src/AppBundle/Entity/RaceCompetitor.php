@@ -47,6 +47,13 @@ class RaceCompetitor extends AbstractEntity
     private $ranck;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="ranck_category", type="integer", nullable=true)
+     */
+    private $ranckCategory;
+
+    /**
      * @var Time
      *
      * @ORM\Column(name="chrono", type="time", nullable=true)
@@ -59,6 +66,13 @@ class RaceCompetitor extends AbstractEntity
      * @ORM\Column(name="chrono_string", type="string", nullable=true)
      */
     private $chronoString;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="points", type="integer", nullable=true)
+     */
+    private $points;
 
     /**
      * Get id
@@ -116,6 +130,30 @@ class RaceCompetitor extends AbstractEntity
     public function getRanck()
     {
         return $this->ranck;
+    }
+
+    /**
+     * Set ranckCategory
+     *
+     * @param integer $ranckCategory
+     *
+     * @return RaceCompetitor
+     */
+    public function setRanckCategory($ranckCategory)
+    {
+        $this->ranckCategory = $ranckCategory;
+
+        return $this;
+    }
+
+    /**
+     * Get ranckCategory
+     *
+     * @return integer
+     */
+    public function getRanckCategory()
+    {
+        return $this->ranckCategory;
     }
 
     /**
@@ -214,4 +252,29 @@ class RaceCompetitor extends AbstractEntity
     {
         return $this->competitor;
     }
+
+    /**
+     * Set points
+     *
+     * @param integer $points
+     *
+     * @return RaceCompetitor
+     */
+    public function setPoints($points)
+    {
+        $this->points = $points;
+
+        return $this;
+    }
+
+    /**
+     * Get points
+     *
+     * @return integer
+     */
+    public function getPoints()
+    {
+        return $this->points;
+    }
+
 }

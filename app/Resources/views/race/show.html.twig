@@ -30,7 +30,6 @@
 
 {% endblock %}
 
-
 {% block title %}
     {{ parent() }} {{ race.name }}
 {% endblock %}
@@ -130,17 +129,26 @@
             {% endif %}
 
             <div id="tableRace">
-                <table id="dataTableRace" cellspacing="0" width="100%">
-                    <thead>
-                    <tr>
-                        <th>Dossard</th>
-                        <th>Nom</th>
-                        <th>Prénom</th>
-                        <th>Classement</th>
-                        <th>Temps</th>
-                    </tr>
-                    </thead>
-                </table>
+                <div id="table-race-container">
+                    <table id="table-race" cellspacing="0" width="100%">
+                        <thead>
+                        <tr class="row-table-race">
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+
+                <div id="table-race-category-container">
+
+                    <table id="table-race-category" cellspacing="0" width="100%">
+                        <thead>
+                        <tr class="row-table-race-category">
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+
+
             </div>
 
             <div id="tableChampionship">
@@ -162,135 +170,350 @@
 
 {% endblock %}
 
-    {% block javascripts %}
-        {{ parent() }}
+{% block javascripts %}
+    {{ parent() }}
 
-        <script>
-            $(document).ready(function () {
-                requestForTableGeneral({{ race.id }});
-                $('#tables').css('display', 'none');
-                $('#loader').css('display', 'block');
+    <script>
+        $(document).ready(function () {
+            requestForTableGeneral({{ race.id }});
+            $('#tables').css('display', 'none');
+            $('#loader').css('display', 'block');
+        });
+
+        function requestForTableGeneral(idRace) {
+            var request = {idRace: idRace, category: 'all'};
+            getRaceTable(request, 'all');
+            load(true);
+            etat('general');
+        }
+
+        function requestForTableCategory(idRace, idCategory, nameCategory) {
+            var request = {idRace: idRace, category: idCategory};
+            getRaceTable(request, idCategory);
+            load(true);
+            etat('general');
+        }
+
+        function requestForTableChampionship(idRace, idCategory, nameCategory) {
+            var path = "{{ path('championship_json') }}";
+            var request = {idCategory: idCategory};
+            getRaceTableChampionship(path, request);
+            $('#buttons').children("button").remove();
+            $('#buttons').append("<button id=\"raceButton\" onclick=\"requestForTableCategory(" + idRace + ", " + idCategory + ",' " + nameCategory + " ')\">Course</button>");
+            load(true);
+            etat('championship');
+        }
+
+        function getRaceTable(request, category) {
+            $.ajax({
+                url: "{{ path('race_Table') }}",
+                data: request,
+                success: function (result) {
+                    displayTable(result, category);
+                }
             });
+        }
 
-            function requestForTableGeneral(idRace) {
-                var path = "{{ path('race_Table') }}";
-                var request = {idRace: idRace};
-                displayTable(path, request);
-                load(true);
-                etat('general');
-            }
+        function displayTable(data, category) {
+            console.log(category);
 
-            function requestForTableCategory(idRace, idCategory, nameCategory) {
-                var path = "{{ path('race_categoryTable') }}";
-                var request = {idRace: idRace, idCategory: idCategory};
-                displayTable(path, request);
-                $('#category').text(nameCategory);
-                $('#buttons').children("button").remove();
-                $('#buttons').append("<button id=\"championshipButton\" onclick=\"requestForTableChampionship(" + idRace + ", " + idCategory + ", ' " + nameCategory + " ')\">Championat</button>");
-                load(true);
-                etat('category');
-
-            }
-
-            function requestForTableChampionship(idRace, idCategory, nameCategory) {
-                var path = "{{ path('championship_json') }}";
-                var request = {idCategory: idCategory};
-                displayTableChampionship(path, request);
-                $('#buttons').children("button").remove();
-                $('#buttons').append("<button id=\"raceButton\" onclick=\"requestForTableCategory(" + idRace + ", " + idCategory + ",' " + nameCategory + " ')\">Course</button>");
-                load(true);
-                etat('championship');
-            }
-
-            function displayTable(path, request) {
-                $.ajax({
-                    url: path,
-                    data: request,
-                    success: function (result) {
-                        $('#dataTableRace').dataTable({
-                            destroy: true,
-                            data: result,
-                            order: [[3, "asc"]],
-                            columns: [
-                                {data: 'number'},
-                                {data: 'lastName'},
-                                {data: 'firstName'},
-                                {data: 'ranck'},
-                                {data: 'chronoString'}]
-                        });
-                        load(false);
-                    }
-                });
-            }
-
-            function displayTableChampionship(path, request) {
-                $.ajax({
-                    url: path,
-                    data: request,
-                    success: function (result) {
-                        $('#dataTableChampionship').dataTable({
-                            destroy: true,
-                            data: result,
-                            order: [[3, "dsc"]],
-                            columns: [
-                                {data: 'ranck'},
-                                {data: 'lastName'},
-                                {data: 'firstName'},
-                                {data: 'points'}]
-                        });
-
-                        load(false);
-                    }
-                });
-            }
-
-            function etat(stat) {
-                switch (stat) {
-                    case 'category':
-                        $('#championshipButton').css('display', 'block');
-                        $('#raceButton').css('display', 'none');
-                        $('#tableRace').css('display', 'block');
-                        $('#tableChampionship').css('display', 'none');
-                        break;
-                    case 'championship':
-                        $('#championshipButton').css('display', 'none');
-                        $('#raceButton').css('display', 'block');
-                        $('#tableRace').css('display', 'none');
-                        $('#tableChampionship').css('display', 'block');
-                        break;
-                    case 'general':
-                        $('#championshipButton').css('display', 'none');
-                        $('#raceButton').css('display', 'none');
-                        $('#tableRace').css('display', 'block');
-                        $('#tableChampionship').css('display', 'none');
-                        $('#category').text("Classement général");
-                        break;
-                    default:
-                        $('#championshipButton').css('display', 'none');
-                        $('#raceButton').css('display', 'none');
-                        $('#tableRace').css('display', 'block');
-                        $('#tableChampionship').css('display', 'none');
-                        alert('category');
+            var rowTable = $('.row-table-race')
+            var language = {
+                "search": "Rechercher:",
+                "lengthMenu": "Voir _MENU_ compétiteurs  par page",
+                "zeroRecords": "Aucune inscription",
+                "paginate": {
+                    "first": "Premier",
+                    "last": "Dernier",
+                    "next": "Suivant",
+                    "previous": "précédent"
                 }
-            }
+            };
+            var options;
+            var option2 = {
+                "info": false,
+                "language": {
+                    "search": "Rechercher:",
+                    "lengthMenu": "Voir _MENU_ courses  par page",
+                    "zeroRecords": "Aucune courses non traitées",
+                    "paginate": {
+                        "first": "Premier",
+                        "last": "Dernier",
+                        "next": "Suivant",
+                        "previous": "précédent"
+                    },
+                },
 
-            function load(stat) {
-                switch (stat) {
-                    case true:
-                        $('#tables').css('display', 'none');
-                        $('#loader').css('display', 'block');
-                        ;
+                columns: [
+                    {data: 'checkbox'},
+                    {data: 'id'},
+                    {data: 'name'},
+                    {data: 'organizer'},
+                    {data: 'city'},
+                    {data: 'date'},
+                    {data: 'championship'}
+                ],
+                columnDefs: [
+                    {
+                        targets: 0,
+                        orderable: false,
+                        className: 'select-checkbox',
+                        width: "5%"
+                    },
+                    {
+                        targets: 1,
+                        visible: false
+                    },
+                    {
+                        targets: 5,
+                        width: "20%"
+                    },
+                    {
+                        targets: 6,
+                        width: "5%"
+                    }
+                ]
+            };
+
+
+            if (category === 'all') {
+                switch (data.race_state) {
+                    case 0:
+                        raceOpenOptions();
                         break;
-                    case false:
-                        $('#tables').css('display', 'block');
-                        $('#loader').css('display', 'none');
+
+                    case 1:
+                        raceCloseOptions();
                         break;
-                    default:
-                        $('#tables').css('display', 'block');
-                        $('#loader').css('display', 'none');
+
+                    case 2:
+                        racePassedOptions();
+                        break;
                 }
+                $('#table-race-category-container').hide();
+                $('#table-race-container').show();
+                $('#table-race').dataTable(options);
+            } else {
+                switch (data.race_state) {
+                    case 0:
+                        raceCategoryOpenOptions();
+                        break;
+
+                    case 1:
+                        raceCategoryCloseOptions();
+                        break;
+
+                    case 2:
+                        raceCategoryPassedOptions();
+                        break;
+                }
+                $('#table-race-container').hide();
+                $('#table-race-category-container').show();
+                $('#table-race-category').dataTable(options);
             }
 
-        </script>
 
-    {% endblock %}
+            load(false);
+
+            function raceOpenOptions() {
+                options = {
+                    destroy: true,
+                    data: data.competitors,
+                    language: language,
+                    columns: [
+                        {data: 'lastName'},
+                        {data: 'firstName'},
+                        {data: 'category'}
+                    ]
+                };
+                rowTable.empty();
+
+                rowTable.append("<th>Nom</th>");
+                rowTable.append("<th>Prénom</th>");
+                rowTable.append("<th>Catégorie</th>")
+            }
+
+            function raceCloseOptions() {
+                options = {
+                    destroy: true,
+                    data: data.competitors,
+                    language: language,
+                    columns: [
+                        {data: 'number'},
+                        {data: 'lastName'},
+                        {data: 'firstName'},
+                        {data: 'category'}
+                    ]
+                };
+                rowTable.empty();
+                rowTable.append("<th>Dossard</th>");
+                rowTable.append("<th>Nom</th>");
+                rowTable.append("<th>Prénom</th>");
+                rowTable.append("<th>Catégorie</th>")
+            }
+
+            function racePassedOptions() {
+                options = {
+                    destroy: true,
+                    data: data.competitors,
+                    language: language,
+                    order: [[0, "asc"]],
+                    columns: [
+                        {data: 'ranck'},
+                        {data: 'lastName'},
+                        {data: 'firstName'},
+                        {data: 'category'},
+                        {data: 'chronoString'},
+                        {data: 'ranckCategory'},
+                        {data: 'points'},
+                    ]
+                };
+
+                rowTable.empty();
+                $('.row-table-race').append("<th>Gen.</th>");
+                $('.row-table-race').append("<th>Nom</th>");
+                $('.row-table-race').append("<th>Prénom</th>");
+                $('.row-table-race').append("<th>Catégorie</th>");
+                $('.row-table-race').append("<th>Chrono</th>");
+                $('.row-table-race').append("<th>Classement</th>");
+                $('.row-table-race').append("<th>Point</th>");
+            }
+
+            function raceCategoryOpenOptions() {
+                options = {
+                    destroy: true,
+                    data: data.competitors,
+                    language: language,
+                    columns: [
+                        {data: 'lastName'},
+                        {data: 'firstName'},
+                        {data: 'category'}
+                    ]
+                };
+                rowTable.empty();
+
+                rowTable.append("<th>Nom</th>");
+                rowTable.append("<th>Prénom</th>");
+                rowTable.append("<th>Catégorie</th>")
+            }
+
+            function raceCategoryCloseOptions() {
+                options = {
+                    destroy: true,
+                    data: data.competitors,
+                    language: language,
+                    columns: [
+                        {data: 'number'},
+                        {data: 'lastName'},
+                        {data: 'firstName'},
+                        {data: 'category'}
+                    ]
+                };
+                rowTable.empty();
+                rowTable.append("<th>Dossard</th>");
+                rowTable.append("<th>Nom</th>");
+                rowTable.append("<th>Prénom</th>");
+                rowTable.append("<th>Catégorie</th>")
+            }
+
+            function raceCategoryPassedOptions() {
+                options = {
+                    destroy: true,
+                    data: data.competitors,
+                    language: language,
+                    order: [[0, "asc"]],
+                    columns: [
+                        {data: 'ranckCategory'},
+                        {data: 'ranck'},
+                        {data: 'lastName'},
+                        {data: 'firstName'},
+                        {data: 'chronoString'},
+                        {data: 'points'},
+                        {data: 'number'}
+                    ]
+
+                };
+
+                rowTable.empty();
+                $('#table-race-category').append("<th></th>");
+                $('#table-race-category').append("<th>Nom</th>");
+                $('#table-race-category').append("<th>Prénom</th>");
+                $('#table-race-category').append("<th>Chrono</th>");
+                $('#table-race-category').append("<th>Gen.</th>");
+                $('#table-race-category').append("<th>Point</th>");
+                $('#table-race-category').append("<th>Doss.</th>");
+            }
+        }
+
+        function getRaceTableChampionship(path, request) {
+            $.ajax({
+                url: path,
+                data: request,
+                success: function (result) {
+                    $('#dataTableChampionship').dataTable({
+                        destroy: true,
+                        data: result,
+                        order: [[3, "dsc"]],
+                        columns: [
+                            {data: 'ranck'},
+                            {data: 'lastName'},
+                            {data: 'firstName'},
+                            {data: 'points'}]
+                    });
+
+                    load(false);
+                }
+            });
+        }
+
+        function etat(stat) {
+            switch (stat) {
+                case 'category':
+                    $('#championshipButton').css('display', 'block');
+                    $('#raceButton').css('display', 'none');
+                    $('#tableRace').css('display', 'block');
+                    $('#tableChampionship').css('display', 'none');
+                    break;
+                case 'championship':
+                    $('#championshipButton').css('display', 'none');
+                    $('#raceButton').css('display', 'block');
+                    $('#tableRace').css('display', 'none');
+                    $('#tableChampionship').css('display', 'block');
+                    break;
+                case 'general':
+                    $('#championshipButton').css('display', 'none');
+                    $('#raceButton').css('display', 'none');
+                    $('#tableRace').css('display', 'block');
+                    $('#tableChampionship').css('display', 'none');
+                    $('#category').text("Classement général");
+                    break;
+                default:
+                    $('#championshipButton').css('display', 'none');
+                    $('#raceButton').css('display', 'none');
+                    $('#tableRace').css('display', 'block');
+                    $('#tableChampionship').css('display', 'none');
+                    alert('category');
+            }
+        }
+
+        function load(stat) {
+            switch (stat) {
+                case true:
+                    $('#tables').css('display', 'none');
+                    $('#loader').css('display', 'block');
+                    ;
+                    break;
+                case false:
+                    $('#tables').css('display', 'block');
+                    $('#loader').css('display', 'none');
+                    break;
+                default:
+                    $('#tables').css('display', 'block');
+                    $('#loader').css('display', 'none');
+            }
+        }
+
+
+    </script>
+
+{% endblock %}

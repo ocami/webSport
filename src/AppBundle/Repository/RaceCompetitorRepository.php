@@ -16,6 +16,80 @@ use Symfony\Component\Validator\Constraints\DateTime;
  */
 class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    /**
+     * @return array string
+     */
+    public function allByRaceToString($race)
+    {
+        $rc = $this->createQueryBuilder('rc')
+            ->innerJoin('rc.competitor', 'c')
+            ->select('
+            c.code, 
+            rc.number, 
+            rc.ranck, 
+            rc.ranckCategory, 
+            rc.chronoString, 
+            rc.points, 
+            c.firstName, 
+            c.lastName, 
+            c.date, 
+            c.sexe')
+            ->where('rc.race = :race')
+            ->setParameter('race', $race)
+            ->orderBy('rc.ranck')
+            ->getQuery()->getResult();
+
+        return $rc;
+    }
+
+
+    /**
+     * @return array string
+     */
+    public function allByRaceCategoryToString($race,$category)
+    {
+        $rc = $this->createQueryBuilder('rc')
+            ->innerJoin('rc.competitor', 'c')
+            ->select('
+            c.code, 
+            rc.number, 
+            rc.ranck, 
+            rc.ranckCategory, 
+            rc.chronoString, 
+            rc.points, 
+            c.firstName, 
+            c.lastName, 
+            c.date, 
+            c.sexe')
+            ->where('rc.race = :race')
+            ->andWhere('c.date >= :dateMax AND c.date <= :dateMin')
+            ->setParameter('race', $race->getId())
+            ->setParameter('dateMax', new \DateTime("01-01-" . $category->getAgeMax()))
+            ->setParameter('dateMin', new \DateTime("31-12-" . $category->getAgeMin()))
+            ->orderBy('rc.chrono');
+
+        if ($category->getSexe() != 'mx') {
+            $rc = $rc->andWhere('c.sexe = :sexe')
+                ->setParameter('sexe', $category->getSexe());
+        }
+
+        $rc = $rc->getQuery()->getResult();
+        return $rc;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * @return array string
      */
@@ -23,7 +97,17 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
     {
         $rc = $this->createQueryBuilder('rc')
             ->innerJoin('rc.competitor', 'c')
-            ->select('c.code, rc.number, rc.ranck, rc.chronoString, c.firstName, c.lastName')
+            ->select('
+            c.code, 
+            rc.number, 
+            rc.ranck, 
+            rc.ranckCategory, 
+            rc.chronoString, 
+            rc.points, 
+            c.firstName, 
+            c.lastName, 
+            c.date, 
+            c.sexe')
             ->where('rc.race = :race')
             ->setParameter('race', $race)
             ->orderBy('rc.ranck')

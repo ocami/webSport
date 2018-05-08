@@ -14,6 +14,7 @@ use AppBundle\Entity\Organizer;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\Category;
 use AppBundle\Repository\RaceCompetitorRepository;
+use AppBundle\Services\CategoryService;
 use AppBundle\Services\CodeService;
 use AppBundle\Services\RaceService;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -178,11 +179,37 @@ class RaceController extends Controller
      */
     public function race_Table(Request $request)
     {
+        $data = array();
         $idRace = $request->query->get('idRace');
-
+        $cat = $request->query->get('category');
         $race = $this->getDoctrine()->getRepository(Race::class)->find($idRace);
+        $em = $this->getDoctrine()->getManager();
 
-        $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->rcOrderByRanckToString($race);
+
+        if ($cat == 'all'){
+            $competitors = $this->getDoctrine()->getRepository(RaceCompetitor::class)->allByRaceToString($race);
+
+            for ($i =0; $i<count($competitors);$i++){
+                $y = substr($competitors[$i]['date'], -10, 4);
+                $cat = $this->get(CategoryService::class)->getCategory($y, $competitors[$i]['sexe']);
+
+                $competitors[$i]['category'] = $cat->getName();
+            }
+        }else{
+            $cat = $this->getDoctrine()->getRepository(Category::class)->find($cat );
+            $competitors = $this->getDoctrine()->getRepository(RaceCompetitor::class)->allByRaceCategoryToString($race,$cat);
+
+            for ($i =0; $i<count($competitors);$i++){
+                $y = substr($competitors[$i]['date'], -10, 4);
+                $cat = $this->get(CategoryService::class)->getCategory($y, $competitors[$i]['sexe']);
+
+                $competitors[$i]['category'] = $cat->getName();
+            }
+        }
+
+
+        $data['race_state'] = $race->getState();
+        $data['competitors'] = $competitors;
 
         return new JsonResponse($data);
     }
@@ -226,9 +253,7 @@ class RaceController extends Controller
         $em->persist($race);
         $em->flush();
 
-
         return $this->render('race/show.html.twig', array('race'=>$race));
-
 
         return $this->redirectToRoute('race_show',array('id'=>$race->getId()));
     }
