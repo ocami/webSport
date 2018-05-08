@@ -34,6 +34,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use AppBundle\Entity\Competitor;
+use Symfony\Component\Validator\Constraints\Time;
 
 
 class homeController extends Controller
@@ -97,7 +98,91 @@ class homeController extends Controller
     {
         $message = '';
 
+        /* $em = $this->getDoctrine()->getManager();
+         $competitors = $this->getDoctrine()->getRepository(Competitor::class)->findAll();
 
+         $i = 0;
+         for ($y = 0; $y < count($competitors); $y++) {
+             $i++;
+
+             $competitors[$y]->setLevel($i);
+             $em->persist($competitors[$y]);
+
+             if ($i == 3)
+                 $i = 0;
+         }
+         $em->flush();*/
+
+        $race = new Race();
+        $race->setDistance(10);
+
+        $competitor = new Competitor();
+        $competitor->setCategory(4);
+        $competitor->setLevel(3);
+        $competitor->setFirstName('le balaise');
+
+        $base = 260;
+
+        $arrayICat = array(
+            1 => 24,
+            2 => 16,
+            3 => 8,
+            4 => 0,
+            5 => 8,
+            6 => 32,
+            7 => 24,
+            8 => 16,
+            9 => 8,
+            10 => 16,
+        );
+
+        $iCat = $arrayICat[$competitor->getCategory()];
+        if(!$iCat == 0)
+            $iCat = 1+ ($iCat/100);
+        else
+            $iCat = 1;
+
+        $arrayILevel = array(
+            1 => 1.2,
+            2 => 1,
+            3 => 0.8,
+        );
+        $level = $arrayILevel[$competitor->getLevel()];
+
+        $random = random_int(0, 25);
+        $random = 1 +  ($random/100);
+
+
+        $time = $base * $race->getDistance() *$iCat * $level * $random;
+        $time = date("H:i:s", $time);
+
+//        $time = $base * $race->getDistance();
+//        $time = date("H:i:s", $time);
+//
+//        var_dump('base');
+//        var_dump($time);
+//
+//        //$time = $base * $race->getDistance() * $iCat * $random;
+//        $time = $base * $race->getDistance() * $iCat;
+//        $time = date("H:i:s", $time);
+//
+//        var_dump('category');
+//        var_dump($iCat);
+//        var_dump($time);
+//
+//        $time = $base * $race->getDistance() * $iCat * $level;
+//        $time = date("H:i:s", $time);
+//
+//        var_dump('level');
+//        var_dump($level);
+//        var_dump($time);
+//
+//        $time = $base * $race->getDistance() *$iCat * $level * $random;
+//        $time = date("H:i:s", $time);
+//
+//        var_dump('random');
+//        var_dump($random);
+//        var_dump($time);
 
         /* distance course
                 $str = file_get_contents('..\web\gpx\trace.json');
@@ -117,11 +202,9 @@ class homeController extends Controller
                 //var_dump($km);
         */
 
-
         return $this->render('home/test.html.twig', array(
-            'message' => $message,
+            'message' => $time,
         ));
-
     }
 
     /**

@@ -171,7 +171,8 @@ class UserService
             return 2;
 
         if ($race->getCategories()->contains($this->getCategoryCompetitor()))
-            return 1;
+            if($race->getEnrol())
+                return 1;
 
         return 0;
     }

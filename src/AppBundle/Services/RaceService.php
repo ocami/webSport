@@ -108,7 +108,8 @@ class RaceService
             return 2;
 
         if ($race->getCategories()->contains($this->us->getCategoryCompetitor($competitor)))
-            return 1;
+            if($race->getEnrol())
+                return 1;
 
         return 0;
     }

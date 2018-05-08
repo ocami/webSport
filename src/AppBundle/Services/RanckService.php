@@ -80,8 +80,11 @@ class RanckService
                     $arrayCountRaceCat[$cat->getId()]++;
                     $count = $arrayCountRaceCat[$cat->getId()];
 
-                    $rc->setPoints($this->point($count));
                     $rc->setRanckCategory($count);
+
+                    if($race->getInChampionship())
+                        $rc->setPoints($this->point($count));
+
                 }
                 $this->em->persist($rc);
             }

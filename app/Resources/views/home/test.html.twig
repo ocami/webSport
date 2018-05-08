@@ -1,23 +1,22 @@
-{% extends 'base.html.twig' %}
+{#{% extends 'base.html.twig' %}#}
 
-{% block title %}
-    {{ parent() }} index
-{% endblock %}
+{#{% block title %}#}
+    {#{{ parent() }} index#}
+{#{% endblock %}#}
 
-{% block stylesheets %}
-    {{ parent() }}
+{#{% block stylesheets %}#}
+    {#{{ parent() }}#}
 
-{% endblock %}
+{#{% endblock %}#}
 
 
 {% block body %}
 
-    {% include 'modal/profile_competitor.html.twig' %}
-
+    {{ message }}
 {% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
+{#{% block javascripts %}#}
+    {#{{ parent() }}#}
 
-{% endblock %}
+{#{% endblock %}#}
 

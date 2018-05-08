@@ -46,7 +46,6 @@ class RaceController extends Controller
         if ($this->get('security.authorization_checker')->isGranted('ROLE_COMPETITOR'))
             $competitor = $this->get(UserService::class)->getCompetitor();
 
-
         $race = $this->get(UserService::class)->addUserDataInRace($race);
         $race = $this->get(RaceService::class)->postSelectOne($race);
 
@@ -54,8 +53,6 @@ class RaceController extends Controller
             'race' => $race,
             'competitor' => $competitor
         ));
-
-        return $this->render('race/show.html.twig', array('race'=>$race));
     }
 
     /**
@@ -185,7 +182,6 @@ class RaceController extends Controller
         $race = $this->getDoctrine()->getRepository(Race::class)->find($idRace);
         $em = $this->getDoctrine()->getManager();
 
-
         if ($cat == 'all'){
             $competitors = $this->getDoctrine()->getRepository(RaceCompetitor::class)->allByRaceToString($race);
 
@@ -206,7 +202,6 @@ class RaceController extends Controller
                 $competitors[$i]['category'] = $cat->getName();
             }
         }
-
 
         $data['race_state'] = $race->getState();
         $data['competitors'] = $competitors;
@@ -235,6 +230,7 @@ class RaceController extends Controller
         $this->get(RanckService::class)->generateCompetitorsNumber($race);
         $request->getSession()->getFlashBag()->add('notice', 'Inscriptions cloturées');
         $race->setState(1);
+        $race->setEnrol(0);
         $em =  $this->getDoctrine()->getManager();
         $em->persist($race);
         $em->flush();

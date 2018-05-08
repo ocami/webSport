@@ -71,11 +71,19 @@ class Competitor
     private $date;
 
     /**
-     * @var int
-     *
-     */
+ * @var int
+ *
+ */
     private $age;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="level", type="integer")
+     *
+     */
+    private $level;
+    
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\ChampionshipCompetitor",mappedBy="competitor")
      */
@@ -132,6 +140,30 @@ class Competitor
     public function getUserId()
     {
         return $this->userId;
+    }
+
+    /**
+     * Set level
+     *
+     * @param integer $level
+     *
+     * @return Competitor
+     */
+    public function setLevel($level)
+    {
+        $this->level = $level;
+
+        return $this;
+    }
+
+    /**
+     * Get level
+     *
+     * @return integer
+     */
+    public function getLevel()
+    {
+        return $this->level;
     }
 
     /**
