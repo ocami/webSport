@@ -31,6 +31,7 @@ class CompetitorController extends Controller
     public function registerAction(Request $request, UserService $userService)
     {
         $competitor = new Competitor();
+        $competitor->setLevel(3);// !!! FOR DEMONSTRATION !!!! //
         $form = $this->createForm(CompetitorType::class, $competitor);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {

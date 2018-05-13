@@ -34,7 +34,7 @@
     display: none;
 }
 
-.fullPage-alert-img{
+.fullPage-alert-img {
     background: #ffffff url('https://vignette.wikia.nocookie.net/camphalfbloodroleplay/images/5/5a/Checkmark.png/revision/latest?cb=20120103192321') no-repeat center center;
     background-size: 60%;
     margin-top: 30vh;
@@ -46,3 +46,4 @@
     font-weight: bold;
     text-align: center;
 }
+

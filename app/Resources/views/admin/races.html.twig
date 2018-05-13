@@ -5,7 +5,6 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdn.datatables.net/select/1.2.5/css/select.bootstrap.min.css"/>
@@ -35,6 +34,10 @@
 {% endblock %}
 
 {% block body %}
+
+    <div class="fullPage">
+        <div class="loader"></div>
+    </div>
 
     <h1>Admin races</h1>
 
@@ -68,7 +71,7 @@
     </table>
 
 
-
+    <div class="loader-div"></div>
     <div class="race-show">
         <div class="buttons">
             <button type="button" class="btn btn-dark next glyphicon glyphicon-chevron-left"></button>
@@ -88,174 +91,186 @@
 {% endblock %}
 
 {% block javascripts %}
-     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-     <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
-     <script src="https://cdn.datatables.net/select/1.2.5/js/dataTables.select.min.js"></script>
-     <script src="https://cdn.datatables.net/plug-ins/1.10.16/sorting/date-de.js"></script>
-     <script src="{{ asset('js/jqueryui.min.js') }}"></script>
 
-     <script>
-         /*
-      Where table select change
-      - call function views/race/show.html.twig raceShow([idRace])
+    {{ parent() }}
 
-      isRaceValid / isRaceInChampionship
-      - ajax  update
-      */
+    <script src="https://cdn.datatables.net/select/1.2.5/js/dataTables.select.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.10.16/sorting/date-de.js"></script>
+    <script src="{{ asset('js/jqueryui.min.js') }}"></script>
 
-         var raceSeclected;
-         var indexSelected;
-         var rowData;
-         var cb = $('.cb-Championship');
+    <script>
+        /*
+     Where table select change
+     - call function views/race/show.html.twig raceShow([idRace])
 
-         //initialize///////////////////////////////////////////////////////////////////////////////////////
-         cb.checkboxradio(); //jquery-ui
+     isRaceValid / isRaceInChampionship
+     - ajax  update
+     */
+        var divToLoad = $('.race-show');
+        var raceSeclected;
+        var indexSelected;
+        var rowData;
+        var cb = $('.cb-Championship');
 
-         var table = $('#example').DataTable({
-             "info":     false,
-             "language" : {
-                 "search": "Rechercher:",
-                 "lengthMenu": "Voir _MENU_ courses  par page",
-                 "zeroRecords": "Aucune courses non traitées",
-                 "paginate": {
-                     "first":      "Premier",
-                     "last":       "Dernier",
-                     "next":       "Suivant",
-                     "previous":   "précédent"
-                 },
-             },
-
-             select: {
-                 style: 'single',
-                 selector: 'td:first-child'
-             },
-             columns: [
-                 {data: 'checkbox'},
-                 {data: 'id'},
-                 {data: 'name'},
-                 {data: 'organizer'},
-                 {data: 'city'},
-                 {data: 'date'},
-                 {data: 'championship'}
-             ],
-             columnDefs: [
-                 {
-                     targets: 0,
-                     orderable: false,
-                     className: 'select-checkbox',
-                     width: "5%"
-                 },
-                 {
-                     targets: 1,
-                     visible: false
-                 },
-                 {
-                     targets: 5,
-                     width: "20%"
-                 },
-                 {
-                     targets: 6,
-                     width: "5%"
-                 }
-             ]
-         }); //dataTables
-
-         if (table.data().count()) {
-             tableSelectRow(0);
-             preRaceShow(0);
-             $('.race-show').show();
-         } else {
-             $('.race-show').hide();
-         }
-
-         //Event///////////////////////////////////////////////////////////////////////////////////////
-         table.on('select', function (e, dt, type, index) {
-             preRaceShow(index);
-         });
-
-         $('.prev').click(function () {
-             tableSelectRow(indexSelected + 1);
-         });
-
-         $('.next').click(function () {
-             tableSelectRow(indexSelected - 1);
-         });
-
-         cb.click(function () {
-             if (this.checked)
-                 cbChampionship(true);
-             else
-                 cbChampionship(false);
-         })
-
-         $('.valid').click(function () {
-             var inChampionship = 0;
-
-             if (cb.prop('checked'))
-                 inChampionship = 1;
-
-             raceUpdate(raceSeclected, 1, inChampionship);
-         });
-
-         $('.refuse').click(function () {
-             raceUpdate(raceSeclected, 0, 0);
-         });
-
-         //functions///////////////////////////////////////////////////////////////////////////////////////
-
-         function preRaceShow(index) {
-
-             $('.race-show').hide();
+        //initialize///////////////////////////////////////////////////////////////////////////////////////
+        cb.checkboxradio(); //jquery-ui
 
 
-             if (table.data().count()) {
-                 rowData = table.rows(index).data().toArray()[0];
-                 raceSeclected = rowData['id'];
-                 indexSelected = table.row(index).index();
+        var table = $('#example').DataTable({
+            "info": false,
+            "language": {
+                "search": "Rechercher:",
+                "lengthMenu": "Voir _MENU_ courses  par page",
+                "zeroRecords": "Aucune courses non traitées",
+                "paginate": {
+                    "first": "Premier",
+                    "last": "Dernier",
+                    "next": "Suivant",
+                    "previous": "précédent"
+                },
+            },
 
-                 cbChampionshipRefresh();
+            select: {
+                style: 'single',
+                selector: 'td:first-child'
+            },
+            columns: [
+                {data: 'checkbox'},
+                {data: 'id'},
+                {data: 'name'},
+                {data: 'organizer'},
+                {data: 'city'},
+                {data: 'date'},
+                {data: 'championship'}
+            ],
+            columnDefs: [
+                {
+                    targets: 0,
+                    orderable: false,
+                    className: 'select-checkbox',
+                    width: "5%"
+                },
+                {
+                    targets: 1,
+                    visible: false
+                },
+                {
+                    targets: 5,
+                    width: "20%"
+                },
+                {
+                    targets: 6,
+                    width: "5%"
+                }
+            ]
+        }); //dataTables
 
-                 raceShow(raceSeclected); //views/race/show.html.twig
+        if (table.data().count()) {
+            tableSelectRow(0);
+            preRaceShow(0);
+            $('.race-show').show();
+        } else {
+            $('.race-show').hide();
+        }
 
-                 $('.race-show').show();
-             }
-         }
+        //Event///////////////////////////////////////////////////////////////////////////////////////
+        table.on('select', function (e, dt, type, index) {
+            loaderDivStart(divToLoad);
+            preRaceShow(index);
+        });
 
-         function raceUpdate(raceSeclected, valid, inChampionship) {
-             $.ajax({
-                 url: "{{ path('race_admin_supervise') }}",
-                 data: {race: raceSeclected, valid: valid, inChampionship: inChampionship},
-                 success: function (data) {
-                     console.log('raceUpdate success');
-                     table.row(indexSelected).remove().draw();
-                     tableSelectRow(0);
-                     preRaceShow(0);
-                 }
-             });
-         }
+        $('.prev').click(function () {
+            tableSelectRow(indexSelected + 1);
+        });
 
-         //functions///////////////////////////////////////////////////////////////////////////////////////
+        $('.next').click(function () {
+            tableSelectRow(indexSelected - 1);
+        });
 
-         function cbChampionshipRefresh() {
-             $('.cbChampionship').remove();
+        cb.click(function () {
+            if (this.checked)
+                cbChampionship(true);
+            else
+                cbChampionship(false);
+        })
 
-             if (rowData['championship'])
-                 cbChampionship(true);
-             else
-                 cbChampionship(false);
-         }
+        $('.valid').click(function () {
+            loaderDivStart(divToLoad);
 
-         function cbChampionship(is) {
-             if (is)
-                 cb.prop('checked', true).checkboxradio('refresh');
-             else
-                 cb.prop('checked', false).checkboxradio('refresh');
-         }
+            var inChampionship = 0;
 
-         function tableSelectRow(index) {
-             table.row(':eq(' + index + ')', {page: 'all'}).select();
-         }
+            if (cb.prop('checked'))
+                inChampionship = 1;
 
-     </script>
- {% endblock %}
+            raceUpdate(raceSeclected, 1, inChampionship);
+        });
+
+        $('.refuse').click(function () {
+            loaderDivStart(divToLoad);
+
+            raceUpdate(raceSeclected, 0, 0);
+        });
+
+        //functions///////////////////////////////////////////////////////////////////////////////////////
+
+        function preRaceShow(index) {
+
+            if (table.data().count()) {
+                rowData = table.rows(index).data().toArray()[0];
+                raceSeclected = rowData['id'];
+                indexSelected = table.row(index).index();
+
+                cbChampionshipRefresh();
+
+                raceShow(raceSeclected); //views/race/show.html.twig
+            }
+        }
+
+        function raceUpdate(raceSeclected, valid, inChampionship) {
+            $.ajax({
+                url: "{{ path('race_admin_supervise') }}",
+                data: {race: raceSeclected, valid: valid, inChampionship: inChampionship},
+                success: function (data) {
+                    table.row(indexSelected).remove().draw();
+                    tableSelectRow(0);
+                    preRaceShow(0);
+                    updateNbRace();
+                }
+            });
+        }
+
+        function updateNbRace() {
+            $.ajax({
+                url: "{{ path('race_countNotSupervised') }}",
+                dataType: "json",
+                success: function (data) {
+                    badgeCountRace(data);
+                }
+            });
+        }
+
+
+        //functions///////////////////////////////////////////////////////////////////////////////////////
+
+        function cbChampionshipRefresh() {
+            $('.cbChampionship').remove();
+
+            if (rowData['championship'])
+                cbChampionship(true);
+            else
+                cbChampionship(false);
+        }
+
+        function cbChampionship(is) {
+            if (is)
+                cb.prop('checked', true).checkboxradio('refresh');
+            else
+                cb.prop('checked', false).checkboxradio('refresh');
+        }
+
+        function tableSelectRow(index) {
+            table.row(':eq(' + index + ')', {page: 'all'}).select();
+        }
+
+    </script>
+{% endblock %}

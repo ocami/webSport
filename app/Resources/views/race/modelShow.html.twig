@@ -80,7 +80,6 @@
    {% block javascripts %}
 
        <script>
-
            function raceShow(race) {
                $.ajax({
                    url: "{{ path('race_json') }}",
@@ -122,6 +121,9 @@
                        }
                        i++;
                    });
+
+                   loaderDivStop(divToLoad);
+                   loaderStop();
 
                }
            }

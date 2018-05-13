@@ -12,11 +12,13 @@
 {% endblock %}
 
 {% block organizer_menu %}
-    <input type="button" class="btn-xs btn-success" value="Ajouter une course"
-           onclick="location.href = '{{ path('race_new', {'id':competition.id} ) }}';">
+    {% if competition.isOrganizer %}
+        <input type="button" class="btn-xs btn-success" value="Ajouter une course"
+               onclick="location.href = '{{ path('race_new', {'id':competition.id} ) }}';">
 
-    <input type="button" class="btn-xs btn-success" value="Editer"
-           onclick="location.href = '{{ path('competition_edit', {'id':competition.id} ) }}';">
+        <input type="button" class="btn-xs btn-success" value="Editer"
+               onclick="location.href = '{{ path('competition_edit', {'id':competition.id} ) }}';">
+    {% endif %}
 {% endblock %}
 
 {% block title %}
