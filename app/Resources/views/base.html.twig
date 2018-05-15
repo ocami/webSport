@@ -7,14 +7,12 @@
     <title>WS{% block title %}{% endblock %}</title>
 
     {% block stylesheets %}
-        <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="{{ asset('css/main.css') }}"/>
-        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="{{ asset('css/jquery.dataTables.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('css/main.css') }}"/>
         <link rel="stylesheet" href="{{ asset('tools/tools.css') }}"/>
     {% endblock %}
 
-    <script src="{{ asset('js/jquery.min.js') }}"></script>
 </head>
 
 <body>
@@ -61,10 +59,65 @@
 </div>
 
 {% block javascripts %}
-    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('js/jquery.dataTables.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="{{ asset('js/main.js') }}"></script>
     <script src="{{ asset('tools/tools.js') }}"></script>
+
+
+    <script>
+        $(document).ready(function () {
+
+            var li = document.createElement("LI");
+
+            $.getJSON("{{ asset('json/navbar_championship.json') }}", function (result) {
+                $.each(result, function (key, championship) {
+                    var a = document.createElement("A");
+                    var textLI = document.createTextNode(championship.name);
+                    a.href = championship.path;
+                    a.appendChild(textLI);
+                    li.appendChild(a);
+                    $('.championdhips-menu').append(li);
+
+                });
+
+            });
+        });
+
+
+        {% if is_granted('ROLE_ADMIN') %}
+
+        $.ajax({
+            url: "{{ path('race_countNotSupervised') }}",
+            dataType: "json",
+            success: function (data) {
+                badgeCountRace(data);
+            }
+        });
+
+        function badgeCountRace(nb) {
+            var badge = $('.badge');
+            badge.text(nb);
+
+            if(nb == 0){
+                badge.attr({
+                    "title" : "Pas de nouvelle course à valider",
+                    "class" : "badge badge-success"
+                });
+            }else {
+                badge.attr({
+                    "title" : "Nouvelles courses à valider",
+                    "class" : "badge badge-warning"
+                });
+            }
+        }
+
+
+        {% endif %}
+
+
+    </script>
 {% endblock %}
 
 </body>
