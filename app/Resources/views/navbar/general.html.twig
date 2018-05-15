@@ -4,7 +4,7 @@
             z-index: 9999;
         }
 
-        badge {
+        .badge {
             padding: 1px 9px 2px;
             font-size: 12.025px;
             font-weight: bold;
@@ -65,16 +65,15 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">Championats<span class="caret"></span></a>
-                    <ul class="dropdown-menu championdhips-menu"></ul>
+                    <ul id="championdhips-menu" class="dropdown-menu"></ul>
                 </li>
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
 
                 {% if is_granted('ROLE_ADMIN') %}
-                    <li><a href="{{ path('admin_races') }}"><span class="badge badge-success"></span></a></li>
+                    <li><a href="{{ path('admin_races') }}"><span id="badge" class="badge badge-success"></span></a></li>
                 {% endif %}
-
 
                 {% if app.user %}
                     <li class="dropdown">
@@ -83,7 +82,7 @@
                         <ul class="dropdown-menu">
 
                             {% if is_granted('ROLE_COMPETITOR') %}
-                                <li><a class="profile-href" href="#" data-toggle="modal"
+                                <li><a id="profile-href" href="#" data-toggle="modal"
                                        data-target="#competitor-modal">Mon profile</a></li>
                                 <li><a href="{{ path('races_by_competitor') }}">Mes courses</a></li>
                                 <li><a href="#">Mes statistiques</a></li>

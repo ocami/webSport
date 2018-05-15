@@ -63,9 +63,9 @@
                                             <!-- /input-group -->
                                         </div>
                                         <div class="col-sm-6">
-                                            <h4 class="profile-name" style="color:#00b1b1;"></h4></span>
-                                            <span><p class="profile-category"></p></span>
-                                            <span><p class="profile-age"></p></span>
+                                            <h4 id="profile-name" style="color:#00b1b1;"></h4></span>
+                                            <span><p id="profile-category"></p></span>
+                                            <span><p id="profile-age"></p></span>
                                         </div>
                                         <div class="clearfix"></div>
                                         <hr style="margin:5px 0 5px 0;">
@@ -100,8 +100,7 @@
 
         var user = {{ app.user.id }};
 
-        $('.profile-href').click(function () {
-
+        $('#profile-href').click(function () {
             $.ajax({
                 url: "{{ path('competitor_json_userId') }}",
                 data: {userId : user},
@@ -115,9 +114,9 @@
 
         function profilData(data) {
             console.log(data.firstName, data.lastName);
-            $('.profile-name').text(data.firstName + ' ' +data.lastName);
-            $('.profile-category').text(data.category);
-            $('.profile-age').text(data.age + ' ans');
+            $('#profile-name').text(data.firstName + ' ' +data.lastName);
+            $('#profile-category').text(data.category);
+            $('#profile-age').text(data.age + ' ans');
         }
 
     </script>
