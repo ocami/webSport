@@ -2,10 +2,10 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('myDateTime/myDateTime.css') }}"/>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet"
-          href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css" />
+
+
+
 {% endblock %}
 
 {% block title %}
@@ -20,9 +20,6 @@
     {{ parent() }}
     <script src="{{ asset('js/validator.js') }}"></script>
     <script src="{{ asset('js/jqueryui.min.js') }}"></script>
-
-    <! datepicker***************************************************************************************************>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
-    <script src="{{ asset('datepicker/js/datepicker-fr.js') }}"></script>
-    <script src="{{ asset('myDateTime/myDateTime.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.fr.min.js"></script>
 {% endblock %}

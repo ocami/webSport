@@ -1,0 +1,76 @@
+{% extends 'form_layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+{% endblock %}
+
+
+{% block body %}
+
+    {% block forms_content %}
+
+        <div class="competition-form">
+            {{ form_start(form, {'attr': {'data-toggle': 'validator', 'role':'form'}}) }}
+
+            <!--Name-->
+            <div class="form-group has-feedback ">
+                <label class="control-label">Nom</label>
+                {{ form_widget(form.name, {'attr': {'class':"form-control"}}) }}
+                <div class="help-none with-errors">Entre 5 et 50 caractères alaphanumériques</div>
+            </div>
+            <hr>
+
+            <!--Dates-->
+            <label>Date</label>
+
+            <div class="row">
+                <!--DateStart-->
+                <div class="form-group has-feedback col-lg-offset-1 col-sm-4">
+                    <label for="dateStart" class="control-label">Du</label>
+                    {{ form_widget(form.dateStart, {'attr': {'id' :'input-date-start', 'class':"form-control input-date-start", 'style':"display: none"}}) }}
+                    <div class="help-none with-errors"></div>
+                    <input id="dpStart" class="form-control datepicker">
+                </div>
+
+                <!--DateEnd-->
+                <div class="form-group has-feedback col-lg-offset-1 col-sm-4">
+                    <label class="control-label">Au</label>
+                    {{ form_widget(form.dateEnd, {'attr': {'id' :'input-date-end', 'class':"form-control input-date-end", 'style':"display: none"}}) }}
+                    <div class="help-none with-errors"></div>
+                    <input id="dpEnd" class="form-control datepicker dpEnd">
+                </div>
+            </div>
+            <hr>
+
+            <!--Location-->
+            <div class="form-group has-feedback ">
+                <label class="control-label">Localisation</label>
+                {{ form_widget(form.locationString, {'attr': { 'class':"form-control location-input", 'style':"display: none", 'minlength':"3"}}) }}
+            </div>
+
+            {% include('tools/form_location.html.twig') %}
+
+            <!--Submit-->
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary pull-right">Valider</button>
+            </div>
+
+            {{ form_end(form) }}
+
+        </div>
+
+    {% endblock %}
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        competitionFormDates();
+
+    </script>
+
+
+{% endblock %}

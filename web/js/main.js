@@ -1,18 +1,3 @@
-var language = {
-    days: ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
-    daysShort: ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."],
-    daysMin: ["D", "L", "M", "M", "J", "V", "S"],
-    months: ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
-    monthsShort: ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."],
-    today: "Aujourd'hui",
-    clear: "Clear",
-    format: "dd/mm/yy",
-    titleFormat: "MM yyyy", /* Leverages same syntax as 'format' */
-    weekStart: 1,
-
-};
-
-
 /***********************************************************************************************************************
  /   navbar/general.html.twig
  /**********************************************************************************************************************/
@@ -298,42 +283,39 @@ function competitionShowList() {
 /***********************************************************************************************************************
  /   competition\new.html.twig
  /**********************************************************************************************************************/
-function competitionNew() {
-
-    //datepicker/////////////////////////////////////////////////////////////////////////////////////////////////
+function competitionFormDates() {
     var inputDateStart = $('#input-date-start');
     var inputDateEnd = $('#input-date-end');
+    var dpStart = $('#dpStart');
+    var dpEnd = $('#dpEnd');
+
 
     $('.datepicker').datepicker({
-        language: language,
+        language: 'fr',
         format: 'dd-mm-yyyy',
         todayBtn: 'linked',
         autoclose: true,
         todayHighlight: true
     });
 
-    $('#dpStart').on('changeDate', function () {
-        var startDate = parseDateFrToUs($('.dpStart').datepicker('getFormattedDate'));
+    dpStart.on('changeDate', function () {
+        var startDate = parseDateFrToUs(dpStart.datepicker('getFormattedDate'));
         inputDateStart.val(startDate);
         inputDateStart.trigger('change');
-        $('.dpEnd').datepicker(
-            'setStartDate', $('.dpStart').datepicker('getDate')
+        dpEnd.datepicker(
+            'setStartDate', dpStart.datepicker('getDate')
         );
     });
 
-    $('#dpEnd').on('changeDate', function () {
-        var startDate = parseDateFrToUs($('.dpEnd').datepicker('getFormattedDate'));
+    dpEnd.on('changeDate', function () {
+        var startDate = parseDateFrToUs(dpEnd.datepicker('getFormattedDate'));
         inputDateEnd.val(startDate);
         inputDateEnd.trigger('change');
-        $('.dpStart').datepicker(
-            'setEndDate', $('.dpEnd').datepicker('getDate')
+        dpStart.datepicker(
+            'setEndDate', dpEnd.datepicker('getDate')
         );
     });
-
-
-
-
-};
+}
 
 /***********************************************************************************************************************
  /   tools/form_location.html.twig
@@ -617,7 +599,31 @@ function formLocation() {
 };
 
 
+//Tools//////////////////////////////////////////////////////////////////////////////////////////////////////
 
+function parseDateFrToUs(date) {
+
+    var d = new Date(date.split("-").reverse().join("-"));
+    var dd = ('0' + d.getDate()).slice(-2);
+    var mm = d.getMonth() + 1;
+    var mm = ('0' + mm).slice(-2);
+    var yy = d.getFullYear();
+    var newdate = yy + "-" + mm + "-" + dd;
+
+    return newdate;
+}
+
+function parseDateUsToFr(date) {
+
+    var d = new Date(date);
+    var dd = ('0' + d.getDate()).slice(-2);
+    var mm = d.getMonth() + 1;
+    var mm = ('0' + mm).slice(-2);
+    var yy = d.getFullYear();
+    var newdate = dd + "-" + mm + "-" + yy;
+
+    return newdate;
+}
 
 // $(document).ready(function () {
 //     $('table.display').DataTable();
