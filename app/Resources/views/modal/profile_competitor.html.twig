@@ -93,33 +93,3 @@
         </div>
     </div>
 {% endblock %}
-
-{% block javascripts %}
-
-    <script>
-
-        var user = {{ app.user.id }};
-
-        $('#profile-href').click(function () {
-            $.ajax({
-                url: "{{ path('competitor_json_userId') }}",
-                data: {userId : user},
-                success: function (data) {
-                    profilData(data);
-                }
-            });
-        });
-
-
-
-        function profilData(data) {
-            console.log(data.firstName, data.lastName);
-            $('#profile-name').text(data.firstName + ' ' +data.lastName);
-            $('#profile-category').text(data.category);
-            $('#profile-age').text(data.age + ' ans');
-        }
-
-    </script>
-
-
-{% endblock %}

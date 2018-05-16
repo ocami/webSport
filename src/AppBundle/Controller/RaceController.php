@@ -254,7 +254,7 @@ class RaceController extends Controller
     }
 
     /**
-     * @Route("race/countNotSupervised", name="race_countNotSupervised")
+     * @Route("race/countNotSupervised", options={"expose"=true}, name="race_countNotSupervised")
      */
     public function countNotSupervisedRaces(Request $request)
     {

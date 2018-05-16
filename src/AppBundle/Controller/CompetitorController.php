@@ -61,7 +61,7 @@ class CompetitorController extends Controller
     }
 
     /**
-     * @Route("/competitor/jsonByUser", name="competitor_json_userId")
+     * @Route("/competitor/jsonByUser", options={"expose"=true}, name="competitor_json_userId")
      */
     public function getJson(Request $request)
     {

@@ -25,6 +25,7 @@
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/doctrine-fixtures-bundle": "~2.2",
         "doctrine/orm": "^2.5",
+        "friendsofsymfony/jsrouting-bundle": "^2.2",
         "friendsofsymfony/user-bundle": "2.0.0",
         "incenteev/composer-parameter-handler": "^2.0",
         "phpunit/phpunit": "6.5.*",

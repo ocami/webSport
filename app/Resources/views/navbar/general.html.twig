@@ -82,7 +82,7 @@
                         <ul class="dropdown-menu">
 
                             {% if is_granted('ROLE_COMPETITOR') %}
-                                <li><a id="profile-href" href="#" data-toggle="modal"
+                                <li><a id="profile-href" data="{{ app.user.id }}" href="#" data-toggle="modal"
                                        data-target="#competitor-modal">Mon profile</a></li>
                                 <li><a href="{{ path('races_by_competitor') }}">Mes courses</a></li>
                                 <li><a href="#">Mes statistiques</a></li>

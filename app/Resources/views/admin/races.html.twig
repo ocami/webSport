@@ -35,59 +35,55 @@
 
 {% block body %}
 
-    <div class="fullPage">
-        <div class="loader"></div>
-    </div>
+    <div class="fullPage"><div class="loader"></div></div>
 
-    <h1>Admin races</h1>
-
-    <table id="example" cellspacing="0" width="100%">
-        <thead>
-        <tr>
-            <th></th>
-            <th>id</th>
-            <th>Nom</th>
-            <th>Ville</th>
-            <th>Orga.</th>
-            <th>Date</th>
-            <th>Champ.</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for race in races %}
+    <div id="admin-races">
+        <table id="admin-races-table" cellspacing="0" width="100%">
+            <thead>
             <tr>
-                <td></td>
-                <td>{{ race.id }}</td>
-                <td>{{ race.name }}</td>
-                <td>{{ race.competition.location.postCode }} {{ race.competition.location.city }}</td>
-                <td>{{ race.name }}</td>
-                <td><span>{{ race.dateTime | date("Ymd") }}</span> {{ race.dateTime | date("d/m/Y") }}</td>
-                <td {% if race.requestInChampionship == 1 %} class="championship" style="text-indent: -9999px;" {% endif %}>{{ race.requestInChampionship }}</td>
+                <th></th>
+                <th>id</th>
+                <th>Nom</th>
+                <th>Ville</th>
+                <th>Orga.</th>
+                <th>Date</th>
+                <th>Champ.</th>
             </tr>
-        {% endfor %}
+            </thead>
+            <tbody>
+            {% for race in races %}
+                <tr>
+                    <td></td>
+                    <td>{{ race.id }}</td>
+                    <td>{{ race.name }}</td>
+                    <td>{{ race.competition.location.postCode }} {{ race.competition.location.city }}</td>
+                    <td>{{ race.name }}</td>
+                    <td><span>{{ race.dateTime | date("Ymd") }}</span> {{ race.dateTime | date("d/m/Y") }}</td>
+                    <td {% if race.requestInChampionship == 1 %} class="championship" style="text-indent: -9999px;" {% endif %}>{{ race.requestInChampionship }}</td>
+                </tr>
+            {% endfor %}
 
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
 
 
-    <div class="loader-div"></div>
-    <div class="race-show">
-        <div class="buttons">
-            <button type="button" class="btn btn-dark next glyphicon glyphicon-chevron-left"></button>
-            <button type="button" class="btn btn-dark prev glyphicon glyphicon-chevron-right"></button>
-            <button type="button" class="btn btn-dark valid">Valider</button>
-            <button type="button" class="btn btn-dark refuse">Refuser</button>
-            <label><input class="cb-Championship" type="checkbox">Championat</label>
+        <div class="loader-div"></div>
+        <div id="admin-race-show">
+            <div class="buttons">
+                <button type="button" id="next" class="btn btn-dark next glyphicon glyphicon-chevron-left"></button>
+                <button type="button" id="prev" class="btn btn-dark  glyphicon glyphicon-chevron-right"></button>
+                <button type="button" id="valid" class="btn btn-dark">Valider</button>
+                <button type="button" id="refuse" class="btn btn-dark">Refuser</button>
+                <label><input id="cb-Championship" type="checkbox">Championat</label>
 
+            </div>
+
+
+            {% include '/race/modelShow.html.twig' %}
         </div>
 
-
-        {% include '/race/modelShow.html.twig' %}
     </div>
-
-
-
 {% endblock %}
 
 {% block javascripts %}
@@ -96,181 +92,9 @@
 
     <script src="https://cdn.datatables.net/select/1.2.5/js/dataTables.select.min.js"></script>
     <script src="https://cdn.datatables.net/plug-ins/1.10.16/sorting/date-de.js"></script>
-    <script src="{{ asset('js/jqueryui.min.js') }}"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
 
     <script>
-        /*
-     Where table select change
-     - call function views/race/show.html.twig raceShow([idRace])
-
-     isRaceValid / isRaceInChampionship
-     - ajax  update
-     */
-        var divToLoad = $('.race-show');
-        var raceSeclected;
-        var indexSelected;
-        var rowData;
-        var cb = $('.cb-Championship');
-
-        //initialize///////////////////////////////////////////////////////////////////////////////////////
-        cb.checkboxradio(); //jquery-ui
-
-
-        var table = $('#example').DataTable({
-            "info": false,
-            "language": {
-                "search": "Rechercher:",
-                "lengthMenu": "Voir _MENU_ courses  par page",
-                "zeroRecords": "Aucune courses non traitées",
-                "paginate": {
-                    "first": "Premier",
-                    "last": "Dernier",
-                    "next": "Suivant",
-                    "previous": "précédent"
-                },
-            },
-
-            select: {
-                style: 'single',
-                selector: 'td:first-child'
-            },
-            columns: [
-                {data: 'checkbox'},
-                {data: 'id'},
-                {data: 'name'},
-                {data: 'organizer'},
-                {data: 'city'},
-                {data: 'date'},
-                {data: 'championship'}
-            ],
-            columnDefs: [
-                {
-                    targets: 0,
-                    orderable: false,
-                    className: 'select-checkbox',
-                    width: "5%"
-                },
-                {
-                    targets: 1,
-                    visible: false
-                },
-                {
-                    targets: 5,
-                    width: "20%"
-                },
-                {
-                    targets: 6,
-                    width: "5%"
-                }
-            ]
-        }); //dataTables
-
-        if (table.data().count()) {
-            tableSelectRow(0);
-            preRaceShow(0);
-            $('.race-show').show();
-        } else {
-            $('.race-show').hide();
-        }
-
-        //Event///////////////////////////////////////////////////////////////////////////////////////
-        table.on('select', function (e, dt, type, index) {
-            loaderDivStart(divToLoad);
-            preRaceShow(index);
-        });
-
-        $('.prev').click(function () {
-            tableSelectRow(indexSelected + 1);
-        });
-
-        $('.next').click(function () {
-            tableSelectRow(indexSelected - 1);
-        });
-
-        cb.click(function () {
-            if (this.checked)
-                cbChampionship(true);
-            else
-                cbChampionship(false);
-        })
-
-        $('.valid').click(function () {
-            loaderDivStart(divToLoad);
-
-            var inChampionship = 0;
-
-            if (cb.prop('checked'))
-                inChampionship = 1;
-
-            raceUpdate(raceSeclected, 1, inChampionship);
-        });
-
-        $('.refuse').click(function () {
-            loaderDivStart(divToLoad);
-
-            raceUpdate(raceSeclected, 0, 0);
-        });
-
-        //functions///////////////////////////////////////////////////////////////////////////////////////
-
-        function preRaceShow(index) {
-
-            if (table.data().count()) {
-                rowData = table.rows(index).data().toArray()[0];
-                raceSeclected = rowData['id'];
-                indexSelected = table.row(index).index();
-
-                cbChampionshipRefresh();
-
-                raceShow(raceSeclected); //views/race/show.html.twig
-            }
-        }
-
-        function raceUpdate(raceSeclected, valid, inChampionship) {
-            $.ajax({
-                url: "{{ path('race_admin_supervise') }}",
-                data: {race: raceSeclected, valid: valid, inChampionship: inChampionship},
-                success: function (data) {
-                    table.row(indexSelected).remove().draw();
-                    tableSelectRow(0);
-                    preRaceShow(0);
-                    updateNbRace();
-                }
-            });
-        }
-
-        function updateNbRace() {
-            $.ajax({
-                url: "{{ path('race_countNotSupervised') }}",
-                dataType: "json",
-                success: function (data) {
-                    badgeCountRace(data);
-                }
-            });
-        }
-
-
-        //functions///////////////////////////////////////////////////////////////////////////////////////
-
-        function cbChampionshipRefresh() {
-            $('.cbChampionship').remove();
-
-            if (rowData['championship'])
-                cbChampionship(true);
-            else
-                cbChampionship(false);
-        }
-
-        function cbChampionship(is) {
-            if (is)
-                cb.prop('checked', true).checkboxradio('refresh');
-            else
-                cb.prop('checked', false).checkboxradio('refresh');
-        }
-
-        function tableSelectRow(index) {
-            table.row(':eq(' + index + ')', {page: 'all'}).select();
-        }
-
+        adminRaces();
     </script>
 {% endblock %}

@@ -14,7 +14,7 @@
 {% block body %}
 
     <div class="text-right">
-        <button class="btn-xs btn-primary" id="competitionDisplayButton" onclick="competitionDisplayPassed()">
+        <button class="btn-xs btn-primary" id="competitionDisplayButton" value="future">
             Compétition passées
         </button>
     </div>
@@ -22,11 +22,11 @@
     <div class="row">
         {% for competition in competitions %}
         {% if competition.isPassed %}
-        <div class="competitionsPassed">
+        <div id="competitionsPassed">
             {% include 'competition/modelList.twig' %}
         </div>
         {% else %}
-        <div class="competitionsNoPassed">
+        <div id="competitionsNoPassed">
             {% include 'competition/modelList.twig' %}
         </div>
         {% endif %}
@@ -40,47 +40,7 @@
         {{ parent() }}
 
         <script>
-
-            function competitionDisplayPassed() {
-                $('#competitionDisplayButton').text("Compétition à venir");
-                $('#competitionDisplayButton').attr("onclick", "competitionDisplayNoPassed()");
-                $('.competitionsNoPassed').css('display', "none");
-                $('.competitionsPassed').css('display', "block");
-            }
-
-            function competitionDisplayNoPassed() {
-                $('#competitionDisplayButton').text("Compétition passées");
-                $('#competitionDisplayButton').attr("onclick", "competitionDisplayPassed()");
-                $('.competitionsNoPassed').css('display', "block");
-                $('.competitionsPassed').css('display', "none");
-            }
-
-
-            function requestForTableCategory(idRace, idCategory, nameCategory) {
-                var path = "{{ path('race_categoryTable') }}";
-                var request = {idRace: idRace, idCategory: idCategory};
-                displayTable(path, request);
-                $('#category').text(nameCategory);
-                $('#buttons').children("button").remove();
-                $('#buttons').append("<button id=\"championshipButton\" onclick=\"requestForTableChampionship(" + idRace + ", " + idCategory + ", ' " + nameCategory + " ')\">Championat</button>");
-                load(true);
-                etat('category');
-            }
-
-            function requestForTableChampionship(idRace, idCategory, nameCategory) {
-                $("#raceButton").click(function () {
-                    requestForTableCategory(21, idCategory, 'le nom');
-                });
-                var path = "{{ path('championship_json') }}";
-                var request = {idCategory: idCategory};
-                displayTableChampionship(path, request);
-                $('#buttons').children("button").remove();
-                $('#buttons').append("<button id=\"raceButton\" onclick=\"requestForTableCategory(" + idRace + ", " + idCategory + ",' " + nameCategory + " ')\">Course</button>");
-                load(true);
-                etat('championship');
-            }
-
-
+            competitionShowList()
         </script>
 
     {% endblock %}
