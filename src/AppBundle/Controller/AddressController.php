@@ -23,7 +23,7 @@ class AddressController extends Controller
 {
   
     /**
-     * @Route("address/getCities", name="address_getCities")
+     * @Route("address/getCities", options={"expose"=true}, name="address_getCities")
      */
     public function getCities(Request $request)
     {
@@ -33,7 +33,7 @@ class AddressController extends Controller
     }
 
     /**
-     * @Route("address/getCitiesData", name="address_getCitiesData")
+     * @Route("address/getCitiesData",options={"expose"=true}, name="address_getCitiesData")
      */
     public function getCitiesData(Request $request)
     {
@@ -43,7 +43,7 @@ class AddressController extends Controller
     }
 
     /**
-     * @Route("address/getCitiesSlugByDep", name="address_getCitiesSlugByDep")
+     * @Route("address/getCitiesSlugByDep",options={"expose"=true}, name="address_getCitiesSlugByDep")
      */
     public function getCitiesSlugByDep(Request $request)
     {

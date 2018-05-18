@@ -85,7 +85,15 @@ TO DO
         var inputDateEnd = $('.input-date-end');
 
 
-        $('.datepicker').datepicker({
+        $('#truc').datepicker({
+            language: 'fr',
+            format: 'dd-mm-yyyy',
+            todayBtn: 'linked',
+            autoclose: true,
+            todayHighlight: true
+        });
+
+        /*$('.datepicker').datepicker({
             language: 'fr',
             format: 'dd-mm-yyyy',
             todayBtn: 'linked',
@@ -109,7 +117,7 @@ TO DO
             $('.dpStart').datepicker(
                 'setEndDate', $('.dpEnd').datepicker('getDate')
             );
-        });
+        });*/
 
         //IF UPDATE//////////////////////////////////////////////////////////////////////////////////////////////////
 
