@@ -637,33 +637,42 @@ function locationForm(divSelector, inputSelector) {
 }
 
 //locationForm plug-in//////////////////////////////////////////////////////////////////////////////////////////////////////
-/*(function ( $ ) {
+(function ( $ ) {
 
     var output;
     var divSelector;
 
+    var locationContainer = $("<div class='col-xs-offset-1 col-xs-6'>");
+    var locationAlert = $("<div id='location_alert' class='alert alert-warning' role='alert' style='display: none'></div>");
+    var locationLoader = $("<div class='loader-div'></div>");
+    var locationForm = $("<div id='location_form' class='form-group'>");
+    var locationLabel = $("<label id='location_label'>Département</label>");
+    var locationInput = $("<input id='location_input' class='form-control' placeholder='Ex : 06 Alpes-Maritimes'>");
+    var locationBtnNextStep = $("<button id='next_step_btn' class='col-xs-2  btn btn-primary btn-sm' value='depValidate'>Suivant</button>");
+    var locationShow = $("<div id='location-show' class='col-xs-5'></div>");
+
     $.fn.monPlugIn = function(inputSelector) {
         output = inputSelector;
         divSelector = this;
-        addHtml();
+
+        locationForm.append([locationLabel,locationInput]);
+        locationContainer.append([locationAlert,locationLoader,locationForm,locationBtnNextStep,locationShow]);
+
+        this.append([locationContainer, locationShow]);
+
+        depAutocomplete();
+
         return this;
     };
 
     //Initialize**************************************************************
-
-
     var depCode;
     var cityCode;
     var locationData;
     var locationDataIsValide = false;
 
     var locationMap;
-    var locationForm = $('#location_form');
-    var locationAlert = $("#location_alert");
-    var locationLabel = $("#location_label");
-    var locationInput = $("#location_input");
-    var locationBtnNextStep = $("#next_step_btn");
-    var locationShow = $('#location_show');
+
 
     locationInput.on('keyup', function (e) {
         if (e.keyCode === 13) {
@@ -882,24 +891,6 @@ function locationForm(divSelector, inputSelector) {
     });
 
     //Other************************************************************
-    function addHtml() {
-        divSelector.html(
-            "<div class=\"row\">\n" +
-            "        <div id=\"location_alert\" class=\"alert alert-warning\" role=\"alert\" style=\"display: none\"></div>\n" +
-            "\n" +
-            "        <div class=\"col-xs-offset-1 col-xs-6\">\n" +
-            "            <div class=\"loader-div\"></div>\n" +
-            "            <div id=\"location_form\" class=\"form-group\">\n" +
-            "                <label id=\"location_label\"></label>\n" +
-            "                <input id=\"location_input\" class=\"form-control\">\n" +
-            "                <button id=\"next_step_btn\" class=\"col-xs-2  btn btn-primary btn-sm\">Suivant</button>\n" +
-            "            </div>\n" +
-            "        </div>\n" +
-            "\n" +
-            "        <div id=\"location_show\" class=\"col-xs-5\"></div>\n" +
-            "    </div>"
-        );
-    }
 
     function addShowElement(text, step) {
 
@@ -958,7 +949,7 @@ function locationForm(divSelector, inputSelector) {
         }).addTo(map);
     }
 
-}( jQuery ));*/
+}( jQuery ));
 
 
 //Tools//////////////////////////////////////////////////////////////////////////////////////////////////////
