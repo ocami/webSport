@@ -145,8 +145,10 @@ function adminRaces() {
         tableSelectRow(0);
         preRaceShow(0);
         $raceShow.show();
+        loaderStop();
     } else {
         $raceShow.hide();
+        loaderStop();
     }
 
     //Event///////////////////////////////////////////////////////////////////////////////////////
@@ -284,19 +286,23 @@ function competitionShowList() {
  /   competition\new.html.twig
  /**********************************************************************************************************************/
 function competitionFormDates() {
-    var inputDateStart = $('#input-date-start');
-    var inputDateEnd = $('#input-date-end');
+    var inputDateStart = $('#appbundle_competition_dateStart');
+    var inputDateEnd = $('#appbundle_competition_dateEnd');
     var dpStart = $('#dpStart');
     var dpEnd = $('#dpEnd');
-
 
     $('.datepicker').datepicker({
         language: 'fr',
         format: 'dd-mm-yyyy',
         todayBtn: 'linked',
         autoclose: true,
-        todayHighlight: true
     });
+
+    if( inputDateStart.val().length !== 0 )
+        dpStart.datepicker('update', parseDateUsToFr(inputDateStart.val()));
+
+    if( inputDateEnd.val().length !== 0 )
+        dpEnd.datepicker('update', parseDateUsToFr(inputDateEnd.val()));
 
     dpStart.on('changeDate', function () {
         var startDate = parseDateFrToUs(dpStart.datepicker('getFormattedDate'));
@@ -331,13 +337,21 @@ function competitionFormDates() {
     var $locationBtnNextStep = $("<button id='next_step_btn' class='col-xs-2  btn btn-primary btn-sm' value='depValidate'>Suivant</button>");
     var $locationShow = $("<div id='location-show' class='col-xs-5'></div>");
 
-    $.fn.monPlugIn = function(inputSelector) {
-        $output = inputSelector;
-        
+    $.fn.locationForm = function(options) {
+
+        var defaults= {"update": false};
+        var parameters = $.extend(defaults, options);
+
+        $output = parameters.output;
+
         $locationForm.append([$locationLabel,$locationInput]);
         $locationContainer.append([$locationAlert,$locationLoader,$locationForm,$locationBtnNextStep,$locationShow]);
-
         this.append([$locationContainer, $locationShow]);
+
+        if( $output.val().length !== 0 ){
+            locationUpdate($.parseJSON($output.val()));
+            return this;
+        }
 
         depAutocomplete();
 
@@ -346,10 +360,10 @@ function competitionFormDates() {
 
     //Initialize**************************************************************
     var depCode;
+    var dep;
     var cityCode;
     var locationData;
     var locationDataIsValide = false;
-
     var locationMap;
 
 
@@ -368,11 +382,11 @@ function competitionFormDates() {
                 $locationLabel.text('Département');
                 $locationInput.attr("placeholder", "Ex : 06 Alpes-Maritimes");
                 $locationBtnNextStep.val('depValidate');
-                loaderDivStop($("#location_form"));
+                loaderDivStop($locationForm);
                 break;
 
             case 'depValidate' :
-                loaderDivStart($("#location_form"));
+                loaderDivStart($locationForm);
                 depValidate();
                 break;
 
@@ -384,7 +398,7 @@ function competitionFormDates() {
                 break;
 
             case 'cityValidate' :
-                loaderDivStart($("#location_form"));
+                loaderDivStart($locationForm);
                 cityValidate();
                 break;
 
@@ -393,7 +407,7 @@ function competitionFormDates() {
                 $locationLabel.text('Adresse');
                 $locationInput.attr("placeholder", "Ex : 5 Promenade des Anglais");
                 $locationBtnNextStep.val('addressValidate');
-                loaderDivStop($("#location_form"));
+                loaderDivStop($locationForm);
                 break;
 
             case 'addressValidate' :
@@ -438,19 +452,32 @@ function competitionFormDates() {
 
     //Dep**************************************************************
     function depAutocomplete() {
-        $.get('/webSport/web/locationForm/departements2.json', function (data, status) {
+        $.get('/webSport/web/locationForm/departements.json', function (data, status) {
             $locationInput.autocomplete({
+                source: data,
+                messages: {
+                    noResults: '',
+                    results: function() {}
+                },
+                focus: function (event, ui) {
+                    $(".ui-helper-hidden-accessible").hide();
+                }
+            });
+
+
+          /*  $locationInput.autocomplete({
                 source: data
-            })
+            })*/
         });
     }
 
     function depValidate() {
-        depCode = $locationInput.val().slice(0, 2);
+        dep = $locationInput.val();
+        depCode = dep.slice(0, 2);
         $locationAlert.hide();
 
-        $.get("/webSport/web/locationForm/departements3.json", function (data, status) {
-            if ($.inArray(depCode, data) !== -1) {
+        $.get("/webSport/web/locationForm/departements.json", function (data, status) {
+            if ($.inArray( $locationInput.val(), data) !== -1) {
                 addShowElement($locationInput.val(), 'dep');
                 $locationInput.val('');
                 nextStep('city');
@@ -474,10 +501,17 @@ function competitionFormDates() {
                 });
 
                 $locationInput.autocomplete({
-                    source: cities
+                    source: cities,
+                    messages: {
+                        noResults: '',
+                        results: function() {}
+                    },
+                    focus: function (event, ui) {
+                        $(".ui-helper-hidden-accessible").hide();
+                    }
                 });
 
-                loaderDivStop($("#location_form"));
+                loaderDivStop($locationForm);
                 $locationInput.focus();
             }
         });
@@ -524,6 +558,13 @@ function competitionFormDates() {
                         autocompleteAddressList = data.features;
                     }
                 });
+            },
+            messages: {
+                noResults: '',
+                results: function() {}
+            },
+            focus: function (event, ui) {
+                $(".ui-helper-hidden-accessible").hide();
             }
         });
     }
@@ -593,28 +634,34 @@ function competitionFormDates() {
         locationData = {
             id: f.properties.id,
             street: f.properties.name,
+            depCode : depCode,
+            dep: dep,
             postCode: f.properties.postcode,
+            cityCode: cityCode,
             city: f.properties.city,
             x: f.geometry.coordinates[1],
             y: f.geometry.coordinates[0]
         }
     }
 
-    function locationUpdate(dep, city, address, x, y) {
+    function locationUpdate(data) {
+
         $locationBtnNextStep.hide();
-        $('#location_form .form-group').hide();
+        $locationForm.hide();
 
-        addShowElement(dep, 'dep');
-        addShowElement(city, 'city');
-        addShowElement(address, 'address');
+        depCode = data.depCode;
+        cityCode = data.cityCode;
 
-        var map = document.createElement("div");
-        map.className = "location_map";
-        map.setAttribute('id', 'location_map');
-        $('.next_step_btn').before(map);
+        addShowElement(data.dep, 'dep');
+        addShowElement(data.city, 'city');
+        addShowElement(data.street, 'address');
+
+        locationMap = $("<div>", {id: "location-map"});
+        $locationForm.after(locationMap);
+        openLocationMap(data.x, data.y, 'location-map');
+
+
         locationDataIsValide = true;
-
-        openLocationMap(x, y, 'location_map');
     }
 
     // map leaflet**************************************************************************************************>

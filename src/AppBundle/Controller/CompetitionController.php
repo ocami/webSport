@@ -92,10 +92,6 @@ class CompetitionController extends Controller
             return $this->redirectToRoute('competition_show_byOrganizer');
         }
 
-        return $this->render('competition/test.html.twig', array(
-            'competition' => $competition,
-            'form' => $form->createView()
-        ));
         return $this->render('competition/new.html.twig', array(
             'competition' => $competition,
             'form' => $form->createView()
@@ -122,7 +118,6 @@ class CompetitionController extends Controller
         }
 
         return $this->render('competition/new.html.twig', array(
-            'update' => true,
             'competition' => $competition,
             'form' => $form->createView()
         ));
