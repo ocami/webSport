@@ -317,348 +317,27 @@ function competitionFormDates() {
     });
 }
 
-//locationForm//////////////////////////////////////////////////////////////////////////////////////////////////////
-function locationForm(divSelector, inputSelector) {
-
-    //Initialize**************************************************************
-    addHtml();
-
-    var output = inputSelector;
-
-    $(document).ready(function () {
-        nextStep('dep');
-    });
-
-    var depCode;
-    var cityCode;
-    var locationData;
-    var locationDataIsValide = false;
-
-    var locationMap;
-    var locationForm = $('#location_form');
-    var locationAlert = $("#location_alert");
-    var locationLabel = $("#location_label");
-    var locationInput = $("#location_input");
-    var locationBtnNextStep = $("#next_step_btn");
-    var locationShow = $('#location_show');
-
-    locationInput.on('keyup', function (e) {
-        if (e.keyCode === 13) {
-            locationBtnNextStep.trigger('click');
-        }
-    });
-
-
-    //Step**************************************************************
-    function nextStep(step) {
-        switch (step) {
-            case 'dep' :
-                depAutocomplete();
-                locationLabel.text('Département');
-                locationInput.attr("placeholder", "Ex : 06 Alpes-Maritimes");
-                locationBtnNextStep.val('depValidate');
-                loaderDivStop($("#location_form"));
-                break;
-
-            case 'depValidate' :
-                loaderDivStart($("#location_form"));
-                depValidate();
-                break;
-
-            case 'city' :
-                cityAutocomplete(depCode);
-                locationLabel.text('Ville');
-                locationInput.attr("placeholder", "Ex : nice");
-                locationBtnNextStep.val('cityValidate');
-                break;
-
-            case 'cityValidate' :
-                loaderDivStart($("#location_form"));
-                cityValidate();
-                break;
-
-            case 'address' :
-                addressAutocomplete(cityCode);
-                locationLabel.text('Adresse');
-                locationInput.attr("placeholder", "Ex : 5 Promenade des Anglais");
-                locationBtnNextStep.val('addressValidate');
-                loaderDivStop($("#location_form"));
-                break;
-
-            case 'addressValidate' :
-                addressValidate();
-                break;
-
-            case 'confirm' :
-                locationForm.hide();
-                locationConfirm();
-                break;
-        }
-
-        locationInput.focus();
-    }
-
-    function returnStep(step) {
-        locationInput.val('');
-        locationForm.show();
-        locationDataIsValide = false;
-
-        switch (step) {
-            case 'dep' :
-                $('#show_dep').remove();
-                depCode = '';
-
-            case  'city' :
-                $('#show_city').remove();
-                cityCode = '';
-
-            case  'address' :
-                $('#show_address').remove();
-                locationData = '';
-                if (typeof locationMap !== 'undefined')
-                    locationMap.remove();
-        }
-        nextStep(step);
-        output.val('');
-        output.trigger('change');
-    }
-
-    //Dep**************************************************************
-    function depAutocomplete() {
-        $.get('/webSport/web/locationForm/departements2.json', function (data, status) {
-            locationInput.autocomplete({
-                source: data
-            })
-        });
-    }
-
-    function depValidate() {
-        depCode = locationInput.val().slice(0, 2);
-        locationAlert.hide();
-
-        $.get("/webSport/web/locationForm/departements3.json", function (data, status) {
-            if ($.inArray(depCode, data) !== -1) {
-                addShowElement(locationInput.val(), 'dep');
-                locationInput.val('');
-                nextStep('city');
-            } else {
-                nextStep('dep');
-                locationAlert.text('Veuillez sélectionner un département dans la liste');
-                locationAlert.show();
-            }
-        });
-    }
-
-    //City*************************************************************
-    function cityAutocomplete(dep) {
-        var path = Routing.generate('address_getCitiesSlugByDep', {dep: dep});
-        $.ajax({
-            url: path,
-            success: function (data) {
-                var cities = [];
-                $.map(data, function (item) {
-                    cities.push(item.villeSlug);
-                });
-
-                locationInput.autocomplete({
-                    source: cities
-                });
-
-                loaderDivStop($("#location_form"));
-                locationInput.focus();
-            }
-        });
-    }
-
-    function cityValidate() {
-        var citySlug = locationInput.val();
-        locationInput.val('');
-        locationAlert.hide();
-
-        $.ajax({
-            url: Routing.generate('address_getCitiesData', {ville_slug: citySlug}),
-            dataType: "json",
-            success: function (data) {
-                var cityData = data[0];
-
-                if (data.length > 0 && citySlug == cityData.villeSlug) {
-                    addShowElement(cityData.villeNomReel, 'city');
-                    cityCode = cityData.villeCodeCommune;
-                    nextStep('address');
-                } else {
-                    nextStep('city');
-                    locationAlert.text('Veuillez sélectionner une commune dans la liste');
-                    locationAlert.show();
-                }
-            }
-        });
-
-    }
-
-    //Address**********************************************************
-    function addressAutocomplete(cityCode) {
-        locationInput.autocomplete({
-            source: function (request, response) {
-                $.ajax({
-                    url: "https://api-adresse.data.gouv.fr/search/?citycode=" + cityCode,
-                    data: {q: request.term},
-                    dataType: "json",
-                    success: function (data) {
-                        response($.map(data.features, function (item) {
-                            var truc = {label: item.properties.name, value: item.properties.name};
-                            return truc;
-                        }));
-                        autocompleteAddressList = data.features;
-                    }
-                });
-            }
-        });
-    }
-
-    function addressValidate() {
-        $.ajax({
-            url: "https://api-adresse.data.gouv.fr/search/?citycode=" + cityCode,
-            data: {q: locationInput.val()},
-            dataType: "json",
-            success: function (data) {
-                if (data.features.length > 0 && data.features[0].properties.name == locationInput.val()) {
-                    var locationFeatures = data.features[0];
-                    addShowElement(locationFeatures.properties.name, 'address');
-                    setLocationData(locationFeatures);
-                    locationAlert.hide();
-                    nextStep('confirm');
-                } else {
-                    locationAlert.text('Veuillez sélectionner une adresse dans la liste');
-                    locationAlert.show();
-                    nextStep('address');
-                }
-            }
-        });
-    }
-
-    //Confirm**********************************************************
-    function locationConfirm() {
-        locationMap = $("<div>", {id: "location-map"});
-        locationForm.after(locationMap);
-        openLocationMap(locationData.x, locationData.y, 'location-map');
-
-        locationDataIsValide = true;
-
-
-        output.val(JSON.stringify(locationData));
-        output.trigger('change');
-    }
-
-    //Events************************************************************
-    locationShow.on('click', 'button', function (evt) {
-        returnStep($(this).val());
-    });
-
-    locationBtnNextStep.click(function () {
-        nextStep($(this).val());
-    });
-
-    //Other************************************************************
-    function addHtml() {
-        divSelector.html(
-            "<div class=\"row\">\n" +
-            "        <div id=\"location_alert\" class=\"alert alert-warning\" role=\"alert\" style=\"display: none\"></div>\n" +
-            "\n" +
-            "        <div class=\"col-xs-offset-1 col-xs-6\">\n" +
-            "            <div class=\"loader-div\"></div>\n" +
-            "            <div id=\"location_form\" class=\"form-group\">\n" +
-            "                <label id=\"location_label\"></label>\n" +
-            "                <input id=\"location_input\" class=\"form-control\">\n" +
-            "                <button id=\"next_step_btn\" class=\"col-xs-2  btn btn-primary btn-sm\">Suivant</button>\n" +
-            "            </div>\n" +
-            "        </div>\n" +
-            "\n" +
-            "        <div id=\"location_show\" class=\"col-xs-5\"></div>\n" +
-            "    </div>"
-        );
-    }
-
-    function addShowElement(text, step) {
-
-        var div = $("<div>", {id: "show_" + step, class: "form_show row "});
-        var txt = $("<p>", {class: "col-xs-7"}).append(text);
-        var btn = $("<button>", {
-            class: "col-xs-2 edit_bt btn btn-success btn-xs",
-            value: step
-        }).append('modifier');
-
-        div.append(txt);
-        div.append(btn);
-
-        locationShow.append(div);
-    }
-
-    function setLocationData(locationFeatures) {
-        var f = locationFeatures;
-        locationData = {
-            id: f.properties.id,
-            street: f.properties.name,
-            postCode: f.properties.postcode,
-            city: f.properties.city,
-            x: f.geometry.coordinates[1],
-            y: f.geometry.coordinates[0]
-        }
-    }
-
-    function locationUpdate(dep, city, address, x, y) {
-        locationBtnNextStep.hide();
-        $('#location_form .form-group').hide();
-
-        addShowElement(dep, 'dep');
-        addShowElement(city, 'city');
-        addShowElement(address, 'address');
-
-        var map = document.createElement("div");
-        map.className = "location_map";
-        map.setAttribute('id', 'location_map');
-        $('.next_step_btn').before(map);
-        locationDataIsValide = true;
-
-        openLocationMap(x, y, 'location_map');
-    }
-
-    // map leaflet**************************************************************************************************>
-    function openLocationMap(x, y, mapId) {
-        var map = L.map(mapId, {
-            center: [x, y],
-            zoom: 18,
-        });
-        L.marker([x, y]).addTo(map);
-        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-            maxZoom: 18
-        }).addTo(map);
-    }
-}
-
-//locationForm plug-in//////////////////////////////////////////////////////////////////////////////////////////////////////
+//$locationForm plug-in//////////////////////////////////////////////////////////////////////////////////////////////////////
 (function ( $ ) {
 
-    var output;
-    var divSelector;
+    var $output;
 
-    var locationContainer = $("<div class='col-xs-offset-1 col-xs-6'>");
-    var locationAlert = $("<div id='location_alert' class='alert alert-warning' role='alert' style='display: none'></div>");
-    var locationLoader = $("<div class='loader-div'></div>");
-    var locationForm = $("<div id='location_form' class='form-group'>");
-    var locationLabel = $("<label id='location_label'>Département</label>");
-    var locationInput = $("<input id='location_input' class='form-control' placeholder='Ex : 06 Alpes-Maritimes'>");
-    var locationBtnNextStep = $("<button id='next_step_btn' class='col-xs-2  btn btn-primary btn-sm' value='depValidate'>Suivant</button>");
-    var locationShow = $("<div id='location-show' class='col-xs-5'></div>");
+    var $locationContainer = $("<div class='col-xs-offset-1 col-xs-6'>");
+    var $locationAlert = $("<div id='location_alert' class='alert alert-warning' role='alert' style='display: none'></div>");
+    var $locationLoader = $("<div class='loader-div'></div>");
+    var $locationForm = $("<div id='location_form' class='form-group'>");
+    var $locationLabel = $("<label id='location_label'>Département</label>");
+    var $locationInput = $("<input id='location_input' class='form-control' placeholder='Ex : 06 Alpes-Maritimes'>");
+    var $locationBtnNextStep = $("<button id='next_step_btn' class='col-xs-2  btn btn-primary btn-sm' value='depValidate'>Suivant</button>");
+    var $locationShow = $("<div id='location-show' class='col-xs-5'></div>");
 
     $.fn.monPlugIn = function(inputSelector) {
-        output = inputSelector;
-        divSelector = this;
+        $output = inputSelector;
+        
+        $locationForm.append([$locationLabel,$locationInput]);
+        $locationContainer.append([$locationAlert,$locationLoader,$locationForm,$locationBtnNextStep,$locationShow]);
 
-        locationForm.append([locationLabel,locationInput]);
-        locationContainer.append([locationAlert,locationLoader,locationForm,locationBtnNextStep,locationShow]);
-
-        this.append([locationContainer, locationShow]);
+        this.append([$locationContainer, $locationShow]);
 
         depAutocomplete();
 
@@ -674,9 +353,9 @@ function locationForm(divSelector, inputSelector) {
     var locationMap;
 
 
-    locationInput.on('keyup', function (e) {
+    $locationInput.on('keyup', function (e) {
         if (e.keyCode === 13) {
-            locationBtnNextStep.trigger('click');
+            $locationBtnNextStep.trigger('click');
         }
     });
 
@@ -686,9 +365,9 @@ function locationForm(divSelector, inputSelector) {
         switch (step) {
             case 'dep' :
                 depAutocomplete();
-                locationLabel.text('Département');
-                locationInput.attr("placeholder", "Ex : 06 Alpes-Maritimes");
-                locationBtnNextStep.val('depValidate');
+                $locationLabel.text('Département');
+                $locationInput.attr("placeholder", "Ex : 06 Alpes-Maritimes");
+                $locationBtnNextStep.val('depValidate');
                 loaderDivStop($("#location_form"));
                 break;
 
@@ -699,9 +378,9 @@ function locationForm(divSelector, inputSelector) {
 
             case 'city' :
                 cityAutocomplete(depCode);
-                locationLabel.text('Ville');
-                locationInput.attr("placeholder", "Ex : nice");
-                locationBtnNextStep.val('cityValidate');
+                $locationLabel.text('Ville');
+                $locationInput.attr("placeholder", "Ex : nice");
+                $locationBtnNextStep.val('cityValidate');
                 break;
 
             case 'cityValidate' :
@@ -711,9 +390,9 @@ function locationForm(divSelector, inputSelector) {
 
             case 'address' :
                 addressAutocomplete(cityCode);
-                locationLabel.text('Adresse');
-                locationInput.attr("placeholder", "Ex : 5 Promenade des Anglais");
-                locationBtnNextStep.val('addressValidate');
+                $locationLabel.text('Adresse');
+                $locationInput.attr("placeholder", "Ex : 5 Promenade des Anglais");
+                $locationBtnNextStep.val('addressValidate');
                 loaderDivStop($("#location_form"));
                 break;
 
@@ -722,17 +401,19 @@ function locationForm(divSelector, inputSelector) {
                 break;
 
             case 'confirm' :
-                locationForm.hide();
+                $locationForm.hide();
+                $locationBtnNextStep.hide();
                 locationConfirm();
                 break;
         }
 
-        locationInput.focus();
+        $locationInput.focus();
     }
 
     function returnStep(step) {
-        locationInput.val('');
-        locationForm.show();
+        $locationInput.val('');
+        $locationForm.show();
+        $locationBtnNextStep.show();
         locationDataIsValide = false;
 
         switch (step) {
@@ -751,32 +432,32 @@ function locationForm(divSelector, inputSelector) {
                     locationMap.remove();
         }
         nextStep(step);
-        output.val('');
-        output.trigger('change');
+        $output.val('');
+        $output.trigger('change');
     }
 
     //Dep**************************************************************
     function depAutocomplete() {
         $.get('/webSport/web/locationForm/departements2.json', function (data, status) {
-            locationInput.autocomplete({
+            $locationInput.autocomplete({
                 source: data
             })
         });
     }
 
     function depValidate() {
-        depCode = locationInput.val().slice(0, 2);
-        locationAlert.hide();
+        depCode = $locationInput.val().slice(0, 2);
+        $locationAlert.hide();
 
         $.get("/webSport/web/locationForm/departements3.json", function (data, status) {
             if ($.inArray(depCode, data) !== -1) {
-                addShowElement(locationInput.val(), 'dep');
-                locationInput.val('');
+                addShowElement($locationInput.val(), 'dep');
+                $locationInput.val('');
                 nextStep('city');
             } else {
                 nextStep('dep');
-                locationAlert.text('Veuillez sélectionner un département dans la liste');
-                locationAlert.show();
+                $locationAlert.text('Veuillez sélectionner un département dans la liste');
+                $locationAlert.show();
             }
         });
     }
@@ -792,20 +473,20 @@ function locationForm(divSelector, inputSelector) {
                     cities.push(item.villeSlug);
                 });
 
-                locationInput.autocomplete({
+                $locationInput.autocomplete({
                     source: cities
                 });
 
                 loaderDivStop($("#location_form"));
-                locationInput.focus();
+                $locationInput.focus();
             }
         });
     }
 
     function cityValidate() {
-        var citySlug = locationInput.val();
-        locationInput.val('');
-        locationAlert.hide();
+        var citySlug = $locationInput.val();
+        $locationInput.val('');
+        $locationAlert.hide();
 
         $.ajax({
             url: Routing.generate('address_getCitiesData', {ville_slug: citySlug}),
@@ -819,8 +500,8 @@ function locationForm(divSelector, inputSelector) {
                     nextStep('address');
                 } else {
                     nextStep('city');
-                    locationAlert.text('Veuillez sélectionner une commune dans la liste');
-                    locationAlert.show();
+                    $locationAlert.text('Veuillez sélectionner une commune dans la liste');
+                    $locationAlert.show();
                 }
             }
         });
@@ -829,7 +510,7 @@ function locationForm(divSelector, inputSelector) {
 
     //Address**********************************************************
     function addressAutocomplete(cityCode) {
-        locationInput.autocomplete({
+        $locationInput.autocomplete({
             source: function (request, response) {
                 $.ajax({
                     url: "https://api-adresse.data.gouv.fr/search/?citycode=" + cityCode,
@@ -850,18 +531,18 @@ function locationForm(divSelector, inputSelector) {
     function addressValidate() {
         $.ajax({
             url: "https://api-adresse.data.gouv.fr/search/?citycode=" + cityCode,
-            data: {q: locationInput.val()},
+            data: {q: $locationInput.val()},
             dataType: "json",
             success: function (data) {
-                if (data.features.length > 0 && data.features[0].properties.name == locationInput.val()) {
+                if (data.features.length > 0 && data.features[0].properties.name == $locationInput.val()) {
                     var locationFeatures = data.features[0];
                     addShowElement(locationFeatures.properties.name, 'address');
                     setLocationData(locationFeatures);
-                    locationAlert.hide();
+                    $locationAlert.hide();
                     nextStep('confirm');
                 } else {
-                    locationAlert.text('Veuillez sélectionner une adresse dans la liste');
-                    locationAlert.show();
+                    $locationAlert.text('Veuillez sélectionner une adresse dans la liste');
+                    $locationAlert.show();
                     nextStep('address');
                 }
             }
@@ -871,22 +552,22 @@ function locationForm(divSelector, inputSelector) {
     //Confirm**********************************************************
     function locationConfirm() {
         locationMap = $("<div>", {id: "location-map"});
-        locationForm.after(locationMap);
+        $locationForm.after(locationMap);
         openLocationMap(locationData.x, locationData.y, 'location-map');
 
         locationDataIsValide = true;
 
 
-        output.val(JSON.stringify(locationData));
-        output.trigger('change');
+        $output.val(JSON.stringify(locationData));
+        $output.trigger('change');
     }
 
     //Events************************************************************
-    locationShow.on('click', 'button', function (evt) {
+    $locationShow.on('click', 'button', function (evt) {
         returnStep($(this).val());
     });
 
-    locationBtnNextStep.click(function () {
+    $locationBtnNextStep.click(function () {
         nextStep($(this).val());
     });
 
@@ -904,7 +585,7 @@ function locationForm(divSelector, inputSelector) {
         div.append(txt);
         div.append(btn);
 
-        locationShow.append(div);
+        $locationShow.append(div);
     }
 
     function setLocationData(locationFeatures) {
@@ -920,7 +601,7 @@ function locationForm(divSelector, inputSelector) {
     }
 
     function locationUpdate(dep, city, address, x, y) {
-        locationBtnNextStep.hide();
+        $locationBtnNextStep.hide();
         $('#location_form .form-group').hide();
 
         addShowElement(dep, 'dep');
@@ -950,7 +631,6 @@ function locationForm(divSelector, inputSelector) {
     }
 
 }( jQuery ));
-
 
 //Tools//////////////////////////////////////////////////////////////////////////////////////////////////////
 function parseDateFrToUs(date) {
