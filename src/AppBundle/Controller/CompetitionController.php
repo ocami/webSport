@@ -28,8 +28,12 @@ class CompetitionController extends Controller
      */
     public function show(Competition $competition)
     {
-        if($this->get(UserService::class)->isOrganizerCompetition($competition))
+        $isOrganizer = false;
+
+        if($this->get(UserService::class)->isOrganizerCompetition($competition)){
             $races = $this->getDoctrine()->getRepository(Race::class)->findByCompetition($competition->getId());
+            $isOrganizer = true;
+        }
         else
             $races = $this->getDoctrine()->getRepository(Race::class)->allValidByCompetition($competition->getId());
 
@@ -38,7 +42,8 @@ class CompetitionController extends Controller
 
         return $this->render('competition/show.html.twig', array(
             'competition' => $competition,
-            'races' => $races
+            'races' => $races,
+            'isOrganizer' => $isOrganizer
         ));
     }
 

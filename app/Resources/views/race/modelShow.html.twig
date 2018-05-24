@@ -81,6 +81,7 @@
 
        <script>
            function raceShow(race) {
+               loaderDivStart($('#race-show'));
                $.ajax({
                    url: "{{ path('race_json') }}",
                    data: {race: race},

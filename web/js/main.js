@@ -19,33 +19,29 @@ $(function () {
 });
 
 function navbarBadgeAdmin() {
-    var path = Routing.generate('race_countNotSupervised');
 
+    var path = Routing.generate('race_countNotSupervised');
     $.ajax({
         url: path,
         dataType: "json",
         success: function (data) {
-            badgeCountRace(data);
+            var badge = $('#badge');
+            badge.text(data);
+
+            if (data == 0) {
+                badge.attr({
+                    "title": "Pas de nouvelle course à valider",
+                    "class": "badge badge-success"
+                });
+            } else {
+                badge.attr({
+                    "title": "Nouvelles courses à valider",
+                    "class": "badge badge-warning"
+                });
+            }
         }
     });
-
-    function badgeCountRace(nb) {
-        var badge = $('#badge');
-        badge.text(nb);
-
-        if (nb == 0) {
-            badge.attr({
-                "title": "Pas de nouvelle course à valider",
-                "class": "badge badge-success"
-            });
-        } else {
-            badge.attr({
-                "title": "Nouvelles courses à valider",
-                "class": "badge badge-warning"
-            });
-        }
-    }
-};
+}
 
 /***********************************************************************************************************************
  /   modal/profile_competitor.html.twig
@@ -76,7 +72,7 @@ function navbarCompetitorProfile() {
  /   admin/races.html.twig
  /
  / Where table select change
- /   - call function views/race/show.html.twig raceShow([idRace])
+ /   - call function views/race/modelShow.html.twig raceShow([idRace])
  /
  / isRaceValid / isRaceInChampionship
  /    - ajax  update
@@ -153,7 +149,6 @@ function adminRaces() {
 
     //Event///////////////////////////////////////////////////////////////////////////////////////
     table.on('select', function (e, dt, type, index) {
-        loaderDivStart($raceShow);
         preRaceShow(index);
     });
 
@@ -173,7 +168,6 @@ function adminRaces() {
     })
 
     $('#valid').click(function () {
-        loaderDivStart($raceShow);
 
         var inChampionship = 0;
 
@@ -200,14 +194,22 @@ function adminRaces() {
 
             cbChampionshipRefresh();
 
-            raceShow(raceSeclected); //views/race/show.html.twig
+            raceShow(raceSeclected); //views/race/modelShow.html.twig
+        }else {
+            $raceShow.hide();
         }
     }
 
     function raceUpdate(raceSeclected, valid, inChampionship) {
+
+        var path = Routing.generate('race_admin_supervise', {
+            race: raceSeclected,
+            valid: valid,
+            inChampionship: inChampionship
+        });
+
         $.ajax({
-            url: "{{ path('race_admin_supervise') }}",
-            data: {race: raceSeclected, valid: valid, inChampionship: inChampionship},
+            url: path,
             success: function (data) {
                 table.row(indexSelected).remove().draw();
                 tableSelectRow(0);
@@ -218,17 +220,16 @@ function adminRaces() {
     }
 
     function updateNbRace() {
+
+        var path = Routing.generate('race_countNotSupervised');
+
         $.ajax({
-            url: "{{ path('race_countNotSupervised') }}",
-            dataType: "json",
+            url: path,
             success: function (data) {
-                badgeCountRace(data);
+                navbarBadgeAdmin();
             }
         });
     }
-
-
-    //functions///////////////////////////////////////////////////////////////////////////////////////
 
     function cbChampionshipRefresh() {
         $('#cbChampionship').remove();
@@ -298,10 +299,10 @@ function competitionFormDates() {
         autoclose: true,
     });
 
-    if( inputDateStart.val().length !== 0 )
+    if (inputDateStart.val().length !== 0)
         dpStart.datepicker('update', parseDateUsToFr(inputDateStart.val()));
 
-    if( inputDateEnd.val().length !== 0 )
+    if (inputDateEnd.val().length !== 0)
         dpEnd.datepicker('update', parseDateUsToFr(inputDateEnd.val()));
 
     dpStart.on('changeDate', function () {
@@ -323,8 +324,72 @@ function competitionFormDates() {
     });
 }
 
+/***********************************************************************************************************************
+ /   race\new.html.twig
+ /**********************************************************************************************************************/
+function raceDistance() {
+    $('#distance-widget').change(function () {
+        $('#appbundle_race_distance').val($('#distance-widget').val())
+    })
+}
+
+function raceCategories() {
+    var cbAllCat = $('#cbCategories-all');
+    var cbOnce = $('#category-once input');
+    var cbChamp = $('#cb-championship');
+    var catInput = $('#appbundle_race_categoriesString');
+    var champCheck = $('#appbundle_race_requestInChampionship');
+    var categories;
+
+    // Initalize
+    $(function () {
+        $("#race-form-categories input").checkboxradio();
+    });
+
+
+    cbChamp.click(function () {
+        if (this.checked)
+            champCheck.prop('checked', true);
+        else
+            champCheck.prop('checked', false);
+    });
+
+    cbAllCat.click(function () {
+        if (this.checked)
+            cbOnce.prop('checked', true).checkboxradio('refresh');
+        else
+            cbOnce.prop('checked', false).checkboxradio('refresh');
+
+        categoriesUpdate();
+    });
+
+    cbOnce.click(function () {
+        categoriesUpdate()
+    });
+
+    function categoriesUpdate() {
+        var i = 0;
+        categories = [];
+        cbOnce.each(function () {
+            i++;
+            if (this.checked)
+                categories.push($(this).val());
+        });
+
+        if (categories.length < i)
+            cbAllCat.prop('checked', false).checkboxradio('refresh');
+
+        if (categories.length > 0)
+            catInput.val(JSON.stringify(categories));
+        else
+            catInput.val('');
+
+        catInput.trigger('change');
+    }
+}
+
 //$locationForm plug-in//////////////////////////////////////////////////////////////////////////////////////////////////////
-(function ( $ ) {
+(function ($) {
 
     var $output;
 
@@ -337,18 +402,18 @@ function competitionFormDates() {
     var $locationBtnNextStep = $("<button id='next_step_btn' class='col-xs-2  btn btn-primary btn-sm' value='depValidate'>Suivant</button>");
     var $locationShow = $("<div id='location-show' class='col-xs-5'></div>");
 
-    $.fn.locationForm = function(options) {
+    $.fn.locationForm = function (options) {
 
-        var defaults= {"update": false};
+        var defaults = {"update": false};
         var parameters = $.extend(defaults, options);
 
         $output = parameters.output;
 
-        $locationForm.append([$locationLabel,$locationInput]);
-        $locationContainer.append([$locationAlert,$locationLoader,$locationForm,$locationBtnNextStep,$locationShow]);
+        $locationForm.append([$locationLabel, $locationInput]);
+        $locationContainer.append([$locationAlert, $locationLoader, $locationForm, $locationBtnNextStep, $locationShow]);
         this.append([$locationContainer, $locationShow]);
 
-        if( $output.val().length !== 0 ){
+        if ($output.val().length !== 0) {
             locationUpdate($.parseJSON($output.val()));
             return this;
         }
@@ -457,7 +522,8 @@ function competitionFormDates() {
                 source: data,
                 messages: {
                     noResults: '',
-                    results: function() {}
+                    results: function () {
+                    }
                 },
                 focus: function (event, ui) {
                     $(".ui-helper-hidden-accessible").hide();
@@ -465,9 +531,9 @@ function competitionFormDates() {
             });
 
 
-          /*  $locationInput.autocomplete({
-                source: data
-            })*/
+            /*  $locationInput.autocomplete({
+                  source: data
+              })*/
         });
     }
 
@@ -477,7 +543,7 @@ function competitionFormDates() {
         $locationAlert.hide();
 
         $.get("/webSport/web/locationForm/departements.json", function (data, status) {
-            if ($.inArray( $locationInput.val(), data) !== -1) {
+            if ($.inArray($locationInput.val(), data) !== -1) {
                 addShowElement($locationInput.val(), 'dep');
                 $locationInput.val('');
                 nextStep('city');
@@ -504,7 +570,8 @@ function competitionFormDates() {
                     source: cities,
                     messages: {
                         noResults: '',
-                        results: function() {}
+                        results: function () {
+                        }
                     },
                     focus: function (event, ui) {
                         $(".ui-helper-hidden-accessible").hide();
@@ -561,7 +628,8 @@ function competitionFormDates() {
             },
             messages: {
                 noResults: '',
-                results: function() {}
+                results: function () {
+                }
             },
             focus: function (event, ui) {
                 $(".ui-helper-hidden-accessible").hide();
@@ -634,7 +702,7 @@ function competitionFormDates() {
         locationData = {
             id: f.properties.id,
             street: f.properties.name,
-            depCode : depCode,
+            depCode: depCode,
             dep: dep,
             postCode: f.properties.postcode,
             cityCode: cityCode,
@@ -677,7 +745,110 @@ function competitionFormDates() {
         }).addTo(map);
     }
 
-}( jQuery ));
+}(jQuery));
+
+//ocmDateTime plug-in//////////////////////////////////////////////////////////////////////////////////////////////////////
+(function ($) {
+
+    var $dateShow = $("<div id='ocm-dt-date-show'></div>");
+    var $hInput = $("<input id='ocm-dt-hour' type='number' min='0' max='23' maxlength='2' required>");
+    var $mInput = $("<input id='ocm-dt-minute' type='number' min='0' max='59' maxlength='2' required>");
+    var $dp = $("<div id='ocm-dt-datepicker'></div>");
+    var $output;
+    var parameters;
+
+    $.fn.ocmDateTime = function (options) {
+
+        var defaults = {
+            "defaultHour": 12,
+            "defaultMinute": 30
+        };
+
+        parameters = $.extend(defaults, options);
+        $output = parameters.output;
+
+        var $containerHour = $("<div class='n2 col-xs-5'></div>").append($hInput);
+        var $separator = $("<div class='n2 col-xs-offset-1 col-xs-1 '><span class='separator'>:</span></div>");
+        var $containerMinute = $("<div class='n2 col-xs-5'></div>").append($mInput);
+        var $containerDp = $("<div class='calendar-show '></div>").append($dp);
+        var $containerCalendar = $("<div class=' col-xs-12 col-sm-offset-0 col-sm-4 calendar'>").append($containerDp);
+
+        var $containerTimeInput = $("<div id='ocm-dt-time' class='time-input col-xs-10'></div>").append([
+            $containerHour,
+            "<div class='n2 col-xs-1'></div>",
+            $separator,
+            $containerMinute
+        ]);
+
+        var $containerTime = $("<div class='col-xs-12 col-sm-8'>").append([
+            $dateShow,
+            "<div class='col-xs-1'></div>",
+            $containerTimeInput
+        ]);
+
+        this.append([$containerTime, $containerCalendar]);
+
+        $dp.datepicker({
+            format: "yyyy-mm-dd",
+            startDate: parameters.dateStart,
+            endDate: parameters.dateEnd,
+            language: "fr"
+        });
+
+        $dp.datepicker('update', parameters.defaultDate);
+
+        $hInput.val(('0' + parameters.defaultHour).slice(-2));
+        $mInput.val(('0' + parameters.defaultMinute).slice(-2));
+
+        dateString();
+        changeDateTime();
+
+        return this;
+    };
+
+    //event
+    $dp.on('changeDate', function () {
+        dateString();
+        changeDateTime();
+    });
+
+    $hInput.add($mInput).change(function () {
+        $(this).val(('0' + $(this).val()).slice(-2));
+        changeDateTime();
+    });
+
+    //function
+    function dateString() {
+        $dateShow.text(
+            $dp.datepicker('getUTCDate').toLocaleDateString('fr-FR', {
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                }
+            ));
+    }
+
+    function changeDateTime() {
+        var hour = $hInput.val();
+        var minute = $mInput.val();
+
+        if ($.isNumeric(hour) && $.isNumeric(minute)) {
+
+            if (hour > 23 || hour < 0)
+                $hInput.val(parameters.defaultHour);
+
+            if (minute > 59 || minute < 0)
+                $mInput.val(parameters.defaultMinute);
+
+            $output.val($dp.datepicker('getFormattedDate') + ' ' + $hInput.val() + ':' + $mInput.val() + ':00');
+
+        } else {
+            $hInput.val(parameters.defaultHour);
+            $mInput.val(parameters.defaultMinute);
+        }
+        $output.trigger('change');
+    }
+
+
+}(jQuery));
 
 //Tools//////////////////////////////////////////////////////////////////////////////////////////////////////
 function parseDateFrToUs(date) {

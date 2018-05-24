@@ -44,7 +44,7 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/admin/race/supervise", name="race_admin_supervise")
+     * @Route("/admin/race/supervise",options={"expose"=true}, name="race_admin_supervise")
      */
     public function raceSupervise(Request $request)
     {

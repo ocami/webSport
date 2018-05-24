@@ -1,0 +1,81 @@
+{% extends 'form_layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        #ocm-dt-time, .time-input .n2 {
+            padding: 0 !important;
+            margin: 2em 0 1em 0 !important;
+        }
+
+        #ocm-dt-time input {
+            height: 100%;
+            width: 100%;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        #ocm-dt-time .separator {
+            height: 100%;
+            width: 100%;
+            font-size: 30px;
+            margin-top: -0.2em;
+            display: block;
+        }
+
+        #ocm-dt-date-show {
+            font-size: 20px;
+            text-align: center;
+            margin-top: 1em;
+            font-weight: bold;
+        }
+
+        .calendar-show {
+            width: 200px;
+            margin: auto;
+        }
+    </style>
+
+{% endblock %}
+
+{% block title %}
+    {{ parent() }} Ajout course
+{% endblock %}
+
+{% block forms_content %}
+
+    <input id="output">
+
+    <div style="display: none;">
+        <input id="dateStart" value="{{ race.competition.dateStart }}">
+        <input id="dateEnd" value="{{ race.competition.dateEnd }}">
+    </div>
+
+    <div id="test"></div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+
+    <script>
+
+        var dateStart = $('#dateStart').val();
+        var dateEnd = $('#dateEnd').val();
+
+        $('#test').ocmDateTime({
+            "output" : $('#output'),
+            "defaultDate": dateStart,
+            "dateStart": dateStart,
+            "dateEnd": dateEnd,
+            "defaultHour": 12,
+            "defaultMinute": 30
+        });
+
+
+
+    </script>
+
+{% endblock %}

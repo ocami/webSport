@@ -2,8 +2,7 @@
 <div class="form-group has-feedback">
     <label for="distance" class="control-label">Distance</label>
     <input id="distance-widget" type="number" step="0.1" pattern="^[_0-9]{1,}$" min="1" max="999"
-           value="{{ race.distance }}" class="form-control"
-           required>
+           value="{{ race.distance }}" class="form-control" required>
     <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
     <div class="help-block with-errors">En km entre 1 et 999,9</div>
 </div>
