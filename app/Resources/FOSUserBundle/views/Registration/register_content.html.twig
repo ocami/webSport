@@ -1,30 +1,34 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
-{{ form_start(form, {'attr': {'data-toggle': 'validator', 'role':'form'}}) }}
-{{ form_start(form,{
-    'method': 'post',
-    'action': path('fos_user_registration_register'),
-    'attr': {'class': 'fos_user_registration_register','data-toggle': 'validator', 'role':'form'}
-}) }}
+<div class="col-sm-offset-2 col-sm-8">
 
+    {{ form_start(form,{
+        'method': 'post',
+        'action': path('fos_user_registration_register'),
+        'attr': {'class': 'fos_user_registration_register','data-toggle': 'validator', 'role':'form'}
+    }) }}
 
-<!--email-->
-<div class="form-group has-feedback">
-    <label for="email" class="control-label">Couriel</label>
-    {{ form_widget(form.email, {'attr': {'class':"form-control"}}) }}
-    <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-</div>
+    <!--email-->
+    <div class="form-group has-feedback">
+        <label for="email" class="control-label">Couriel</label>
+        {{ form_widget(form.email, {'attr': {'class':"form-control"}}) }}
+        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+    </div>
 
-<!--email-->
-<div class="form-group has-feedback">
-    <label for="username" class="control-label">Identifiant</label>
-    {{ form_widget(form.username, {'attr': {'class':"form-control"}}) }}
-    <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-</div>
+    <!--email-->
+    <div class="form-group has-feedback">
+        <label for="username" class="control-label">Identifiant</label>
+        {{ form_widget(form.username, {'attr': {'class':"form-control"}}) }}
+        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+    </div>
 
     {{ form_widget(form.plainPassword) }}
 
-<div class="form-group">
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Valider</button>
+    </div>
+    {{ form_end(form) }}
+
 </div>
-{{ form_end(form) }}
+
+

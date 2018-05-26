@@ -39,8 +39,96 @@ function navbarBadgeAdmin() {
                     "class": "badge badge-warning"
                 });
             }
+        },
+        error: function() {
+            ajaxError();
         }
     });
+}
+
+/***********************************************************************************************************************
+ /   home/index.html.twig
+ /**********************************************************************************************************************/
+function homeIndex(){
+    loaderStart();
+
+    // map leaflet**************************************************************************************************>
+    var osmLayer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+        maxZoom: 18
+    });
+    var watercolorLayer = L.tileLayer('http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg', {
+        attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+        maxZoom: 18
+    });
+
+    // icon**************************************************************************************************>
+    var pastIcon = L.icon({
+        iconUrl: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/256/Map-Marker-Marker-Outside-Pink-icon.png',
+        iconSize: [30, 30],
+        iconAnchor: [11, 31],
+        popupAnchor: [5, -25],
+
+    });
+    var futureIcon = L.icon({
+        iconUrl: 'http://www.iconarchive.com/download/i57834/icons-land/vista-map-markers/Map-Marker-Marker-Outside-Chartreuse.ico',
+        iconSize: [30, 30],
+        iconAnchor: [11, 31],
+        popupAnchor: [5, -25],
+
+    });
+
+
+    // data********************************************************************************************************>
+    var path = Routing.generate('competition_get_geojson');
+
+    $.ajax({
+        url: path,
+        success: function (data) {
+            mapConstructor(data);
+        },
+        error: function() {
+            ajaxError();
+        }
+    });
+
+    function mapConstructor(data) {
+
+        //Build layers **************************************************************************************************>
+        var FuturCompetitionLayer = layerBuild(data.futureCompetitions, pastIcon);
+        var PastCompetitionLayer = layerBuild(data.pastCompetitions, futureIcon);
+
+        //Build map **************************************************************************************************>
+        var map = L.map('indexMap', {
+            center: [46.52863469527167, 2.43896484375],
+            zoom: 5,
+            layers: [osmLayer, PastCompetitionLayer, FuturCompetitionLayer]
+        });
+
+        //Layers Control **************************************************************************************************>
+        var baseMaps = {
+            "osmLayer": osmLayer,
+            "watercolorLayer": watercolorLayer
+        };
+        var overlayMaps = {
+            "A venir": FuturCompetitionLayer,
+            "Passées": PastCompetitionLayer
+        };
+
+        L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+        loaderStop();
+    }
+
+    function layerBuild(data, icon) {
+        return L.geoJSON(data, {
+            pointToLayer: function (geoJsonPoint, latlng) {
+                return L.marker(latlng, {icon: icon});
+            }
+        }).bindPopup(function (layer) {
+            return layer.feature.properties.description;
+        });
+    }
 }
 
 /***********************************************************************************************************************
@@ -51,22 +139,27 @@ function navbarCompetitorProfile() {
 
     $profile.click(function () {
         var user = $(this).attr("data");
-        var path = Routing.generate('competitor_json_userId', {userId: user});
+        profilData(user);
 
-        $.ajax({
-            url: path,
-            success: function (data) {
-                profilData(data);
-            }
-        });
     });
+}
 
-    function profilData(data) {
-        $('#profile-name').text(data.firstName + ' ' + data.lastName);
-        $('#profile-category').text(data.category);
-        $('#profile-age').text(data.age + ' ans');
-    }
-};
+function profilData(user) {
+
+    var path = Routing.generate('competitor_json_userId', {userId: user});
+
+    $.ajax({
+        url: path,
+        success: function (data) {
+            $('#profile-name').text(data.firstName + ' ' + data.lastName);
+            $('#profile-category').text(data.category);
+            $('#profile-age').text(data.age + ' ans');
+        },
+        error: function() {
+            ajaxError();
+        }
+    });
+}
 
 /***********************************************************************************************************************
  /   admin/races.html.twig
@@ -215,6 +308,9 @@ function adminRaces() {
                 tableSelectRow(0);
                 preRaceShow(0);
                 updateNbRace();
+            },
+            error: function() {
+                ajaxError();
             }
         });
     }
@@ -227,6 +323,9 @@ function adminRaces() {
             url: path,
             success: function (data) {
                 navbarBadgeAdmin();
+            },
+            error: function() {
+                ajaxError();
             }
         });
     }
@@ -387,6 +486,56 @@ function raceCategories() {
         catInput.trigger('change');
     }
 }
+
+/***********************************************************************************************************************
+ /   FOSUserBundle/views/Registration/register_content.html.twig
+ /**********************************************************************************************************************/
+function registration(){
+    $(function () {
+        var radioBtn = $("#gender-radio input");
+        var genderInput = $('#appbundle_competitor_sexe');
+
+        radioBtn.checkboxradio();
+
+        radioBtn.click(function () {
+            if (this.checked) {
+                genderInput.val($(this).val());
+                genderInput.trigger('change');
+            }
+        });
+    });
+
+    var inputDate = $('#appbundle_competitor_date');
+    var dp = $('#register-form-dp');
+
+    dp.datepicker({
+        language: 'fr',
+        format: 'dd-mm-yyyy',
+        startView: 2,
+        autoclose: true,
+        todayHighlight: true
+    });
+
+
+    dp.on('changeDate', function () {
+        var compDate = parseDateFrToUs(dp.datepicker('getFormattedDate'));
+        inputDate.val(compDate);
+        inputDate.trigger('change');
+
+    });
+}
+
+//ajax error//////////////////////////////////////////////////////////////////////////////////////////////////////
+function ajaxError() {
+    $('#info').css('display','block');
+    $('#info span').text('Erreur requête ajax');
+    loaderStop();
+}
+
+$('#info-button').click(function() {
+    location.reload();
+    $('#info').css('display' , 'none');
+});
 
 //$locationForm plug-in//////////////////////////////////////////////////////////////////////////////////////////////////////
 (function ($) {
@@ -654,6 +803,9 @@ function raceCategories() {
                     $locationAlert.show();
                     nextStep('address');
                 }
+            },
+            error: function() {
+                ajaxError();
             }
         });
     }

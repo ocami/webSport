@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block organizer_menu %}
-    {% if isOrganizer %}
+    {% if competition.isOrganizer %}
         <input type="button" class="btn-xs btn-success" value="Ajouter une course"
                onclick="location.href = '{{ path('race_new', {'id':competition.id} ) }}';">
 

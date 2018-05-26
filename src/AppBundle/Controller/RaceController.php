@@ -41,14 +41,15 @@ class RaceController extends Controller
      */
     public function show(Race $race)
     {
-        $competitor = null;
-
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_COMPETITOR'))
-            $competitor = $this->get(UserService::class)->getCompetitor();
+        $competitor = $this->get(UserService::class)->getCompetitor();
 
         $race = $this->get(UserService::class)->addUserDataInRace($race);
         $race = $this->get(RaceService::class)->postSelectOne($race);
 
+        return $this->render('race/test.html.twig', array(
+            'race' => $race,
+            'competitor' => $competitor
+        ));
 
         return $this->render('race/show.html.twig', array(
             'race' => $race,
@@ -65,23 +66,23 @@ class RaceController extends Controller
         $categories = $this->getDoctrine()->getRepository(Category::class)->categoriesByGender();
 
         $race = new Race();
-        $race-> setCompetition($competition);
+        $race->setCompetition($competition);
         $form = $this->createForm(RaceType::class, $race);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
             $this->get(RaceService::class)->create($race);
 
-            $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée');
+            $request->getSession()->getFlashBag()->add('success', 'Course bien enregistrée. Elle sera ouverte aux inscriptions après validation par l\'administrateur.');
 
             return $this->redirectToRoute('competition_show', array('id' => $competition->getId()));
         }
 
-       /* return $this->render('race/test.html.twig', array(
-            'race' => $race,
-            'categories' => $categories,
-            'form' => $form->createView()
-        ));*/
+        /* return $this->render('race/test.html.twig', array(
+             'race' => $race,
+             'categories' => $categories,
+             'form' => $form->createView()
+         ));*/
 
         return $this->render('race/new.html.twig', array(
             'race' => $race,
@@ -104,7 +105,7 @@ class RaceController extends Controller
 
             $this->get(RaceService::class)->create($race);
 
-            $request->getSession()->getFlashBag()->add('notice', $race->getName().' à été modifiée');
+            $request->getSession()->getFlashBag()->add('notice', $race->getName() . ' à été modifiée');
 
             return $this->redirectToRoute('competition_show', array('id' => $race->getCompetition()->getId()));
         }
@@ -189,20 +190,20 @@ class RaceController extends Controller
         $race = $this->getDoctrine()->getRepository(Race::class)->find($idRace);
         $em = $this->getDoctrine()->getManager();
 
-        if ($cat == 'all'){
+        if ($cat == 'all') {
             $competitors = $this->getDoctrine()->getRepository(RaceCompetitor::class)->allByRaceToString($race);
 
-            for ($i =0; $i<count($competitors);$i++){
+            for ($i = 0; $i < count($competitors); $i++) {
                 $y = substr($competitors[$i]['date'], -10, 4);
                 $cat = $this->get(CategoryService::class)->getCategory($y, $competitors[$i]['sexe']);
 
                 $competitors[$i]['category'] = $cat->getName();
             }
-        }else{
-            $cat = $this->getDoctrine()->getRepository(Category::class)->find($cat );
-            $competitors = $this->getDoctrine()->getRepository(RaceCompetitor::class)->allByRaceCategoryToString($race,$cat);
+        } else {
+            $cat = $this->getDoctrine()->getRepository(Category::class)->find($cat);
+            $competitors = $this->getDoctrine()->getRepository(RaceCompetitor::class)->allByRaceCategoryToString($race, $cat);
 
-            for ($i =0; $i<count($competitors);$i++){
+            for ($i = 0; $i < count($competitors); $i++) {
                 $y = substr($competitors[$i]['date'], -10, 4);
                 $cat = $this->get(CategoryService::class)->getCategory($y, $competitors[$i]['sexe']);
 
@@ -225,7 +226,7 @@ class RaceController extends Controller
         $this->get(DbService::class)->simulateRaceEnrols($race);
 
         $request->getSession()->getFlashBag()->add('notice', 'Inscriptions enregistrées');
-        return $this->redirectToRoute('race_show',array('id'=>$race->getId()));
+        return $this->redirectToRoute('race_show', array('id' => $race->getId()));
     }
 
     /**
@@ -238,25 +239,25 @@ class RaceController extends Controller
         $request->getSession()->getFlashBag()->add('notice', 'Inscriptions cloturées');
         $race->setState(1);
         $race->setEnrol(0);
-        $em =  $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager();
         $em->persist($race);
         $em->flush();
-        return $this->redirectToRoute('race_show',array('id'=>$race->getId()));
+        return $this->redirectToRoute('race_show', array('id' => $race->getId()));
     }
 
     /**
-     *  @Route("/race/competitorsTimes/{id}", name="race_competitorsTimes")
+     * @Route("/race/competitorsTimes/{id}", name="race_competitorsTimes")
      * @Security("has_role('ROLE_ORGANIZER')")
      */
     public function importCompetitorsTimes(Request $request, Race $race)
     {
         $this->get(RanckService::class)->importCompetitorsTimes($race);
         $race->setState(2);
-        $em =  $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager();
         $em->persist($race);
         $em->flush();
 
-        return $this->redirectToRoute('race_show',array('id'=>$race->getId()));
+        return $this->redirectToRoute('race_show', array('id' => $race->getId()));
     }
 
     /**

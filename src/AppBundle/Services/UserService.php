@@ -47,9 +47,13 @@ class UserService
 
         if ($this->ac->isGranted('ROLE_ORGANIZER'))
             $this->organizer = $this->em->getRepository(Organizer::class)->findOneByUserId($this->user);
+        else
+            $this->competitor = null;
 
         if ($this->ac->isGranted('ROLE_COMPETITOR'))
             $this->competitor = $this->em->getRepository(Competitor::class)->findOneByUserId($this->user);
+        else
+            $this->competitor = null;
     }
 
 
@@ -107,26 +111,14 @@ class UserService
         $competitorYear = $this->competitor->getDateObject()->format('Y');
         $gender = $this->competitor->getSexe();
 
-        $category = $this->cts->getCategory($competitorYear,$gender);
+        $category = $this->cts->getCategory($competitorYear, $gender);
 
         return $category;
-
-       /* $categories = $this->em->getRepository(Category::class)->findAll();
-
-        foreach ($categories as $category) {
-
-            if ($competitorYear < $category->getAgeMin()
-                && $competitorYear > $category->getAgeMax()
-                && $category->getSexe() == $this->competitor->getSexe()
-            )
-                return $category;
-        }
-        return null;*/
     }
 
     public function addUserDataInRaces($races)
     {
-        if($this->user == 'anon.')
+        if ($this->user == 'anon.')
             return $races;
 
         foreach ($races as $race) {
@@ -135,8 +127,9 @@ class UserService
         return $races;
     }
 
-    public function addUserDataInRace(Race $race){
-        if($this->user == 'anon.')
+    public function addUserDataInRace(Race $race)
+    {
+        if ($this->user == 'anon.')
             return $race;
 
         if (!is_null($this->organizer))
@@ -151,18 +144,28 @@ class UserService
 
     public function addUserDataInCompetitions($competitions)
     {
-        if($this->user == 'anon.')
+        if ($this->user == 'anon.')
             return $competitions;
 
         foreach ($competitions as $competition) {
-            if (!is_null($this->organizer))
-                if ($this->isOrganizerCompetition($competition))
-                    $competition->setIsOrganizer(true);
-
-            if (!is_null($this->competitor))
-                $competition->setCompetitorRegister($this->CompetitionRegisterStatus($competition));
+            $competition = $this->addUserDataInCompetition($competition);
         }
         return $competitions;
+    }
+
+    public function addUserDataInCompetition(Competition $competition)
+    {
+        if ($this->user == 'anon.')
+            return $competition;
+
+        if (!is_null($this->organizer))
+            if ($this->isOrganizerCompetition($competition))
+                $competition->setIsOrganizer(true);
+
+        if (!is_null($this->competitor))
+            $competition->setCompetitorRegister($this->CompetitionRegisterStatus($competition));
+
+        return $competition;
     }
 
     public function RaceRegisterStatus(Race $race)
@@ -171,23 +174,24 @@ class UserService
             return 2;
 
         if ($race->getCategories()->contains($this->getCategoryCompetitor()))
-            if($race->getEnrol())
+            if ($race->getEnrol())
                 return 1;
 
         return 0;
     }
 
-    public function CompetitionRegisterStatus(Competition $competition){
+    public function CompetitionRegisterStatus(Competition $competition)
+    {
 
         $r = 0;
-        foreach ($competition->getRaces() as $race){
+        foreach ($competition->getRaces() as $race) {
 
             $s = $this->RaceRegisterStatus($race);
 
-            if($s==2)
+            if ($s == 2)
                 return 2;
 
-            if($s ==1)
+            if ($s == 1)
                 $r = 1;
         }
 
@@ -199,9 +203,10 @@ class UserService
      */
     public function getCompetitor()
     {
-        $competitor = $this->competitor;
-        $competitor->setCategory($this->getCategoryCompetitor());
-        return $competitor;
+        if($this->competitor)
+            $this->competitor->setCategory($this->getCategoryCompetitor());
+
+        return $this->competitor;
     }
 
     /**

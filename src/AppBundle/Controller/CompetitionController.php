@@ -28,12 +28,10 @@ class CompetitionController extends Controller
      */
     public function show(Competition $competition)
     {
-        $isOrganizer = false;
+        $competition = $this->get(UserService::class)->addUserDataInCompetition($competition);
 
-        if($this->get(UserService::class)->isOrganizerCompetition($competition)){
+        if($competition->getIsOrganizer())
             $races = $this->getDoctrine()->getRepository(Race::class)->findByCompetition($competition->getId());
-            $isOrganizer = true;
-        }
         else
             $races = $this->getDoctrine()->getRepository(Race::class)->allValidByCompetition($competition->getId());
 
@@ -43,7 +41,6 @@ class CompetitionController extends Controller
         return $this->render('competition/show.html.twig', array(
             'competition' => $competition,
             'races' => $races,
-            'isOrganizer' => $isOrganizer
         ));
     }
 
@@ -129,7 +126,7 @@ class CompetitionController extends Controller
     }
 
     /**
-     * @Route("/competition/getGeojson", name="competition_get_geojson")
+     * @Route("/competition/getGeojson", options={"expose"=true}, name="competition_get_geojson")
      */
     public function getGeoJson()
     {

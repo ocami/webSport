@@ -108,7 +108,7 @@
                                 {% if race.valid %}
                                     {{ race.competitorRegister|registerImg }}
                                 {% endif %}
-                    </span>
+                            </span>
                         </div>
                         <div class="panel-body row">
                             <div class="col-xs-8 competition ">
@@ -162,7 +162,7 @@
                                 class="btn-xs btn-info col-xs-12"
                                 onclick="requestForTableCategory({{ race.id }}, {{ c.id }}, '{{ c.name }}')"
                                 href="#tables">
-                                {{ c.name }}</button>
+                            {{ c.name }}</button>
                     </div>
                 {% endfor %}
             </div>
@@ -230,23 +230,24 @@
 {% block javascripts %}
     {{ parent() }}
 
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+
     <script>
 
         //buttons change
         $('.btn-info').click(function () {
 
-            $('.btn-category > button').attr('class','btn-xs btn-info col-xs-12');
+            $('.btn-category > button').attr('class', 'btn-xs btn-info col-xs-12');
 
-            $(this).attr('class','btn-xs btn-primary col-xs-12');
+            $(this).attr('class', 'btn-xs btn-primary col-xs-12');
         });
-
 
         $(document).ready(function () {
             requestForTableGeneral({{ race.id }});
             $('#tables').css('display', 'none');
             $('#loader').css('display', 'block');
 
-            $('.btn-general').attr('class','btn-xs btn-primary col-xs-12');
+            $('.btn-general').attr('class', 'btn-xs btn-primary col-xs-12');
         });
 
         function requestForTableGeneral(idRace) {
@@ -438,7 +439,7 @@
                         {data: 'category'},
                         {data: 'ranckCategory'}
                         {% if race.inchampionship %}
-                        ,{data: 'points'}
+                        , {data: 'points'}
                         {% endif %}
                     ]
 

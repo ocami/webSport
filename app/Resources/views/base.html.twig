@@ -15,7 +15,7 @@
         {#<link rel="stylesheet" href="{{ asset('myDateTime/myDateTime.css') }}"/>#}
         {#<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">#}
         {#<link rel="stylesheet"#}
-              {#href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.css">#}
+        {#href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.css">#}
 
 
 
@@ -46,13 +46,22 @@
     </div>
 {% endif %}
 
-{% for label, messages in app.flashes %}
-    {% for message in messages %}
-        <div class="alert alert-{{ label }}">
-            {{ message }}
-        </div>
+<div class="row">
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} col-sm-offset-2 col-sm-8">
+                {{ message }}
+            </div>
+        {% endfor %}
     {% endfor %}
-{% endfor %}
+</div>
+
+<div class="row">
+    <div id="info" class="alert alert-warning col-sm-offset-2 col-sm-8" style="display: none">
+        <span></span>
+        <button class="btn btn-default btn-sm" id="info-button">Rafraichir</button>
+    </div>
+</div>
 
 <div class="container">
 
@@ -71,7 +80,6 @@
 {% block javascripts %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>

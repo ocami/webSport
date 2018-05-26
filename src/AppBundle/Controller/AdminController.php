@@ -38,6 +38,11 @@ class AdminController extends Controller
     public function races(Request $request)
     {
         $races = $this->getDoctrine()->getRepository(Race::class)->findBySupervised(false);
+
+        return $this->render('admin/test.html.twig', array(
+            'races' => $races
+        ));
+
         return $this->render('admin/races.html.twig', array(
             'races' => $races
         ));

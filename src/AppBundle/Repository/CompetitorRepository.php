@@ -21,21 +21,11 @@ class CompetitorRepository extends \Doctrine\ORM\EntityRepository
      */
     public function toString(Competitor $competitor)
     {
-//        $c = $this->createQueryBuilder('c')
-//            ->innerJoin('c.category', 'cat')
-//            ->select('c.name, cat.name as categoryName')
-//            ->where('c.id = :competitor')
-//            ->setParameter('competitor', $competitor)
-//            ->getQuery()->getResult();
-
-
-
         $c = $this->createQueryBuilder('c')
             ->select('c.firstName,c.lastName,c.date')
             ->where('c.id = :id')
             ->setParameter('id', $competitor->getId())
             ->getQuery()->getResult();
-
 
         return $c[0];
     }
