@@ -21,7 +21,7 @@
     background-size: 20%;
 }
 
-.loader-div {
+#loader-div {
     height: 55vh; /* equals max image height */
     width: 100%;
     white-space: nowrap; /* this is required unless you put the helper span closely near the img */

@@ -29,15 +29,19 @@ function loaderStop() {
     $('.fullPage').fadeOut(1000);
 }
 
+
+
 function loaderDivStart(divToLoad) {
-    $(".loader-div").height(divToLoad.height());
-    $(".loader-div").width(divToLoad.width());
+    var $loaderDiv = $("#loader-div");
+    $loaderDiv.height(divToLoad.height());
+    $loaderDiv.width(divToLoad.width());
     divToLoad.hide();
-    $(".loader-div").show();
+    $loaderDiv.show();
 }
 
 function loaderDivStop(divToLoad) {
-    $(".loader-div").hide();
+    var $loaderDiv = $("#loader-div");
+    $loaderDiv.hide();
     divToLoad.show();
 }
 
