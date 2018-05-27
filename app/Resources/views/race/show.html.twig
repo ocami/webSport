@@ -67,6 +67,10 @@
             color: #1b6d85;
         }
 
+        #tables{
+         min-height: 10em;
+        }
+
 
     </style>
 
@@ -100,7 +104,6 @@
 
 {% block body %}
     {% block show_race %}
-        <div class="loader-div row"></div>
         <div class="race-show row">
             <!--panels-->
             <div class="row">
@@ -174,26 +177,26 @@
 
     {% block ranck_race %}
         <br>
-        <div id="loader"></div>
-        <div id="tables" class="row">
-            <div id="table-race-container">
-                <table id="table-race" class="display" cellspacing="0" width="100%">
-                    <thead>
-                    <tr id="row-table-race">
-                    </tr>
-                    </thead>
-                </table>
-            </div>
+            <div id="loader-div"></div>
+            <div id="tables" class="row">
+                <div id="table-race-container">
+                    <table id="table-race" class="display" cellspacing="0" width="100%">
+                        <thead>
+                        <tr id="row-table-race">
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
 
-            <div id="table-race-category-container">
-                <table id="table-race-category" class="display" cellspacing="0" width="100%">
-                    <thead>
-                    <tr id="row-table-race-category">
-                    </tr>
-                    </thead>
-                </table>
+                <div id="table-race-category-container">
+                    <table id="table-race-category" class="display" cellspacing="0" width="100%">
+                        <thead>
+                        <tr id="row-table-race-category">
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
-        </div>
     {% endblock %}
 
 
@@ -212,6 +215,7 @@
             {% if race.inchampionship %}{
             inchampionship = true;
         }{% endif %}
+        var $categories = $('#race-show-categories');
         var $btnCategories = $('#race-show-categories button');
         var container = $('#tables');
         var rowTable;
@@ -219,8 +223,7 @@
         //init
         $(document).ready(function () {
             ranckTable('all');
-            $('#tables').css('display', 'none');
-            $('#loader').css('display', 'block');
+
 
         });
 
@@ -238,6 +241,8 @@
         });
 
         function ranckTable(category) {
+            loaderDivStart(container);
+
             var request = {idRace: race, category: category};
             $.ajax({
                 url: "{{ path('race_Table') }}",
@@ -308,7 +313,10 @@
                 $('#table-race-category').dataTable(options);
             }
 
-            load(false);
+            loaderDivStop(container);
+            $('html, body').animate({scrollTop: $($categories).offset().top}, 750);
+
+
 
             function raceOpenOptions() {
                 options.columns = [
@@ -386,7 +394,7 @@
                     {data: 'number', className: "row-ranck"},
                     {data: 'chronoString', className: "row-ranck"},
                     {data: 'category'},
-                    {data: 'ranckCategory' ,className: "row-ranck"}
+                    {data: 'ranckCategory', className: "row-ranck"}
                 ];
                 options.columnDefs = [
                     {
@@ -533,22 +541,6 @@
             }
         }
 
-        function load(stat) {
-            switch (stat) {
-                case true:
-                    $('#tables').css('display', 'none');
-                    $('#loader').css('display', 'block');
-                    ;
-                    break;
-                case false:
-                    $('#tables').css('display', 'block');
-                    $('#loader').css('display', 'none');
-                    break;
-                default:
-                    $('#tables').css('display', 'block');
-                    $('#loader').css('display', 'none');
-            }
-        }
     </script>
 
 {% endblock %}

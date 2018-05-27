@@ -5,12 +5,17 @@
 
     <style>
 
-        #uneDiv {
-            height: 20em;
+        #page-1 {
+            height: 200em;
             width: 20em;
             background-color: #a94442;
         }
 
+        #page-2 {
+            height: 200em;
+            width: 20em;
+            background-color: #49a92b;
+        }
 
     </style>
 
@@ -23,8 +28,39 @@
 {% block body %}
 
 
-    <div id="loader-div"></div>
-    <div id="uneDiv"></div>
+    <ul class="menu">
+        <li><a class="js-scrollTo" href="#page-1">Page1</a></li>
+        <li><a class="js-scrollTo" href="#page-2">Page 2</a></li>
+    </ul>
+
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <div id="page-1">
+        <!-- Contenu Page 1 -->
+    </div><!-- /page-1 -->
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+    <div id="page-2">
+        <!-- Contenu Page 2 -->
+    </div><!-- /page-2 -->
+
+    <ul class="menu">
+        <li><a class="js-scrollTo" href="#page-1">Page1</a></li>
+        <li><a class="js-scrollTo" href="#page-2">Page 2</a></li>
+    </ul>
+
 
 {% endblock %}
 
@@ -35,18 +71,11 @@
 
 $(function () {
 
-    var uneDiv = $('#uneDiv');
+    var container = $('#page-2');
 
-    loaderDivStart(uneDiv);
-
-    var request = {idRace: 1, category: 1};
-    $.ajax({
-        url: "{{ path('race_Table') }}",
-        data: request,
-        success: function (result) {
-            console.log('héééé');
-            loaderDivStop(uneDiv)
-        }
+    $('.js-scrollTo').on('click', function() { // Au clic sur un élément
+        $('html, body').animate( { scrollTop: $(container).offset().top }, 750 ); // Go
+        return false;
     });
 
 });

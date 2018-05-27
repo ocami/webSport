@@ -1,7 +1,12 @@
 /***********************************************************************************************************************
  /   navbar/general.html.twig
  /**********************************************************************************************************************/
-$(function () {
+setTimeout(function () {
+    navbarBadgeAdmin();
+    navBarChampionship();
+}, 10000);
+
+function navBarChampionship() {
     var li = document.createElement("LI");
 
     $.getJSON("/webSport/web/json/navbar_championship.json", function (result) {
@@ -16,7 +21,7 @@ $(function () {
         });
 
     });
-});
+}
 
 function navbarBadgeAdmin() {
 

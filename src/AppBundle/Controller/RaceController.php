@@ -46,10 +46,10 @@ class RaceController extends Controller
         $race = $this->get(UserService::class)->addUserDataInRace($race);
         $race = $this->get(RaceService::class)->postSelectOne($race);
 
-        return $this->render('race/test.html.twig', array(
+       /* return $this->render('race/test.html.twig', array(
             'race' => $race,
             'competitor' => $competitor
-        ));
+        ));*/
 
         return $this->render('race/show.html.twig', array(
             'race' => $race,
