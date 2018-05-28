@@ -16,20 +16,12 @@ function messageFullPage(message) {
 }
 
 function loaderStart() {
-    var fullPageDiv = document.createElement('div');
-    fullPageDiv.className = 'fullPage';
-    var loader = document.createElement('div');
-    loader.className = 'loader';
-    fullPageDiv.append(loader);
-    $('.container-fluid').before(fullPageDiv);
-    $(window).scrollTop(0);
+    $('#full-page').fadeIn(1000);
 }
 
 function loaderStop() {
-    $('.fullPage').fadeOut(1000);
+    $('#full-page').fadeOut(1000);
 }
-
-
 
 function loaderDivStart(divToLoad) {
     var $loaderDiv = $("#loader-div");

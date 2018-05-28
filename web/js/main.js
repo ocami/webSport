@@ -183,8 +183,6 @@ function adminRaces() {
 
     //initialize///////////////////////////////////////////////////////////////////////////////////////
     cb.checkboxradio(); //jquery-ui
-
-
     var table = $('#admin-races-table').DataTable({
         "info": false,
         "language": {
@@ -238,6 +236,7 @@ function adminRaces() {
         tableSelectRow(0);
         preRaceShow(0);
         $raceShow.show();
+        loaderDivStart($raceShow);
         loaderStop();
     } else {
         $raceShow.hide();
@@ -275,7 +274,6 @@ function adminRaces() {
     });
 
     $('#refuse').click(function () {
-        loaderDivStart($raceShow);
 
         raceUpdate(raceSeclected, 0, 0);
     });
@@ -285,6 +283,7 @@ function adminRaces() {
     function preRaceShow(index) {
 
         if (table.data().count()) {
+            loaderDivStart($raceShow);
             rowData = table.rows(index).data().toArray()[0];
             raceSeclected = rowData['id'];
             indexSelected = table.row(index).index();
@@ -292,9 +291,52 @@ function adminRaces() {
             cbChampionshipRefresh();
 
             raceShow(raceSeclected); //views/race/modelShow.html.twig
-        }else {
+        } else {
             $raceShow.hide();
         }
+    }
+
+    function raceShow(race) {
+        var path = Routing.generate('race_json', {
+            race: race
+        });
+
+        $.ajax({
+            url: path,
+            success: function (data) {
+                hydrate(data);
+            },
+            error: function () {
+                ajaxError();
+            }
+        });
+    }
+
+    function hydrate(data) {
+        var date = data.race.dateTime.replace(/\-|\:/g, ' ');
+        var date = date.split(" ");
+
+        var date = new Date(Date.UTC(date[0], date[1], date[2], date[3] - 2, date[4], date[5]));
+
+        $('#admin-race-name').text(data.race.name);
+        $('#admin-race-competition-id').attr('href', data.race.organizerId);
+        $('#admin-race-competition-organizer').text('Orga : ' + data.race.competitionName);
+        $('#admin-race-competition-name').text(data.race.competitionName);
+        $('#admin-race-distance').text(data.race.distance + ' Km');
+        $('#admin-race-day').text(date.toLocaleDateString('fr-FR', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        }));
+        $('#admin-race-hour').text(('0' + date.getHours()).slice(-2) + ' : ' + ('0' + date.getMinutes()).slice(-2));
+        $('#admin-race-address').text(data.race.street);
+        $('#admin-race-city').text(data.race.postCode + ' ' + data.race.city);
+
+        var $categories = $('#admin-race-categories')
+        $categories.empty();
+        $.each(data.categories, function (index, value) {
+            $categories.append(" <div class='col-xs-3 col-lg-2'><button class='btn-xs btn-info col-xs-12' disabled>" + value.name + "</button> </div>");
+        });
+
+        loaderDivStop($raceShow);
     }
 
     function raceUpdate(raceSeclected, valid, inChampionship) {
@@ -313,7 +355,7 @@ function adminRaces() {
                 preRaceShow(0);
                 updateNbRace();
             },
-            error: function() {
+            error: function () {
                 ajaxError();
             }
         });
@@ -328,7 +370,7 @@ function adminRaces() {
             success: function (data) {
                 navbarBadgeAdmin();
             },
-            error: function() {
+            error: function () {
                 ajaxError();
             }
         });
