@@ -119,7 +119,7 @@ class RaceController extends Controller
     }
 
     /**
-     * @Route("/race/json", name="race_json")
+     * @Route("/race/json",options={"expose"=true}, name="race_json")
      */
     public function getJson(Request $request)
     {

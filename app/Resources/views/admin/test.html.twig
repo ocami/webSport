@@ -1,286 +1,181 @@
-{#TO DO
-- loader => raceShow
-#}
 {% extends 'base.html.twig' %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.2.5/css/select.bootstrap.min.css"/>
 
     <style>
 
-
-        #example span {
-            display: none;
-        }
-
-        #example .championship {
-            white-space: nowrap; /* this is required unless you put the helper span closely near the img */
+        .date-time-panel span {
+            display: block;
             text-align: center;
-            overflow: visible;
-            /*background: #ffffff url('https://image.flaticon.com/icons/svg/291/291201.svg') no-repeat center center;*/
-            background: url('http://robwilson.tv/wordpress/wp-content/uploads/2008/12/Question-mark.png') no-repeat center center;
-            background-size: 25%;
+            font-size: larger;
         }
-    </style>
 
+        .location-panel span {
+            display: block;
+            text-align: center;
+            font-size: larger;
+        }
+
+        .race-panel .panel-body .competition span {
+            font-size: larger;
+        }
+
+        .race-panel .panel-body .organizer {
+            font-size: smaller;
+            text-align: right;
+        }
+
+        .race-title span {
+            display: inline;
+            font-weight: bolder;
+            font-size: larger;
+
+        }
+
+        .race-title img {
+            max-height: 1.5em;
+
+        }
+
+        .race-organizer {
+            margin-bottom: 2em;
+        }
+
+        .race-distance {
+            display: block;
+            text-align: center;
+            font-weight: bolder;
+            font-size: larger;
+            margin-top: 0.5em;
+        }
+
+        .row-ranck {
+            text-align: center;
+        }
+
+        .profile-href {
+            cursor: zoom-in;
+            color: #1b6d85;
+        }
+
+        #tables {
+            min-height: 10em;
+        }
+
+        #admin-race-categories button {
+            margin-bottom: 1em;
+        }
+
+
+    </style>
 
 {% endblock %}
 
 {% block title %}
-    {{ parent() }} Admin-races
+    {{ parent() }} test
 {% endblock %}
 
 {% block body %}
 
-    <div class="fullPage">
-        <div class="loader"></div>
-    </div>
 
-    <div id="admin-races">
-        <table id="admin-races-table" cellspacing="0" width="100%">
-            <thead>
-            <tr>
-                <th></th>
-                <th>id</th>
-                <th>Nom</th>
-                <th>Ville</th>
-                <th>Orga.</th>
-                <th>Date</th>
-                <th>Champ.</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for race in races %}
-                <tr>
-                    <td></td>
-                    <td>{{ race.id }}</td>
-                    <td>{{ race.name }}</td>
-                    <td>{{ race.competition.location.postCode }} {{ race.competition.location.city }}</td>
-                    <td>{{ race.name }}</td>
-                    <td><span>{{ race.dateTime | date("Ymd") }}</span> {{ race.dateTime | date("d/m/Y") }}</td>
-                    <td {% if race.requestInChampionship == 1 %} class="championship" style="text-indent: -9999px;" {% endif %}>{{ race.requestInChampionship }}</td>
-                </tr>
-            {% endfor %}
-
-
-            </tbody>
-        </table>
-
-
-        <div class="loader-div"></div>
-        <div id="admin-race-show">
-            <div class="buttons">
-                <button type="button" id="next" class="btn btn-dark next glyphicon glyphicon-chevron-left"></button>
-                <button type="button" id="prev" class="btn btn-dark  glyphicon glyphicon-chevron-right"></button>
-                <button type="button" id="valid" class="btn btn-dark">Valider</button>
-                <button type="button" id="refuse" class="btn btn-dark">Refuser</button>
-                <label><input id="cb-Championship" type="checkbox">Championat</label>
-
+    <div class="race-show row">
+        <!--panels-->
+        <div class="row">
+            <!--race panel-->
+            <div class="col-xs-4">
+                <div class="panel panel-primary race-panel">
+                    <div class="panel-heading race-title">
+                        <span id="admin-race-name" class="panel-title"></span>
+                    </div>
+                    <div class="panel-body row">
+                        <div class="col-xs-8 competition ">
+                            <a div="admin-race-competition-id" href='#'><span
+                                        class="glyphicon glyphicon-circle-arrow-left"></span></a>
+                            <span id="admin-race-competition-name"></span>
+                            <div id="admin-race-competition-organizer" class="organizer"></div>
+                        </div>
+                        <div class="col-xs-4">
+                            <span id="admin-race-distance" class="race-distance"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            {% include '/race/modelShow.html.twig' %}
+
+            <!--datetime panel-->
+            <div class="col-xs-4">
+                <div class="panel panel-primary date-time-panel">
+                    <div class="panel-heading "><span class="glyphicon glyphicon-time"></span></div>
+                    <div class="panel-body">
+                        <span id="admin-race-day" class="date-day"></span>
+                        <span id="admin-race-hour" class="date-hour"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!--location panel-->
+            <div class="col-xs-4">
+                <div class="panel panel-primary location-panel">
+                    <div class="panel-heading"><span class="glyphicon glyphicon-map-marker"></span></div>
+                    <div class="panel-body race-location">
+                        <span id="admin-race-address"></span>
+                        <span id="admin-race-city"></span>
+                    </div>
+                </div>
+            </div>
+
         </div>
-
+        <!--buttons categories-->
+        <div id="admin-race-categories" class="row"></div>
     </div>
+
 {% endblock %}
 
-{% block javascripts %}
+    {% block javascripts %}
+        {{ parent() }}
 
-    {{ parent() }}
-    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/select/1.2.5/js/dataTables.select.min.js"></script>
-    <script src="https://cdn.datatables.net/plug-ins/1.10.16/sorting/date-de.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+        <script>
 
-    <script>
-        /***********************************************************************************************************************
-         /   admin/races.html.twig
-         /
-         / Where table select change
-         /   - call function views/race/modelShow.html.twig raceShow([idRace])
-         /
-         / isRaceValid / isRaceInChampionship
-         /    - ajax  update
-         /**********************************************************************************************************************/
-        var $raceShow = $('#admin-race-show');
-        var raceSeclected;
-        var indexSelected;
-        var rowData;
-        var cb = $('#cb-Championship');
+            raceShow(2);
 
-        //initialize///////////////////////////////////////////////////////////////////////////////////////
-        cb.checkboxradio(); //jquery-ui
+            function raceShow(race) {
+                var path = Routing.generate('race_json', {
+                    race: race
+                });
 
-
-        var table = $('#admin-races-table').DataTable({
-            "info": false,
-            "language": {
-                "search": "Rechercher:",
-                "lengthMenu": "Voir _MENU_ courses  par page",
-                "zeroRecords": "Aucune courses non traitées",
-                "paginate": {
-                    "first": "Premier",
-                    "last": "Dernier",
-                    "next": "Suivant",
-                    "previous": "précédent"
-                },
-            },
-
-            select: {
-                style: 'single',
-                selector: 'td:first-child'
-            },
-            columns: [
-                {data: 'checkbox'},
-                {data: 'id'},
-                {data: 'name'},
-                {data: 'organizer'},
-                {data: 'city'},
-                {data: 'date'},
-                {data: 'championship'}
-            ],
-            columnDefs: [
-                {
-                    targets: 0,
-                    orderable: false,
-                    className: 'select-checkbox',
-                    width: "5%"
-                },
-                {
-                    targets: 1,
-                    visible: false
-                },
-                {
-                    targets: 5,
-                    width: "20%"
-                },
-                {
-                    targets: 6,
-                    width: "5%"
-                }
-            ]
-        }); //dataTables
-
-        if (table.data().count()) {
-            tableSelectRow(0);
-            preRaceShow(0);
-            $raceShow.show();
-            loaderStop();
-        } else {
-            $raceShow.hide();
-            loaderStop();
-        }
-
-        //Event///////////////////////////////////////////////////////////////////////////////////////
-        table.on('select', function (e, dt, type, index) {
-            preRaceShow(index);
-        });
-
-        $('#prev').click(function () {
-            tableSelectRow(indexSelected + 1);
-        });
-
-        $('#next').click(function () {
-            tableSelectRow(indexSelected - 1);
-        });
-
-        cb.click(function () {
-            if (this.checked)
-                cbChampionship(true);
-            else
-                cbChampionship(false);
-        })
-
-        $('#valid').click(function () {
-
-            var inChampionship = 0;
-
-            if (cb.prop('checked'))
-                inChampionship = 1;
-
-            raceUpdate(raceSeclected, 1, inChampionship);
-        });
-
-        $('#refuse').click(function () {
-            loaderDivStart($raceShow);
-
-            raceUpdate(raceSeclected, 0, 0);
-        });
-
-        //functions///////////////////////////////////////////////////////////////////////////////////////
-
-        function preRaceShow(index) {
-
-            if (table.data().count()) {
-                rowData = table.rows(index).data().toArray()[0];
-                raceSeclected = rowData['id'];
-                indexSelected = table.row(index).index();
-
-                cbChampionshipRefresh();
-
-                raceShow(raceSeclected); //views/race/modelShow.html.twig
-            } else {
-                $raceShow.hide();
+                $.ajax({
+                    url: path,
+                    success: function (data) {
+                        hydrate(data);
+                    },
+                    error: function () {
+                        ajaxError();
+                    }
+                });
             }
-        }
 
-        function raceUpdate(raceSeclected, valid, inChampionship) {
+            function hydrate(data) {
+                var date = data.race.dateTime.replace(/\-|\:/g, ' ');
+                var date = date.split(" ");
 
-            var path = Routing.generate('race_admin_supervise', {
-                race: raceSeclected,
-                valid: valid,
-                inChampionship: inChampionship
-            });
+                var date = new Date(Date.UTC(date[0], date[1], date[2], date[3] - 2, date[4], date[5]));
 
-            $.ajax({
-                url: path,
-                success: function (data) {
-                    table.row(indexSelected).remove().draw();
-                    tableSelectRow(0);
-                    preRaceShow(0);
-                    updateNbRace();
-                },
-                error: function () {
-                    ajaxError();
-                }
-            });
-        }
+                $('#admin-race-name').text(data.race.name);
+                $('#admin-race-competition-id').attr('href', data.race.organizerId);
+                $('#admin-race-competition-organizer').text('Orga : ' + data.race.competitionName);
+                $('#admin-race-competition-name').text(data.race.competitionName);
+                $('#admin-race-distance').text(data.race.distance + ' Km');
+                $('#admin-race-day').text(date.toLocaleDateString('fr-FR', {
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                }));
+                $('#admin-race-hour').text(('0' + date.getHours()).slice(-2) + ' : ' + ('0' + date.getMinutes()).slice(-2));
+                $('#admin-race-address').text(data.race.street);
+                $('#admin-race-city').text(data.race.postCode + ' ' + data.race.city);
 
-        function updateNbRace() {
+                $.each(data.categories, function (index, value) {
+                    $('#admin-race-categories').append(" <div class='col-xs-3 col-lg-2'><button class='btn-xs btn-info col-xs-12' disabled>" + value.name + "</button> </div>");
+                });
+            }
+        </script>
 
-            var path = Routing.generate('race_countNotSupervised');
-
-            $.ajax({
-                url: path,
-                success: function (data) {
-                    navbarBadgeAdmin();
-                },
-                error: function () {
-                    ajaxError();
-                }
-            });
-        }
-
-        function cbChampionshipRefresh() {
-            $('#cbChampionship').remove();
-
-            if (rowData['championship'])
-                cbChampionship(true);
-            else
-                cbChampionship(false);
-        }
-
-        function cbChampionship(is) {
-            if (is)
-                cb.prop('checked', true).checkboxradio('refresh');
-            else
-                cb.prop('checked', false).checkboxradio('refresh');
-        }
-
-        function tableSelectRow(index) {
-            table.row(':eq(' + index + ')', {page: 'all'}).select();
-        }
-    </script>
-{% endblock %}
+    {% endblock %}

@@ -90,18 +90,23 @@
     {#<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>#}
     {#<script src="{{ asset('myDateTime/myDateTime.js') }}"></script>#}
 
-
+    {% if is_granted('ROLE_ADMIN') %}
+    <script>
+        setTimeout(function () {
+            navbarBadgeAdmin()
+        }, 2000);
+    </script>{% endif %}
 
 
     {% if is_granted('ROLE_COMPETITOR') %}
     <script>
-        navbarCompetitorProfile()
+        setTimeout(function () {
+            navbarCompetitorProfile()
+        }, 3000);
+
     </script>{% endif %}
 
-    {% if is_granted('ROLE_ADMIN') %}
-    <script>
-        navbarBadgeAdmin()
-    </script>{% endif %}
+
 
 
 {% endblock %}

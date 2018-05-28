@@ -2,9 +2,8 @@
  /   navbar/general.html.twig
  /**********************************************************************************************************************/
 setTimeout(function () {
-    navbarBadgeAdmin();
     navBarChampionship();
-}, 10000);
+}, 5000);
 
 function navBarChampionship() {
     var li = document.createElement("LI");
