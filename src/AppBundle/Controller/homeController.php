@@ -44,10 +44,11 @@ class homeController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $competitor = null;
+        $competitor = $this->get(UserService::class)->getCategoryCompetitor();
 
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_COMPETITOR'))
-            $competitor = $this->get(UserService::class)->getCategoryCompetitor();
+        return $this->render('home/test.html.twig', array(
+            'competitor' => $competitor
+        ));
 
         return $this->render('home/index.html.twig', array(
             'competitor' => $competitor
