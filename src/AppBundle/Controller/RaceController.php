@@ -46,10 +46,10 @@ class RaceController extends Controller
         $race = $this->get(UserService::class)->addUserDataInRace($race);
         $race = $this->get(RaceService::class)->postSelectOne($race);
 
-       /* return $this->render('race/test.html.twig', array(
-            'race' => $race,
-            'competitor' => $competitor
-        ));*/
+        /* return $this->render('race/test.html.twig', array(
+             'race' => $race,
+             'competitor' => $competitor
+         ));*/
 
         return $this->render('race/show.html.twig', array(
             'race' => $race,
@@ -128,6 +128,27 @@ class RaceController extends Controller
         $race = $this->getDoctrine()->getRepository(Race::class)->toString($race);
         return new JsonResponse($race);
     }
+
+
+    /**
+     * @Route("/race/test", name="races_search")
+     */
+    public function search()
+    {
+        $data = array(
+            'categories' => array(1, 2, 3, 4, 10),
+            'dep' => array(35, 56, 88),
+            'dist' => array('min' => 0, 'max' => 999.9),
+            'date' => array('min' => "2000-01-01 00:00:00", 'max' => "2100-12-31 23:59:00"),
+        );
+
+        $races = $this->getDoctrine()->getRepository(Race::class)->search2($data);
+
+        return $this->render('race/test.html.twig', array(
+            'races' => $races,
+        ));
+    }
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

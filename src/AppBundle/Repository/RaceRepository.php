@@ -97,4 +97,53 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
 
         return $nb;
     }
+
+    Public function search($data)
+    {
+        //categories
+        $whereCategories = "AND (rc.category_id = " . $data['categories'][0];
+        for ($i = 0; $i < count($data['categories']); $i++) {
+            if ($i >= 1)
+                $whereCategories .= " OR rc.category_id = ".$data['categories'][$i];
+        }
+        $whereCategories .= ")";
+
+        //dep
+        $wherePostCode = "AND (l.postCode LIKE '" . $data['dep'][0]."%'";
+        for ($i = 0; $i < count($data['dep']); $i++) {
+            if ($i >= 1)
+                $wherePostCode .= " OR l.postCode LIKE '".$data['dep'][$i]."%'";
+        }
+        $wherePostCode .= ")";
+
+        //distance
+        $whereDistance = "AND r.distance BETWEEN '".$data['dist']['min']."' AND '".$data['dist']['max']."'";
+        var_dump($whereDistance);
+
+        //date
+        $whereDate = "AND r.date_time BETWEEN '".$data['date']['min']."' AND '".$data['date']['max']."'";
+
+
+        $rawSql = "
+            SELECT r.id, r.name, r.distance, r.in_championship as inChampionship, r.date_time as dateTime,
+            c.id as competitionId, c.name as competitionName,
+            o.id as organizerId, o.name as organizerName,
+            l.street, l.postCode, l.city, l.x, l.y
+            FROM race_category rc 
+            INNER JOIN race r ON rc.race_id = r.id
+            INNER JOIN competition c ON r.competition_id = c.id
+            INNER JOIN organizer o ON c.organizer_id = o.id
+            INNER JOIN location l on c.location_id = l.id
+            WHERE r.valid = 1
+            ".$whereCategories.$wherePostCode.$whereDistance.$whereDate."
+            GROUP By r.id
+            ORDER BY r.date_time
+            ";
+
+        $stmt = $this->getEntityManager()->getConnection()->prepare($rawSql);
+        $stmt->execute([]);
+
+        return $stmt->fetchAll();
+    }
+
 }
