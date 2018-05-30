@@ -136,15 +136,52 @@ class RaceController extends Controller
     public function search()
     {
         $data = array(
-            'categories' => array(1, 2, 3, 4, 10),
-            'dep' => array(35, 56, 88),
-            'dist' => array('min' => 0, 'max' => 999.9),
-            'date' => array('min' => "2000-01-01 00:00:00", 'max' => "2100-12-31 23:59:00"),
+            'categories' => null,
+            'dep' => null,
+            'dist' => null,
+            'date' => null,
+            'inChampionship' => null,
+            'enrol' => null,
+            'competitorRegister' => array(3)
         );
 
-        $races = $this->getDoctrine()->getRepository(Race::class)->search2($data);
+        $racesId = $this->getDoctrine()->getRepository(Race::class)->search($data);
 
-        return $this->render('race/test.html.twig', array(
+        $races = array();
+        $i = 0;
+
+       /* foreach ($racesId as $r) {
+            $r = $this->getDoctrine()->getRepository(Race::class)->find($r);
+            $r = $this->get(RaceService::class)->postSelectOne($r);
+            $r = $this->get(UserService::class)->addUserDataInRace($r);
+
+            if ($data['competitorRegister'])
+                if (in_array($r->getCompetitorRegister(), $data['competitorRegister']))
+                    $races[$i] = $r;
+                else
+                    continue;
+
+            $races[$i] = $r;
+        }*/
+
+        for ($i = 0; $i < count($racesId); $i++) {
+            $r = $this->getDoctrine()->getRepository(Race::class)->find($racesId[$i]);
+            $r = $this->get(RaceService::class)->postSelectOne($r);
+            $r = $this->get(UserService::class)->addUserDataInRace($r);
+
+            if ($data['competitorRegister'])
+                if (in_array($r->getCompetitorRegister(), $data['competitorRegister']))
+                    $races[$i] = $r;
+                else
+                    continue;
+
+            $races[$i] = $r;
+        }
+
+
+        //var_dump($races);
+
+        return $this->render('race/showSearch.html.twig', array(
             'races' => $races,
         ));
     }

@@ -171,7 +171,10 @@ class UserService
     public function RaceRegisterStatus(Race $race)
     {
         if ($this->em->getRepository(RaceCompetitor::class)->competitorIsRegisterToRace($race, $this->competitor))
-            return 2;
+            if ($race->getPassed())
+                return 3;
+            else
+                return 2;
 
         if ($race->getCategories()->contains($this->getCategoryCompetitor()))
             if ($race->getEnrol())
@@ -203,7 +206,7 @@ class UserService
      */
     public function getCompetitor()
     {
-        if($this->competitor)
+        if ($this->competitor)
             $this->competitor->setCategory($this->getCategoryCompetitor());
 
         return $this->competitor;

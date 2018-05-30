@@ -100,45 +100,71 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
 
     Public function search($data)
     {
-        //categories
-        $whereCategories = "AND (rc.category_id = " . $data['categories'][0];
-        for ($i = 0; $i < count($data['categories']); $i++) {
-            if ($i >= 1)
-                $whereCategories .= " OR rc.category_id = ".$data['categories'][$i];
+
+        $rawSql = "SELECT r.id
+                    FROM race_category rc 
+                    INNER JOIN race r ON rc.race_id = r.id
+                    INNER JOIN competition c ON r.competition_id = c.id
+                    INNER JOIN organizer o ON c.organizer_id = o.id
+                    INNER JOIN location l on c.location_id = l.id
+                    WHERE r.valid = 1 ";
+
+        if($data['categories']){
+            $whereCategories = "AND (rc.category_id = " . $data['categories'][0];
+            for ($i = 0; $i < count($data['categories']); $i++) {
+                if ($i >= 1)
+                    $whereCategories .= " OR rc.category_id = ".$data['categories'][$i];
+            }
+            $whereCategories .= ")";
+
+            $rawSql .= $whereCategories;
         }
-        $whereCategories .= ")";
 
-        //dep
-        $wherePostCode = "AND (l.postCode LIKE '" . $data['dep'][0]."%'";
-        for ($i = 0; $i < count($data['dep']); $i++) {
-            if ($i >= 1)
-                $wherePostCode .= " OR l.postCode LIKE '".$data['dep'][$i]."%'";
+        if($data['dep']){
+            $wherePostCode = "AND (l.postCode LIKE '" . $data['dep'][0]."%'";
+            for ($i = 0; $i < count($data['dep']); $i++) {
+                if ($i >= 1)
+                    $wherePostCode .= " OR l.postCode LIKE '".$data['dep'][$i]."%'";
+            }
+            $wherePostCode .= ")";
+
+            $rawSql .= $wherePostCode;
         }
-        $wherePostCode .= ")";
 
-        //distance
-        $whereDistance = "AND r.distance BETWEEN '".$data['dist']['min']."' AND '".$data['dist']['max']."'";
-        var_dump($whereDistance);
+        if(is_bool($data['inChampionship'])){
+            var_dump('inChampionship');
+            $whereChampionship = "AND r.in_championship = '".$data['inChampionship']."'";
+            $rawSql .= $whereChampionship;
+        }
 
-        //date
-        $whereDate = "AND r.date_time BETWEEN '".$data['date']['min']."' AND '".$data['date']['max']."'";
+        if(is_bool($data['enrol'])){
+            $whereEnrol = "AND r.enrol = '".$data['enrol']."'";
+            $rawSql .= $whereEnrol;
+        }
 
+        if($data['dist']){
+            if(!isset($data['dist']['min']))
+                $data['dist']['min'] = 0;
 
-        $rawSql = "
-            SELECT r.id, r.name, r.distance, r.in_championship as inChampionship, r.date_time as dateTime,
-            c.id as competitionId, c.name as competitionName,
-            o.id as organizerId, o.name as organizerName,
-            l.street, l.postCode, l.city, l.x, l.y
-            FROM race_category rc 
-            INNER JOIN race r ON rc.race_id = r.id
-            INNER JOIN competition c ON r.competition_id = c.id
-            INNER JOIN organizer o ON c.organizer_id = o.id
-            INNER JOIN location l on c.location_id = l.id
-            WHERE r.valid = 1
-            ".$whereCategories.$wherePostCode.$whereDistance.$whereDate."
-            GROUP By r.id
-            ORDER BY r.date_time
-            ";
+            if(!isset($data['dist']['max']))
+                $data['dist']['max'] = 999.9;
+
+            $whereDistance = "AND r.distance BETWEEN '".$data['dist']['min']."' AND '".$data['dist']['max']."'";
+            $rawSql .= $whereDistance;
+        }
+
+        if($data['date']){
+            if(!isset($data['date']['min']))
+                $data['date']['min'] = '2000-01-01 00:00:00';
+
+            if(!isset($data['date']['max']))
+                $data['date']['max'] = '2100-12-31 23:59:00';
+
+            $whereDate = "AND r.date_time BETWEEN '".$data['date']['min']."' AND '".$data['date']['max']."'";
+            $rawSql .= $whereDate;
+        }
+
+        $rawSql .= " GROUP BY r.id ORDER BY r.date_time";
 
         $stmt = $this->getEntityManager()->getConnection()->prepare($rawSql);
         $stmt->execute([]);

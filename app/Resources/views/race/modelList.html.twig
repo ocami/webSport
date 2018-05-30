@@ -79,7 +79,7 @@
                                onclick="location.href = '{{ path('race_edit', {'id': race.id}) }}';">
 
                         {% if race.supervised %}
-                            {{ competition.valid|validImg }}
+                            {{ race.competition.valid|validImg }}
                         {% else %}
                             <img src="{{ asset('img/question.png ') }}" class="img-circle pull-right">
                         {% endif %}

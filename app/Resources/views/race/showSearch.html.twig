@@ -2,19 +2,12 @@
 
 {% block stylesheets %}
     {{ parent() }}
-
-
 {% endblock %}
 
 {% block title %}
-    {{ parent() }} test
+    {{ parent() }} Recherche courses
 {% endblock %}
 
 {% block body %}
-
+    {{ include('race/modelList.html.twig') }}
 {% endblock %}
-
-    {% block javascripts %}
-        {{ parent() }}
-
-    {% endblock %}
