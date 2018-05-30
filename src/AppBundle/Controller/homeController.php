@@ -203,8 +203,11 @@ class homeController extends Controller
 
         $message = '';
 
+        $categories = $this->getDoctrine()->getRepository(Category::class)->categoriesByGender();
+
+
         return $this->render('home/test.html.twig', array(
-            'message' => $message,
+            'categories' => $categories,
         ));
     }
 

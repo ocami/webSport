@@ -131,11 +131,11 @@ class RaceController extends Controller
 
 
     /**
-     * @Route("/race/test", name="races_search")
+     * @Route("/race/search", options={"expose"=true}, name="races_search")
      */
-    public function search()
+    public function search(Request $request)
     {
-        $data = array(
+        /*$data = array(
             'categories' => null,
             'dep' => null,
             'dist' => null,
@@ -143,7 +143,14 @@ class RaceController extends Controller
             'inChampionship' => null,
             'enrol' => null,
             'competitorRegister' => array(3)
-        );
+        );*/
+
+        $data = $request->query->get('dataSearch');
+        $data = json_decode($data, true);
+
+        var_dump($data);
+
+        $categories = $this->getDoctrine()->getRepository(Category::class)->categoriesByGender();
 
         $racesId = $this->getDoctrine()->getRepository(Race::class)->search($data);
 
@@ -183,6 +190,7 @@ class RaceController extends Controller
 
         return $this->render('race/showSearch.html.twig', array(
             'races' => $races,
+            'categories' => $categories
         ));
     }
 
