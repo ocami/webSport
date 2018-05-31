@@ -53,7 +53,6 @@ class AddressRepository extends \Doctrine\ORM\EntityRepository
     }
 
 
-
     /**
      * @return array string
      */
@@ -67,5 +66,32 @@ class AddressRepository extends \Doctrine\ORM\EntityRepository
 
         return $rc;
     }
+
+    //region
+    Public function regions()
+    {
+        $rawSql = "SELECT * FROM regions ";
+
+        $stmt = $this->getEntityManager()->getConnection()->prepare($rawSql);
+        $stmt->execute([]);
+
+        return $stmt->fetchAll();
+    }
+
+    //dep
+    Public function dep($region)
+    {
+        $rawSql = "SELECT r.id, d.code, d.name
+                    FROM departments d
+                    INNER JOIN regions r ON d.regions_id = r.id
+                    WHERE r.id = '".$region."'";
+
+        $stmt = $this->getEntityManager()->getConnection()->prepare($rawSql);
+        $stmt->execute([]);
+
+        return $stmt->fetchAll();
+    }
+
+
 
 }

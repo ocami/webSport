@@ -8,12 +8,14 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Address;
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Championship;
 use AppBundle\Entity\Competition;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\RaceCompetitor;
 use AppBundle\Form\RaceNewType;
+use AppBundle\Repository\AddressRepository;
 use AppBundle\Services\CompetitionService;
 use AppBundle\Services\DbService;
 use AppBundle\Services\RaceService;
@@ -37,6 +39,7 @@ use AppBundle\Entity\Competitor;
 use Symfony\Component\Validator\Constraints\Time;
 
 
+
 class homeController extends Controller
 {
     /**
@@ -44,14 +47,14 @@ class homeController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $competitor = $this->get(UserService::class)->getCategoryCompetitor();
+        $competitor = $this->get(UserService::class)->getCompetitor();
+        $categories = $this->getDoctrine()->getRepository(Category::class)->categoriesByGender();
 
-        return $this->render('home/test.html.twig', array(
-            'competitor' => $competitor
-        ));
 
         return $this->render('home/index.html.twig', array(
-            'competitor' => $competitor
+            'competitor' => $competitor,
+            'categories' => $categories,
+
         ));
     }
 
@@ -201,13 +204,29 @@ class homeController extends Controller
                 //var_dump($km);
         */
 
-        $message = '';
 
-        $categories = $this->getDoctrine()->getRepository(Category::class)->categoriesByGender();
+        $regions = $this->getDoctrine()->getRepository(Address::class)->regions();
+
+        $regionsArray = [];
+
+        foreach ($regions as $r){
+            $departements = $this->getDoctrine()->getRepository(Address::class)->dep($r['id']);
+            $i = 0;
+            foreach ($departements as $dep){
+                $regionsArray[$r['name']][$i] = array(
+                    'region' => $dep['id'],
+                    'code' => $dep['code'],
+                    'name' => $dep['name']
+                );
+                $i++;
+            }
+        }
+
+        //var_dump($regionsArray);
 
 
         return $this->render('home/test.html.twig', array(
-            'categories' => $categories,
+            'regions' => $regionsArray
         ));
     }
 
