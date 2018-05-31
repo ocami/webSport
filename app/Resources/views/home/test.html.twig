@@ -32,33 +32,13 @@
 
 {% block body %}
 
-    {#    {% for key,reg in regions %}
-            {{ key }}<br>
 
-            {% for dep in reg %}
-                {{ dep.code }} - {{ dep.name }}<br>
-            {% endfor %}
-            <hr>
-        {% endfor %}#}
 
 
 
     <div class="col-md-3">
         <div id="search-bar">
             <div class="panel-group" id="accordion">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Collapsible Group 2</a>
-                        </h4>
-                    </div>
-                    <div id="collapse2" class="panel-collapse collapse">
-                        <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                        </div>
-                    </div>
-                </div>
                 <!-- REGIONS -->
                 <div id="region-container" class="panel panel-default">
                     <div class="panel-heading">
@@ -69,68 +49,31 @@
                         </div>
                     </div>
                     <ul class="list-group collapse" id="menuPanelRegion">
-                        <li class="list-group-item librePanelListGroupItem">
-                            <a data-toggle="collapse" href="#region-1">
-                                <span>Bretagne</span>
-                                <b class="pull-right glyphicon glyphicon-chevron-right"></b>
-                            </a>
-
-                            <ul id="region-1" class="collapse librePanelSubListGroupItem">
-
-                                <span>22 - Côtes-d'Armor</span>
-
-                                <span>29 - Finistère</span>
-
-                                <span>35 - Ille-et-Vilaine</span>
-
-                                <span>56 - Morbihan</span>
-
-                            </ul>
-
-                        </li>
+                        {% set i = 0 %}
+                        {% for key,reg in regions %}
+                        {% set i = i + 1 %}
                         <li class="list-group-item">
-                            <a data-toggle="collapse" href="#region-3">
-                                <span>Bretagne</span>
+                            <a data-toggle="collapse" href="#region-{{ i }}">
+                                <span>{{ key }}</span>
                                 <b class="glyphicon glyphicon-chevron-right"></b>
                             </a>
                             <div class="pretty p-switch p-fill pull-right">
-                                <input id="cb-region-3" value="reg-3" type="checkbox"/>
+                                <input id="cb-region-{{ i }}" value="reg-{{ i }}" type="checkbox"/>
                                 <div class="state"><label></label></div>
                             </div>
 
-                            <ul id="region-3" class="collapse dep-container">
-                                <div class="pretty p-icon p-curve p-rotate">
-                                    <input type="checkbox" value="dep-22-3">
-                                    <div class="state p-success-o">
-                                        <i class="icon glyphicon glyphicon-ok"></i>
-                                        <label>22 - Côtes-d'Armor</label>
-                                    </div>
-                                </div>
-
-                                <div class="pretty p-icon p-curve p-rotate">
-                                    <input type="checkbox" value="dep-29-3">
-                                    <div class="state p-success-o">
-                                        <i class="icon glyphicon glyphicon-ok"></i>
-                                        <label>29 - Finistère</label>
-                                    </div>
-                                </div>
-
-                                <div class="pretty p-icon p-curve p-rotate">
-                                    <input type="checkbox" value="dep-35-3">
-                                    <div class="state p-success-o">
-                                        <i class="icon glyphicon glyphicon-ok"></i>
-                                        <label>35 - Ille-et-Vilaine</label>
-                                    </div>
-                                </div>
-
-                                <div class="pretty p-icon p-curve p-rotate">
-                                    <input type="checkbox" value="dep-56-3">
-                                    <div class="state p-success-o">
-                                        <i class="icon glyphicon glyphicon-ok"></i>
-                                        <label>56 - Morbhian</label>
-                                    </div>
-                                </div>
+                            <ul id="region-{{ i }}" class="collapse dep-container">
+                                {% for dep in reg %}
+                                    <div class="pretty p-icon p-curve p-rotate">
+                                        <input type="checkbox" value="dep-{{ dep.code }}-{{ i }}">
+                                        <div class="state p-success-o">
+                                            <i class="icon glyphicon glyphicon-ok"></i>
+                                            <label>{{ dep.code }} - {{ dep.name }}</label>
+                                        </div>
+                                    </div><br>
+                                {% endfor %}
                             </ul>
+                            {% endfor %}
                         </li>
                     </ul>
 
@@ -197,18 +140,17 @@
                 cptDepAll++;
 
                 if (data[0] === 'dep') {
-                    if (this.checked){
+                    if (this.checked) {
                         departements.push(data[1]);
                         cptDepAllChecked++;
 
-                        if (data[2]===reg)
+                        if (data[2] === reg)
                             cptDepRegChecked++;
                     }
-                    if (data[2]===reg)
+                    if (data[2] === reg)
                         cptDepReg++;
                 }
             });
-
 
 
             if (cptDepRegChecked < cptDepReg)
