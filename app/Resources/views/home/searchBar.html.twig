@@ -1,0 +1,471 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} index
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css"/>
+    <link rel="stylesheet" href="{{ asset('css/multi-switch.min.css') }}"/>
+
+    <style>
+
+        .no-padding > [class*='col-'] {
+            max-height: 1em;
+        }
+
+        .switchContainer {
+            padding-top: 0.2em;
+        }
+
+        #search-bar .panel-heading {
+            height: 1.5em;
+            padding: 0em;
+        }
+
+        .dep-container {
+            padding: 1em 0em 0em 0.5em;
+        }
+
+    </style>
+
+{% endblock %}
+
+{% block body %}
+
+    <div class="col-md-3">
+        <div id="search-bar">
+            <div class="panel-group" id="accordion">
+
+                <!-- CATEGORIES -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse1"><span
+                                        class="glyphicon glyphicon-folder-close">
+                            </span>Catégories</a>
+                        </h4>
+                    </div>
+                    <div id="collapse1" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="pretty p-switch p-fill pull-right">
+                                <input id="category-all" type="checkbox"/>
+                                <div class="state">
+                                    <label></label>
+                                </div>
+                            </div>
+                            {% for key,gender in categories %}
+                                <span class="category-gender">{{ key }}</span>
+                                <div id="category-once">
+                                    {% for c in gender %}
+                                        <div class="pretty p-icon p-curve p-rotate">
+                                            <input type="checkbox" value="{{ c.id }}">
+                                            <div class="state p-success-o">
+                                                <i class="icon glyphicon glyphicon-ok"></i>
+                                                <label>{{ c.name }}</label>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <!--END CATEGORIES-->
+
+                <!-- LOACALISATION -->
+                <div id="region-container" class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <a data-toggle="collapse" href="#menuPanelRegion">
+                                <span>Localisation</span>
+                            </a>
+                        </div>
+                    </div>
+                    <ul class="list-group collapse" id="menuPanelRegion">
+                        {% set i = 0 %}
+                        {% for key,reg in regions %}
+                        {% set i = i + 1 %}
+                        <li class="list-group-item">
+                            <div class="row no-padding">
+                                <div class="col-xs-9">
+                                    <a data-toggle="collapse" href="#region-{{ i }}">
+                                        <span>{{ key }}</span>
+                                    </a>
+                                </div>
+                                <div id="cb-region-{{ i }}" class='switchContainer col-xs-2'>
+                                    <input id="cb-region-{{ i }}" region="{{ i }}" type='checkbox' class='multi-switch'
+                                           unchecked-value='0' checked-value='1' value='0'/><br>
+                                </div>
+                            </div>
+
+                            <ul id="region-{{ i }}" class="collapse dep-container">
+                                {% for dep in reg %}
+                                    <div class="pretty p-icon p-curve p-rotate">
+                                        <input class="cb-dep" type="checkbox" region="{{ i }}" value="{{ dep.code }}">
+                                        <div class="state p-success-o">
+                                            <i class="icon glyphicon glyphicon-ok"></i>
+                                            <label>{{ dep.code }} - {{ dep.name }}</label>
+                                        </div>
+                                    </div><br>
+                                {% endfor %}
+                            </ul>
+                            {% endfor %}
+                        </li>
+                    </ul>
+
+                </div>
+                <!--END LOACALISATION-->
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+    </div>
+
+
+
+    <div class="col-md-3"></div>
+
+{% endblock %}
+
+
+
+    {% block javascripts %}
+        {{ parent() }}
+
+        <script>
+
+
+            var dataSearch = {
+                categories: null,
+                dep: null,
+                dist: null,
+                date: null,
+                inChampionship: null,
+                enrol: null,
+                competitorRegister: null
+            };
+
+            //LOCALISATION//////////////////////////////////////////////////////////////////////////////////////////////
+
+            searchBarLocalisation();
+            searchBarCategories();
+
+            function searchBarLocalisation() {
+                var $cbDep= $("#region-container").find('.cb-dep');
+
+                //init
+                $(function () {
+                    $('.multi-switch').multiSwitch();
+                });
+
+                //events
+                $cbDep.click(function () {
+                    depUpdate($(this).attr('region'));
+                });
+                function regionCheck(status, region) {
+                    var cbDep = $('#region-' + region + ' input');
+
+                    if (status)
+                        cbDep.prop('checked', true);
+                    else
+                        cbDep.prop('checked', false);
+
+                    depUpdate(region);
+                } //Call by multiSwitch function on region checkbox click
+
+                //functions
+                function regionCheckBoxUpdate(region, status) {
+                    var unchecked;
+                    var checked;
+
+                    switch (status) {
+                        case 'all':
+                            unchecked = 0;
+                            checked = 0;
+                            break;
+                        case 'none':
+                            unchecked = 0;
+                            checked = 1;
+                            break;
+                        case 'some':
+                            unchecked = 1;
+                            checked = 1;
+                    }
+
+                    var checkbox = $("<input region=" + region + "  unchecked-value=" + unchecked + " checked-value=" + checked + " type='checkbox' class='multi-switch' value='0'/><br>")
+                    $('#cb-region-'+region).add().html(checkbox).find('.multi-switch').multiSwitch()
+                }
+                function depUpdate(reg) {
+                    var cptDepReg = 0;
+                    var cptDepRegChecked = 0;
+                    var cptDepAll = 0;
+                    var cptDepAllChecked = 0;
+                    var departements = [];
+
+
+                    $cbDep.each(function () {
+                        var dep = $(this).val();
+                        var depReg = $(this).attr('region');
+                        cptDepAll++;
+
+                        if (this.checked) {
+                            departements.push(dep);
+                            cptDepAllChecked++;
+
+                            if (depReg === reg)
+                                cptDepRegChecked++;
+                        }
+                        if (depReg === reg)
+                            cptDepReg++;
+                    });
+                    if (cptDepRegChecked < cptDepReg)
+                        regionCheckBoxUpdate(reg, 'some');
+
+                    if (cptDepRegChecked === cptDepReg)
+                        regionCheckBoxUpdate(reg, 'all');
+
+                    if (cptDepRegChecked === 0)
+                        regionCheckBoxUpdate(reg, 'none');
+
+
+                    if (cptDepRegChecked > 0)
+                        dataSearch.dep = departements;
+                    else
+                        dataSearch.dep = null;
+                }
+            }
+
+            function searchBarCategories() {
+                var $cbCategoryAll = $('#category-all');
+                var $cbCategories = $("#category-once input");
+
+                //envents
+                $cbCategoryAll.click(function () {
+                    if (this.checked)
+                        $cbCategories.prop('checked', true);
+                    else
+                        $cbCategories.prop('checked', false);
+
+                    categoriesUpdate();
+                });
+                $cbCategories.click(function () {
+                    categoriesUpdate()
+                });
+
+                //functions
+                function categoriesUpdate() {
+                    var i = 0;
+                    var categories = [];
+                    $cbCategories.each(function () {
+                        i++;
+                        if (this.checked)
+                            categories.push($(this).val());
+                    });
+
+                    if (categories.length < i)
+                        $cbCategoryAll.prop('checked', false);
+
+                    if (categories.length > 0)
+                        dataSearch.categories = categories;
+                    else
+                        dataSearch.categories = null;
+
+                    console.log(dataSearch);
+                }
+            }
+
+
+            ///multiSwitch//////////////////////////////////////////////////////////////////////////////////////////////
+            (function ($) {
+                $.fn.multiSwitch = function (options) {
+
+                    var settings = $.extend({
+                        textChecked: 'Tout ajouter',
+                        textNotChecked: 'Tout supprimer',
+                        width: 40,
+                        functionOnChange: function ($element) {
+                        }
+                    }, options);
+
+                    // Create de base element
+                    var element = $('<div />').addClass('multi-switch');
+                    // Set width in the base element
+                    element.css('width', settings.width);
+                    // Create de content element
+                    var content = $('<div />').addClass('switch-content');
+                    // Insert a circle element
+                    content.append($('<div />').addClass('switch-circle'));
+                    // Append to base element
+                    element.append(content);
+
+                    // Store de main object
+                    var cheslides = this;
+
+                    cheslides.each(function () {
+
+                        var uelement = element.clone();
+
+                        var eventClick = true;
+
+                        if ($(this).attr('checked-value') && !$(this).is(":disabled")) {
+
+                            var classe = 'initial';
+                            if ($(this).val() == $(this).attr('checked-value')) {
+                                classe = 'active';
+                            } else if ($(this).val() == $(this).attr('unchecked-value')) {
+                                classe = 'disable';
+                            }
+
+                            if (classe == 'initial') {
+                                var infoDeferido = $('<span class="info-slide disable" title="' + settings.textNotChecked + '"/>');
+                                var infoIndeferido = $('<span class="info-slide active" title="' + settings.textChecked + '"/>');
+                                uelement.find('.switch-content').append(infoDeferido);
+                                uelement.find('.switch-content').append(infoIndeferido);
+
+                                infoDeferido.click(function () {
+                                    var checkbox = $(uelement).find('input');
+                                    checkbox.val($(checkbox).attr('checked-value'));
+
+                                    $(uelement).find('span').html(settings.textChecked);
+                                    $(uelement).find('.switch-content').addClass('active');
+                                    $(uelement).find('.switch-content').removeClass('disable');
+
+                                    eventClick = true;
+
+                                    $(uelement).find('.info-slide').remove();
+                                });
+
+                                infoDeferido.hover(function () {
+                                    $(uelement).find('.switch-content').addClass('disable');
+                                    $(uelement).find('.switch-content').removeClass('initial');
+                                }, function () {
+                                    $(uelement).find('.switch-content').addClass('initial');
+                                    $(uelement).find('.switch-content').removeClass('disable');
+                                });
+
+                                infoIndeferido.click(function () {
+                                    var checkbox = $(uelement).find('input');
+                                    checkbox.val($(checkbox).attr('unchecked-value'));
+
+                                    $(uelement).find('span').html(settings.textChecked);
+                                    $(uelement).find('.switch-content').addClass('disable');
+                                    $(uelement).find('.switch-content').removeClass('active');
+
+                                    eventClick = true;
+
+                                    $(uelement).find('.info-slide').remove();
+                                });
+
+                                infoIndeferido.hover(function () {
+                                    $(uelement).find('.switch-content').addClass('active');
+                                    $(uelement).find('.switch-content').removeClass('initial');
+                                }, function () {
+                                    $(uelement).find('.switch-content').addClass('initial');
+                                    $(uelement).find('.switch-content').removeClass('active');
+                                });
+
+                                eventClick = false;
+                            }
+
+                            uelement.find('.switch-content')
+                                .addClass(classe)
+                                .addClass($(this).is(":disabled") ? 'disabled' : '');
+                            uelement.append($(this).clone());
+
+                        } else {
+                            var isChecked = $(this).is(":checked");
+
+                            uelement.find('span').html(isChecked ? settings.textChecked : settings.textNotChecked);
+                            uelement.find('.switch-content')
+                                .addClass(isChecked ? 'active' : 'disable')
+                                .addClass($(this).is(":disabled") ? 'disabled' : '');
+                            uelement.append($(this).clone());
+                        }
+
+                        uelement.click(function () {
+
+                            if (!eventClick)
+                                return;
+
+                            var checkbox = $(this).find('input');
+
+                            if (checkbox.is(":disabled"))
+                                return;
+
+                            if ($(checkbox).attr('checked-value')) {
+                                var checked = $(this).find('.switch-content').hasClass('active');
+                                var status = !checked;
+                                if (checked) {
+                                    checkbox.val($(checkbox).attr('unchecked-value'));
+                                } else {
+                                    checkbox.val($(checkbox).attr('checked-value'));
+                                }
+                            } else {
+                                var status = !checkbox.is(":checked");
+
+                                checkbox.prop('checked', status);
+                            }
+
+                            settings.functionOnChange(checkbox);
+                            $(this).find('.switch-content').removeClass('initial');
+                            if (status) {
+                                $(this).find('span').html(settings.textChecked);
+                                $(this).find('.switch-content').addClass('active');
+                                $(this).find('.switch-content').removeClass('disable');
+                            } else {
+                                $(this).find('span').html(settings.textNotChecked);
+                                $(this).find('.switch-content').addClass('disable');
+                                $(this).find('.switch-content').removeClass('active');
+                            }
+
+                            //!!!!!!MON AJOUT!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                            var region = $(checkbox).attr('region');
+                            regionCheck(status, region);
+                            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        });
+                        uelement.change(function () {
+
+                            var checkbox = $(this).find('input');
+                            if (checkbox.is(":disabled"))
+                                return;
+
+                            if ($(checkbox).attr('checked-value')) {
+                                var checked = $(this).find('.switch-content').hasClass('active');
+                                var status = !checked;
+
+                                if (checked) {
+                                    checkbox.val($(checkbox).attr('unchecked-value'));
+                                } else {
+                                    checkbox.val($(checkbox).attr('checked-value'));
+                                }
+                            } else {
+                                var status = !checkbox.is(":checked");
+                                checkbox.prop('checked', status);
+                            }
+
+                            settings.functionOnChange(checkbox);
+                            $(this).find('.switch-content').removeClass('initial');
+                            if (status) {
+                                $(this).find('span').html(settings.textChecked);
+                                $(this).find('.switch-content').addClass('active');
+                                $(this).find('.switch-content').removeClass('disable');
+                            } else {
+                                $(this).find('span').html(settings.textNotChecked);
+                                $(this).find('.switch-content').addClass('disable');
+                                $(this).find('.switch-content').removeClass('active');
+                            }
+                        });
+
+                        $(this).after(uelement);
+                        $(this).remove();
+                    });
+                };
+            }(jQuery));
+
+        </script>
+
+
+    {% endblock %}
+
