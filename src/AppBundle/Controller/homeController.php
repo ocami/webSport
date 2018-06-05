@@ -50,10 +50,28 @@ class homeController extends Controller
         $competitor = $this->get(UserService::class)->getCompetitor();
         $categories = $this->getDoctrine()->getRepository(Category::class)->categoriesByGender();
 
+        $regions = $this->getDoctrine()->getRepository(Address::class)->regions();
+
+        $regionsArray = [];
+
+        foreach ($regions as $r){
+            $departements = $this->getDoctrine()->getRepository(Address::class)->dep($r['id']);
+            $i = 0;
+            foreach ($departements as $dep){
+                $regionsArray[$r['name']][$i] = array(
+                    'region' => $dep['id'],
+                    'code' => $dep['code'],
+                    'name' => $dep['name']
+                );
+                $i++;
+            }
+        }
+
 
         return $this->render('home/index.html.twig', array(
             'competitor' => $competitor,
             'categories' => $categories,
+            'regions' => $regionsArray
 
         ));
     }

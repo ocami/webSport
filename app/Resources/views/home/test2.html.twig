@@ -1,0 +1,154 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} index
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css"/>
+    <link rel="stylesheet" href="{{ asset('css/multi-switch.min.css') }}"/>
+
+    <style>
+
+        .no-padding > [class*='col-'] {
+            max-height: 1em;
+        }
+
+        .switchContainer {
+            padding-top: 0.2em;
+        }
+
+        #search-bar .panel-heading {
+            height: 1.5em;
+            padding: 0em;
+        }
+
+        .dep-container {
+            padding: 1em 0em 0em 0.5em;
+        }
+
+    </style>
+
+{% endblock %}
+
+{% block body %}
+
+
+
+
+        <div class="multi-switch">
+            <div  id="region-1"  class="switch-content disable" value="disable">
+                <div class="switch-circle"></div>
+            </div>
+        </div>
+    <br>
+    <div class="multi-switch" style="width: 40px;">
+        <div id="region-2"  class="switch-content initial" value="initial">
+            <div class="switch-circle"></div>
+        </div>
+    </div>
+    <br>
+    <div class="multi-switch" style="width: 40px;">
+        <div  id="region-3" class="switch-content active" value="active">
+            <div class="switch-circle"></div>
+        </div>
+    </div>
+    <br>
+    <button class="monBoutton" value="1">initial 1</button>
+    <button class="monBoutton" value="2">initial 2</button>
+    <button class="monBoutton" value="3">initial 3</button>
+
+{% endblock %}
+
+
+
+    {% block javascripts %}
+        {{ parent() }}
+
+        <script>
+
+            $('.switch-content').click(function () {
+
+                var switcher = $(this);
+
+                switch (switcher.attr('value')) {
+                    case 'disable' :
+                        switchActive(switcher);
+                        break;
+
+                    case 'active' :
+                        switchDisable(switcher);
+
+                    case 'initial' :
+                        break;
+                }
+            });
+
+            function switchDisable(switcher) {
+                switcher.attr({
+                    'value': 'disable',
+                    'class': 'switch-content disable'
+                });
+            }
+
+            function switchActive(switcher) {
+                switcher.attr({
+                    'value': 'active',
+                    'class': 'switch-content active'
+                });
+            }
+            
+            function switchInitial(switcher) {
+
+                switcher.attr({
+                    'value': 'initial',
+                    'class': 'switch-content initial'
+                });
+
+                var notSelect = $('<span class="info-slide disable" title="tout supprimer"/>');
+                var allSelect = $('<span class="info-slide active" title="tout sélectionner"/>');
+                switcher.append(notSelect);
+                switcher.append(allSelect);
+
+                notSelect.hover(function () {
+                    switcher.addClass('disable');
+                    switcher.removeClass('initial');
+                }, function () {
+                    switcher.addClass('initial');
+                    switcher.removeClass('disable');
+                });
+
+                allSelect.hover(function () {
+                    switcher.addClass('active');
+                    switcher.removeClass('initial');
+                }, function () {
+                    switcher.addClass('initial');
+                    switcher.removeClass('active');
+                });
+
+                allSelect.click(function () {
+                    switcher.find('.info-slide').remove();
+                    switcher.attr('value','disable');
+                });
+
+                notSelect.click(function () {
+                    switcher.find('.info-slide').remove();
+                    switcher.attr('value','active');
+                });
+            }
+
+
+            $('.monBoutton').click(function () {
+
+                var num = $(this).val();
+
+                var switcher = $('#region-'+num);
+                switchInitial(switcher);
+            });
+
+        </script>
+
+
+    {% endblock %}
+
