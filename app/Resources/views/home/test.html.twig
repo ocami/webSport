@@ -41,6 +41,42 @@
     <div class="col-md-3">
         <div id="search-bar">
             <div class="panel-group" id="accordion">
+                <!-- SEARCH CATEGORIES -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <a data-toggle="collapse" href="#panelCategory">
+                                <span>Categories</span>
+                            </a>
+                            <div class='switchContainer pull-right'>
+                                <div class="multi-switch ">
+                                    <div id="switch-category" class="switch-content disable" status="active" initial="0">
+                                        <div class="switch-circle"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="panelCategory" class="panel-collapse collapse">
+                        <div id="category-container" class="panel-body">
+                            {% for key,gender in categories %}
+                                <span class="category-gender">{{ key }}</span>
+                                <div id="category-once">
+                                    {% for c in gender %}
+                                        <div class="pretty p-icon p-curve p-rotate">
+                                            <input type="checkbox" value="{{ c.id }}">
+                                            <div class="state p-success-o">
+                                                <i class="icon glyphicon glyphicon-ok"></i>
+                                                <label>{{ c.name }}</label>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <!-- END SEARCH CATEGORIES -->
                 <!-- REGIONS -->
                 <div id="region-container" class="panel panel-default">
                     {# <div class="panel-heading">
@@ -57,7 +93,7 @@
                             </a>
                             <div class='switchContainer pull-right'>
                                 <div class="multi-switch ">
-                                    <div id="cb-region-all" class="switch-content disable" status="active" initial="0">
+                                    <div id="switch-region-all" class="switch-content disable" status="active" initial="0">
                                         <div class="switch-circle"></div>
                                     </div>
                                 </div>
@@ -77,7 +113,7 @@
                                 </div>
                                 <div class='switchContainer col-xs-2'>
                                     <div class="multi-switch ">
-                                        <div id="cb-region-{{ i }}" class="switch-content disable" status="active"
+                                        <div id="switch-region-{{ i }}" class="switch-content disable" status="active"
                                              initial="0">
                                             <div class="switch-circle"></div>
                                         </div>
@@ -145,12 +181,13 @@
 
             var updateLocationArray = ["01", "03", "07", "15", "26", "38", "42", "43", "63", "69", "73", "74", '56', '35'];
 
-
             searchBarLocalisation();
 
             function searchBarLocalisation() {
+                var $allSwitch = $("#search-bar").find('.switch-content');
+
                 var $allCbDepartement = $("#region-container").find('.cb-dep');
-                var $allSwitchRegion = $("#region-container").find('.switch-content');
+                var $allCbCategory = $("#category-container").find('input');
 
                 //update
                 $allCbDepartement.each(function () {
@@ -162,7 +199,7 @@
                 });
 
                 //events
-                $allSwitchRegion.click(function () {
+                $allSwitch.click(function () {
                     var $switcher = $(this);
                     var status = $switcher.attr('status');
                     var data = $switcher.attr('id').split('-');
@@ -180,6 +217,14 @@
                             refreshRegion(data[2], status);
                             break;
 
+                        case 'category' :
+                            if (status === "active")
+                                $allCbCategory.prop('checked', true);
+                            else
+                                $allCbCategory.prop('checked', false);
+
+                            refreshCategory();
+                            break;
                     }
 
                     switch (status) {
@@ -200,9 +245,12 @@
                     refreshDepartement($(this).attr('region'));
                 });
 
+                $allCbCategory.click(function () {
+                   refreshCategory();
+                });
+
                 //functions/////////////////////////////////////////////////////////////////////////////////////////////
                 function refreshRegion(region, status) {
-
                     var $cbDep;
                     if (region !== 'all')
                         $cbDep = $("#region-" + region).find('.cb-dep');
@@ -223,8 +271,9 @@
                     var cptDepAll = 0;
                     var cptDepAllChecked = 0;
                     var departements = [];
-                    var $switcher = $("#cb-region-" + region);
-                    var $switcherAll = $("#cb-region-all");
+                    var $switcher = $("#switch-region-" + region);
+                    var $switcherAll = $("#switch-region-all");
+                    var $allSwitchRegion = $('#region-container').find('.switch-content');
 
                     $allCbDepartement.each(function () {
                         var dep = $(this).val();
@@ -244,9 +293,7 @@
                         }
                     });
 
-
                     ////////////////////////////////////////
-
                     if (cptDepRegChecked < cptDepReg) {
                         if (cptDepRegChecked === 0)
                             switchDisable($switcher);
@@ -257,9 +304,7 @@
                     if (cptDepRegChecked === cptDepReg)
                         switchActive($switcher);
 
-
                     ////////////////////////////////////////
-
                     if (cptDepAllChecked < cptDepAll) {
                         if (cptDepAllChecked === 0) {
                             $allSwitchRegion.each(function () {
@@ -281,12 +326,54 @@
                     }
 
                     //////////////////////////////////////
-
-                    if (cptDepAllChecked > 0) {
-                        dataSearch.dep = departements;
+                    if (cptDepAllChecked === 0 || cptDepAllChecked===cptDepAll) {
+                        dataSearch.dep = null;
                     }
                     else
-                        dataSearch.dep = null;
+                        dataSearch.dep = departements;
+
+                    console.log(dataSearch);
+                }
+
+                function refreshCategory() {
+                    var cptCategory = 0;
+                    var cptCategoryChecked = 0;
+                    var $switcher = $("#switch-category");
+                    var categories = [];
+
+                    $allCbCategory.each(function () {
+                        var category = $(this).val();
+                        cptCategory++;
+                        if (this.checked) {
+                            categories.push(category);
+                            cptCategoryChecked++;
+                        }
+                    });
+
+                    ////////////////////////////////////////
+                    if (cptCategoryChecked < cptCategory) {
+                        if (cptCategoryChecked === 0){
+                            switchDisable($switcher);
+                            $switcher.find('.info-slide').remove();
+                            $switcher.attr('initial', '0');
+                        }
+                        else
+                            switchInitial($switcher);
+                    }
+
+                    if (cptCategoryChecked === cptCategory){
+                        switchActive($switcher);
+                        $switcher.find('.info-slide').remove();
+                        $switcher.attr('initial', '0');
+                    }
+
+                    //////////////////////////////////////
+
+                    if (cptCategoryChecked === 0 || cptCategoryChecked===cptCategory) {
+                        dataSearch.categories = null;
+                    }
+                    else
+                        dataSearch.categories = categories;
 
                     console.log(dataSearch);
                 }

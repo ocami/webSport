@@ -224,6 +224,7 @@ class homeController extends Controller
 
 
         $regions = $this->getDoctrine()->getRepository(Address::class)->regions();
+        $categories = $this->getDoctrine()->getRepository(Category::class)->categoriesByGender();
 
         $regionsArray = [];
 
@@ -244,7 +245,8 @@ class homeController extends Controller
 
 
         return $this->render('home/test.html.twig', array(
-            'regions' => $regionsArray
+            'regions' => $regionsArray,
+            'categories' => $categories
         ));
     }
 
