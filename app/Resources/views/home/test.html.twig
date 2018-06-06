@@ -50,7 +50,8 @@
                             </a>
                             <div class='switchContainer pull-right'>
                                 <div class="multi-switch ">
-                                    <div id="switch-category" class="switch-content disable" status="active" initial="0">
+                                    <div id="switch-category" class="switch-content disable" status="active"
+                                         initial="0">
                                         <div class="switch-circle"></div>
                                     </div>
                                 </div>
@@ -76,8 +77,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- END SEARCH CATEGORIES -->
-                <!-- REGIONS -->
+                <!-- SEARCH REGIONS -->
                 <div id="region-container" class="panel panel-default">
                     {# <div class="panel-heading">
                          <div class="panel-title">
@@ -93,7 +93,8 @@
                             </a>
                             <div class='switchContainer pull-right'>
                                 <div class="multi-switch ">
-                                    <div id="switch-region-all" class="switch-content disable" status="active" initial="0">
+                                    <div id="switch-region-all" class="switch-content disable" status="active"
+                                         initial="0">
                                         <div class="switch-circle"></div>
                                     </div>
                                 </div>
@@ -138,7 +139,49 @@
                     </ul>
 
                 </div>
-                <!-- REGIONS END-->
+                <!-- SEARCH DISTANCE -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <a data-toggle="collapse" href="#panelDistance">
+                                <span>Distance</span>
+                            </a>
+                            <div class='switchContainer pull-right'>
+                                <div class="multi-switch ">
+                                    <div id="switch-distance" class="switch-content disable" status="active"
+                                         initial="0">
+                                        <div class="switch-circle"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="panelDistance" class="panel-collapse collapse">
+                        <div id="distance-container" class="panel-body">
+                            <form data-toggle="validator" role="form">
+                                <div class="form-group has-feedback">
+                                    <label for="distMin" class="control-label">Min</label>
+                                    <div class="input-group">
+                                        <input type="number" step="any" min="1" max="1000" value="1"
+                                               class="form-control" id="distMin">
+                                    </div>
+                                    <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                    <div class="help-block with-errors">Entre 1 et 1000</div>
+                                </div>
+
+                                <div class="form-group has-feedback">
+                                    <label for="distMax" class="control-label">Max</label>
+                                    <div class="input-group">
+                                        <input type="number" step="any" min="1" max="1000" value="1000"
+                                               class="form-control" id="distMax">
+                                    </div>
+                                    <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                    <div class="help-block with-errors">Entre 1 et 1000</div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -166,20 +209,30 @@
 
     {% block javascripts %}
         {{ parent() }}
+        <script src="{{ asset('js/validator.js') }}"></script>
 
         <script>
-
             var dataSearch = {
                 categories: null,
                 dep: null,
-                dist: null,
+                dist: {min: null, max: null},
                 date: null,
                 inChampionship: null,
                 enrol: null,
                 competitorRegister: null
             };
 
-            var updateLocationArray = ["01", "03", "07", "15", "26", "38", "42", "43", "63", "69", "73", "74", '56', '35'];
+            var updateDataSearch = {
+                categories: ["1", '2', "3"],
+                dep: ["01", "03", "07", "15", "26", "38", "42", "43", "63", "69", "73", "74", '56', '35'],
+                dist: {min: 20, max: 50},
+                date: null,
+                inChampionship: null,
+                enrol: null,
+                competitorRegister: null
+            };
+
+            //var updateLocationArray = ;
 
             searchBarLocalisation();
 
@@ -188,15 +241,46 @@
 
                 var $allCbDepartement = $("#region-container").find('.cb-dep');
                 var $allCbCategory = $("#category-container").find('input');
+                var $distanceContainer = $('#distance-container');
+                var $inputDistance = $distanceContainer.find('input');
 
                 //update
-                $allCbDepartement.each(function () {
-                    var dep = $(this).val();
-                    if ($.inArray(dep, updateLocationArray)!== -1){
-                        $(this).prop('checked', true);
-                        refreshDepartement($(this).attr('region'));
+                searchUpdate();
+
+                function searchUpdate() {
+
+                    if (updateDataSearch.categories) {
+                        $allCbCategory.each(function () {
+                            var categories = $(this).val();
+                            if ($.inArray(categories, updateDataSearch.categories) !== -1) {
+                                $(this).prop('checked', true);
+                                refreshCategory();
+                            }
+                        });
                     }
-                });
+
+                    if (updateDataSearch.dep) {
+                        $allCbDepartement.each(function () {
+                            var dep = $(this).val();
+                            if ($.inArray(dep, updateDataSearch.dep) !== -1) {
+                                $(this).prop('checked', true);
+                                refreshDepartement($(this).attr('region'));
+                            }
+                        });
+                    }
+
+                    if (updateDataSearch.dist.min || updateDataSearch.dist.max){
+                        if (updateDataSearch.dist.min)
+                            $('#distMin').val(updateDataSearch.dist.min);
+
+                        if (updateDataSearch.dist.max)
+                            $('#distMax').val(updateDataSearch.dist.max);
+
+                        switchActive($('#switch-distance'));
+                        refreshDistance('active');
+                    }else
+                        refreshDistance('disable');
+                }
 
                 //events
                 $allSwitch.click(function () {
@@ -211,7 +295,6 @@
                     }
 
                     switch (data[1]) {
-
                         case 'region' :
                             //data[2] = region.code
                             refreshRegion(data[2], status);
@@ -222,9 +305,13 @@
                                 $allCbCategory.prop('checked', true);
                             else
                                 $allCbCategory.prop('checked', false);
-
                             refreshCategory();
                             break;
+
+                        case 'distance' :
+                            refreshDistance(status);
+                            break;
+
                     }
 
                     switch (status) {
@@ -246,7 +333,20 @@
                 });
 
                 $allCbCategory.click(function () {
-                   refreshCategory();
+                    refreshCategory();
+                });
+
+                $inputDistance.change(function () {
+                    /*var id = $(this).attr('id');
+                    var val = $(this).val();
+
+                    if (id === 'distMin')
+                        dataSearch.dist.min = val;
+
+                    if (id === 'distMax')
+                        dataSearch.dist.max = val;*/
+
+                    refreshDistance('active');
                 });
 
                 //functions/////////////////////////////////////////////////////////////////////////////////////////////
@@ -275,10 +375,10 @@
                     var $switcherAll = $("#switch-region-all");
                     var $allSwitchRegion = $('#region-container').find('.switch-content');
 
+                    //count, if isChecked push in array data
                     $allCbDepartement.each(function () {
                         var dep = $(this).val();
                         var depReg = $(this).attr('region');
-
 
                         cptDepAll++;
                         if (depReg === region)
@@ -293,46 +393,31 @@
                         }
                     });
 
-                    ////////////////////////////////////////
-                    if (cptDepRegChecked < cptDepReg) {
-                        if (cptDepRegChecked === 0)
-                            switchDisable($switcher);
-                        else
-                            switchInitial($switcher);
-                    }
-
-                    if (cptDepRegChecked === cptDepReg)
+                    //switchRegion refresh
+                    if (cptDepRegChecked === 0)
+                        switchDisable($switcher);
+                    else if (cptDepRegChecked === cptDepReg)
                         switchActive($switcher);
+                    else
+                        switchInitial($switcher);
 
-                    ////////////////////////////////////////
-                    if (cptDepAllChecked < cptDepAll) {
-                        if (cptDepAllChecked === 0) {
-                            $allSwitchRegion.each(function () {
-                                switchDisable($(this));
-                                $(this).find('.info-slide').remove();
-                                $(this).attr('initial', '0');
-                            })
-                        }
-                        else
-                            switchInitial($switcherAll);
-                    }
-
-                    if (cptDepAllChecked === cptDepAll) {
+                    //switcherSelectAll refresh
+                    if (cptDepAllChecked === 0) {
+                        $allSwitchRegion.each(function () {
+                            switchDisable($(this));
+                        })
+                    } else if (cptDepAllChecked === cptDepAll) {
                         $allSwitchRegion.each(function () {
                             switchActive($(this));
-                            $(this).find('.info-slide').remove();
-                            $(this).attr('initial', '0');
                         })
-                    }
+                    } else
+                        switchInitial($switcherAll);
 
-                    //////////////////////////////////////
-                    if (cptDepAllChecked === 0 || cptDepAllChecked===cptDepAll) {
+                    //data refresh
+                    if (cptDepAllChecked === 0 || cptDepAllChecked === cptDepAll)
                         dataSearch.dep = null;
-                    }
                     else
                         dataSearch.dep = departements;
-
-                    console.log(dataSearch);
                 }
 
                 function refreshCategory() {
@@ -341,6 +426,7 @@
                     var $switcher = $("#switch-category");
                     var categories = [];
 
+                    //count, if isChecked push in array data
                     $allCbCategory.each(function () {
                         var category = $(this).val();
                         cptCategory++;
@@ -350,46 +436,52 @@
                         }
                     });
 
-                    ////////////////////////////////////////
-                    if (cptCategoryChecked < cptCategory) {
-                        if (cptCategoryChecked === 0){
-                            switchDisable($switcher);
-                            $switcher.find('.info-slide').remove();
-                            $switcher.attr('initial', '0');
-                        }
-                        else
-                            switchInitial($switcher);
-                    }
-
-                    if (cptCategoryChecked === cptCategory){
+                    //switchCategory refresh
+                    if (cptCategoryChecked === 0) {
+                        switchDisable($switcher);
+                    } else if (cptCategoryChecked === cptCategory)
                         switchActive($switcher);
-                        $switcher.find('.info-slide').remove();
-                        $switcher.attr('initial', '0');
-                    }
+                    else
+                        switchInitial($switcher);
 
-                    //////////////////////////////////////
-
-                    if (cptCategoryChecked === 0 || cptCategoryChecked===cptCategory) {
+                    //data refresh
+                    if (cptCategoryChecked === 0 || cptCategoryChecked === cptCategory)
                         dataSearch.categories = null;
-                    }
                     else
                         dataSearch.categories = categories;
+                }
+
+                function refreshDistance(status) {
+                    if (status === "active"){
+                        $distanceContainer.css({'opacity':1,'pointer-events':'auto'});
+                        dataSearch.dist.min = $('#distMin').val();
+                        dataSearch.dist.max = $('#distMax').val();
+                    }
+                    else{
+                        $distanceContainer.css({'opacity':0.5,'pointer-events':'none'});
+                        dataSearch.dist.min = null;
+                        dataSearch.dist.max = null;
+                    }
 
                     console.log(dataSearch);
                 }
 
                 //switcher
                 function switchDisable($switcher) {
+                    $switcher.find('.info-slide').remove();
                     $switcher.attr({
+                        'class': 'switch-content disable',
                         'status': 'active',
-                        'class': 'switch-content disable'
+                        'initial': '0'
                     });
                 }
 
                 function switchActive($switcher) {
+                    $switcher.find('.info-slide').remove();
                     $switcher.attr({
+                        'class': 'switch-content active',
                         'status': 'disable',
-                        'class': 'switch-content active'
+                        'initial': '0'
                     });
                 }
 
