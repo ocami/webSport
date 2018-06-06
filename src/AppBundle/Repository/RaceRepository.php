@@ -155,12 +155,12 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
 
         if($data['date']){
             if(!isset($data['date']['min']))
-                $data['date']['min'] = '2000-01-01 00:00:00';
+                $data['date']['min'] = '2000-01-01';
 
             if(!isset($data['date']['max']))
-                $data['date']['max'] = '2100-12-31 23:59:00';
+                $data['date']['max'] = '2100-12-31';
 
-            $whereDate = "AND r.date_time BETWEEN '".$data['date']['min']."' AND '".$data['date']['max']."'";
+            $whereDate = "AND r.date_time BETWEEN '".$data['date']['min']." 00:00:00' AND '".$data['date']['max']." 23:59:00'";
             $rawSql .= $whereDate;
         }
 
