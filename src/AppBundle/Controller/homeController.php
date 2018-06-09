@@ -221,22 +221,37 @@ class homeController extends Controller
                 //var_dump($km);
         */
 
-        $dataSearch = array(
-            'categories' => null,
-            'dep' => null,
-            'dist' => array('min' => null, 'max' => null),
-            'date' => array('min' => null, 'max' => null),
-            'inChampionship' => null,
-            'enrol' => null
-        );
+        $dataRequest = $request->query->get('dataSearch');
+        $data = json_decode($dataRequest, true);
 
-        $regions = $this->getDoctrine()->getRepository(Address::class)->departements();
+        //var_dump($data);
+
         $categories = $this->getDoctrine()->getRepository(Category::class)->categoriesByGender();
+        $regions = $this->getDoctrine()->getRepository(Address::class)->departements();
 
-        return $this->render('home/test.html.twig', array(
-            'regions' => $regions,
+        $racesId = $this->getDoctrine()->getRepository(Race::class)->search($data);
+
+        $races = array();
+
+        for ($i = 0; $i < count($racesId); $i++) {
+            $r = $this->getDoctrine()->getRepository(Race::class)->find($racesId[$i]);
+            $r = $this->get(RaceService::class)->postSelectOne($r);
+            $r = $this->get(UserService::class)->addUserDataInRace($r);
+
+            if ($data['enrol'])
+                if (in_array($r->getCompetitorRegister(), $data['enrol']))
+                    $races[$i] = $r;
+                else
+                    continue;
+
+            $races[$i] = $r;
+        }
+
+        return $this->render('race/showSearch.html.twig', array(
+            'races' => $races,
             'categories' => $categories,
-            'dataSearch' => null,
+            'dataSearch' => $dataRequest,
+            'regions' => $regions
         ));
     }
 
