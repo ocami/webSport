@@ -1,15 +1,15 @@
-.panel-body .categories {
+#panel-race-list .panel-categories {
     height: 6em;
-    overflow-y: scroll;
-    overflow-x: hidden;
+    /*overflow-y: scroll;
+    overflow-x: hidden;*/
 }
 
-.panel-body {
+#panel-race-list #panel-race-list {
     padding-bottom: 0em;
     padding-top: 0.5em;
 }
 
-.panel-body .category {
+#panel-race-list .category {
     height: 6em;
     padding-top: 2em;
     font-weight: bold;
@@ -24,12 +24,12 @@
 }
 
 @media (max-width: 400px) {
-    .panel-body {
+    #panel-race-list .panel-body {
         padding: 0 0 0 0px;
     }
 }
 
-.panel-body h4 {
+#panel-race-list h4 .panel-body {
     text-align: center;
     font-weight: bold;
 }

@@ -247,7 +247,7 @@ class homeController extends Controller
             $races[$i] = $r;
         }
 
-        return $this->render('race/showSearch.html.twig', array(
+        return $this->render('home/test.html.twig', array(
             'races' => $races,
             'categories' => $categories,
             'dataSearch' => $dataRequest,

@@ -17,7 +17,7 @@
 <div class="row">
     {% for race in races %}
         <div class="col-xs-12 col-sm-6">
-            <div class="panel panel-default">
+            <div id="panel-race-list" class="panel panel-default">
                 <div class="panel-heading">
                     <span class="panel-title">{{ race.name }} </span>
                     <span class="pull-right">
@@ -48,7 +48,7 @@
                                     Toute catégories
                                 </div>
                             {% else %}
-                                <div class="categories">
+                                <div class="panel-categories">
                                     {% for category in race.categories %}
                                         <span style="margin-left: 1em">{{ category.name }}</span><br>
                                     {% endfor %}

@@ -4,6 +4,8 @@
     {{ parent() }}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css"/>
     <link rel="stylesheet" href="{{ asset('css/multi-switch.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/jquery.mCustomScrollbar.min.css') }}"/>
+
 
     <style>
 
@@ -32,6 +34,7 @@
             z-index: 100;
         }
 
+
     </style>
 
 {% endblock %}
@@ -48,11 +51,27 @@
     <div class="col-xs-9">
         {%  include 'race/modelList.html.twig' %}
     </div>
+
 {% endblock %}
 
     {% block javascripts %}
         {{ parent() }}
+        <script src="{{ asset('js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
         <script>
+
+
+
+            var $categoriesPanel = $('#panel-race-list').find('.categories');
+            $('.panel-categories').mCustomScrollbar({
+                snapAmount:40,
+                scrollButtons:{enable:true},
+                keyboard:{scrollAmount:40},
+                mouseWheel:{deltaFactor:40},
+                scrollInertia:400,
+                theme: 'rounded-dark'
+                /*setHeight:40*/
+            });
+
 
             searchBarRace();
         </script>

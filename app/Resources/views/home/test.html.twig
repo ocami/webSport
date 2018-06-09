@@ -4,9 +4,9 @@
     {{ parent() }}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css"/>
     <link rel="stylesheet" href="{{ asset('css/multi-switch.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/jquery.mCustomScrollbar.min.css') }}"/>
 
     <style>
-
         .no-padding > [class*='col-'] {
             max-height: 1em;
         }
@@ -33,6 +33,11 @@
         }
 
 
+        .content{
+            /*background-color: #0c0c0c;*/
+            height: 10em;
+            width: 10em;
+        }
 
 
     </style>
@@ -52,7 +57,7 @@
         <div class="row">
             {% for race in races %}
                 <div class="col-xs-12 col-sm-6">
-                    <div class="panel panel-default">
+                    <div id="panel-race-list" class="panel panel-default">
                         <div class="panel-heading">
                             <span class="panel-title">{{ race.name }} </span>
                             <span class="pull-right">
@@ -125,11 +130,81 @@
             {% endfor %}
         </div>
     </div>
+
+    <div id="monTest">
+        <div class="content">
+            <table>
+                <tr><td>Row 1</td></tr>
+                <tr><td>Row 2</td></tr>
+                <tr><td>Row 3</td></tr>
+                <tr><td>Row 4</td></tr>
+                <tr><td>Row 5</td></tr>
+                <tr><td>Row 6</td></tr>
+                <tr><td>Row 7</td></tr>
+                <tr><td>Row 8</td></tr>
+                <tr><td>Row 9</td></tr>
+                <tr><td>Row 10</td></tr>
+                <tr><td>Row 11</td></tr>
+                <tr><td>Row 12</td></tr>
+                <tr><td>Row 13</td></tr>
+                <tr><td>Row 14</td></tr>
+                <tr><td>Row 15</td></tr>
+                <tr><td>Row 16</td></tr>
+                <tr><td>Row 17</td></tr>
+                <tr><td>Row 18</td></tr>
+                <tr><td>Row 19</td></tr>
+                <tr><td>Row 20</td></tr>
+                <tr><td>Row 21</td></tr>
+                <tr><td>Row 22</td></tr>
+                <tr><td>Row 23</td></tr>
+                <tr><td>Row 24</td></tr>
+                <tr><td>Row 25</td></tr>
+                <tr><td>Row 26</td></tr>
+                <tr><td>Row 27</td></tr>
+                <tr><td>Row 28</td></tr>
+                <tr><td>Row 29</td></tr>
+                <tr><td>Row 30</td></tr>
+                <tr><td>Row 31</td></tr>
+                <tr><td>Row 32</td></tr>
+                <tr><td>Row 33</td></tr>
+                <tr><td>Row 34</td></tr>
+                <tr><td>Row 35</td></tr>
+                <tr><td>Row 36</td></tr>
+                <tr><td>Row 37</td></tr>
+                <tr><td>Row 38</td></tr>
+                <tr><td>Row 39</td></tr>
+                <tr><td>Row 40 - end</td></tr>
+            </table>
+        </div>
+
+    </div>
+
+
+
 {% endblock %}
 
     {% block javascripts %}
         {{ parent() }}
+        <script src="{{ asset('js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
         <script>
+
+            var $categories = $('#panel-race-list').find('.categories');
+            $('.categories').mCustomScrollbar({
+                snapAmount:40,
+                scrollButtons:{enable:true},
+                keyboard:{scrollAmount:40},
+                mouseWheel:{deltaFactor:40},
+                scrollInertia:400,
+                theme: 'rounded-dark'
+            });
+            $(".content").mCustomScrollbar({
+                snapAmount:40,
+                scrollButtons:{enable:true},
+                keyboard:{scrollAmount:40},
+                mouseWheel:{deltaFactor:40},
+                scrollInertia:400,
+                theme: 'rounded-dark'
+            });
 
             searchBarRace();
         </script>
