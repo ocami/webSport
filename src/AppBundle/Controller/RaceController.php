@@ -9,6 +9,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Competition;
+use AppBundle\Entity\Address;
 use AppBundle\Entity\Competitor;
 use AppBundle\Entity\Organizer;
 use AppBundle\Entity\Race;
@@ -145,39 +146,25 @@ class RaceController extends Controller
             'competitorRegister' => array(3)
         );*/
 
-        $data = $request->query->get('dataSearch');
-        $data = json_decode($data, true);
+        $dataRequest = $request->query->get('dataSearch');
+        $data = json_decode($dataRequest, true);
 
-        var_dump($data);
+        //var_dump($data);
 
         $categories = $this->getDoctrine()->getRepository(Category::class)->categoriesByGender();
+        $regions = $this->getDoctrine()->getRepository(Address::class)->departements();
 
         $racesId = $this->getDoctrine()->getRepository(Race::class)->search($data);
 
         $races = array();
-        $i = 0;
-
-       /* foreach ($racesId as $r) {
-            $r = $this->getDoctrine()->getRepository(Race::class)->find($r);
-            $r = $this->get(RaceService::class)->postSelectOne($r);
-            $r = $this->get(UserService::class)->addUserDataInRace($r);
-
-            if ($data['competitorRegister'])
-                if (in_array($r->getCompetitorRegister(), $data['competitorRegister']))
-                    $races[$i] = $r;
-                else
-                    continue;
-
-            $races[$i] = $r;
-        }*/
 
         for ($i = 0; $i < count($racesId); $i++) {
             $r = $this->getDoctrine()->getRepository(Race::class)->find($racesId[$i]);
             $r = $this->get(RaceService::class)->postSelectOne($r);
             $r = $this->get(UserService::class)->addUserDataInRace($r);
 
-            if ($data['competitorRegister'])
-                if (in_array($r->getCompetitorRegister(), $data['competitorRegister']))
+            if ($data['enrol'])
+                if (in_array($r->getCompetitorRegister(), $data['enrol']))
                     $races[$i] = $r;
                 else
                     continue;
@@ -185,12 +172,11 @@ class RaceController extends Controller
             $races[$i] = $r;
         }
 
-
-        //var_dump($races);
-
         return $this->render('race/showSearch.html.twig', array(
             'races' => $races,
-            'categories' => $categories
+            'categories' => $categories,
+            'dataSearch' => $dataRequest,
+            'regions' => $regions
         ));
     }
 

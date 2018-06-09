@@ -534,6 +534,481 @@ function raceCategories() {
 }
 
 /***********************************************************************************************************************
+ /   searchBarRace
+ /**********************************************************************************************************************/
+function searchBarRace() {
+
+    var dataSearch = {
+        categories: null,
+        dep: null,
+        dist: {min: null, max: null},
+        date: {min: null, max: null},
+        inChampionship: null,
+        enrol: null
+    };
+
+    var jsonSearch = $('#data-search').val();
+    var updateDataSearch;
+
+    if (jsonSearch)
+        updateDataSearch = JSON.parse(jsonSearch);
+    else
+        updateDataSearch = dataSearch;
+
+
+    var $allSwitch = $("#search-bar").find('.switch-content');
+
+    var $categoryContainer = $('#category-container');
+    var $regionContainer = $('#region-container');
+    var $distanceContainer = $('#distance-container');
+    var $dateContainer = $('#date-container');
+    var $championshipContainer = $('#championship-container');
+    var $competitorContainer = $('#competitor-container');
+
+
+    var $allCbDepartement = $regionContainer.find('.cb-dep');
+    var $allCbCategory = $categoryContainer.find('input');
+    var $inputDistance = $distanceContainer.find('input');
+    var $inputDate = $dateContainer.find('input');
+    var $inputChampionship = $championshipContainer.find('input');
+    var $inputCompetitor = $competitorContainer.find('input');
+
+    var $dateMin = $dateContainer.find('#date-min');
+    var $dateMax = $dateContainer.find('#date-max');
+
+    //init
+    $dateContainer.find('.datepicker').datepicker({
+        language: 'fr',
+        format: 'dd-mm-yyyy',
+        todayBtn: 'linked',
+        autoclose: true,
+    });
+    searchUpdate();
+
+    //update
+    function searchUpdate() {
+
+        if (updateDataSearch.categories) {
+            $allCbCategory.each(function () {
+                var categories = $(this).val();
+                if ($.inArray(categories, updateDataSearch.categories) !== -1) {
+                    $(this).prop('checked', true);
+                    refreshCategory();
+                }
+            });
+        }
+
+        if (updateDataSearch.dep) {
+            $allCbDepartement.each(function () {
+                var dep = $(this).val();
+                if ($.inArray(dep, updateDataSearch.dep) !== -1) {
+                    $(this).prop('checked', true);
+                    refreshDepartement($(this).attr('region'));
+                }
+            });
+        }
+
+        if (updateDataSearch.dist.min || updateDataSearch.dist.max) {
+            if (updateDataSearch.dist.min)
+                $('#distMin').val(updateDataSearch.dist.min);
+
+            if (updateDataSearch.dist.max)
+                $('#distMax').val(updateDataSearch.dist.max);
+
+            switchActive($('#switch-distance'));
+            refreshDistance('active');
+        } else
+            refreshDistance('disable');
+
+        if (updateDataSearch.date.min || updateDataSearch.date.max) {
+            if (updateDataSearch.date.min)
+                $dateMin.datepicker('update', parseDateUsToFr(updateDataSearch.date.min));
+
+            if (updateDataSearch.date.max)
+                $dateMax.datepicker('update', parseDateUsToFr(updateDataSearch.date.max));
+
+            switchActive($('#switch-date'));
+            refreshDate('active');
+        } else
+            refreshDate('disable');
+
+        if (updateDataSearch.inChampionship) {
+            if (updateDataSearch.inChampionship === '1')
+                $('#radio-championship-1').prop('checked', true);
+
+            if (updateDataSearch.inChampionship === '0')
+                $('#radio-championship-0').prop('checked', true);
+
+            refreshChampionship('active');
+        }
+
+        if (updateDataSearch.enrol) {
+
+            if ($.inArray('1',updateDataSearch.enrol) !== -1)
+                $('#canEnrol').prop('checked', true);
+
+            if ($.inArray('2',updateDataSearch.enrol) !== -1)
+                $('#isEnrol').prop('checked', true);
+
+            if ($.inArray('3',updateDataSearch.enrol) !== -1)
+                $('#participated').prop('checked', true);
+
+            refreshCompetitor();
+        } else
+            refreshCompetitor();
+    }
+
+
+    //events
+    $allSwitch.click(function () {
+        var $switcher = $(this);
+        var status = $switcher.attr('status');
+        var data = $switcher.attr('id').split('-');
+        var initial = $switcher.attr('initial');
+
+        if (initial !== '0') {
+            status = initial;
+            $switcher.attr('initial', '0');
+        }
+
+        switch (data[1]) {
+            case 'region' :
+                //data[2] = region.code
+                refreshRegion(data[2], status);
+                break;
+
+            case 'category' :
+                if (status === "active")
+                    $allCbCategory.prop('checked', true);
+                else
+                    $allCbCategory.prop('checked', false);
+                refreshCategory();
+                break;
+
+            case 'distance' :
+                refreshDistance(status);
+                break;
+
+            case 'date' :
+                refreshDate(status);
+                break;
+
+            case 'championship' :
+                refreshChampionship(status);
+                break;
+
+            case 'competitor' :
+                if (status === "active")
+                    $inputCompetitor.prop('checked', true);
+                else
+                    $inputCompetitor.prop('checked', false);
+                refreshCompetitor();
+                break;
+        }
+
+        switch (status) {
+            case 'disable' :
+                switchDisable($switcher);
+                break;
+
+            case 'active' :
+                switchActive($switcher);
+                break;
+
+            case 'initial' :
+                break;
+        }
+    });
+
+    $allCbDepartement.click(function () {
+        refreshDepartement($(this).attr('region'));
+    });
+
+    $allCbCategory.click(function () {
+        refreshCategory();
+    });
+
+    $inputDistance.change(function () {
+        refreshDistance('active');
+    });
+
+    $inputDate.on('changeDate', function () {
+        refreshDate('active');
+    });
+
+    $inputChampionship.click(function () {
+        dataSearch.inChampionship = $(this).val();
+    });
+
+    $inputCompetitor.change(function () {
+        refreshCompetitor();
+    });
+
+    $('#button-search').click(function () {
+        var path = Routing.generate('races_search', {
+            dataSearch: JSON.stringify(dataSearch)
+        });
+
+        window.location = path;
+    });
+
+    //functions/////////////////////////////////////////////////////////////////////////////////////////////
+    function refreshRegion(region, status) {
+        var $cbDep;
+        if (region !== 'all')
+            $cbDep = $("#region-" + region).find('.cb-dep');
+        else
+            $cbDep = $("#region-container").find('.cb-dep');
+
+        if (status === "active")
+            $cbDep.prop('checked', true);
+        else
+            $cbDep.prop('checked', false);
+
+        refreshDepartement(region);
+    }
+
+    function refreshDepartement(region) {
+        var cptDepReg = 0;
+        var cptDepRegChecked = 0;
+        var cptDepAll = 0;
+        var cptDepAllChecked = 0;
+        var departements = [];
+        var $switcher = $("#switch-region-" + region);
+        var $switcherAll = $("#switch-region-all");
+        var $allSwitchRegion = $('#region-container').find('.switch-content');
+
+        //count, if isChecked push in array data
+        $allCbDepartement.each(function () {
+            var dep = $(this).val();
+            var depReg = $(this).attr('region');
+
+            cptDepAll++;
+            if (depReg === region)
+                cptDepReg++;
+
+            if (this.checked) {
+                departements.push(dep);
+                cptDepAllChecked++;
+
+                if (depReg === region)
+                    cptDepRegChecked++;
+            }
+        });
+
+        //switchRegion refresh
+        if (cptDepRegChecked === 0)
+            switchDisable($switcher);
+        else if (cptDepRegChecked === cptDepReg)
+            switchActive($switcher);
+        else
+            switchInitial($switcher);
+
+        //switcherSelectAll refresh
+        if (cptDepAllChecked === 0) {
+            $allSwitchRegion.each(function () {
+                switchDisable($(this));
+            })
+        } else if (cptDepAllChecked === cptDepAll) {
+            $allSwitchRegion.each(function () {
+                switchActive($(this));
+            })
+        } else
+            switchInitial($switcherAll);
+
+        //data refresh
+        if (cptDepAllChecked === 0 || cptDepAllChecked === cptDepAll)
+            dataSearch.dep = null;
+        else
+            dataSearch.dep = departements;
+    }
+
+    function refreshCategory() {
+        var cptCategory = 0;
+        var cptCategoryChecked = 0;
+        var $switcher = $("#switch-category");
+        var categories = [];
+
+        //count, if isChecked push in array data
+        $allCbCategory.each(function () {
+            var category = $(this).val();
+            cptCategory++;
+            if (this.checked) {
+                categories.push(category);
+                cptCategoryChecked++;
+            }
+        });
+
+        //switchCategory refresh
+        if (cptCategoryChecked === 0) {
+            switchDisable($switcher);
+        } else if (cptCategoryChecked === cptCategory)
+            switchActive($switcher);
+        else
+            switchInitial($switcher);
+
+        //data refresh
+        if (cptCategoryChecked === 0 || cptCategoryChecked === cptCategory)
+            dataSearch.categories = null;
+        else
+            dataSearch.categories = categories;
+    }
+
+    function refreshDistance(status) {
+        var $distanceContainer = $('#distance-container');
+
+        if (status === "active") {
+            var inputMin = $('#distMin');
+            var inputMax = $('#distMax');
+            var min = inputMin.val();
+            var max = inputMax.val();
+
+            $distanceContainer.css({'opacity': 1, 'pointer-events': 'auto'});
+            dataSearch.dist.min = min;
+            dataSearch.dist.max = max;
+            inputMin.attr('max', max);
+            inputMax.attr('min', min);
+        }
+        else {
+            $distanceContainer.css({'opacity': 0.5, 'pointer-events': 'none'});
+            dataSearch.dist.min = null;
+            dataSearch.dist.max = null;
+        }
+    }
+
+    function refreshDate(status) {
+        if (status === "active") {
+            $dateContainer.css({'opacity': 1, 'pointer-events': 'auto'});
+
+            if ($dateMin.val()) {
+                dataSearch.date.min = parseDateFrToUs($dateMin.datepicker('getFormattedDate'));
+                $dateMin.datepicker('setEndDate', $dateMax.datepicker('getDate'));
+            } else
+                dataSearch.date.min = null;
+            if ($dateMax.val()) {
+                dataSearch.date.max = parseDateFrToUs($dateMax.datepicker('getFormattedDate'));
+                $dateMax.datepicker('setStartDate', $dateMin.datepicker('getDate'));
+            } else
+                dataSearch.date.max = null;
+        }
+        else {
+            $dateContainer.css({'opacity': 0.5, 'pointer-events': 'none'});
+            dataSearch.date.min = null;
+            dataSearch.date.max = null;
+        }
+
+    }
+
+    function refreshChampionship(status) {
+
+        if (status === "active") {
+            $championshipContainer.css({'opacity': 1, 'pointer-events': 'auto'});
+            switchActive($('#switch-championship'));
+
+            if ($('#radio-championship-1').is(':checked'))
+                dataSearch.inChampionship = '1';
+
+            if ($('#radio-championship-0').is(':checked'))
+                dataSearch.inChampionship = '0';
+        } else {
+            $championshipContainer.css({'opacity': 0.5, 'pointer-events': 'none'});
+            dataSearch.inChampionship = null;
+        }
+    }
+
+    function refreshCompetitor() {
+        var cptCompetitorInfo = 0;
+        var cptCompetitorInfoChecked = 0;
+        var $switcher = $("#switch-competitor");
+        var competitorInfo = [];
+
+        //count, if isChecked push in array data
+        $inputCompetitor.each(function () {
+            cptCompetitorInfo++;
+            if (this.checked) {
+                competitorInfo.push($(this).val());
+                cptCompetitorInfoChecked++;
+            }
+        });
+
+        //switchCompetitor refresh
+        if (cptCompetitorInfoChecked === 0) {
+            switchDisable($switcher);
+            dataSearch.enrol = null;
+        } else{
+            if (cptCompetitorInfoChecked === cptCompetitorInfo)
+                switchActive($switcher);
+            else
+                switchInitial($switcher);
+
+            dataSearch.enrol = competitorInfo;
+        }
+    }
+
+    //switcher
+    function switchDisable($switcher) {
+        $switcher.find('.info-slide').remove();
+        $switcher.attr({
+            'class': 'switch-content disable',
+            'status': 'active',
+            'initial': '0'
+        });
+    }
+
+    function switchActive($switcher) {
+        $switcher.find('.info-slide').remove();
+        $switcher.attr({
+            'class': 'switch-content active',
+            'status': 'disable',
+            'initial': '0'
+        });
+    }
+
+    function switchInitial($switcher) {
+
+        $switcher.attr({
+            'status': 'initial',
+            'class': 'switch-content initial',
+            'initial': true
+        });
+
+        var notSelect = $('<span class="info-slide disable" title="tout supprimer"/>');
+        var allSelect = $('<span class="info-slide active" title="tout sélectionner"/>');
+        $switcher.append(notSelect);
+        $switcher.append(allSelect);
+
+        notSelect.hover(function () {
+            $switcher.addClass('disable');
+            $switcher.removeClass('initial');
+        }, function () {
+            $switcher.addClass('initial');
+            $switcher.removeClass('disable');
+        });
+
+        allSelect.hover(function () {
+            $switcher.addClass('active');
+            $switcher.removeClass('initial');
+        }, function () {
+            $switcher.addClass('initial');
+            $switcher.removeClass('active');
+        });
+
+        allSelect.click(function () {
+            $switcher.find('.info-slide').remove();
+            $switcher.attr('initial', 'active');
+        });
+
+        notSelect.click(function () {
+            $switcher.find('.info-slide').remove();
+            $switcher.attr('initial', 'disable');
+        });
+    }
+
+    //date/////////////////////////////////////////////////////////////////////////////////////////////
+
+}
+
+/***********************************************************************************************************************
  /   FOSUserBundle/views/Registration/register_content.html.twig
  /**********************************************************************************************************************/
 function registration(){

@@ -1,0 +1,246 @@
+<input id="data-search" value="{{ dataSearch }}" style="display: none">
+
+<button type="button" id="button-search" class="btn btn-success btn-sm col-xs-12">Rechercher courses</button>
+<div id="search-bar">
+    <div class="panel-group" id="accordion">
+        <!-- SEARCH CATEGORIES -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <a data-toggle="collapse" href="#panelCategory">
+                        <span>Categories</span>
+                    </a>
+                    <div class='switchContainer pull-right'>
+                        <div class="multi-switch ">
+                            <div id="switch-category" class="switch-content disable" status="active"
+                                 initial="0">
+                                <div class="switch-circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="panelCategory" class="panel-collapse collapse">
+                <div id="category-container" class="panel-body">
+                    {% for key,gender in categories %}
+                        <span class="category-gender">{{ key }}</span>
+                        <div id="category-once">
+                            {% for c in gender %}
+                                <div class="pretty p-icon p-curve p-rotate">
+                                    <input type="checkbox" value="{{ c.id }}">
+                                    <div class="state p-success-o">
+                                        <i class="icon glyphicon glyphicon-ok"></i>
+                                        <label>{{ c.name }}</label>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <!-- SEARCH REGIONS -->
+        <div id="region-container" class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <a data-toggle="collapse" href="#menuPanelRegion">
+                        <span>Localisation</span>
+                    </a>
+                    <div class='switchContainer pull-right'>
+                        <div class="multi-switch ">
+                            <div id="switch-region-all" class="switch-content disable" status="active"
+                                 initial="0">
+                                <div class="switch-circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ul class="list-group collapse" id="menuPanelRegion">
+                {% set i = 0 %}
+                {% for key,reg in regions %}
+                {% set i = i + 1 %}
+                <li class="list-group-item">
+                    <div class="row no-padding">
+                        <div class="col-xs-9">
+                            <a data-toggle="collapse" href="#region-{{ i }}">
+                                <span>{{ key }}</span>
+                            </a>
+                        </div>
+                        <div class='switchContainer col-xs-2'>
+                            <div class="multi-switch ">
+                                <div id="switch-region-{{ i }}" class="switch-content disable" status="active"
+                                     initial="0">
+                                    <div class="switch-circle"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ul id="region-{{ i }}" class="collapse dep-container">
+                        {% for dep in reg %}
+                            <div class="pretty p-icon p-curve p-rotate">
+                                <input id="cb-departement-{{ i }}" class="cb-dep" type="checkbox"
+                                       region="{{ i }}" value="{{ dep.code }}">
+                                <div class="state p-success-o">
+                                    <i class="icon glyphicon glyphicon-ok"></i>
+                                    <label>{{ dep.code }} - {{ dep.name }}</label>
+                                </div>
+                            </div><br>
+                        {% endfor %}
+                    </ul>
+                    {% endfor %}
+                </li>
+            </ul>
+        </div>
+        <!-- SEARCH DISTANCE -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <a data-toggle="collapse" href="#panelDistance">
+                        <span>Distance</span>
+                    </a>
+                    <div class='switchContainer pull-right'>
+                        <div class="multi-switch ">
+                            <div id="switch-distance" class="switch-content disable" status="active"
+                                 initial="0">
+                                <div class="switch-circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="panelDistance" class="panel-collapse collapse">
+                <div id="distance-container" class="panel-body">
+                    <form data-toggle="validator" role="form">
+                        <div class="form-group has-feedback">
+                            <label for="distMin" class="control-label">Min</label>
+                            <div class="input-group">
+                                <input type="number" step="any" min="1" max="1000" value="1"
+                                       class="form-control" id="distMin">
+                            </div>
+                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                            <div class="help-block with-errors">Entre 1 et 1000</div>
+                        </div>
+
+                        <div class="form-group has-feedback">
+                            <label for="distMax" class="control-label">Max</label>
+                            <div class="input-group">
+                                <input type="number" step="any" min="1" max="1000" value="1000"
+                                       class="form-control" id="distMax">
+                            </div>
+                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                            <div class="help-block with-errors">Entre 1 et 1000</div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- SEARCH DATE -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <a data-toggle="collapse" href="#panelDate">
+                        <span>Date</span>
+                    </a>
+                    <div class='switchContainer pull-right'>
+                        <div class="multi-switch ">
+                            <div id="switch-date" class="switch-content disable" status="active"
+                                 initial="0">
+                                <div class="switch-circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="panelDate" class="panel-collapse collapse">
+                <div id="date-container" class="panel-body">
+                    <label>A partir du :</label>
+                    <input id="date-min" class="datepicker">
+                    <label>Jusqu'au :</label>
+                    <input id="date-max" class="datepicker">
+                </div>
+            </div>
+        </div>
+        <!-- SEARCH CHAMPIONSHIP -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <a data-toggle="collapse" href="#panelChampionship">
+                        <span>Championship</span>
+                    </a>
+                    <div class='switchContainer pull-right'>
+                        <div class="multi-switch ">
+                            <div id="switch-championship" class="switch-content disable" status="active"
+                                 initial="0">
+                                <div class="switch-circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="panelChampionship" class="panel-collapse collapse">
+                <div id="championship-container" class="panel-body">
+                    <div class="pretty p-icon p-round">
+                        <input id="radio-championship-1" type="radio" name="icon_solid" value="1"/>
+                        <div class="state p-success">
+                            <i class="icon glyphicon glyphicon-ok"></i>
+                            <label>En championat</label>
+                        </div>
+                    </div>
+
+                    <div class="pretty p-icon p-round">
+                        <input id="radio-championship-0" type="radio" name="icon_solid" value="0"/>
+                        <div class="state p-success">
+                            <i class="icon glyphicon glyphicon-ok"></i>
+                            <label>Hors championat</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- SEARCH COMPETITOR -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <a data-toggle="collapse" href="#panelCompetitor">
+                        <span>Competitor</span>
+                    </a>
+                    <div class='switchContainer pull-right'>
+                        <div class="multi-switch ">
+                            <div id="switch-competitor" class="switch-content disable" status="active"
+                                 initial="0">
+                                <div class="switch-circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="panelCompetitor" class="panel-collapse collapse">
+                <div id="competitor-container" class="panel-body">
+                    <div class="pretty p-icon p-curve p-rotate">
+                        <input type="checkbox" id="canEnrol" value="1">
+                        <div class="state p-success-o">
+                            <i class="icon glyphicon glyphicon-ok"></i>
+                            <label>Je peux m'inscrire</label>
+                        </div>
+                    </div>
+                    <div class="pretty p-icon p-curve p-rotate">
+                        <input type="checkbox" id="isEnrol" value="2">
+                        <div class="state p-success-o">
+                            <i class="icon glyphicon glyphicon-ok"></i>
+                            <label>Je suis inscris</label>
+                        </div>
+                    </div>
+                    <div class="pretty p-icon p-curve p-rotate">
+                        <input type="checkbox" id="participated" value="3">
+                        <div class="state p-success-o">
+                            <i class="icon glyphicon glyphicon-ok"></i>
+                            <label>J' ai participé</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

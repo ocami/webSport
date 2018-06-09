@@ -1,7 +1,39 @@
-{% extends 'base.html.twig' %}
+{% extends 'form_layout.html.twig' %}
 
 {% block stylesheets %}
     {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css"/>
+    <link rel="stylesheet" href="{{ asset('css/multi-switch.min.css') }}"/>
+
+    <style>
+
+        .no-padding > [class*='col-'] {
+            max-height: 1em;
+        }
+
+        .switchContainer {
+            padding-top: 0.2em;
+        }
+
+        #search-bar {
+            margin-top: 4em;
+        }
+
+        #search-bar .panel-heading {
+            height: 1.5em;
+            padding: 0em;
+        }
+
+        .dep-container {
+            padding: 1em 0em 0em 0.5em;
+        }
+
+        .cb-heading {
+            z-index: 100;
+        }
+
+    </style>
+
 {% endblock %}
 
 {% block title %}
@@ -9,5 +41,19 @@
 {% endblock %}
 
 {% block body %}
-    {{ include('race/modelList.html.twig') }}
+
+    <div class="col-xs-3">
+        {% include 'race/widget/searchBar.html.twig' %}
+    </div>
+    <div class="col-xs-9">
+        {%  include 'race/modelList.html.twig' %}
+    </div>
 {% endblock %}
+
+    {% block javascripts %}
+        {{ parent() }}
+        <script>
+
+            searchBarRace();
+        </script>
+    {% endblock %}

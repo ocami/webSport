@@ -137,11 +137,6 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
             $rawSql .= $whereChampionship;
         }
 
-        if(is_bool($data['enrol'])){
-            $whereEnrol = "AND r.enrol = '".$data['enrol']."'";
-            $rawSql .= $whereEnrol;
-        }
-
         if($data['dist']){
             if(!isset($data['dist']['min']))
                 $data['dist']['min'] = 0;
@@ -171,5 +166,4 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
 
         return $stmt->fetchAll();
     }
-
 }

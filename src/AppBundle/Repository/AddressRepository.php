@@ -92,6 +92,27 @@ class AddressRepository extends \Doctrine\ORM\EntityRepository
         return $stmt->fetchAll();
     }
 
+    public function departements(){
+        $regions = $this->regions();
+
+        $regionsArray = [];
+
+        foreach ($regions as $r) {
+            $departements = $this->dep($r['id']);
+            $i = 0;
+            foreach ($departements as $dep) {
+                $regionsArray[$r['name']][$i] = array(
+                    'region' => $dep['id'],
+                    'code' => $dep['code'],
+                    'name' => $dep['name']
+                );
+                $i++;
+            }
+        }
+
+        return $regionsArray;
+    }
+
 
 
 }
