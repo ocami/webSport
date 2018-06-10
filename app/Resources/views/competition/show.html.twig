@@ -27,70 +27,68 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="row competition-show">
 
-
-            <!--panels-->
-            <div class="row panel-show">
-                <!--competition panel-->
-                <div class="col-xs-4">
-                    <div class="panel panel-success first-panel">
-                        <div class="panel-heading competition-title">
-                            <span class="title">{{ competition.name }} </span>
-                            <span class="pull-right panel-header-img">
+    <div class="row competition-show">
+        <!--panels-->
+        <div class="row panel-show">
+            <!--competition panel-->
+            <div class="col-xs-4">
+                <div class="panel panel-success first-panel">
+                    <div class="panel-heading competition-title">
+                        <span class="title">{{ competition.name }} </span>
+                        <span class="pull-right panel-header-img">
                                 {% if competition.inChampionship %}
                                     <img src="{{ asset('img/cup.jpg') }}">
                                 {% endif %}
 
-                                {% if competition.valid %}
-                                    {{ competition.competitorRegister|registerImg }}
-                                {% endif %}
+                            {% if competition.valid %}
+                                {{ competition.competitorRegister|registerImg }}
+                            {% endif %}
                             </span>
-                        </div>
-                        <div class="panel-body row">
-                            <span class="nb-race">{{ competition.nbValidRaces }} courses</span>
-                            <span class="organizer"> Organisateur : {{ competition.organizer.name }}</span>
-                        </div>
+                    </div>
+                    <div class="panel-body row">
+                        <span class="nb-race">{{ competition.nbValidRaces }} courses</span>
+                        <span class="organizer"> Organisateur : {{ competition.organizer.name }}</span>
                     </div>
                 </div>
-
-                <!--datetime panel-->
-                <div class="col-xs-4">
-                    <div class="panel panel-success date-time-panel">
-                        <div class="panel-heading "><span class="glyphicon glyphicon-time"></span></div>
-                        <div class="panel-body">
-                            <span>Du {{ competition.dateStart|date("d/m/Y") }}</span>
-                            <span>au {{ competition.dateEnd|date("d/m/Y") }}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!--location panel-->
-                <div class="col-xs-4">
-                    <div class="panel panel-success location-panel">
-                        <div class="panel-heading">
-                            <span class="glyphicon glyphicon-map-marker"></span>
-                            <span class="pull-right map-link">
-                                {{ asset('img/google_map.jpg')|googleMapLink(competition.location.x,competition.location.y)}}
-                            </span>
-                        </div>
-                        <div class="panel-body competition-location">
-                            <span>{{ competition.location.street }}</span>
-                            <span>{{ competition.location.postCode }}  {{ competition.location.city }}</span>
-                        </div>
-                    </div>
-                </div>
-
             </div>
 
-            {% for race in races %}
-                <div class="col-xs-12 col-sm-6">
-                    {{ include('race/modelList.html.twig') }}
+            <!--datetime panel-->
+            <div class="col-xs-4">
+                <div class="panel panel-success date-time-panel">
+                    <div class="panel-heading "><span class="glyphicon glyphicon-time"></span></div>
+                    <div class="panel-body">
+                        <span>Du {{ competition.dateStart|date("d/m/Y") }}</span>
+                        <span>au {{ competition.dateEnd|date("d/m/Y") }}</span>
+                    </div>
                 </div>
-            {% endfor %}
+            </div>
+
+            <!--location panel-->
+            <div class="col-xs-4">
+                <div class="panel panel-success location-panel">
+                    <div class="panel-heading">
+                        <span class="glyphicon glyphicon-map-marker"></span>
+                        <span class="pull-right map-link">
+                                {{ asset('img/google_map.jpg')|googleMapLink(competition.location.x,competition.location.y) }}
+                            </span>
+                    </div>
+                    <div class="panel-body competition-location">
+                        <span>{{ competition.location.street }}</span>
+                        <span>{{ competition.location.postCode }}  {{ competition.location.city }}</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
+
+        {% for race in races %}
+            <div class="col-xs-12 col-sm-6">
+                {{ include('race/modelList.html.twig') }}
+            </div>
+        {% endfor %}
     </div>
+
 {% endblock %}
 
     {% block javascripts %}

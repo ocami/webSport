@@ -43,17 +43,12 @@
             <input type="button" class="btn-xs btn-success" value="Importer les temps de courses"
                    onclick="location.href = '{{ path('race_competitorsTimes', {'id':race.id} ) }}';">
         {% endif %}
-
-
-
-
-
     {% endif %}
 {% endblock %}
 
 {% block body %}
     {% block show_race %}
-        <div class="race-show container">
+        <div class="race-show">
             <!--panels-->
             <div class="row panel-show">
                 <!--race panel-->

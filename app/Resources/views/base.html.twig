@@ -30,13 +30,7 @@
     </div>
 {% endif %}
 
-{% if is_granted('ROLE_ADMIN') %}
-    <div id="admin_menu">
-        {% block admin_menu %}
-        {% endblock %}
-    </div>
-{% endif %}
-
+<!-- flashes info app -->
 <div class="row">
     {% for label, messages in app.flashes %}
         {% for message in messages %}
@@ -47,20 +41,16 @@
     {% endfor %}
 </div>
 
-<div class="row">
-    <div id="info" class="alert alert-warning col-sm-offset-2 col-sm-8" style="display: none">
-        <span></span>
-        <button class="btn btn-default btn-sm" id="info-button">Rafraichir</button>
-    </div>
+<!-- js info -->
+<div id="info" class="alert alert-warning col-sm-offset-2 col-sm-8" style="display: none" class="row">
+    <span></span>
+    <button class="btn btn-default btn-sm" id="info-button">Rafraichir</button>
 </div>
 
-{% block body %}
-{% endblock %}
-
-{#<footer>
-<hr>
-    <p>The sky's the limit © {{ 'now'|date('Y') }} and beyond.</p>
-</footer>#}
+<!-- Body -->
+<div class="container">
+    {% block body %}
+    {% endblock %}
 </div>
 
 {% block javascripts %}
