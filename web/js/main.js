@@ -1046,6 +1046,21 @@ function registration(){
     });
 }
 
+/***********************************************************************************************************************
+ /   race\modelList.html.twig
+ /**********************************************************************************************************************/
+function panelCategoriesScroll(){
+    $('.panel-categories').mCustomScrollbar({
+        snapAmount:40,
+        scrollButtons:{enable:true},
+        keyboard:{scrollAmount:40},
+        mouseWheel:{deltaFactor:40},
+        scrollInertia:400,
+        theme: 'rounded-dark'
+        /*setHeight:40*/
+    });
+}
+
 //ajax error//////////////////////////////////////////////////////////////////////////////////////////////////////
 function ajaxError() {
     $('#info').css('display','block');

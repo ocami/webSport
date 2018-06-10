@@ -6,34 +6,25 @@
     <link rel="stylesheet" href="{{ asset('css/multi-switch.min.css') }}"/>
     <link rel="stylesheet" href="{{ asset('css/jquery.mCustomScrollbar.min.css') }}"/>
 
-
     <style>
 
-        .no-padding > [class*='col-'] {
-            max-height: 1em;
-        }
-
-        .switchContainer {
-            padding-top: 0.2em;
-        }
 
         #search-bar {
-            margin-top: 4em;
+            margin-top: 3em;
+
         }
 
-        #search-bar .panel-heading {
-            height: 1.5em;
-            padding: 0em;
+        @media (min-width: 1200px) {
+            #search-bar, .button-search {
+                min-width: 17em;
+            }
         }
 
-        .dep-container {
-            padding: 1em 0em 0em 0.5em;
+        .search-bar-container{
+            padding: 0em 0em 0em 0em;
+            margin-left: 2em;
+            margin-right: 2em;
         }
-
-        .cb-heading {
-            z-index: 100;
-        }
-
 
     </style>
 
@@ -45,11 +36,15 @@
 
 {% block body %}
 
-    <div class="col-xs-3">
+    <div class="col-xs-2 search-bar-container">
         {% include 'race/widget/searchBar.html.twig' %}
     </div>
     <div class="col-xs-9">
-        {%  include 'race/modelList.html.twig' %}
+        {% for race in races %}
+            <div class="col-xs-12 col-lg-6 races-container">
+                {{ include('race/modelList.html.twig') }}
+            </div>
+        {% endfor %}
     </div>
 
 {% endblock %}
@@ -58,21 +53,7 @@
         {{ parent() }}
         <script src="{{ asset('js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
         <script>
-
-
-
-            var $categoriesPanel = $('#panel-race-list').find('.categories');
-            $('.panel-categories').mCustomScrollbar({
-                snapAmount:40,
-                scrollButtons:{enable:true},
-                keyboard:{scrollAmount:40},
-                mouseWheel:{deltaFactor:40},
-                scrollInertia:400,
-                theme: 'rounded-dark'
-                /*setHeight:40*/
-            });
-
-
+            panelCategoriesScroll();
             searchBarRace();
         </script>
     {% endblock %}

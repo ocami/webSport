@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 
-
 {% block organizer_menu %}
     <button class="btn-xs btn-success" onclick="location.href = '{{ path('competition_new') }}'">Ajouter une
         compétition
@@ -10,27 +9,40 @@
     </button>
 {% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/jquery.mCustomScrollbar.min.css') }}"/>
+
+{% endblock %}
 
 {% block body %}
 
-    <div class="text-right">
-        <button class="btn-xs btn-primary" id="competitionDisplayButton" value="future">
-            Compétition passées
-        </button>
-    </div>
-    <br>
-    <div class="row">
-        {% for competition in competitions %}
-        {% if competition.isPassed %}
-        <div id="competitionsPassed">
-            {% include 'competition/modelList.twig' %}
+    <div class="container">
+        <div class="text-right">
+            <button class="btn-xs btn-primary" id="competitionDisplayButton" value="future">
+                Compétition passées
+            </button>
         </div>
-        {% else %}
-        <div id="competitionsNoPassed">
-            {% include 'competition/modelList.twig' %}
+        <br>
+        <div class="row">
+
+
+            {% for competition in competitions %}
+            {% if competition.isPassed %}
+            <div id="competitionsPassed">
+                <div class="col-xs-12 col-sm-6">
+                    {% include 'competition/modelList.twig' %}
+                </div>
+            </div>
+            {% else %}
+            <div id="competitionsNoPassed">
+                <div class="col-xs-12 col-sm-6">
+                    {% include 'competition/modelList.twig' %}
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
         </div>
-        {% endif %}
-        {% endfor %}
     </div>
 
 
@@ -38,9 +50,11 @@
 
     {% block javascripts %}
         {{ parent() }}
+        <script src="{{ asset('js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
 
         <script>
-            competitionShowList()
+            competitionShowList();
+            panelCategoriesScroll();
         </script>
 
     {% endblock %}

@@ -11,15 +11,6 @@
         <link rel="stylesheet" href="{{ asset('css/jquery.dataTables.css') }}"/>
         <link rel="stylesheet" href="{{ asset('css/main.css') }}"/>
         <link rel="stylesheet" href="{{ asset('tools/tools.css') }}"/>
-
-        {#<link rel="stylesheet" href="{{ asset('myDateTime/myDateTime.css') }}"/>#}
-        {#<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">#}
-        {#<link rel="stylesheet"#}
-        {#href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.css">#}
-
-
-
-
     {% endblock %}
 
 </head>
@@ -63,13 +54,8 @@
     </div>
 </div>
 
-<div class="container-fluid">
-
-    {% block body %}
-    {% endblock %}
-
-</div>
-
+{% block body %}
+{% endblock %}
 
 {#<footer>
 <hr>

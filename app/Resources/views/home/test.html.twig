@@ -1,211 +1,60 @@
-{% extends 'form_layout.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css"/>
-    <link rel="stylesheet" href="{{ asset('css/multi-switch.min.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('css/jquery.mCustomScrollbar.min.css') }}"/>
+
 
     <style>
-        .no-padding > [class*='col-'] {
-            max-height: 1em;
+
+        .col-fixed, .row {
+            float: left;
         }
 
-        .switchContainer {
-            padding-top: 0.2em;
+        .col-fixed {
+            background: #CCC;
+            width: 300px;
+            height: 20em;
         }
 
-        #search-bar {
-            margin-top: 4em;
+        .row {
+            background: #EEE;
+            width:calc(100% - 300px + 15px * 2);
         }
 
-        #search-bar .panel-heading {
-            height: 1.5em;
-            padding: 0em;
+        .other{
+            height: 200em;
         }
-
-        .dep-container {
-            padding: 1em 0em 0em 0.5em;
-        }
-
-        .cb-heading {
-            z-index: 100;
-        }
-
-
-        .content{
-            /*background-color: #0c0c0c;*/
-            height: 10em;
-            width: 10em;
-        }
-
 
     </style>
-
 {% endblock %}
 
-{% block title %}
-    {{ parent() }} Recherche courses
-{% endblock %}
 
 {% block body %}
 
-    <div class="col-xs-3">
-        {% include 'race/widget/searchBar.html.twig' %}
-    </div>
-    <div class="col-xs-9">
+    <div class="container">
+        <div class="col-fixed">
+            .col-fixed
+        </div>
         <div class="row">
-            {% for race in races %}
-                <div class="col-xs-12 col-sm-6">
-                    <div id="panel-race-list" class="panel panel-default">
-                        <div class="panel-heading">
-                            <span class="panel-title">{{ race.name }} </span>
-                            <span class="pull-right">
-                        {% if race.inChampionship %}
-                            <img src="{{ asset('img/cup.jpg') }}" class="img-circle">
-                        {% endif %}
-
-                                {% if race.valid %}
-                                    {{ race.competitorRegister|registerImg }}
-                                {% endif %}
-                    </span>
-                        </div>
-                        <div class="panel-body panel-body-race">
-
-                            <h4 style="text-align: center">{{ race.dateTime|localizeddate('none', 'none', 'fr_BR', null, "cccc d MMMM") }}</h4>
-
-                            <div class="row">
-                                <div class="col-xs-8 col-lg-7 race-description">
-                                    <span class="col-xs-7">Départ :</span><span class="col-xs-5"> {{ race.dateTime|date('H') }}
-                                        H {{ race.dateTime|date('i') }}</span>
-                                    <span class="col-xs-7">Distance :</span><span class="col-xs-5"> {{ race.distance }}
-                                        Km</span>
-                                </div>
-
-                                <div class="col-xs-4">
-                                    {% if race.fullCat %}
-                                        <div class="category">
-                                            Toute catégories
-                                        </div>
-                                    {% else %}
-                                        <div class="categories">
-                                            {% for category in race.categories %}
-                                                <span style="margin-left: 1em">{{ category.name }}</span><br>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel-footer">
-                            <input type="button" class="btn-xs btn-info" value="Détail"
-                                   onclick="location.href = '{{ path('race_show', {'id': race.id}) }}';">
-
-                            {% if is_granted('ROLE_COMPETITOR') %}
-                                {% if race.valid %}
-                                    {% if race.competitorRegister == 1 %}
-                                        <input type="button" class="btn-xs btn-info" value="S'inscrire"
-                                               onclick="location.href = '{{ path('app_competitor_addrace', {'race': race.id}) }}';">
-                                    {% endif %}
-                                    {% if race.competitorRegister == 2 %}
-                                        <input type="button" class="btn-xs btn-info" value="Annuler"
-                                               onclick="location.href = '{{ path('app_competitor_removerace', {'race': race.id}) }}';">
-                                    {% endif %}
-                                {% endif %}
-                            {% endif %}
-
-                            {% if race.isOrganizer == true %}
-                                <input type="button" class="btn-xs btn-success" value="Editer"
-                                       onclick="location.href = '{{ path('race_edit', {'id': race.id}) }}';">
-
-                                {% if race.supervised %}
-                                    {{ race.competition.valid|validImg }}
-                                {% else %}
-                                    <img src="{{ asset('img/question.png ') }}" class="img-circle pull-right">
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
+            <div class="col-md-3 other">
+                .col-md-3 other
+            </div>
+            <div class="col-md-3 other">
+                .col-md-3 other
+            </div>
+            <div class="col-md-3 other">
+                .col-md-3 other
+            </div>
+            <div class="col-md-3 other">
+                .col-md-3 other
+            </div>
         </div>
     </div>
-
-    <div id="monTest">
-        <div class="content">
-            <table>
-                <tr><td>Row 1</td></tr>
-                <tr><td>Row 2</td></tr>
-                <tr><td>Row 3</td></tr>
-                <tr><td>Row 4</td></tr>
-                <tr><td>Row 5</td></tr>
-                <tr><td>Row 6</td></tr>
-                <tr><td>Row 7</td></tr>
-                <tr><td>Row 8</td></tr>
-                <tr><td>Row 9</td></tr>
-                <tr><td>Row 10</td></tr>
-                <tr><td>Row 11</td></tr>
-                <tr><td>Row 12</td></tr>
-                <tr><td>Row 13</td></tr>
-                <tr><td>Row 14</td></tr>
-                <tr><td>Row 15</td></tr>
-                <tr><td>Row 16</td></tr>
-                <tr><td>Row 17</td></tr>
-                <tr><td>Row 18</td></tr>
-                <tr><td>Row 19</td></tr>
-                <tr><td>Row 20</td></tr>
-                <tr><td>Row 21</td></tr>
-                <tr><td>Row 22</td></tr>
-                <tr><td>Row 23</td></tr>
-                <tr><td>Row 24</td></tr>
-                <tr><td>Row 25</td></tr>
-                <tr><td>Row 26</td></tr>
-                <tr><td>Row 27</td></tr>
-                <tr><td>Row 28</td></tr>
-                <tr><td>Row 29</td></tr>
-                <tr><td>Row 30</td></tr>
-                <tr><td>Row 31</td></tr>
-                <tr><td>Row 32</td></tr>
-                <tr><td>Row 33</td></tr>
-                <tr><td>Row 34</td></tr>
-                <tr><td>Row 35</td></tr>
-                <tr><td>Row 36</td></tr>
-                <tr><td>Row 37</td></tr>
-                <tr><td>Row 38</td></tr>
-                <tr><td>Row 39</td></tr>
-                <tr><td>Row 40 - end</td></tr>
-            </table>
-        </div>
-
+    <div class="container">
+        <h2>This fixed-fluid example works better</h2>
+        <a href="http://www.codeply.com/go/3CfoaYfQdG" target="ext">http://www.codeply.com/go/3CfoaYfQdG</a>
     </div>
-
-
 
 {% endblock %}
 
-    {% block javascripts %}
-        {{ parent() }}
-        <script src="{{ asset('js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
-        <script>
 
-            var $categories = $('#panel-race-list').find('.categories');
-            $('.categories').mCustomScrollbar({
-                snapAmount:40,
-                scrollButtons:{enable:true},
-                keyboard:{scrollAmount:40},
-                mouseWheel:{deltaFactor:40},
-                scrollInertia:400,
-                theme: 'rounded-dark'
-            });
-            $(".content").mCustomScrollbar({
-                snapAmount:40,
-                scrollButtons:{enable:true},
-                keyboard:{scrollAmount:40},
-                mouseWheel:{deltaFactor:40},
-                scrollInertia:400,
-                theme: 'rounded-dark'
-            });
-
-            searchBarRace();
-        </script>
-    {% endblock %}

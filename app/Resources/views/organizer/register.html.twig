@@ -5,18 +5,20 @@
     {% endblock %}
 
     {% block body %}
-        <div class="col-sm-offset-2 col-sm-8">
+        <div class="container">
+            <div class="col-sm-offset-2 col-sm-8">
 
-            {{ form_start(form,{'attr': {'class': 'fos_user_registration_register','data-toggle': 'validator', 'role':'form'}}) }}
+                {{ form_start(form,{'attr': {'class': 'fos_user_registration_register','data-toggle': 'validator', 'role':'form'}}) }}
 
-            <div class="form-group has-feedback">
-                <label for="username" class="control-label">Nom</label>
-                {{ form_widget(form.name, {'attr': {'class':"form-control"}}) }}
-                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                <div class="form-group has-feedback">
+                    <label for="username" class="control-label">Nom</label>
+                    {{ form_widget(form.name, {'attr': {'class':"form-control"}}) }}
+                    <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                </div>
+
+                {{ form(form) }}
+                {{ form_end(form) }}
             </div>
-
-            {{ form(form) }}
-            {{ form_end(form) }}
         </div>
 
     {% endblock %}

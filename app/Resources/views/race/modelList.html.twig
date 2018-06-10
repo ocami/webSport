@@ -5,6 +5,10 @@
             line-height: 2;
         }
 
+        .panel-categories-container {
+            padding: 0em 0em 0em 0em;
+        }
+
         @media (min-width: 1000px) {
             .race-description {
                 font-size: 15px;
@@ -14,78 +18,73 @@
     </style>
 
 {% endblock %}
-<div class="row">
-    {% for race in races %}
-        <div class="col-xs-12 col-sm-6">
-            <div id="panel-race-list" class="panel panel-default">
-                <div class="panel-heading">
-                    <span class="panel-title">{{ race.name }} </span>
-                    <span class="pull-right">
+
+        <div id="panel-race-list" class="panel panel-default">
+            <div class="panel-heading">
+                <span class="panel-title">{{ race.name }} </span>
+                <span class="pull-right">
                         {% if race.inChampionship %}
                             <img src="{{ asset('img/cup.jpg') }}" class="img-circle">
                         {% endif %}
 
-                        {% if race.valid %}
-                            {{ race.competitorRegister|registerImg }}
-                        {% endif %}
+                    {% if race.valid %}
+                        {{ race.competitorRegister|registerImg }}
+                    {% endif %}
                     </span>
-                </div>
-                <div class="panel-body panel-body-race">
+            </div>
+            <div class="panel-body panel-body-race">
 
-                    <h4 style="text-align: center">{{ race.dateTime|localizeddate('none', 'none', 'fr_BR', null, "cccc d MMMM") }}</h4>
+                <h4 style="text-align: center">{{ race.dateTime|localizeddate('none', 'none', 'fr_BR', null, "cccc d MMMM") }}</h4>
 
-                    <div class="row">
-                        <div class="col-xs-8 col-lg-7 race-description">
-                            <span class="col-xs-7">Départ :</span><span class="col-xs-5"> {{ race.dateTime|date('H') }}
-                                H {{ race.dateTime|date('i') }}</span>
-                            <span class="col-xs-7">Distance :</span><span class="col-xs-5"> {{ race.distance }}
-                                Km</span>
-                        </div>
+                <div class="row">
+                    <div class="col-xs-8 col-lg-7 race-description">
+                        <span class="col-xs-7">Départ :</span><span class="col-xs-5"> {{ race.dateTime|date('H') }}
+                            H {{ race.dateTime|date('i') }}</span>
+                        <span class="col-xs-7">Distance :</span><span class="col-xs-5"> {{ race.distance }}
+                            Km</span>
+                    </div>
 
-                        <div class="col-xs-4">
-                            {% if race.fullCat %}
-                                <div class="category">
-                                    Toute catégories
-                                </div>
-                            {% else %}
-                                <div class="panel-categories">
-                                    {% for category in race.categories %}
-                                        <span style="margin-left: 1em">{{ category.name }}</span><br>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
+                    <div class="col-xs-4 panel-categories-container">
+                        {% if race.fullCat %}
+                            <div class="panel-category-all">
+                                Toute catégories
+                            </div>
+                        {% else %}
+                            <div class="panel-categories">
+                                {% for category in race.categories %}
+                                    <span style="margin-left: 1em">{{ category.name }}</span><br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
-                <div class="panel-footer">
-                    <input type="button" class="btn-xs btn-info" value="Détail"
-                           onclick="location.href = '{{ path('race_show', {'id': race.id}) }}';">
+            </div>
+            <div class="panel-footer">
+                <input type="button" class="btn-xs btn-info" value="Détail"
+                       onclick="location.href = '{{ path('race_show', {'id': race.id}) }}';">
 
-                    {% if is_granted('ROLE_COMPETITOR') %}
-                        {% if race.valid %}
-                            {% if race.competitorRegister == 1 %}
-                                <input type="button" class="btn-xs btn-info" value="S'inscrire"
-                                       onclick="location.href = '{{ path('app_competitor_addrace', {'race': race.id}) }}';">
-                            {% endif %}
-                            {% if race.competitorRegister == 2 %}
-                                <input type="button" class="btn-xs btn-info" value="Annuler"
-                                       onclick="location.href = '{{ path('app_competitor_removerace', {'race': race.id}) }}';">
-                            {% endif %}
+                {% if is_granted('ROLE_COMPETITOR') %}
+                    {% if race.valid %}
+                        {% if race.competitorRegister == 1 %}
+                            <input type="button" class="btn-xs btn-info" value="S'inscrire"
+                                   onclick="location.href = '{{ path('app_competitor_addrace', {'race': race.id}) }}';">
+                        {% endif %}
+                        {% if race.competitorRegister == 2 %}
+                            <input type="button" class="btn-xs btn-info" value="Annuler"
+                                   onclick="location.href = '{{ path('app_competitor_removerace', {'race': race.id}) }}';">
                         {% endif %}
                     {% endif %}
+                {% endif %}
 
-                    {% if race.isOrganizer == true %}
-                        <input type="button" class="btn-xs btn-success" value="Editer"
-                               onclick="location.href = '{{ path('race_edit', {'id': race.id}) }}';">
+                {% if race.isOrganizer == true %}
+                    <input type="button" class="btn-xs btn-success" value="Editer"
+                           onclick="location.href = '{{ path('race_edit', {'id': race.id}) }}';">
 
-                        {% if race.supervised %}
-                            {{ race.competition.valid|validImg }}
-                        {% else %}
-                            <img src="{{ asset('img/question.png ') }}" class="img-circle pull-right">
-                        {% endif %}
+                    {% if race.supervised %}
+                        {{ race.competition.valid|validImg }}
+                    {% else %}
+                        <img src="{{ asset('img/question.png ') }}" class="img-circle pull-right">
                     {% endif %}
-                </div>
+                {% endif %}
             </div>
         </div>
-    {% endfor %}
-</div>

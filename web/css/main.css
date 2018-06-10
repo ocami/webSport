@@ -1,16 +1,139 @@
+/* race-swow */
+/*
+admin/races.html.twig
+race/show.html.twig
+*/
 
-#demo {
-    background: #718C00;
-    height: 10em;
-    width: 10em;
+.date-time-panel span {
+    display: block;
+    text-align: center;
+    font-size: larger;
 }
 
-.demo {
-    background: #718C00;
-    height: 10em;
-    width: 10em;
+.location-panel span {
+    display: block;
+    text-align: center;
+    font-size: larger;
 }
 
+.race-panel .panel-body .competition span {
+    font-size: larger;
+}
+
+.race-panel .panel-body .organizer {
+    font-size: smaller;
+    text-align: right;
+}
+
+.race-title span {
+    display: inline;
+    font-weight: bolder;
+    font-size: larger;
+
+}
+
+.race-title img {
+    max-height: 1.5em;
+
+}
+
+/* search-bar ******************************************************************************************************* */
+#search-bar .panel-heading {
+    height: 1.5em;
+    padding: 0em;
+}
+
+#search-bar .panel-title .glyphicon {
+    margin: 0.2em 1em 0em 1em;
+}
+
+#search-bar .no-padding > [class*='col-'] {
+    max-height: 1em;
+}
+
+#search-bar .switchContainer {
+    padding-top: 0.2em;
+}
+
+#search-bar .panel-heading {
+    height: 1.5em;
+    padding: 0em;
+}
+
+#search-bar .dep-container {
+    padding: 1em 0em 0em 0.5em;
+}
+
+#search-bar .cb-heading {
+    z-index: 100;
+}
+
+/* modal competitor info ******************************************************************************************************* */
+#competitor-modal input.hidden {
+    position: absolute;
+    left: -9999px;
+}
+
+#competitor-modal #profile-image1 {
+    cursor: pointer;
+
+    width: 100px;
+    height: 100px;
+    border: 2px solid #03b1ce;
+}
+
+#competitor-modal .tital {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+#competitor-modal .bot-border {
+    border-bottom: 1px #f8f8f8 solid;
+    margin: 5px 0 5px 0
+}
+
+#competitor-modal .modal-content {
+    height: 0px;
+}
+
+/* nav bar general ******************************************************************************************************* */
+#navbar-general .dropdown-menu {
+    z-index: 9999;
+}
+
+#navbar-general .badge {
+    padding: 1px 9px 2px;
+    font-size: 12.025px;
+    font-weight: bold;
+    white-space: nowrap;
+    color: #ffffff;
+    background-color: #999999;
+    -webkit-border-radius: 9px;
+    -moz-border-radius: 9px;
+    border-radius: 9px;
+}
+
+#navbar-general .badge:hover {
+    color: #ffffff;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#navbar-general .badge-warning {
+    background-color: #a91c1f;
+}
+
+#navbar-general .badge-warning:hover {
+    background-color: #c6504b;
+}
+
+#navbar-general .badge-success {
+    background-color: #468847;
+}
+
+#navbar-general .badge-success:hover {
+    background-color: #356635;
+}
 
 /* Center the loader */
 #loader {
@@ -65,3 +188,81 @@
     text-align: center;
 }
 
+/**INFO**************************************************************************************************/
+
+.info-img{
+    max-width: 8em;
+    max-height: 8em;
+}
+
+.info-content{
+    background: #edeff0;
+    max-height: 230px;
+}
+
+div#fade-content{
+    max-height: 230px;
+    overflow: hidden;
+}
+
+.fade-anchor {
+    background: -webkit-linear-gradient(top,rgba(237,239,240,0),rgba(237,239,240,0) 170px,#edeff0 200px);
+    background: linear-gradient(to bottom,rgba(237,239,240,0),rgba(237,239,240,0) 170px,#edeff0 200px);
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: block;
+    height: 230px;
+    padding-top: 200px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    text-align: center;
+    -webkit-transition: background 150ms ease-in;
+    transition: background 150ms ease-in;
+}
+
+#fade-content p{
+    max-height: 200px;
+}
+
+/**panel-race**************************************************************************************************/
+.panel-categories {
+    height: 6em;
+}
+
+.panel-category-all {
+    height: 6em;
+    padding-top: 2em;
+    font-weight: bold;
+}
+
+.panel-heading img {
+    height: 2em;
+}
+
+.panel-footer img {
+    height: 2em;
+}
+
+/**panel-race**************************************************************************************************/
+
+@media (max-width: 400px) {
+    #panel-race-list .panel-body {
+        padding: 0 0 0 0px;
+    }
+}
+/**panel-competition**************************************************************************************************/
+@media (max-width: 400px) {
+    #panel-competition-list .panel-body {
+        padding: 0 0 0 0px;
+    }
+}
+
+
+#panel-competition-list .panel-body .nbRace {
+    display: block;
+    text-align: right;
+    font-weight: bold;
+}

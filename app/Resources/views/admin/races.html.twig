@@ -10,85 +10,9 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/select/1.2.5/css/select.bootstrap.min.css"/>
 
     <style>
-
-
-        #example span {
-            display: none;
-        }
-
-        #example .championship {
-            white-space: nowrap; /* this is required unless you put the helper span closely near the img */
-            text-align: center;
-            overflow: visible;
-            /*background: #ffffff url('https://image.flaticon.com/icons/svg/291/291201.svg') no-repeat center center;*/
-            background: url('http://robwilson.tv/wordpress/wp-content/uploads/2008/12/Question-mark.png') no-repeat center center;
-            background-size: 25%;
-        }
-
-        /*meme css que race/show sauf bouttons*/
-
-        .date-time-panel span {
-            display: block;
-            text-align: center;
-            font-size: larger;
-        }
-
-        .location-panel span {
-            display: block;
-            text-align: center;
-            font-size: larger;
-        }
-
-        .race-panel .panel-body .competition span {
-            font-size: larger;
-        }
-
-        .race-panel .panel-body .organizer {
-            font-size: smaller;
-            text-align: right;
-        }
-
-        .race-title span {
-            display: inline;
-            font-weight: bolder;
-            font-size: larger;
-
-        }
-
-        .race-title img {
-            max-height: 1.5em;
-
-        }
-
-        .race-organizer {
-            margin-bottom: 2em;
-        }
-
-        .race-distance {
-            display: block;
-            text-align: center;
-            font-weight: bolder;
-            font-size: larger;
-            margin-top: 0.5em;
-        }
-
-        .row-ranck {
-            text-align: center;
-        }
-
-        .profile-href {
-            cursor: zoom-in;
-            color: #1b6d85;
-        }
-
-        #tables {
-            min-height: 10em;
-        }
-
         #admin-race-categories button {
             margin-bottom: 1em;
         }
-
     </style>
 
 
@@ -99,102 +23,103 @@
 {% endblock %}
 
 {% block body %}
-
-    <div id="full-page">
-        <div id="loader-full"></div>
-    </div>
-
-    <div id="admin-races">
-        <table id="admin-races-table" cellspacing="0" width="100%">
-            <thead>
-            <tr>
-                <th></th>
-                <th>id</th>
-                <th>Nom</th>
-                <th>Ville</th>
-                <th>Orga.</th>
-                <th>Date</th>
-                <th>Champ.</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for race in races %}
-                <tr>
-                    <td></td>
-                    <td>{{ race.id }}</td>
-                    <td>{{ race.name }}</td>
-                    <td>{{ race.competition.location.postCode }} {{ race.competition.location.city }}</td>
-                    <td>{{ race.name }}</td>
-                    <td><span>{{ race.dateTime | date("Ymd") }}</span> {{ race.dateTime | date("d/m/Y") }}</td>
-                    <td {% if race.requestInChampionship == 1 %} class="championship" style="text-indent: -9999px;" {% endif %}>{{ race.requestInChampionship }}</td>
-                </tr>
-            {% endfor %}
-
-
-            </tbody>
-        </table>
-
-
-        <div id="loader-div" class="row"></div>
-        <div id="admin-race-show">
-            <div class="buttons">
-                <button type="button" id="next" class="btn btn-dark next glyphicon glyphicon-chevron-left"></button>
-                <button type="button" id="prev" class="btn btn-dark  glyphicon glyphicon-chevron-right"></button>
-                <button type="button" id="valid" class="btn btn-dark">Valider</button>
-                <button type="button" id="refuse" class="btn btn-dark">Refuser</button>
-                <label><input id="cb-Championship" type="checkbox">Championat</label>
-
-            </div>
-            <br>
-            <!--panels-->
-            <div class="row">
-                <!--race panel-->
-                <div class="col-xs-4">
-                    <div class="panel panel-primary race-panel">
-                        <div class="panel-heading race-title">
-                            <span id="admin-race-name" class="panel-title"></span>
-                        </div>
-                        <div class="panel-body row">
-                            <div class="col-xs-8 competition ">
-                                <a div="admin-race-competition-id" href='#'><span
-                                            class="glyphicon glyphicon-circle-arrow-left"></span></a>
-                                <span id="admin-race-competition-name"></span>
-                                <div id="admin-race-competition-organizer" class="organizer"></div>
-                            </div>
-                            <div class="col-xs-4">
-                                <span id="admin-race-distance" class="race-distance"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!--datetime panel-->
-                <div class="col-xs-4">
-                    <div class="panel panel-primary date-time-panel">
-                        <div class="panel-heading "><span class="glyphicon glyphicon-time"></span></div>
-                        <div class="panel-body">
-                            <span id="admin-race-day" class="date-day"></span>
-                            <span id="admin-race-hour" class="date-hour"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <!--location panel-->
-                <div class="col-xs-4">
-                    <div class="panel panel-primary location-panel">
-                        <div class="panel-heading"><span class="glyphicon glyphicon-map-marker"></span></div>
-                        <div class="panel-body race-location">
-                            <span id="admin-race-address"></span>
-                            <span id="admin-race-city"></span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <!--buttons categories-->
-            <div id="admin-race-categories" class="row"></div>
+    <div class="container">
+        <div id="full-page">
+            <div id="loader-full"></div>
         </div>
 
+        <div id="admin-races">
+            <table id="admin-races-table" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>id</th>
+                    <th>Nom</th>
+                    <th>Ville</th>
+                    <th>Orga.</th>
+                    <th>Date</th>
+                    <th>Champ.</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for race in races %}
+                    <tr>
+                        <td></td>
+                        <td>{{ race.id }}</td>
+                        <td>{{ race.name }}</td>
+                        <td>{{ race.competition.location.postCode }} {{ race.competition.location.city }}</td>
+                        <td>{{ race.name }}</td>
+                        <td><span>{{ race.dateTime | date("Ymd") }}</span> {{ race.dateTime | date("d/m/Y") }}</td>
+                        <td {% if race.requestInChampionship == 1 %} class="championship" style="text-indent: -9999px;" {% endif %}>{{ race.requestInChampionship }}</td>
+                    </tr>
+                {% endfor %}
+
+
+                </tbody>
+            </table>
+
+
+            <div id="loader-div" class="row"></div>
+            <div id="admin-race-show">
+                <div class="buttons">
+                    <button type="button" id="next" class="btn btn-dark next glyphicon glyphicon-chevron-left"></button>
+                    <button type="button" id="prev" class="btn btn-dark  glyphicon glyphicon-chevron-right"></button>
+                    <button type="button" id="valid" class="btn btn-dark">Valider</button>
+                    <button type="button" id="refuse" class="btn btn-dark">Refuser</button>
+                    <label><input id="cb-Championship" type="checkbox">Championat</label>
+
+                </div>
+                <br>
+                <!--panels-->
+                <div class="row">
+                    <!--race panel-->
+                    <div class="col-xs-4">
+                        <div class="panel panel-primary race-panel">
+                            <div class="panel-heading race-title">
+                                <span id="admin-race-name" class="panel-title"></span>
+                            </div>
+                            <div class="panel-body row">
+                                <div class="col-xs-8 competition ">
+                                    <a div="admin-race-competition-id" href='#'><span
+                                                class="glyphicon glyphicon-circle-arrow-left"></span></a>
+                                    <span id="admin-race-competition-name"></span>
+                                    <div id="admin-race-competition-organizer" class="organizer"></div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <span id="admin-race-distance" class="race-distance"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--datetime panel-->
+                    <div class="col-xs-4">
+                        <div class="panel panel-primary date-time-panel">
+                            <div class="panel-heading "><span class="glyphicon glyphicon-time"></span></div>
+                            <div class="panel-body">
+                                <span id="admin-race-day" class="date-day"></span>
+                                <span id="admin-race-hour" class="date-hour"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--location panel-->
+                    <div class="col-xs-4">
+                        <div class="panel panel-primary location-panel">
+                            <div class="panel-heading"><span class="glyphicon glyphicon-map-marker"></span></div>
+                            <div class="panel-body race-location">
+                                <span id="admin-race-address"></span>
+                                <span id="admin-race-city"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!--buttons categories-->
+                <div id="admin-race-categories" class="row"></div>
+            </div>
+
+        </div>
     </div>
 {% endblock %}
 

@@ -56,9 +56,6 @@ class CompetitionService
 
             if (count($competition->getCategories()) == $nbC)
                 $competition->setFullCat(true);
-
-
-
         }
 
         return $competitions;

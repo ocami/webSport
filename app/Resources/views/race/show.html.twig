@@ -4,58 +4,13 @@
     {{ parent() }}
     <link rel="stylesheet" href="https://cdn.datatables.net/select/1.2.5/css/select.bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"/>
-
-
     <style>
-
-        .date-time-panel span {
-            display: block;
-            text-align: center;
-            font-size: larger;
-        }
-
-        .location-panel span {
-            display: block;
-            text-align: center;
-            font-size: larger;
-        }
-
-        .race-panel .panel-body .competition span {
-            font-size: larger;
-        }
-
-        .race-panel .panel-body .organizer {
-            font-size: smaller;
-            text-align: right;
-        }
-
-        .race-title span {
-            display: inline;
-            font-weight: bolder;
-            font-size: larger;
-
-        }
-
-        .race-title img {
-            max-height: 1.5em;
-
-        }
-
-        .race-organizer {
-            margin-bottom: 2em;
+        #tables{
+            min-height: 10em;
         }
 
         #race-show-categories button {
             margin-bottom: 1em;
-        }
-
-        .race-distance {
-            display: block;
-            text-align: center;
-            font-weight: bolder;
-            font-size: larger;
-            margin-top: 0.5em;
-
         }
 
         .row-ranck {
@@ -66,12 +21,6 @@
             cursor: zoom-in;
             color: #1b6d85;
         }
-
-        #tables{
-         min-height: 10em;
-        }
-
-
     </style>
 
 {% endblock %}

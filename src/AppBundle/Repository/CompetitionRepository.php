@@ -17,7 +17,23 @@ class CompetitionRepository extends \Doctrine\ORM\EntityRepository
         $competitions = $this->createQueryBuilder('c')
             ->orderBy('c.dateStart')
             ->Where('c.valid = :isValid')
-            ->setParameter('isValid',true)
+            ->setParameter('isValid', true)
+            ->getQuery()->getResult();
+
+        return $competitions;
+    }
+
+    /**
+     * @return array of competitions separed in passed and not passed
+     */
+    public function allValidFirstFive()
+    {
+        $competitions = $this->createQueryBuilder('c')
+            ->orderBy('c.dateStart')
+            ->Where('c.valid = :isValid')
+            ->setParameter('isValid', true)
+            ->setFirstResult(0)
+            ->setMaxResults(5)
             ->getQuery()->getResult();
 
         return $competitions;
@@ -42,39 +58,41 @@ class CompetitionRepository extends \Doctrine\ORM\EntityRepository
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public function isValid(Competition $competition){
-         $nb = $this->createQueryBuilder('c')
-             ->select('count(c)')
-             ->innerJoin('c.races','r')
-             ->where('c.id = :id')
-             ->andWhere('r.valid = :bool')
-             ->setParameter('id', $competition)
-             ->setParameter('bool', 1)
-             ->getQuery()->getSingleScalarResult();
+    public function isValid(Competition $competition)
+    {
+        $nb = $this->createQueryBuilder('c')
+            ->select('count(c)')
+            ->innerJoin('c.races', 'r')
+            ->where('c.id = :id')
+            ->andWhere('r.valid = :bool')
+            ->setParameter('id', $competition)
+            ->setParameter('bool', 1)
+            ->getQuery()->getSingleScalarResult();
 
-         $nb =  intval($nb);
+        $nb = intval($nb);
 
-         if (intval($nb) > 0)
-             return true;
+        if (intval($nb) > 0)
+            return true;
 
-         return false;
-     }
+        return false;
+    }
 
-      public function isInChampionship(Competition $competition){
-          $nb = $this->createQueryBuilder('c')
-              ->select('count(c)')
-              ->innerJoin('c.races','r')
-              ->where('c.id = :id')
-              ->andWhere('r.inChampionship = :bool')
-              ->setParameter('id', $competition)
-              ->setParameter('bool', 1)
-              ->getQuery()->getSingleScalarResult();
+    public function isInChampionship(Competition $competition)
+    {
+        $nb = $this->createQueryBuilder('c')
+            ->select('count(c)')
+            ->innerJoin('c.races', 'r')
+            ->where('c.id = :id')
+            ->andWhere('r.inChampionship = :bool')
+            ->setParameter('id', $competition)
+            ->setParameter('bool', 1)
+            ->getQuery()->getSingleScalarResult();
 
-          $nb =  intval($nb);
+        $nb = intval($nb);
 
-          if (intval($nb) > 0)
-              return true;
+        if (intval($nb) > 0)
+            return true;
 
-          return false;
-      }
+        return false;
+    }
 }

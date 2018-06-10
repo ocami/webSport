@@ -24,55 +24,57 @@
 {% endblock %}
 
 {% block forms_content %}
+    <div class="container">
+        <div class="competition-form">
+            {{ form_start(form, {'attr': {'data-toggle': 'validator', 'role':'form'}}) }}
 
-    <div class="competition-form">
-        {{ form_start(form, {'attr': {'data-toggle': 'validator', 'role':'form'}}) }}
+            <!--Name-->
+            <div class="form-group has-feedback ">
+                <label class="control-label">Nom</label>
+                {{ form_widget(form.name, {'attr': {'class':"form-control"}}) }}
+                <div class="help-none with-errors">Entre 5 et 50 caractères alaphanumériques</div>
+            </div>
+            <hr>
 
-        <!--Name-->
-        <div class="form-group has-feedback ">
-            <label class="control-label">Nom</label>
-            {{ form_widget(form.name, {'attr': {'class':"form-control"}}) }}
-            <div class="help-none with-errors">Entre 5 et 50 caractères alaphanumériques</div>
-        </div>
-        <hr>
+            <!--Dates-->
+            <label>Date</label>
 
-        <!--Dates-->
-        <label>Date</label>
+            <div class="row">
+                <!--DateStart-->
+                <div class="form-group has-feedback col-lg-offset-1 col-sm-4">
+                    <label for="dateStart" class="control-label">Du</label>
+                    {{ form_widget(form.dateStart, {'attr': {'class':"form-control", 'style':"display: none"}}) }}
+                    <div class="help-none with-errors"></div>
+                    <input id="dpStart" class="form-control datepicker">
+                </div>
 
-        <div class="row">
-            <!--DateStart-->
-            <div class="form-group has-feedback col-lg-offset-1 col-sm-4">
-                <label for="dateStart" class="control-label">Du</label>
-                {{ form_widget(form.dateStart, {'attr': {'class':"form-control", 'style':"display: none"}}) }}
-                <div class="help-none with-errors"></div>
-                <input id="dpStart" class="form-control datepicker">
+                <!--DateEnd-->
+                <div class="form-group has-feedback col-lg-offset-1 col-sm-4">
+                    <label class="control-label">Au</label>
+                    {{ form_widget(form.dateEnd, {'attr': { 'class':"form-control", 'style':"display: none"}}) }}
+                    <div class="help-none with-errors"></div>
+                    <input id="dpEnd" class="form-control datepicker">
+                </div>
+            </div>
+            <hr>
+
+            <!--Location-->
+            <div class="form-group has-feedback ">
+                <label class="control-label">Localisation</label>
+                {{ form_widget(form.locationString, {'attr': {'class':"form-control", 'style':"display: none"}}) }}
+            </div>
+            <div id="location-form" class="row"></div>
+
+            <!--Submit-->
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary pull-right">Valider</button>
             </div>
 
-            <!--DateEnd-->
-            <div class="form-group has-feedback col-lg-offset-1 col-sm-4">
-                <label class="control-label">Au</label>
-                {{ form_widget(form.dateEnd, {'attr': { 'class':"form-control", 'style':"display: none"}}) }}
-                <div class="help-none with-errors"></div>
-                <input id="dpEnd" class="form-control datepicker">
-            </div>
+            {{ form_end(form) }}
+
         </div>
-        <hr>
-
-        <!--Location-->
-        <div class="form-group has-feedback ">
-            <label class="control-label">Localisation</label>
-            {{ form_widget(form.locationString, {'attr': {'class':"form-control", 'style':"display: none"}}) }}
-        </div>
-        <div id="location-form" class="row"></div>
-
-        <!--Submit-->
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary pull-right">Valider</button>
-        </div>
-
-        {{ form_end(form) }}
-
     </div>
+
 
 {% endblock %}
 

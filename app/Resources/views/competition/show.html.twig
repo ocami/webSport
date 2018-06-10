@@ -2,6 +2,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/jquery.mCustomScrollbar.min.css') }}"/>
 
     <style>
         .competition-show .address {
@@ -26,21 +27,34 @@
 {% endblock %}
 
 {% block body %}
+    <div class="container">
+        <div class="row competition-show">
+            <h1 class="col-xs-12 col-sm-6">{{ competition.name }}</h1>
 
-    <div class="row competition-show">
+            <div class="col-xs-12 col-sm-6 address">
+                {{ competition.location.street }}<br>
+                {{ competition.location.postCode }} {{ competition.location.city }}<br><br>
+            </div>
 
-        <h1 class="col-xs-12 col-sm-6">{{ competition.name }}</h1>
+            <span>Organisé par {{ competition.organizer.name }}</span> <br>
 
-        <div class="col-xs-12 col-sm-6 address">
-            {{ competition.location.street }}<br>
-            {{ competition.location.postCode }} {{ competition.location.city }}<br><br>
+            <h4 style="text-align: center">Du {{ competition.dateStart|date("d/m/Y") }}
+                au {{ competition.dateEnd|date("d/m/Y") }}</h4>
+
+
+            {% for race in races %}
+                <div class="col-xs-12 col-sm-6">
+                    {{ include('race/modelList.html.twig') }}
+                </div>
+            {% endfor %}
         </div>
-
-        <span>Organisé par {{ competition.organizer.name }}</span> <br>
-
-        <h4 style="text-align: center">Du {{ competition.dateStart|date("d/m/Y") }}
-            au {{ competition.dateEnd|date("d/m/Y") }}</h4>
-
-        {{ include('race/modelList.html.twig') }}
     </div>
 {% endblock %}
+
+    {% block javascripts %}
+        {{ parent() }}
+        <script src="{{ asset('js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
+        <script>
+            panelCategoriesScroll();
+        </script>
+    {% endblock %}
