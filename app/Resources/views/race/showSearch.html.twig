@@ -7,25 +7,13 @@
     <link rel="stylesheet" href="{{ asset('css/jquery.mCustomScrollbar.min.css') }}"/>
 
     <style>
-
-
-        #search-bar {
+      #search-bar {
             margin-top: 3em;
-
         }
 
-        @media (min-width: 1200px) {
-            #search-bar, .button-search {
-                min-width: 17em;
-            }
-        }
-
-        .search-bar-container{
-            padding: 0em 0em 0em 0em;
-            margin-left: 2em;
-            margin-right: 2em;
-        }
-
+      .races-container{
+          padding-right: 10em;
+      }
     </style>
 
 {% endblock %}
@@ -36,12 +24,12 @@
 
 {% block body %}
 
-    <div class="col-xs-2 search-bar-container">
+    <div class="col-xs-3 search-bar-container">
         {% include 'race/widget/searchBar.html.twig' %}
     </div>
-    <div class="col-xs-9">
+    <div class="col-xs-offset-1  col-xs-8">
         {% for race in races %}
-            <div class="col-xs-12 col-lg-6 races-container">
+            <div class="col-xs-12 races-container">
                 {{ include('race/modelList.html.twig') }}
             </div>
         {% endfor %}
