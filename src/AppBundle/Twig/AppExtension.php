@@ -8,7 +8,8 @@ class AppExtension extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFilter('registerImg', array($this, 'registerImgFilter')),
-            new \Twig_SimpleFilter('validImg', array($this, 'validImgFilter'))
+            new \Twig_SimpleFilter('validImg', array($this, 'validImgFilter')),
+            new \Twig_SimpleFilter('googleMapLink', array($this, 'googleMapLinkFilter'))
         );
     }
 
@@ -26,8 +27,8 @@ class AppExtension extends \Twig_Extension
                 $href = '/websport/web/img/race_start.png';
                 break;
 
-            default:
-                $href = '';
+            case 3:
+                $href = '/websport/web/img/podium.png';
         }
 
         $html = "<img src=" . $href . " class='img-circle'>";
@@ -37,19 +38,23 @@ class AppExtension extends \Twig_Extension
     public function validImgFilter($number)
     {
         switch ($number) {
-            case true:
+            case 1:
                 $href = '/websport/web/img/checked.png';
                 break;
 
-            case false:
+            default:
                 $href = '/websport/web/img/cancel.png';
                 break;
-
-            default:
-                $href = '';
         }
 
-        $html = "<img src=" . $href . " class='img-circle pull-right'>";
+        $html = "<img src=" . $href . " class='pull-right'>";
         return new \Twig_Markup($html, 'UTF-8');
+    }
+
+    public function googleMapLinkFilter($src,$x,$y){
+        
+        $link = " <a href='https://www.google.com/maps/search/?api=1&query=".$x.",".$y."' target='_blank'><img alt='map-link' src='".$src."'></a>";
+
+        return new \Twig_Markup($link, 'UTF-8');
     }
 }

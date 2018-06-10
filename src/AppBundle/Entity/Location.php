@@ -28,7 +28,6 @@ class Location
      */
     private $dataId;
 
-
     /**
      * @var string
      *

@@ -85,7 +85,7 @@ class Race
     /**
      * @var string
      *
-     * @ORM\Column(name="categories_string", type="string", nullable=true)
+     * @ORM\Column(name="categories_string", type="string")
      */
     private $categoriesString;
 

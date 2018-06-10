@@ -189,13 +189,20 @@ class UserService
         $r = 0;
         foreach ($competition->getRaces() as $race) {
 
-            $s = $this->RaceRegisterStatus($race);
+            if($race->getValid()){
 
-            if ($s == 2)
-                return 2;
 
-            if ($s == 1)
-                $r = 1;
+                $s = $this->RaceRegisterStatus($race);
+
+                if ($s == 2)
+                    return 2;
+
+                if ($s == 3)
+                    $r = 3;
+
+                if ($s == 1 && $r != 3)
+                    $r = 1;
+            }
         }
 
         return $r;

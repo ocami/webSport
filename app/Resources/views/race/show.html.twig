@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/select/1.2.5/css/select.bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"/>
     <style>
-        #tables{
+        #tables {
             min-height: 10em;
         }
 
@@ -53,17 +53,17 @@
 
 {% block body %}
     {% block show_race %}
-        <div class="race-show row">
+        <div class="race-show container">
             <!--panels-->
-            <div class="row">
+            <div class="row panel-show">
                 <!--race panel-->
                 <div class="col-xs-4">
-                    <div class="panel panel-primary race-panel">
-                        <div class="panel-heading race-title">
-                            <span class="panel-title">{{ race.name }} </span>
-                            <span class="pull-right">
+                    <div class="panel panel-primary first-panel">
+                        <div class="panel-heading">
+                            <span class="title">{{ race.name }}</span>
+                            <span class="pull-right panel-header-img">
                                 {% if race.inChampionship %}
-                                    <img src="{{ asset('img/cup.jpg') }}" class="img-circle">
+                                    <img src="{{ asset('img/cup.jpg') }}">
                                 {% endif %}
 
                                 {% if race.valid %}
@@ -79,7 +79,7 @@
                                 <div class="organizer">Orga : {{ race.competition.organizer.name }}</div>
                             </div>
                             <div class="col-xs-4">
-                                <span class="race-distance">{{ race.distance }} KM</span>
+                                <span class="distance">{{ race.distance }} KM</span>
                             </div>
                         </div>
                     </div>
@@ -99,7 +99,12 @@
                 <!--location panel-->
                 <div class="col-xs-4">
                     <div class="panel panel-primary location-panel">
-                        <div class="panel-heading"><span class="glyphicon glyphicon-map-marker"></span></div>
+                        <div class="panel-heading">
+                            <span class="glyphicon glyphicon-map-marker"></span>
+                            <span class="pull-right map-link">
+                                {{ asset('img/google_map.jpg')|googleMapLink(race.competition.location.x,race.competition.location.y)}}
+                            </span>
+                        </div>
                         <div class="panel-body race-location">
                             <span>{{ race.competition.location.street }}</span>
                             <span>{{ race.competition.location.postCode }}  {{ race.competition.location.city }}</span>
@@ -126,26 +131,26 @@
 
     {% block ranck_race %}
         <br>
-            <div id="loader-div"></div>
-            <div id="tables" class="row">
-                <div id="table-race-container">
-                    <table id="table-race" class="display" cellspacing="0" width="100%">
-                        <thead>
-                        <tr id="row-table-race">
-                        </tr>
-                        </thead>
-                    </table>
-                </div>
-
-                <div id="table-race-category-container">
-                    <table id="table-race-category" class="display" cellspacing="0" width="100%">
-                        <thead>
-                        <tr id="row-table-race-category">
-                        </tr>
-                        </thead>
-                    </table>
-                </div>
+        <div id="loader-div"></div>
+        <div id="tables" class="row">
+            <div id="table-race-container">
+                <table id="table-race" class="display" cellspacing="0" width="100%">
+                    <thead>
+                    <tr id="row-table-race">
+                    </tr>
+                    </thead>
+                </table>
             </div>
+
+            <div id="table-race-category-container">
+                <table id="table-race-category" class="display" cellspacing="0" width="100%">
+                    <thead>
+                    <tr id="row-table-race-category">
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
     {% endblock %}
 
 
@@ -264,7 +269,6 @@
 
             loaderDivStop(container);
             $('html, body').animate({scrollTop: $($categories).offset().top}, 750);
-
 
 
             function raceOpenOptions() {
