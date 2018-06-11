@@ -1,174 +1,176 @@
-{% extends 'base.html.twig' %}
+    {% extends 'base.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.2.5/css/select.bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"/>
-    <style>
-        #tables {
-            min-height: 10em;
-        }
+    {% block stylesheets %}
+        {{ parent() }}
+        <link rel="stylesheet" href="https://cdn.datatables.net/select/1.2.5/css/select.bootstrap.min.css"/>
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"/>
+        <style>
+            #tables {
+                min-height: 10em;
+            }
 
-        #race-show-categories button {
-            margin-bottom: 1em;
-        }
+            #race-show-categories button {
+                margin-bottom: 1em;
+            }
 
-        .row-ranck {
-            text-align: center;
-        }
+            .row-ranck {
+                text-align: center;
+            }
 
-        .profile-href {
-            cursor: zoom-in;
-            color: #1b6d85;
-        }
-    </style>
+            .profile-href {
+                cursor: zoom-in;
+                color: #1b6d85;
+            }
+        </style>
 
-{% endblock %}
-
-{% block title %}
-    {{ parent() }} {{ race.name }}
-{% endblock %}
-
-{% block organizer_menu %}
-    {% if race.isOrganizer == true %}
-        {% if race.enrol == true %}
-            <button class="btn-xs btn-success" onclick="location.href = '{{ path('race_enrol_closed', {'id':race.id} ) }}'">Clore les inscriptions</button>
-            <button class="btn-xs btn-warning" onclick="location.href = '{{ path('race_simulateEnrol', {'id':race.id} ) }}'">Simuler inscription</button>
-        {% endif %}
-
-        {% if race.state == 1 %}
-            <button class="btn-xs btn-warning" onclick="location.href = '{{ path('race_competitorsTimes', {'id':race.id} ) }}'">Importer les temps de courses</button>
-        {% endif %}
-    {% endif %}
-{% endblock %}
-
-{% block body %}
-    {% block show_race %}
-        <div class="race-show">
-            <!--panels-->
-            <div class="row panel-show">
-                <!--race panel-->
-                <div class="col-xs-4">
-                    <div class="panel panel-primary first-panel">
-                        <div class="panel-heading">
-                            <span class="title">{{ race.name }}</span>
-                            <span class="pull-right panel-header-img">
-                                {% if race.inChampionship %}
-                                    <img src="{{ asset('img/cup.jpg') }}">
-                                {% endif %}
-
-                                {% if race.valid %}
-                                    {{ race.competitorRegister|registerImg }}
-                                {% endif %}
-                            </span>
-                        </div>
-                        <div class="panel-body row">
-                            <div class="col-xs-8 competition ">
-                                <a href='{{ path('competition_show', {'id':race.competition.id} ) }}'><span
-                                            class="glyphicon glyphicon-circle-arrow-left"></span></a>
-                                <span class="">{{ race.competition.name }}</span>
-                                <div class="organizer">Orga : {{ race.competition.organizer.name }}</div>
-                            </div>
-                            <div class="col-xs-4">
-                                <span class="distance">{{ race.distance }} KM</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!--datetime panel-->
-                <div class="col-xs-4">
-                    <div class="panel panel-primary date-time-panel">
-                        <div class="panel-heading "><span class="glyphicon glyphicon-time"></span></div>
-                        <div class="panel-body">
-                            <span class="date-day">{{ race.dateTime|localizeddate('none', 'none', 'fr_BR', null, "cccc d MMMM") }}</span>
-                            <span class="date-hour">{{ race.dateTime|date('H') }} H {{ race.dateTime|date('i') }}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!--location panel-->
-                <div class="col-xs-4">
-                    <div class="panel panel-primary location-panel">
-                        <div class="panel-heading">
-                            <span class="glyphicon glyphicon-map-marker"></span>
-                            <span class="pull-right map-link">
-                                {{ asset('img/google_map.jpg')|googleMapLink(race.competition.location.x,race.competition.location.y)}}
-                            </span>
-                        </div>
-                        <div class="panel-body race-location">
-                            <span>{{ race.competition.location.street }}</span>
-                            <span>{{ race.competition.location.postCode }}  {{ race.competition.location.city }}</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <!--buttons categories-->
-            <div id="race-show-categories" class="row">
-                <div class="col-xs-3 col-lg-2">
-                    <button class="btn-xs btn-primary col-xs-12" value="all">Classement général</button>
-                </div>
-                {% for c in race.categories %}
-                    <div class="btn-category col-xs-3 col-lg-2">
-                        <button class="btn-xs btn-info col-xs-12" value="{{ c.id }}">{{ c.name }}</button>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-    {% endblock %}
-    <!----------------------------------------------------------------------------------------------------------------->
-
-
-    {% block ranck_race %}
-        <br>
-        <div id="loader-div"></div>
-        <div id="tables" class="row">
-            <div id="table-race-container">
-                <table id="table-race" class="display" cellspacing="0" width="100%">
-                    <thead>
-                    <tr id="row-table-race">
-                    </tr>
-                    </thead>
-                </table>
-            </div>
-
-            <div id="table-race-category-container">
-                <table id="table-race-category" class="display" cellspacing="0" width="100%">
-                    <thead>
-                    <tr id="row-table-race-category">
-                    </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
     {% endblock %}
 
+    {% block title %}
+        {{ parent() }} {{ race.name }}
+    {% endblock %}
 
+    {% block organizer_menu %}
+        {% if race.isOrganizer == true %}
+            {% if race.enrol == true %}
+                <button class="btn-xs btn-success" onclick="location.href = '{{ path('race_enrol_closed', {'id':race.id} ) }}'">Clore les inscriptions</button>
+                <button class="btn-xs btn-warning" onclick="location.href = '{{ path('race_simulateEnrol', {'id':race.id} ) }}'">Simuler inscription</button>
+            {% endif %}
 
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-
-    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-
-    <script>
-        var race = {{ race.id }};
-        var inchampionship = false;
-            {% if race.inchampionship %}{
-            inchampionship = true;
-        }{% endif %}
-
-        raceShow(race,inchampionship);
-
-        {% if is_granted('ROLE_ORGANIZER') %}
-            openNav();
+            {% if race.state == 1 %}
+                <button class="btn-xs btn-warning" onclick="location.href = '{{ path('race_competitorsTimes', {'id':race.id} ) }}'">Importer les temps de courses</button>
+            {% endif %}
         {% endif %}
+    {% endblock %}
+
+    {% block body %}
+        {% block show_race %}
+            <div class="race-show">
+                <!--panels-->
+                <div class="row panel-show">
+                    <!--race panel-->
+                    <div class="col-xs-4">
+                        <div class="panel panel-primary first-panel">
+                            <div class="panel-heading">
+                                <span class="title">{{ race.name }}</span>
+                                <span class="pull-right panel-header-img">
+                                    {% if race.inChampionship %}
+                                        <img src="{{ asset('img/cup.jpg') }}">
+                                    {% endif %}
+
+                                    {% if race.valid %}
+                                        {{ race.competitorRegister|registerImg }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="panel-body row">
+                                <div class="col-xs-8 competition ">
+                                    <a href='{{ path('competition_show', {'id':race.competition.id} ) }}'><span
+                                                class="glyphicon glyphicon-circle-arrow-left"></span></a>
+                                    <span class="">{{ race.competition.name }}</span>
+                                    <div class="organizer">Orga : {{ race.competition.organizer.name }}</div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <span class="distance">{{ race.distance }} KM</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--datetime panel-->
+                    <div class="col-xs-4">
+                        <div class="panel panel-primary date-time-panel">
+                            <div class="panel-heading "><span class="glyphicon glyphicon-time"></span></div>
+                            <div class="panel-body">
+                                <span class="date-day">{{ race.dateTime|localizeddate('none', 'none', 'fr_BR', null, "cccc d MMMM") }}</span>
+                                <span class="date-hour">{{ race.dateTime|date('H') }} H {{ race.dateTime|date('i') }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--location panel-->
+                    <div class="col-xs-4">
+                        <div class="panel panel-primary location-panel">
+                            <div class="panel-heading">
+                                <span class="glyphicon glyphicon-map-marker"></span>
+                                <span class="pull-right map-link">
+                                    {{ asset('img/google_map.jpg')|googleMapLink(race.competition.location.x,race.competition.location.y)}}
+                                </span>
+                            </div>
+                            <div class="panel-body race-location">
+                                <span>{{ race.competition.location.street }}</span>
+                                <span>{{ race.competition.location.postCode }}  {{ race.competition.location.city }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!--buttons categories-->
+                <div id="race-show-categories" class="row">
+                    <div class="col-xs-3 col-lg-2">
+                        <button class="btn-xs btn-primary col-xs-12" value="all">Classement général</button>
+                    </div>
+                    {% for c in race.categories %}
+                        <div class="btn-category col-xs-3 col-lg-2">
+                            <button class="btn-xs btn-info col-xs-12" value="{{ c.id }}">{{ c.name }}</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endblock %}
+        <!----------------------------------------------------------------------------------------------------------------->
+
+
+        {% block ranck_race %}
+            <br>
+            <div id="loader-div"></div>
+            <div id="tables" class="row">
+                <div id="table-race-container">
+                    <table id="table-race" class="display" cellspacing="0" width="100%">
+                        <thead>
+                        <tr id="row-table-race">
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+
+                <div id="table-race-category-container">
+                    <table id="table-race-category" class="display" cellspacing="0" width="100%">
+                        <thead>
+                        <tr id="row-table-race-category">
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        {% endblock %}
+
+
+
+    {% endblock %}
+
+    {% block javascripts %}
+        {{ parent() }}
+
+        <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+
+        <script>
+            var race = {{ race.id }};
+            var inchampionship = false;
+                {% if race.inchampionship %}{
+                inchampionship = true;
+            }{% endif %}
+
+
+
+            raceShow(race,inchampionship);
+
+            {% if is_granted('ROLE_ORGANIZER') %}
+                openNav();
+            {% endif %}
 
 
 
 
-    </script>
+        </script>
 
-{% endblock %}
+    {% endblock %}

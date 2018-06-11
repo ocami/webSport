@@ -9,7 +9,8 @@ class AppExtension extends \Twig_Extension
         return array(
             new \Twig_SimpleFilter('registerImg', array($this, 'registerImgFilter')),
             new \Twig_SimpleFilter('validImg', array($this, 'validImgFilter')),
-            new \Twig_SimpleFilter('googleMapLink', array($this, 'googleMapLinkFilter'))
+            new \Twig_SimpleFilter('googleMapLink', array($this, 'googleMapLinkFilter')),
+            new \Twig_SimpleFilter('loader', array($this, 'loaderFilter'))
         );
     }
 
@@ -51,10 +52,19 @@ class AppExtension extends \Twig_Extension
         return new \Twig_Markup($html, 'UTF-8');
     }
 
+
     public function googleMapLinkFilter($src,$x,$y){
-        
+
         $link = " <a href='https://www.google.com/maps/search/?api=1&query=".$x.",".$y."' target='_blank'><img alt='map-link' src='".$src."'></a>";
 
         return new \Twig_Markup($link, 'UTF-8');
     }
+
+    public function loaderFilter($src){
+
+        $link = "<div id='full-page'><div id='loader-full'></div></div>";
+
+        return new \Twig_Markup($link, 'UTF-8');
+    }
+
 }

@@ -574,6 +574,7 @@ function raceShow(race, inchampionship) {
         $.ajax({
             url: path,
             success: function (data) {
+                console.log(data);
                 displayTable(data, category);
             },
             error: function () {

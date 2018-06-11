@@ -8,6 +8,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Category;
 use AppBundle\Entity\Championship;
 use AppBundle\Entity\Competition;
 use AppBundle\Services\EntityService;
@@ -28,8 +29,12 @@ class ChampionshipController extends Controller
     public function showAction(Championship $championship)
     {
         $championships = $this->getDoctrine()->getRepository(Championship::class)->findAll();
+        $categories = $this->getDoctrine()->getRepository(Category::class)->findAll();
+
+        //var_dump($championships);
 
         return $this->render('championship/show.html.twig', array(
+            'categories' => $categories,
             'championship' => $championship,
             'championships' => $championships
         ));
@@ -83,7 +88,7 @@ class ChampionshipController extends Controller
     }
 
     /**
-     * @Route("championship/championship_json", name="championship_json")
+     * @Route("championship/championship_json", options={"expose"=true}, name="championship_json")
      */
     public function race_Table(Request $request)
     {

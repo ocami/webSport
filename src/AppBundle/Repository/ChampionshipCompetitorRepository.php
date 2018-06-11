@@ -20,7 +20,7 @@ class ChampionshipCompetitorRepository extends \Doctrine\ORM\EntityRepository
     {
         $cc = $this->createQueryBuilder('cc')
             ->innerJoin('cc.competitor','c')
-            ->select('c.code, cc.ranck, cc.points, c.firstName, c.lastName')
+            ->select('c.code, cc.ranck, cc.points, c.firstName, c.lastName, c.id')
             ->where('cc.championship = :championship')
             ->setParameter('championship',$championship->getId())
             ->orderBy('cc.points','DESC')

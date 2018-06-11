@@ -60,7 +60,6 @@ class Championship
      */
     private $category;
 
-
     /**
      * Constructor
      */
