@@ -167,7 +167,7 @@
             <div class="panel-heading">
                 <div class="panel-title">
                     <a data-toggle="collapse" href="#panelChampionship">
-                        <span>Championship</span>
+                        <span>Championat</span>
                     </a>
                     <div class='switchContainer pull-right'>
                         <div class="multi-switch ">
@@ -199,48 +199,51 @@
                 </div>
             </div>
         </div>
-        <!-- SEARCH COMPETITOR -->
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="panel-title">
-                    <a data-toggle="collapse" href="#panelCompetitor">
-                        <span>Competitor</span>
-                    </a>
-                    <div class='switchContainer pull-right'>
-                        <div class="multi-switch ">
-                            <div id="switch-competitor" class="switch-content disable" status="active"
-                                 initial="0">
-                                <div class="switch-circle"></div>
+        {% if is_granted('ROLE_COMPETITOR') %}
+            <!-- SEARCH COMPETITOR -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <a data-toggle="collapse" href="#panelCompetitor">
+                            <span>Competitor</span>
+                        </a>
+                        <div class='switchContainer pull-right'>
+                            <div class="multi-switch ">
+                                <div id="switch-competitor" class="switch-content disable" status="active"
+                                     initial="0">
+                                    <div class="switch-circle"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="panelCompetitor" class="panel-collapse collapse">
+                    <div id="competitor-container" class="panel-body">
+                        <div class="pretty p-icon p-curve p-rotate">
+                            <input type="checkbox" id="canEnrol" value="1">
+                            <div class="state p-success-o">
+                                <i class="icon glyphicon glyphicon-ok"></i>
+                                <label>Je peux m'inscrire</label>
+                            </div>
+                        </div><br>
+                        <div class="pretty p-icon p-curve p-rotate">
+                            <input type="checkbox" id="isEnrol" value="2">
+                            <div class="state p-success-o">
+                                <i class="icon glyphicon glyphicon-ok"></i>
+                                <label>Je suis inscris</label>
+                            </div>
+                        </div><br>
+                        <div class="pretty p-icon p-curve p-rotate">
+                            <input type="checkbox" id="participated" value="3">
+                            <div class="state p-success-o">
+                                <i class="icon glyphicon glyphicon-ok"></i>
+                                <label>J' ai participé</label>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="panelCompetitor" class="panel-collapse collapse">
-                <div id="competitor-container" class="panel-body">
-                    <div class="pretty p-icon p-curve p-rotate">
-                        <input type="checkbox" id="canEnrol" value="1">
-                        <div class="state p-success-o">
-                            <i class="icon glyphicon glyphicon-ok"></i>
-                            <label>Je peux m'inscrire</label>
-                        </div>
-                    </div><br>
-                    <div class="pretty p-icon p-curve p-rotate">
-                        <input type="checkbox" id="isEnrol" value="2">
-                        <div class="state p-success-o">
-                            <i class="icon glyphicon glyphicon-ok"></i>
-                            <label>Je suis inscris</label>
-                        </div>
-                    </div><br>
-                    <div class="pretty p-icon p-curve p-rotate">
-                        <input type="checkbox" id="participated" value="3">
-                        <div class="state p-success-o">
-                            <i class="icon glyphicon glyphicon-ok"></i>
-                            <label>J' ai participé</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% endif %}
+
     </div>
 </div>

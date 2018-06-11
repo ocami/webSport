@@ -892,6 +892,7 @@ function searchBarRace() {
     else
         updateDataSearch = dataSearch;
 
+    console.log(updateDataSearch);
 
     var $allSwitch = $("#search-bar").find('.switch-content');
 
@@ -977,7 +978,8 @@ function searchBarRace() {
                 $('#radio-championship-0').prop('checked', true);
 
             refreshChampionship('active');
-        }
+        }else
+            refreshChampionship('disable');
 
         if (updateDataSearch.enrol) {
 
@@ -1343,6 +1345,32 @@ function searchBarRace() {
 
     //date/////////////////////////////////////////////////////////////////////////////////////////////
 
+}
+
+function competitorSearchRace(dateSearch) {
+
+    var today = todayDate();
+    var date;
+
+    if(dateSearch === 'future')
+        date = {min: today, max: null};
+    else
+        date = {min: null, max: today};
+
+    var dataSearch = {
+        categories: null,
+        dep: null,
+        dist: {min: null, max: null},
+        date: date,
+        inChampionship: null,
+        enrol: ['2','3']
+    };
+
+    var path = Routing.generate('races_search', {
+        dataSearch: JSON.stringify(dataSearch)
+    });
+
+    window.location = path;
 }
 
 /***********************************************************************************************************************
@@ -1913,6 +1941,25 @@ function parseDateUsToFr(date) {
     var newdate = dd + "-" + mm + "-" + yy;
 
     return newdate;
+}
+
+function todayDate() {
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if(dd<10) {
+        dd = '0'+dd
+    }
+
+    if(mm<10) {
+        mm = '0'+mm
+    }
+
+    today = yyyy + '-' + mm + '-' + dd;
+
+    return today;
 }
 
 // $(document).ready(function () {
