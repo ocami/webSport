@@ -96,28 +96,35 @@
     background-color: #356635;
 }
 
+#navbar-general .title {
+    color: #3845ff;
+    margin-left: 0.5em;
+}
 
+hr {
+    margin: 0em;
+}
 
 /**index INFO**************************************************************************************************/
 
-.info-img{
+.info-img {
     max-width: 8em;
     max-height: 8em;
 }
 
-.info-content{
+.info-content {
     background: #edeff0;
     max-height: 230px;
 }
 
-div#fade-content{
+div#fade-content {
     max-height: 230px;
     overflow: hidden;
 }
 
 .fade-anchor {
-    background: -webkit-linear-gradient(top,rgba(237,239,240,0),rgba(237,239,240,0) 170px,#edeff0 200px);
-    background: linear-gradient(to bottom,rgba(237,239,240,0),rgba(237,239,240,0) 170px,#edeff0 200px);
+    background: -webkit-linear-gradient(top, rgba(237, 239, 240, 0), rgba(237, 239, 240, 0) 170px, #edeff0 200px);
+    background: linear-gradient(to bottom, rgba(237, 239, 240, 0), rgba(237, 239, 240, 0) 170px, #edeff0 200px);
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     cursor: pointer;
@@ -133,7 +140,7 @@ div#fade-content{
     transition: background 150ms ease-in;
 }
 
-#fade-content p{
+#fade-content p {
     max-height: 200px;
 }
 
@@ -148,16 +155,17 @@ div#fade-content{
     font-weight: bold;
 }
 
-.panel-header-img img{
+.panel-header-img img {
     height: 2em;
     padding: 0.2em;
     background: #FFFFFF;
     border-radius: 50%;
 }
 
-.panel-footer-img img{
-    height : 1.8em;
+.panel-footer-img img {
+    height: 1.8em;
 }
+
 /**model-panel-race**************************************************************************************************/
 
 @media (max-width: 400px) {
@@ -165,6 +173,7 @@ div#fade-content{
         padding: 0 0 0 0px;
     }
 }
+
 /**model-panel-competition**************************************************************************************************/
 @media (max-width: 400px) {
     #panel-competition-list .panel-body {
@@ -198,7 +207,7 @@ race/show.html.twig
     font-size: larger;
 }
 
-.panel-show .title  {
+.panel-show .title {
     display: inline;
     font-weight: bolder;
     font-size: larger;
@@ -220,18 +229,72 @@ race/show.html.twig
     font-size: larger;
 }
 
-.panel-show .first-panel .nb-race{
+.panel-show .first-panel .nb-race {
     display: block;
     text-align: center;
     font-weight: bolder;
     font-size: larger;
 }
 
-.panel-show .first-panel .panel-body{
-   padding-bottom: 0em;
+.panel-show .first-panel .panel-body {
+    padding-bottom: 0em;
 }
 
-.panel-show .map-link img{
+.panel-show .map-link img {
     height: 1.8em;
     margin-top: 2em;
+}
+
+/**sSidenav organizer**************************************************************************************************/
+#navbar-general {
+    z-index: 2;
+}
+
+.sidenav-open {
+    cursor: pointer;
+    font-size: 2em;
+    padding-top: 1em;
+    display: none;
+}
+
+.sidenav {
+    height: 100%;
+    width: 0em;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #ffffff;
+    overflow-x: hidden;
+    transition: 0.5s;
+    /*padding-top: 60px;*/
+}
+
+.sidenav .content {
+    padding-top: 60px;
+}
+
+.sidenav button {
+    display: block;
+    margin: 1em 0em 0em 1em;
+    width: 10em;
+}
+
+#main {
+    transition: margin-left .5s;
+    padding: 16px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+
+    .sidenav a {
+        font-size: 18px;
+    }
+}
+
+#main {
+    padding: 0em;
 }

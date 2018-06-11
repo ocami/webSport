@@ -232,7 +232,7 @@ class RaceController extends Controller
     }
 
     /**
-     * @Route("race/race_Table", name="race_Table")
+     * @Route("race/race_Table", options={"expose"=true}, name="race_Table")
      */
     public function race_Table(Request $request)
     {

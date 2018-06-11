@@ -1,94 +1,83 @@
 <nav id="navbar-general" class="navbar navbar-default">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
+    <div class="container-fluid">
+    <div class="navbar-header">
+        <span class="sidenav-open" onclick="openNav()">&#9776;</span>
+        <a class="navbar-brand" href="{{ path('index') }}">Web Sport</a>
+    </div>
+
+    <ul class="nav navbar-nav">
+        <li><a href="#">Actualités</a></li>
+        <li><a href="{{ path('competition_show_all') }}">Compétitions</a></li>
+
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+               aria-expanded="false">Championats<span class="caret"></span></a>
+            <ul id="championdhips-menu" class="dropdown-menu"></ul>
+        </li>
+
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+
+        {% if is_granted('ROLE_ADMIN') %}
+            <li><a href="{{ path('admin_races') }}"><span id="badge" class="badge badge-success"></span></a></li>
+        {% endif %}
+
+        {% if app.user %}
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                   aria-expanded="false">Mon compte<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+
+                    {% if is_granted('ROLE_COMPETITOR') %}
+                        <li><a id="profile-href" data="{{ app.user.id }}" href="#" data-toggle="modal"
+                               data-target="#competitor-modal">Mon profile</a></li>
+                        <li><a href="{{ path('races_by_competitor') }}">Mes courses</a></li>
+                    {% endif %}
+                    <hr>
+                    {% if is_granted('ROLE_ORGANIZER') %}
+                        <li class="title">Organisateur</li>
+                        <li><a href="{{ path('competition_show_byOrganizer') }}">Mes compétitions</a></li>
+                        <li><a href="#">Mes courses</a></li>
+                    {% endif %}
+
+                    {% if is_granted('ROLE_COMPETITOR') == false %}
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'competitor'}) }}">Devenir
+                                compétiteur</a></li>
+                    {% endif %}
+
+                    {% if is_granted('ROLE_ORGANIZER') == false %}
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'organizer'}) }}">Devenir
+                                organisateur</a></li>
+                    {% endif %}
+
+                </ul>
+            </li>
+
+            <button type="button" class="btn btn-default navbar-btn"
+                    onclick="location.href = '{{ path('fos_user_security_logout') }}';">Déconnexion
             </button>
-            <a class="navbar-brand" href="{{ path('index') }}">Web Sport</a>
-        </div>
-
-
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li><a href="#">Actualités</a></li>
-                <li><a href="{{ path('competition_show_all') }}">Compétitions</a></li>
-
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">Championats<span class="caret"></span></a>
-                    <ul id="championdhips-menu" class="dropdown-menu"></ul>
-                </li>
-
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-
-                {% if is_granted('ROLE_ADMIN') %}
-                    <li><a href="{{ path('admin_races') }}"><span id="badge" class="badge badge-success"></span></a></li>
-                {% endif %}
-
-                {% if app.user %}
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false">Mon compte<span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-
-                            {% if is_granted('ROLE_COMPETITOR') %}
-                                <li><a id="profile-href" data="{{ app.user.id }}" href="#" data-toggle="modal"
-                                       data-target="#competitor-modal">Mon profile</a></li>
-                                <li><a href="{{ path('races_by_competitor') }}">Mes courses</a></li>
-                                <li><a href="#">Mes statistiques</a></li>
-                            {% endif %}
-
-                            {% if is_granted('ROLE_ORGANIZER') %}
-                                <li><a href="{{ path('app_organizer_show') }}">Infos organisateur</a></li>
-                                <li><a href="{{ path('competition_show_byOrganizer') }}">Mes compétitions</a></li>
-                                <li><a href="{{ path('category_show_byOrganizer') }}">Mes catégories</a></li>
-                            {% endif %}
-
-                            {% if is_granted('ROLE_COMPETITOR') == false %}
-                                <li role="separator" class="divider"></li>
-                                <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'competitor'}) }}">Devenir
-                                        compétiteur</a></li>
-                            {% endif %}
-
-                            {% if is_granted('ROLE_ORGANIZER') == false %}
-                                <li role="separator" class="divider"></li>
-                                <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'organizer'}) }}">Devenir
-                                        organisateur</a></li>
-                            {% endif %}
-
-                        </ul>
+        {% else %}
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                   aria-expanded="false">Créer un compte<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'competitor'}) }}">Competiteur</a>
                     </li>
-
-                    <button type="button" class="btn btn-default navbar-btn"
-                            onclick="location.href = '{{ path('fos_user_security_logout') }}';">Déconnexion
-                    </button>
-                {% else %}
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false">Créer un compte<span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'competitor'}) }}">Competiteur</a>
-                            </li>
-                            <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'organizer'}) }}">Organisateur</a>
-                            </li>
-                        </ul>
+                    <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'organizer'}) }}">Organisateur</a>
                     </li>
-                    <li>
-                        <button type="button" class="btn btn-default navbar-btn"
-                                onclick="location.href = '{{ path('fos_user_security_login') }}';">Connexion
-                        </button>
+                </ul>
+            </li>
+            <li>
+                <button type="button" class="btn btn-default navbar-btn"
+                        onclick="location.href = '{{ path('fos_user_security_login') }}';">Connexion
+                </button>
 
-                    </li>
+            </li>
 
-                {% endif %}
-            </ul>
-        </div><!-- /.navbar-collapse -->
+        {% endif %}
+    </ul>
     </div><!-- /.container-fluid -->
 </nav>
 

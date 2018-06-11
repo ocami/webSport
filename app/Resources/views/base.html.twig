@@ -23,12 +23,6 @@
     {% include 'modal/profile_competitor.html.twig' %}
 {% endif %}
 
-{% if is_granted('ROLE_ORGANIZER') %}
-    <div id="organizer_menu">
-        {% block organizer_menu %}
-        {% endblock %}
-    </div>
-{% endif %}
 
 <!-- flashes info app -->
 <div class="row">
@@ -49,8 +43,21 @@
 
 <!-- Body -->
 <div class="container">
-    {% block body %}
-    {% endblock %}
+    {% if is_granted('ROLE_ORGANIZER') %}
+        <div id="sidenav-organizer" class="sidenav">
+            <div class="content">
+                <button class="btn-xs btn-default sidenav-close" onclick="closeNav()">Fermer</button>
+                {% block organizer_menu %}
+                {% endblock %}
+            </div>
+        </div>
+    {% endif %}
+    <!-- sidenav organizer -->
+
+    <div id="main">
+        {% block body %}
+        {% endblock %}
+    </div>
 </div>
 
 {% block javascripts %}
