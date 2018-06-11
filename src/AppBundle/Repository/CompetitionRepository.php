@@ -28,10 +28,14 @@ class CompetitionRepository extends \Doctrine\ORM\EntityRepository
      */
     public function allValidFirstFive()
     {
+        $date = date('Y-m-d', strtotime('now') );
+
         $competitions = $this->createQueryBuilder('c')
             ->orderBy('c.dateStart')
             ->Where('c.valid = :isValid')
+            ->andWhere('c.dateStart >= :date')
             ->setParameter('isValid', true)
+            ->setParameter('date', $date)
             ->setFirstResult(0)
             ->setMaxResults(5)
             ->getQuery()->getResult();

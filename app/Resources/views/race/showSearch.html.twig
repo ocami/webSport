@@ -1,47 +1,94 @@
-{% extends 'form_layout.html.twig' %}
+{% extends 'searchLayout.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css"/>
-    <link rel="stylesheet" href="{{ asset('css/multi-switch.min.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('css/jquery.mCustomScrollbar.min.css') }}"/>
+ {% block search_content %}
 
-    <style>
-      #search-bar {
-            margin-top: 3em;
-        }
+     <div class="col-xs-8 col-lg-8">
+         {% for race in races %}
+             <div class="col-xs-12 races-container">
+                 {{ include('race/modelList.html.twig') }}
+             </div>
+         {% endfor %}
+     </div>
+     <div class="col-md-4">
+         <!--INFOS -->
+         <div class="panel panel-default">
+             <div class="panel-heading">
+                 <div class="panel-title">A la une</div>
+             </div>
+             <ul class="list-group">
+                 <li class="list-group-item info-content">
+                     <div id="fade-container">
+                         <div id="fade-content">
+                             <img src="{{ asset('img/01.jpg ') }}" class="pull-right info-img">
+                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan risus vitae
+                                 purus imperdiet tristique. Mauris lobortis orci mattis metus lobortis, ac
+                                 tristique nunc sodales. Nullam sollicitudin rhoncus odio a placerat.
+                                 Pellentesque consectetur venenatis nulla ut eleifend. Nunc et felis bibendum,
+                                 feugiat neque nec, venenatis purus. Quisque vestibulum, mi a auctor sagittis, mi
+                                 urna aliquet dui, ut commodo felis mi at urna. Vivamus a imperdiet enim, in
+                                 semper dui. Maecenas iaculis condimentum justo, id pulvinar mi finibus a.
+                                 Quisque blandit, arcu et pretium ullamcorper, massa nibh gravida enim, ac tempor
+                                 odio turpis et dolor. Integer quis porttitor nisi. Mauris massa mauris, tempor
+                                 sit amet enim hendrerit, tristique posuere mi. Vivamus mattis lacus efficitur
+                                 consequat suscipit. Pellentesque lorem sem, condimentum non ante eu, dapibus
+                                 elementum ipsum. Donec non sem sed risus molestie commodo.</p>
+                         </div>
+                         <div class="fade-anchor">
+                             <button type="button" class="btn btn-primary btn-xs">Lire la suite</button>
+                         </div>
+                     </div>
+                 </li>
+                 <li class="list-group-item info-content">
+                     <div id="fade-container">
+                         <div id="fade-content">
+                             <img src="{{ asset('img/02.jpg ') }}" class="pull-left info-img">
+                             <p>Donec a quam non leo dapibus lobortis. Nam ut facilisis diam, eu molestie nisi.
+                                 Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos
+                                 himenaeos. In commodo nibh at dolor lobortis pulvinar. Vestibulum sollicitudin
+                                 mattis metus, eget tincidunt mi pharetra a. Donec accumsan odio orci, id
+                                 sagittis diam ornare et. Duis id condimentum ex, ac feugiat ligula. Pellentesque
+                                 habitant morbi tristique senectus et netus et malesuada fames ac turpis
+                                 egestas. </p>
+                         </div>
+                         <div class="fade-anchor">
+                             <button type="button" class="btn btn-primary btn-xs">Lire la suite</button>
+                         </div>
+                     </div>
+                 </li>
+                 <li class="list-group-item info-content">
+                     <div id="fade-container">
+                         <div id="fade-content">
+                             <img src="{{ asset('img/03.jpg ') }}" class="pull-left info-img">
+                             <p>Sed ultrices enim in mattis pulvinar. Mauris auctor elit eget augue facilisis, ut
+                                 mattis lectus ultricies. Integer cursus orci ut nibh dapibus consequat. Proin
+                                 eget purus ligula. Ut et eleifend nisl. Aenean scelerisque egestas sem in
+                                 egestas. Mauris sed ipsum augue. Aenean erat ante, aliquet at felis vitae,
+                                 convallis iaculis tellus. </p>
+                         </div>
+                         <div class="fade-anchor">
+                             <button type="button" class="btn btn-primary btn-xs">Lire la suite</button>
+                         </div>
+                     </div>
+                 </li>
+                 <li class="list-group-item info-content">
+                     <div id="fade-container">
+                         <div id="fade-content">
+                             <img src="{{ asset('img/04.jpg ') }}" class="pull-right info-img">
+                             <p>Donec imperdiet erat ut lacus blandit dapibus. Donec et consequat justo, ac
+                                 blandit nisi. Nullam elementum luctus dapibus. Pellentesque ac porttitor lacus.
+                                 Morbi varius non tortor in posuere. Suspendisse tincidunt in quam ut mattis.
+                                 Mauris nec lobortis magna, a aliquam nulla. In auctor, ante eget consectetur
+                                 gravida, purus urna condimentum sapien, at vehicula enim risus sit amet leo. Sed
+                                 quis molestie purus. Integer bibendum et turpis sit amet euismod. Morbi sit amet
+                                 orci congue sem scelerisque pulvinar. </p>
+                         </div>
+                         <div class="fade-anchor">
+                             <button type="button" class="btn btn-primary btn-xs">Lire la suite</button>
+                         </div>
+                     </div>
+                 </li>
+             </ul>
+         </div>
+     </div>
 
-      .races-container{
-          padding-right: 10em;
-      }
-    </style>
-
-{% endblock %}
-
-{% block title %}
-    {{ parent() }} Recherche courses
-{% endblock %}
-
-{% block body %}
-
-    <div class="col-xs-3 search-bar-container">
-        {% include 'race/widget/searchBar.html.twig' %}
-    </div>
-    <div class="col-xs-offset-1  col-xs-8">
-        {% for race in races %}
-            <div class="col-xs-12 races-container">
-                {{ include('race/modelList.html.twig') }}
-            </div>
-        {% endfor %}
-    </div>
-
-{% endblock %}
-
-    {% block javascripts %}
-        {{ parent() }}
-        <script src="{{ asset('js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
-        <script>
-            panelCategoriesScroll();
-            searchBarRace();
-        </script>
-    {% endblock %}
+ {% endblock %}
