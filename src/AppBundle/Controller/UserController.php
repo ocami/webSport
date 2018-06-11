@@ -48,20 +48,20 @@ class UserController extends Controller
 
             case 'competitor' :
                 if ($this->get('security.authorization_checker')->isGranted('ROLE_COMPETITOR')) {
-                    $request->getSession()->getFlashBag()->add('notice', 'Vous êtes déjà enregistré comme compétiteur, veuillez vous déconnecter avant de créer un nouveau compte');
+                    $request->getSession()->getFlashBag()->add('success', 'Vous êtes déjà enregistré comme compétiteur, veuillez vous déconnecter avant de créer un nouveau compte');
                     return $this->render('home/logout.html.twig');
                 }
                 return $this->redirectToRoute('app_competitor_register');
 
             case 'organizer' :
                 if ($this->get('security.authorization_checker')->isGranted('ROLE_ORGANIZER')) {
-                    $request->getSession()->getFlashBag()->add('notice', 'Vous êtes déjà enregistré comme organisateur, veuillez vous déconnecter avant de créer un nouveau compte');
+                    $request->getSession()->getFlashBag()->add('success', 'Vous êtes déjà enregistré comme organisateur, veuillez vous déconnecter avant de créer un nouveau compte');
                     return $this->render('home/logout.html.twig');
                 }
                 return $this->redirectToRoute('app_organizer_register');
 
             default :
-                $request->getSession()->getFlashBag()->add('notice', 'Enregistrement non valide, vous devez choisir de créer un compte competiteur ou organisateur');
+                $request->getSession()->getFlashBag()->add('success', 'Enregistrement non valide, vous devez choisir de créer un compte competiteur ou organisateur');
                 return $this->redirectToRoute('index');
         }
     }

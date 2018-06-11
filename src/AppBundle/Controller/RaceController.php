@@ -106,7 +106,7 @@ class RaceController extends Controller
 
             $this->get(RaceService::class)->create($race);
 
-            $request->getSession()->getFlashBag()->add('notice', $race->getName() . ' à été modifiée');
+            $request->getSession()->getFlashBag()->add('success', $race->getName() . ' à été modifiée');
 
             return $this->redirectToRoute('competition_show', array('id' => $race->getCompetition()->getId()));
         }
@@ -277,7 +277,7 @@ class RaceController extends Controller
     {
         $this->get(DbService::class)->simulateRaceEnrols($race);
 
-        $request->getSession()->getFlashBag()->add('notice', 'Inscriptions enregistrées');
+        $request->getSession()->getFlashBag()->add('success', 'Inscriptions enregistrées');
         return $this->redirectToRoute('race_show', array('id' => $race->getId()));
     }
 
@@ -288,7 +288,7 @@ class RaceController extends Controller
     public function enrolClosed(Request $request, Race $race)
     {
         $this->get(RanckService::class)->generateCompetitorsNumber($race);
-        $request->getSession()->getFlashBag()->add('notice', 'Inscriptions cloturées');
+        $request->getSession()->getFlashBag()->add('success', 'Inscriptions cloturées');
         $race->setState(1);
         $race->setEnrol(0);
         $em = $this->getDoctrine()->getManager();

@@ -37,7 +37,7 @@ class CompetitorController extends Controller
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
             $this->get(UserService::class)->registerUserApp($competitor);
-            $request->getSession()->getFlashBag()->add('notice', 'Votre compte competiteur est bien enregistré');
+            $request->getSession()->getFlashBag()->add('success', 'Votre compte competiteur est bien enregistré');
             return $this->redirectToRoute('index');
         }
 
@@ -84,7 +84,7 @@ class CompetitorController extends Controller
         $competitorIsRegisterToRace = $this->getDoctrine()->getRepository(RaceCompetitor::class)->competitorIsRegisterToRace($race,$competitor);
 
         if ($competitorIsRegisterToRace) {
-            $request->getSession()->getFlashBag()->add('notice', 'Vous êtes déjà inscrit à cette course');
+            $request->getSession()->getFlashBag()->add('success', 'Vous êtes déjà inscrit à cette course');
             return $this->redirectToRoute('competitor_show');
         }
 
@@ -95,7 +95,7 @@ class CompetitorController extends Controller
         $em->persist($raceComp);
         $em->flush();
         $this->get(CodeService::class)->generateCode($raceComp);
-        $request->getSession()->getFlashBag()->add('notice', 'Votre inscription est enregistrée');
+        $request->getSession()->getFlashBag()->add('success', 'Votre inscription est enregistrée');
 
         return $this->redirectToRoute('competition_show', array('id'=>$race->getCompetition()->getId()));
     }
@@ -115,7 +115,7 @@ class CompetitorController extends Controller
         if (!is_null($rc)){
             $em->remove($rc);
             $em->flush();
-            $request->getSession()->getFlashBag()->add('notice', 'Votre inscription est annulée');
+            $request->getSession()->getFlashBag()->add('success', 'Votre inscription est annulée');
         }
 
         return $this->redirectToRoute('competition_show', array('id'=>$race->getCompetition()->getId()));

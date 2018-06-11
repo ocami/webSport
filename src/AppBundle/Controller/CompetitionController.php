@@ -89,7 +89,7 @@ class CompetitionController extends Controller
 
             $this->get(CompetitionService::class)->create($competition, $organizer);
 
-            $request->getSession()->getFlashBag()->add('notice', 'Compétition bien enregistrée');
+            $request->getSession()->getFlashBag()->add('success', 'Compétition bien enregistrée');
 
             return $this->redirectToRoute('competition_show_byOrganizer');
         }
@@ -114,7 +114,7 @@ class CompetitionController extends Controller
 
             $this->get(CompetitionService::class)->create($competition, $organizer);
 
-            $request->getSession()->getFlashBag()->add('notice', $competition->getName().' modifiée');
+            $request->getSession()->getFlashBag()->add('success', $competition->getName().' modifiée');
 
             return $this->redirectToRoute('competition_show_byOrganizer');
         }

@@ -64,7 +64,7 @@ class ChampionshipController extends Controller
             $this->get(EntityService::class)->create($championship);
             $this->get(EntityService::class)->create($championship->getCategory());
 
-            $request->getSession()->getFlashBag()->add('notice', 'Championnat bien enregistrée.');
+            $request->getSession()->getFlashBag()->add('success', 'Championnat bien enregistrée.');
             return $this->redirectToRoute('index');
         }
         return $this->render('championship/new.html.twig', array('form' => $form->createView()));
@@ -81,7 +81,7 @@ class ChampionshipController extends Controller
             $this->get(EntityService::class)->update($championship);
             $this->get(EntityService::class)->update($championship->getCategory());
 
-            $request->getSession()->getFlashBag()->add('notice', 'Championat bien enregistré.');
+            $request->getSession()->getFlashBag()->add('success', 'Championat bien enregistré.');
             return $this->redirectToRoute('admin_index');
         }
         return $this->render('championship/new.html.twig', array('form' => $form->createView()));

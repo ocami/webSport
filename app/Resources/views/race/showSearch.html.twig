@@ -2,7 +2,11 @@
 
  {% block search_content %}
 
+
      <div class="col-xs-8 col-lg-8">
+         {% if races|length == 0  %}
+             <h3 style="text-align: center">Aucune course trouvée</h3>
+         {% endif %}
          {% for race in races %}
              <div class="col-xs-12 races-container">
                  {{ include('race/modelList.html.twig') }}

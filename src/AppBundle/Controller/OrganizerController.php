@@ -31,7 +31,7 @@ class OrganizerController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $this->get(UserService::class)->registerUserApp($organizer);
-            $request->getSession()->getFlashBag()->add('notice', 'Votre compte organisateur est bien enregistré');
+            $request->getSession()->getFlashBag()->add('success', 'Votre compte organisateur est bien enregistré');
 
             return $this->redirectToRoute('index');
         }

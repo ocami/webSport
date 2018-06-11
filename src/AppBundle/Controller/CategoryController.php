@@ -66,7 +66,7 @@ class CategoryController extends Controller
             $em->flush();
             $this->get(CodeService::class)->generateCode($category);
 
-            $request->getSession()->getFlashBag()->add('notice', 'Catégorie bien enregistrée.');
+            $request->getSession()->getFlashBag()->add('success', 'Catégorie bien enregistrée.');
 
             return $this->redirectToRoute('competition_show',array('id'=>$competition->getId()));
         }
@@ -86,7 +86,7 @@ class CategoryController extends Controller
             $em->persist($category);
             $em->flush();
 
-            $request->getSession()->getFlashBag()->add('notice', 'Course bien enregistrée.');
+            $request->getSession()->getFlashBag()->add('success', 'Course bien enregistrée.');
 
             return $this->redirectToRoute('category/show.html.twig',array('category'=>$category->getId()));
         }
