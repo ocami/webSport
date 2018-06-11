@@ -32,40 +32,68 @@
 
         #index-map-container {
             height: 85vh;
-            background-color: #ffffff;
-           
+
         }
 
         .leaflet-popup-img {
             height: 3em;
         }
 
+        #button-map {
+            visibility: hidden;
+        }
+
+        #index-container {
+            margin-left: 16em;
+            padding-right: 0em;
+        }
+
+        #left-container {
+            height: 100%;
+            width: 18em;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 4em;
+            padding-left: 0.5em;
+        }
+
     </style>
 {% endblock %}
 
 {% block body %}
-        <div id="index-container">
-            <div class="col-md-3">
 
-                <div id="small-map-container" class="col-xs-12">
-                    <div class="col-xs-12" id="small-map"></div>
-                    <button type="button" id="button-map" value="not-initialized" class="btn btn-info btn-sm col-xs-12">
-                        Agrandir
-                    </button>
-                </div>
-
-                {% include 'race/widget/searchBar.html.twig' %}
+    <div id="left-container">
 
 
-            </div>
-            <div class="col-md-6">
+        <div id="small-map-container" class="col-xs-12">
+            <div class="col-xs-12" id="small-map"></div>
+            <button type="button" id="button-map" value="not-initialized" class="btn btn-info btn-sm col-xs-12">
+                Agrandir
+            </button>
+        </div>
+
+        {% include 'race/widget/searchBar.html.twig' %}
+
+
+    </div>
+
+
+    <div id="index-container">
+        <div id="index-content">
+
+
+            <div class="col-md-8">
                 <div class="row">
                     {% for competition in competitions %}
                         {% include 'competition/modelList.twig' %}
                     {% endfor %}
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <!--INFOS -->
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -153,6 +181,7 @@
             <br>
             <button type="button" id="button-map-close" class="btn btn-info btn-sm pull-right">Fermer</button>
         </div>
+    </div>
 {% endblock %}
 
 
@@ -164,130 +193,125 @@
             crossorigin=""></script>
     <script src="{{ asset('js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
 
-
     <script>
         //init
-        indexMaps();
+        //indexMaps();
         searchBarRace();
         panelCategoriesScroll();
 
-        function indexMaps() {
-            var $indexContainer = $('#index-container');
-            var $smallMap = $('#small-map');
-            var $smallMapContainer = $('#small-map-container');
-            var $indexMap = $('#index-map');
-            var $indexMapConatiner = $('#index-map-container');
-            var $indexButton = $('#button-map');
-            var dataMap;
 
-            $(function () {
+        var $indexContent = $('#index-content');
+        var $smallMap = $('#small-map');
+        var $smallMapContainer = $('#small-map-container');
+        var $indexMap = $('#index-map');
+        var $indexMapConatiner = $('#index-map-container');
+        var $btMap = $('#button-map');
+        var dataMap;
+        var pastIcon = L.icon({
+            iconUrl: '/webSport/web/img/green.ico',
+            iconSize: [30, 30],
+            iconAnchor: [11, 31],
+            popupAnchor: [5, -25]
+        });
+        var futureIcon = L.icon({
+            iconUrl: '/webSport/web/img/pink.png',
+            iconSize: [30, 30],
+            iconAnchor: [11, 31],
+            popupAnchor: [5, -25]
+        });
 
-                //loaderDivStart($smallMap);
-                $indexMapConatiner.hide();
+        //init
+        $indexMapConatiner.hide();
+        initialiseMap();
 
-                //data map
-                var path = Routing.generate('competition_get_geojson');
-                $.ajax({
-                    url: path,
-                    success: function (data) {
-                        dataMap = data;
-                        smallMapBuild(data);
-                    },
-                    error: function () {
-                        ajaxError();
-                    }
-                });
-            });
+        // Event**************************************************************************************************>
 
-            // Event**************************************************************************************************>
+        $btMap.click(function () {
+            $indexContent.hide();
+            $indexMapConatiner.show();
+            if ($(this).val() === 'not-initialized') {
+                indexMapBuild(dataMap);
+                $(this).val('is-initialized');
+            }
+        });
 
-            $indexButton.click(function () {
-                $indexContainer.hide();
-                $indexMapConatiner.show();
-                if ($(this).val() === 'not-initialized') {
-                    indexMapBuild(dataMap);
-                    $(this).val('is-initialized');
+        $('#button-map-close').click(function () {
+            $indexMapConatiner.hide();
+            $indexContent.show();
+        });
+
+        // Functions**************************************************************************************************>
+        function initialiseMap() {
+            var path = Routing.generate('competition_get_geojson');
+            $.ajax({
+                url: path,
+                success: function (data) {
+                    dataMap = data;
+                    smallMapBuild(data);
+                },
+                error: function () {
+                    ajaxError();
                 }
             });
-
-            $('#button-map-close').click(function () {
-                $indexMapConatiner.hide();
-                $indexContainer.show();
-            });
-
-            // Maps build**************************************************************************************************>
-            var pastIcon = L.icon({
-                iconUrl: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/256/Map-Marker-Marker-Outside-Pink-icon.png',
-                iconSize: [30, 30],
-                iconAnchor: [11, 31],
-                popupAnchor: [5, -25],
-
-            });
-            var futureIcon = L.icon({
-                iconUrl: 'http://www.iconarchive.com/download/i57834/icons-land/vista-map-markers/Map-Marker-Marker-Outside-Chartreuse.ico',
-                iconSize: [30, 30],
-                iconAnchor: [11, 31],
-                popupAnchor: [5, -25],
-
-            });
-
-            function smallMapBuild(data) {
-                var FuturCompetitionLayer = layerBuild(data.futureCompetitions, pastIcon);
-
-                var osmLayer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-                    maxZoom: 18
-                });
-                var smallMap = L.map('small-map', {
-                    center: [46.52863469527167, 2.43896484375],
-                    zoom: 4,
-                    layers: [osmLayer, FuturCompetitionLayer]
-                });
-
-                //loaderDivStop($smallMap);
-            }
-
-            function indexMapBuild(data) {
-                var watercolorLayer = L.tileLayer('http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg', {
-                    attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-                    maxZoom: 18
-                });
-                var FuturCompetitionLayer2 = layerBuild(data.futureCompetitions, pastIcon);
-                var PastCompetitionLayer2 = layerBuild(data.pastCompetitions, futureIcon);
-
-                var osmLayer2 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-                    maxZoom: 18
-                });
-                var indexMap = L.map('index-map', {
-                    center: [46.52863469527167, 2.43896484375],
-                    zoom: 5,
-                    layers: [osmLayer2, PastCompetitionLayer2, FuturCompetitionLayer2]
-                });
-
-                //Layers Control **************************************************************************************************>
-                var baseMaps = {
-                    "osmLayer": osmLayer2,
-                    "watercolorLayer": watercolorLayer
-                };
-                var overlayMaps = {
-                    "A venir": FuturCompetitionLayer2,
-                    "Passées": PastCompetitionLayer2
-                };
-
-                L.control.layers(baseMaps, overlayMaps).addTo(indexMap);
-            }
-
-            function layerBuild(data, icon) {
-                return L.geoJSON(data, {
-                    pointToLayer: function (geoJsonPoint, latlng) {
-                        return L.marker(latlng, {icon: icon});
-                    }
-                }).bindPopup(function (layer) {
-                    return layer.feature.properties.description;
-                });
-            }
         }
+
+        function smallMapBuild(data) {
+            var FuturCompetitionLayer = layerBuild(data.futureCompetitions, pastIcon);
+
+            var osmLayer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+                maxZoom: 18
+            });
+            var smallMap = L.map('small-map', {
+                center: [46.52863469527167, 0],
+                zoom: 4,
+                layers: [osmLayer, FuturCompetitionLayer]
+            });
+
+            $btMap.css('visibility', 'visible');
+        }
+
+        function indexMapBuild(data) {
+            var watercolorLayer = L.tileLayer('http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg', {
+                attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+                maxZoom: 18
+            });
+            var FuturCompetitionLayer2 = layerBuild(data.futureCompetitions, pastIcon);
+            var PastCompetitionLayer2 = layerBuild(data.pastCompetitions, futureIcon);
+
+            var osmLayer2 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+                maxZoom: 18
+            });
+            var indexMap = L.map('index-map', {
+                center: [46.52863469527167, 2.43896484375],
+                zoom: 5,
+                layers: [osmLayer2, PastCompetitionLayer2, FuturCompetitionLayer2]
+            });
+
+            //Layers Control **************************************************************************************************>
+            var baseMaps = {
+                "osmLayer": osmLayer2,
+                "watercolorLayer": watercolorLayer
+            };
+            var overlayMaps = {
+                "A venir": FuturCompetitionLayer2,
+                "Passées": PastCompetitionLayer2
+            };
+
+            L.control.layers(baseMaps, overlayMaps).addTo(indexMap);
+        }
+
+        function layerBuild(data, icon) {
+            return L.geoJSON(data, {
+                pointToLayer: function (geoJsonPoint, latlng) {
+                    return L.marker(latlng, {icon: icon});
+                }
+            }).bindPopup(function (layer) {
+                return layer.feature.properties.description;
+            });
+        }
+
     </script>
 
 {% endblock %}

@@ -280,9 +280,13 @@ race/show.html.twig
     width: 10em;
 }
 
-#main {
+/*#main {
     transition: margin-left .5s;
     padding: 16px;
+}*/
+
+#main {
+    /*margin-left: 20em;*/
 }
 
 @media screen and (max-height: 450px) {
