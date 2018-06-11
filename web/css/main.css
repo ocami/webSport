@@ -245,7 +245,7 @@ race/show.html.twig
     margin-top: 2em;
 }
 
-/**sSidenav organizer**************************************************************************************************/
+/**sSidenav-organizer organizer**************************************************************************************************/
 #navbar-general {
     z-index: 2;
 }
@@ -257,7 +257,7 @@ race/show.html.twig
     display: none;
 }
 
-.sidenav {
+.sidenav-organizer {
     height: 100%;
     width: 0em;
     position: fixed;
@@ -270,11 +270,11 @@ race/show.html.twig
     /*padding-top: 60px;*/
 }
 
-.sidenav .content {
+.sidenav-organizer .content {
     padding-top: 60px;
 }
 
-.sidenav button {
+.sidenav-organizer button {
     display: block;
     margin: 1em 0em 0em 1em;
     width: 10em;
@@ -286,11 +286,11 @@ race/show.html.twig
 }
 
 @media screen and (max-height: 450px) {
-    .sidenav {
+    .sidenav-organizer {
         padding-top: 15px;
     }
 
-    .sidenav a {
+    .sidenav-organizer a {
         font-size: 18px;
     }
 }
