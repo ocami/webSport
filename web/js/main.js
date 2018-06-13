@@ -1,27 +1,18 @@
+var language = {
+    "search": "Rechercher:",
+    "lengthMenu": "Voir _MENU_ compétiteurs  par page",
+    "zeroRecords": "Aucune inscription",
+    "paginate": {
+        "first": "Premier",
+        "last": "Dernier",
+        "next": "Suivant",
+        "previous": "précédent"
+    }
+};
+
 /***********************************************************************************************************************
  /   navbar/general.html.twig
  /**********************************************************************************************************************/
-setTimeout(function () {
-    navBarChampionship();
-}, 5000);
-
-function navBarChampionship() {
-    var li = document.createElement("LI");
-
-    $.getJSON("/webSport/web/json/navbar_championship.json", function (result) {
-        $.each(result, function (key, championship) {
-            var a = document.createElement("A");
-            var textLI = document.createTextNode(championship.name);
-            a.href = championship.path;
-            a.appendChild(textLI);
-            li.appendChild(a);
-            $('#championdhips-menu').append(li);
-
-        });
-
-    });
-}
-
 function navbarBadgeAdmin() {
 
     var path = Routing.generate('race_countNotSupervised');
@@ -166,6 +157,91 @@ function profilData(user) {
 }
 
 /***********************************************************************************************************************
+ /   championship/show.html.twig
+ /
+ /**********************************************************************************************************************/
+function championshipShow(category) {
+    var $btnCategories = $('#championship-show-categories').find('button');
+    var $container = $('#table');
+
+    var options = {
+        destroy: true,
+        language: language,
+        bInfo: false,
+        order: [[0, "asc"]]
+    };
+    options.columns = [
+        {data: 'ranck', className: "row-ranck"},
+        {
+            "data": "lastName",
+            "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
+            }
+        },
+        {
+            "data": "firstName",
+            "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
+            }
+        },
+        {data: 'points', className: "row-ranck"},
+    ];
+    options.columnDefs = [
+        {
+            targets: 0,
+            width: "5%"
+        },
+        {
+            targets: 3,
+            width: "5%"
+        }
+    ];
+
+    //inti
+    ranckTable(category);
+
+    //Envents
+    $btnCategories.click(function () {
+
+        ranckTable($(this).val());
+        $btnCategories.attr('class', 'btn-xs btn-info col-xs-12');
+        $(this).attr('class', 'btn-xs btn-primary col-xs-12');
+    });
+
+    $('.profile-href').click(function () {
+        var user = $(this).attr("data");
+        profilData(user);
+    });
+
+    function ranckTable(category) {
+        loaderDivStart($container);
+
+        var path = Routing.generate('championship_json', {
+            idCategory: category
+        });
+
+        $.ajax({
+            url: path,
+            success: function (data) {
+                displayTable(data, category);
+            },
+            error: function () {
+                ajaxError();
+            }
+        });
+    }
+
+    function displayTable(data, category) {
+        options.data = data;
+
+        $('#table-championship').DataTable(options);
+        loaderDivStop($container);
+        loaderStop();
+    }
+
+}
+
+/***********************************************************************************************************************
  /   admin/races.html.twig
  /
  / Where table select change
@@ -222,12 +298,16 @@ function adminRaces() {
                 visible: false
             },
             {
-                targets: 5,
-                width: "20%"
+                targets: 3,
+                width: "5%"
             },
             {
                 targets: 6,
-                width: "5%"
+                width: "20%"
+            },
+            {
+                targets: 7,
+                width: "3%"
             }
         ]
     }); //dataTables
@@ -245,14 +325,17 @@ function adminRaces() {
 
     //Event///////////////////////////////////////////////////////////////////////////////////////
     table.on('select', function (e, dt, type, index) {
+        loaderDivStart($raceShow);
         preRaceShow(index);
     });
 
     $('#prev').click(function () {
+        loaderDivStart($raceShow);
         tableSelectRow(indexSelected + 1);
     });
 
     $('#next').click(function () {
+        loaderDivStart($raceShow);
         tableSelectRow(indexSelected - 1);
     });
 
@@ -261,10 +344,10 @@ function adminRaces() {
             cbChampionship(true);
         else
             cbChampionship(false);
-    })
+    });
 
     $('#valid').click(function () {
-
+        loaderDivStart($raceShow);
         var inChampionship = 0;
 
         if (cb.prop('checked'))
@@ -274,7 +357,7 @@ function adminRaces() {
     });
 
     $('#refuse').click(function () {
-
+        loaderDivStart($raceShow);
         raceUpdate(raceSeclected, 0, 0);
     });
 
@@ -283,15 +366,14 @@ function adminRaces() {
     function preRaceShow(index) {
 
         if (table.data().count()) {
-            loaderDivStart($raceShow);
+
             rowData = table.rows(index).data().toArray()[0];
             raceSeclected = rowData['id'];
             indexSelected = table.row(index).index();
 
-            cbChampionshipRefresh();
-
             raceShow(raceSeclected); //views/race/modelShow.html.twig
         } else {
+            loaderDivStop($raceShow);
             $raceShow.hide();
         }
     }
@@ -320,7 +402,7 @@ function adminRaces() {
 
         $('#admin-race-name').text(data.race.name);
         $('#admin-race-competition-id').attr('href', data.race.organizerId);
-        $('#admin-race-competition-organizer').text('Orga : ' + data.race.competitionName);
+        $('#admin-race-competition-organizer').text('Orga : ' + data.race.organizerName);
         $('#admin-race-competition-name').text(data.race.competitionName);
         $('#admin-race-distance').text(data.race.distance + ' Km');
         $('#admin-race-day').text(date.toLocaleDateString('fr-FR', {
@@ -335,6 +417,12 @@ function adminRaces() {
         $.each(data.categories, function (index, value) {
             $categories.append(" <div class='col-xs-3 col-lg-2'><button class='btn-xs btn-info col-xs-12' disabled>" + value.name + "</button> </div>");
         });
+
+        if(data.race.requestInChampionship)
+            cb.prop('checked', true).checkboxradio('refresh');
+        else
+            cb.prop('checked', false).checkboxradio('refresh');
+
 
         loaderDivStop($raceShow);
     }
@@ -376,26 +464,10 @@ function adminRaces() {
         });
     }
 
-    function cbChampionshipRefresh() {
-        $('#cbChampionship').remove();
-
-        if (rowData['championship'])
-            cbChampionship(true);
-        else
-            cbChampionship(false);
-    }
-
-    function cbChampionship(is) {
-        if (is)
-            cb.prop('checked', true).checkboxradio('refresh');
-        else
-            cb.prop('checked', false).checkboxradio('refresh');
-    }
-
     function tableSelectRow(index) {
         table.row(':eq(' + index + ')', {page: 'all'}).select();
     }
-};
+}
 
 /***********************************************************************************************************************
  /   competition/showList.html.twig
@@ -574,7 +646,6 @@ function raceShow(race, inchampionship) {
         $.ajax({
             url: path,
             success: function (data) {
-                console.log(data);
                 displayTable(data, category);
             },
             error: function () {
@@ -584,21 +655,9 @@ function raceShow(race, inchampionship) {
     }
 
     function displayTable(data, category) {
-
-        var language = {
-            "search": "Rechercher:",
-            "lengthMenu": "Voir _MENU_ compétiteurs  par page",
-            "zeroRecords": "Aucune inscription",
-            "paginate": {
-                "first": "Premier",
-                "last": "Dernier",
-                "next": "Suivant",
-                "previous": "précédent"
-            }
-        };
         var options = {
-            destroy: true,
             data: data.competitors,
+            destroy: true,
             language: language,
             bInfo: false,
             order: [[0, "asc"]]
@@ -892,8 +951,6 @@ function searchBarRace() {
         updateDataSearch = JSON.parse(jsonSearch);
     else
         updateDataSearch = dataSearch;
-
-    console.log(updateDataSearch);
 
     var $allSwitch = $("#search-bar").find('.switch-content');
 
@@ -1547,12 +1604,10 @@ function panelCategoriesScroll(){
     });
 }
 
-// sidenav organizer //////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
+// sidenav organizer ///////////////////////////////////////////////////////////////////////////////////////////////////
 function openNav() {
     document.getElementById("sidenav-organizer").style.width = "11em";
-    document.getElementById("main").style.marginLeft = "5em";
+    document.getElementById("main").style.marginLeft = "11em";
     $('.sidenav-open').css('display','inline');
 }
 
@@ -1561,8 +1616,70 @@ function closeNav() {
     document.getElementById("main").style.marginLeft= "0";
 }
 
+//Loader////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function loaderStop() {
+    $('#full-page').fadeOut(1000);
+}
 
-//ajax error//////////////////////////////////////////////////////////////////////////////////////////////////////
+function loaderDivStart(divToLoad) {
+    var $loaderDiv = $("#loader-div");
+    $loaderDiv.height(divToLoad.height());
+    $loaderDiv.width(divToLoad.width());
+    divToLoad.hide();
+    $loaderDiv.show();
+}
+
+function loaderDivStop(divToLoad) {
+    var $loaderDiv = $("#loader-div");
+    $loaderDiv.hide();
+    divToLoad.show();
+}
+
+//Tools/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function parseDateFrToUs(date) {
+
+    var d = new Date(date.split("-").reverse().join("-"));
+    var dd = ('0' + d.getDate()).slice(-2);
+    var mm = d.getMonth() + 1;
+    var mm = ('0' + mm).slice(-2);
+    var yy = d.getFullYear();
+    var newdate = yy + "-" + mm + "-" + dd;
+
+    return newdate;
+}
+
+function parseDateUsToFr(date) {
+
+    var d = new Date(date);
+    var dd = ('0' + d.getDate()).slice(-2);
+    var mm = d.getMonth() + 1;
+    var mm = ('0' + mm).slice(-2);
+    var yy = d.getFullYear();
+    var newdate = dd + "-" + mm + "-" + yy;
+
+    return newdate;
+}
+
+function todayDate() {
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if(dd<10) {
+        dd = '0'+dd
+    }
+
+    if(mm<10) {
+        mm = '0'+mm
+    }
+
+    today = yyyy + '-' + mm + '-' + dd;
+
+    return today;
+}
+
+//ajax error////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function ajaxError() {
     $('#info').css('display','block');
     $('#info span').text('Erreur requête ajax');
@@ -1574,7 +1691,11 @@ $('#info-button').click(function() {
     $('#info').css('display' , 'none');
 });
 
-//$locationForm plug-in//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////PLUG-IN///////////////////////////////////////////////////////////////
+
+//$locationForm plug-in/////////////////////////////////////////////////////////////////////////////////////////////////
 (function ($) {
 
     var $output;
@@ -1703,7 +1824,7 @@ $('#info-button').click(function() {
 
     //Dep**************************************************************
     function depAutocomplete() {
-        $.get('/webSport/web/locationForm/departements.json', function (data, status) {
+        $.get('/webSport/web/json/departements.json', function (data, status) {
             $locationInput.autocomplete({
                 source: data,
                 messages: {
@@ -1728,7 +1849,7 @@ $('#info-button').click(function() {
         depCode = dep.slice(0, 2);
         $locationAlert.hide();
 
-        $.get("/webSport/web/locationForm/departements.json", function (data, status) {
+        $.get("/webSport/web/json/departements.json", function (data, status) {
             if ($.inArray($locationInput.val(), data) !== -1) {
                 addShowElement($locationInput.val(), 'dep');
                 $locationInput.val('');
@@ -1936,7 +2057,7 @@ $('#info-button').click(function() {
 
 }(jQuery));
 
-//ocmDateTime plug-in//////////////////////////////////////////////////////////////////////////////////////////////////////
+//ocmDateTime plug-in///////////////////////////////////////////////////////////////////////////////////////////////////
 (function ($) {
 
     var $dateShow = $("<div id='ocm-dt-date-show'></div>");
@@ -2038,62 +2159,6 @@ $('#info-button').click(function() {
 
 
 }(jQuery));
-
-//Tools//////////////////////////////////////////////////////////////////////////////////////////////////////
-function parseDateFrToUs(date) {
-
-    var d = new Date(date.split("-").reverse().join("-"));
-    var dd = ('0' + d.getDate()).slice(-2);
-    var mm = d.getMonth() + 1;
-    var mm = ('0' + mm).slice(-2);
-    var yy = d.getFullYear();
-    var newdate = yy + "-" + mm + "-" + dd;
-
-    return newdate;
-}
-
-function parseDateUsToFr(date) {
-
-    var d = new Date(date);
-    var dd = ('0' + d.getDate()).slice(-2);
-    var mm = d.getMonth() + 1;
-    var mm = ('0' + mm).slice(-2);
-    var yy = d.getFullYear();
-    var newdate = dd + "-" + mm + "-" + yy;
-
-    return newdate;
-}
-
-function todayDate() {
-    var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth()+1; //January is 0!
-    var yyyy = today.getFullYear();
-
-    if(dd<10) {
-        dd = '0'+dd
-    }
-
-    if(mm<10) {
-        mm = '0'+mm
-    }
-
-    today = yyyy + '-' + mm + '-' + dd;
-
-    return today;
-}
-
-// $(document).ready(function () {
-//     $('table.display').DataTable();
-// });
-//
-//
-// function displayDate() {
-//     document.getElementById("demo").innerHTML = Date();
-// }
-
-
-
 
 
 

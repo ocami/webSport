@@ -5,14 +5,12 @@
  * Date: 03/01/2018
  * Time: 17:05
  */
-
 /**TO DO
  *
  * - decalage entre user et competitor
  *
  */
 namespace AppBundle\Services;
-
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Championship;
 use AppBundle\Entity\Competitor;
@@ -24,8 +22,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
-
 class DbService
 {
     private $ts;
@@ -33,7 +29,6 @@ class DbService
     private $cs;
     private $ci;
     private $tools;
-
     public function __construct(
         TokenStorageInterface $ts,
         AuthorizationCheckerInterface $ac,
@@ -50,14 +45,12 @@ class DbService
         $this->ci = $ci;
         $this->tools = $tools;
     }
-
     public function generateUser()
     {
         $this->generateAdmin();
         $this->generateCompetitors();
         $this->generateOrganizers();
     }
-
     public function generateAdmin()
     {
         $userManager = $this->ci->get('fos_user.user_manager');
@@ -68,7 +61,6 @@ class DbService
         $userAdmin->setEnabled(true);
         $userAdmin->addRole('ROLE_ADMIN');
         $userManager->updateUser($userAdmin, true);
-
         $competitor = new Competitor();
         $competitor->setFirstName('Admin');
         $competitor->setLastName('Admin');
@@ -78,7 +70,6 @@ class DbService
         $this->em->persist($competitor);
         $this->em->flush();
         $this->cs->generateCode($competitor);
-
         $organizer = new Organizer();
         $organizer->setName('Admin');
         $organizer->setUserId($userAdmin->getId());
@@ -86,13 +77,11 @@ class DbService
         $this->em->flush();
         $this->cs->generateCode($organizer);
     }
-
     public function generateCompetitorsM()
     {
         $userManager = $this->ci->get('fos_user.user_manager');
         $json = file_get_contents("../src/AppBundle/nameM.json");
         $datas = json_decode($json, true);
-
         $i = 0;
         foreach ($datas as $data) {
             $i++;
@@ -100,35 +89,29 @@ class DbService
                 break;
             $competitor = new Competitor();
             $user = new User();
-
             $user->setUsername($data['LastName']);
             $user->setEmail($data['LastName'] . '@mail.com');
             $user->setPlainPassword('001');
             $user->setEnabled(true);
             $user->addRole('ROLE_COMPETITOR');
             $userManager->updateUser($user, true);
-
             $competitor->setFirstName($data['FirstName']);
             $competitor->setLastName($data['LastName']);
             $competitor->setDate($this->tools->randomDate());
             $competitor->setSexe('m');
             $competitor->setUserId($i);
             $competitor->setCode('CPTOR_' . $this->cs->codeFormat($i));
-
             $this->em->persist($user);
             $this->em->persist($competitor);
         }
         $this->em->flush();
-
         return 'ajout compétiteurs masuclin : OK';
     }
-
     public function generateCompetitorsF()
     {
         $userManager = $this->ci->get('fos_user.user_manager');
         $json = file_get_contents("../src/AppBundle/nameF.json");
         $datas = json_decode($json, true);
-
         $i = 50;
         foreach ($datas as $data) {
             $i++;
@@ -136,68 +119,54 @@ class DbService
                 break;
             $competitor = new Competitor();
             $user = new User();
-
             $user->setUsername($data['LastName']);
             $user->setEmail($data['LastName'] . '@mail.com');
             $user->setPlainPassword('001');
             $user->setEnabled(true);
             $user->addRole('ROLE_COMPETITOR');
             $userManager->updateUser($user, true);
-
             $competitor->setFirstName($data['FirstName']);
             $competitor->setLastName($data['LastName']);
             $competitor->setDate($this->tools->randomDate());
             $competitor->setSexe('f');
             $competitor->setUserId($i);
             $competitor->setCode('CPTOR_' . $this->cs->codeFormat($i));
-
             $this->em->persist($user);
             $this->em->persist($competitor);
         }
         $this->em->flush();
-
         return 'ajout compétiteurs féminin : OK';
     }
-
     public function generateOrganizers()
     {
         $userManager = $this->ci->get('fos_user.user_manager');
         $json = file_get_contents("../src/AppBundle/organizer.json");
         $datas = json_decode($json, true);
-
         $i = 0;
         foreach ($datas as $data) {
             $i++;
             $organizer = new Organizer();
             $user = new User();
-
             $user->setUsername('organizer' . $i);
             $user->setEmail('organizer' . $i . '@mail.com');
             $user->setPlainPassword('001');
             $user->setEnabled(true);
             $user->addRole('ROLE_ORGANIZER');
             $userManager->updateUser($user, true);
-
             $organizer->setName($data['name']);
             $organizer->setUserId($user->getId());
-
-
             $this->em->persist($organizer);
             $this->em->flush();
             $this->cs->generateCode($organizer);
         }
-
         return 'ajout organisateurs : OK';
     }
-
     public function generateChampionship()
     {
         $json = file_get_contents("../src/AppBundle/categories.json");
         $datas = json_decode($json, true);
-
         $i = 0;
         foreach ($datas as $data) {
-
             $i++;
             $category = new Category();
             $category->setCode('CATEG_' . $this->cs->codeFormat($i));
@@ -207,7 +176,6 @@ class DbService
             $category->setAgeMin($data['ageMin']);
             $category->setCreateBy($data['createBy']);
             $this->em->persist($category);
-
             $championship = new Championship();
             $championship->setCode('CSHIP_' . $this->cs->codeFormat($i));
             $championship->setName($category->getName());
@@ -216,15 +184,12 @@ class DbService
         }
         $this->em->flush();
     }
-
     public function generateCategories()
     {
         $json = file_get_contents("../src/AppBundle/categories.json");
         $datas = json_decode($json, true);
-
         $i = 0;
         foreach ($datas as $data) {
-
             $i++;
             $category = new Category();
             $category->setCode('CATEG_' . $this->cs->codeFormat($i));
@@ -237,17 +202,14 @@ class DbService
         }
         $this->em->flush();
     }
-
     public function generateRaces()
     {
         $json = file_get_contents("../src/AppBundle/competition.json");
         $datas = json_decode($json, true);
-
         $i = 0;
         foreach ($datas as $data) {
             $i++;
             $date = $this->tools->randomDate('01-01-2018', '31-12-2018');
-
             $competition = new Competition();
             $competition->setCode('COMPN_' . $i);
             $competition->setName($data['name']);
@@ -262,18 +224,14 @@ class DbService
         }
         $this->em->flush();
     }
-
     public function simulateRaceEnrols($race)
     {
         $competitors = $this->em->getRepository(Competitor::class)->firstAll(100);
         $i = 0;
-
         foreach ($competitors as $competitor) {
             $i++;
             $competitorYear = $competitor->getDateObject()->format('Y');
-
             foreach ($race->getCategories() as $category) {
-
                 if ($category->getSexe() == 'mx' OR $category->getSexe() == $competitor->getSexe()) {
                     if ($competitorYear <= $category->getAgeMin() AND $competitorYear >= $category->getAgeMax()) {
                         $raceCompetitor = new RaceCompetitor();
@@ -288,8 +246,6 @@ class DbService
             }
         }
         $this->em->flush();
-
         return 'registration ok';
     }
-
 }

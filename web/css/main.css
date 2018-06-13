@@ -29,7 +29,7 @@
     z-index: 100;
 }
 
-/* modal competitor info ******************************************************************************************************* */
+/* modal competitor info ******************************************************************************************** */
 #competitor-modal input.hidden {
     position: absolute;
     left: -9999px;
@@ -57,7 +57,7 @@
     height: 0px;
 }
 
-/* nav bar general ******************************************************************************************************* */
+/* nav bar general ************************************************************************************************** */
 #navbar-general .dropdown-menu {
     z-index: 9999;
 }
@@ -105,7 +105,7 @@ hr {
     margin: 0em;
 }
 
-/**index INFO**************************************************************************************************/
+/**index INFO**********************************************************************************************************/
 
 .info-img {
     max-width: 8em;
@@ -144,9 +144,15 @@ div#fade-content {
     max-height: 200px;
 }
 
-/**model-panel**************************************************************************************************/
+/**model-panel*********************************************************************************************************/
+
+panel-categories-container{
+    background: #718C00;
+}
+
 .panel-categories {
     height: 6em;
+    overflow: hidden;
 }
 
 .panel-category-all {
@@ -166,7 +172,7 @@ div#fade-content {
     height: 1.8em;
 }
 
-/**model-panel-race**************************************************************************************************/
+/**model-panel-race****************************************************************************************************/
 
 @media (max-width: 400px) {
     #panel-race-list .panel-body {
@@ -174,7 +180,7 @@ div#fade-content {
     }
 }
 
-/**model-panel-competition**************************************************************************************************/
+/**model-panel-competition*********************************************************************************************/
 @media (max-width: 400px) {
     #panel-competition-list .panel-body {
         padding: 0 0 0 0px;
@@ -187,13 +193,21 @@ div#fade-content {
     font-weight: bold;
 }
 
-/**show-panel**************************************************************************************************/
+/**show-panel**********************************************************************************************************/
 
 /* race-show */
 /*
 admin/races.html.twig
 race/show.html.twig
 */
+
+.panel-show .panel-heading {
+    height: 36.36px;
+}
+
+.panel-show .panel-body{
+    height: 77.27px;
+}
 
 .panel-show .date-time-panel span {
     display: block;
@@ -219,7 +233,8 @@ race/show.html.twig
 
 .panel-show .first-panel .organizer {
     display: block;
-    margin-top: 0.8em;
+    font-weight: lighter;
+    padding-top: 1em;
 }
 
 .panel-show .first-panel .distance {
@@ -236,16 +251,13 @@ race/show.html.twig
     font-size: larger;
 }
 
-.panel-show .first-panel .panel-body {
-    padding-bottom: 0em;
-}
 
 .panel-show .map-link img {
     height: 1.8em;
     margin-top: 2em;
 }
 
-/**sSidenav-organizer organizer**************************************************************************************************/
+/**sSidenav-organizer organizer****************************************************************************************/
 #navbar-general {
     z-index: 2;
 }
@@ -280,25 +292,108 @@ race/show.html.twig
     width: 10em;
 }
 
-/*#main {
-    transition: margin-left .5s;
-    padding: 16px;
-}*/
-
 #main {
-    /*margin-left: 20em;*/
+     transition: margin-left .5s;
+ }
+
+/**Bootstrap*******************************************************************************************************/
+.panel-heading{
+    border-bottom: 0px;
 }
 
-@media screen and (max-height: 450px) {
-    .sidenav-organizer {
-        padding-top: 15px;
-    }
+/**Location form*******************************************************************************************************/
 
-    .sidenav-organizer a {
-        font-size: 18px;
-    }
+/*jQuery UI autocomplete for bootstrap*/
+.ui-autocomplete {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    float: left;
+    display: none;
+    min-width: 160px;
+    _width: 160px;
+    padding: 4px 0;
+    margin: 2px 0 0 0;
+    list-style: none;
+    background-color: #ffffff;
+    border-color: #ccc;
+    border-color: rgba(0, 0, 0, 0.2);
+    border-style: solid;
+    border-width: 1px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
+    *border-right-width: 2px;
+    *border-bottom-width: 2px;
 }
 
-#main {
-    padding: 0em;
+.ui-autocomplete .ui-menu-item > a.ui-corner-all {
+    display: block;
+    padding: 3px 15px;
+    clear: both;
+    font-weight: normal;
+    line-height: 18px;
+    color: #555555;
+    white-space: nowrap;
+}
+
+.ui-autocomplete .ui-menu-item > a.ui-corner-all.ui-state-hover, .ui-autocomplete .ui-menu-item > a.ui-corner-all.ui-state-active, .ui-autocomplete .ui-menu-item > a.ui-corner-all.ui-state-focus {
+    color: #ffffff;
+    text-decoration: none;
+    background-color: #0088cc;
+    border-radius: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    background-image: none;
+}
+
+#location-map {
+    height: 180px;
+    margin-bottom: 1em;
+}
+
+
+/**Location form*******************************************************************************************************/
+#full-page{
+    height: 90vh;
+    width: 100%;
+    position: absolute;
+    background-color: #FFFFFF;
+    z-index: 999;
+    overflow: visible;
+    left: 0;
+    top: 4em;
+}
+
+/**Loader**************************************************************************************************************/
+#loader-full{
+    height: 55vh; /* equals max image height */
+    width: 100%;
+    white-space: nowrap; /* this is required unless you put the helper span closely near the img */
+    text-align: center;
+    margin: 1em 0;
+    z-index: 999;
+    overflow: visible;
+    background: #ffffff url('https://loading.io/spinners/fidget-spinner/lg.fidget-spinner.gif') no-repeat center center;
+    background-size: 20%;
+}
+
+#loader-div {
+    height: 55vh; /* equals max image height */
+    width: 100%;
+    white-space: nowrap; /* this is required unless you put the helper span closely near the img */
+    text-align: center;
+    margin: 1em 0;
+    z-index: 998;
+    overflow: visible;
+    background: #ffffff url('https://media.giphy.com/media/xUPGciElNYVE4PKc4o/giphy.gif') no-repeat center center;
+    background-size: 65%;
+    display: none;
 }

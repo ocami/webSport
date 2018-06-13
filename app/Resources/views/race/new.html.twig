@@ -80,12 +80,12 @@
             <label for="name" class="control-label">Nom</label>
             {{ form_widget(form.name, {'attr': {'class':"form-control"}}) }}
             <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-            <div class="help-block with-errors">Entre 5 et 50 caractères alaphanumériques</div>
+            <div class="help-block with-errors">Facultatif. Caractères alaphanumériques. 50 max.</div>
         </div>
 
         <!--Distance-->
         <div class="form-group has-feedback race-form-border">
-            {{ form_widget(form.distance, {'attr': {'class':"form-control", 'style':"display: block"}}) }}
+            {{ form_widget(form.distance, {'attr': {'class':"form-control", 'style':"display: none"}}) }}
 
             {% include 'race/widget/distance.html.twig' %}
         </div>
@@ -93,7 +93,7 @@
         <!--Categories -->
         <div class="form-group has-feedback race-form-border">
             <label for="categories" class="control-label">Categories</label><br><br>
-            <div style="display: block">
+            <div style="display: none">
                 {{ form_widget(form.categoriesString, {'attr':  {'class':"form-control"}}) }}
                 {{ form_widget(form.requestInChampionship) }}
             </div>

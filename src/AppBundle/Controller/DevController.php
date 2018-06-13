@@ -8,22 +8,9 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Competition;
-use AppBundle\Entity\Competitor;
-use AppBundle\Entity\Organizer;
-use AppBundle\Entity\Category;
-use AppBundle\Services\CodeService;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
-use AppBundle\Services\DbService;
 use AppBundle\Services\UserService;
-use AppBundle\Services\EntityService;
-use AppBundle\Services\RanckService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Doctrine\ORM\EntityRepository;
 
 
 class DevController extends Controller
@@ -58,9 +45,28 @@ ALTER TABLE competition AUTO_INCREMENT=0;
         var_dump($stmt->fetchAll());die;
 
 
-        return 'truc';
+        return 'all remmove';
     }
 
+    /**
+     * @Route("/becomeAdmin", name="becomeAdmin")
+     */
+    public function becomeAdmin()
+    {
+        $userManager = $this->get('fos_user.user_manager');
 
+        $user = $this->getUser();
+
+        $user->addRole('ROLE_ADMIN');
+
+        $this->get(UserService::class)->refreshToken();
+
+        $userManager->updateUser($user);
+
+        return $this->render('home/test.html.twig', array(
+            'message' => "Role admin",
+        ));
+
+    }
 
 }

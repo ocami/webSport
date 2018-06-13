@@ -2,7 +2,6 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/jquery.mCustomScrollbar.min.css') }}"/>
 
     <style>
         .competition-show .address {
@@ -88,9 +87,9 @@
 
 {% endblock %}
 
-    {% block javascripts %}
+{% block javascripts %}
         {{ parent() }}
-        <script src="{{ asset('js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
+
         <script>
             panelCategoriesScroll();
             {% if is_granted('ROLE_ORGANIZER') %}

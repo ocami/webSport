@@ -9,9 +9,6 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Address;
-use AppBundle\Entity\Competition;
-use AppBundle\Services\EntityService;
-use AppBundle\Services\RanckService;
 use Proxies\__CG__\AppBundle\Entity\AddressCompetitor;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

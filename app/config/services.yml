@@ -20,10 +20,7 @@ services:
         # but if a service is unused, it's removed anyway
         exclude: '../../src/AppBundle/{Entity,Repository,Form,MesServices}'
 
-    AppBundle\ServicesArg\AntiSpam:
-        public: true
-        arguments:
-            $maxLenght: '%maxLenghtDescription%'
+
 
     # controllers are imported separately to make sure they're public
     # and have a tag that allows actions to type-hint services

@@ -13,12 +13,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-
 
 class UserController extends Controller
 {
-
     /**
      * @Route("/user/{toCreate}",requirements={"toCreate" = "competitor|organizer"}, name="redirectBeforeRegister")
      */
@@ -65,14 +62,4 @@ class UserController extends Controller
                 return $this->redirectToRoute('index');
         }
     }
-
-    /**
-     * @Security("has_role('ROLE_USER')")
-     * @Route("/user/show/{id}", name="user_show")
-     */
-    public function Show(Request $request, User $user)
-    {
-
-    }
-
 }

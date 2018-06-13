@@ -10,29 +10,20 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Competition;
 use AppBundle\Entity\Address;
-use AppBundle\Entity\Competitor;
-use AppBundle\Entity\Organizer;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\Category;
-use AppBundle\Repository\RaceCompetitorRepository;
+use AppBundle\Entity\RaceCompetitor;
+use AppBundle\Form\RaceType;
 use AppBundle\Services\CategoryService;
-use AppBundle\Services\CodeService;
 use AppBundle\Services\RaceService;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Services\DbService;
 use AppBundle\Services\UserService;
-use AppBundle\Services\EntityService;
 use AppBundle\Services\RanckService;
-use Proxies\__CG__\AppBundle\Entity\RaceCompetitor;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use AppBundle\Entity\Post;
-use AppBundle\Form\RaceType;
-use AppBundle\Form\RaceChampionshipType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use AppBundle\Form\RaceNewType;
 
 
 class RaceController extends Controller

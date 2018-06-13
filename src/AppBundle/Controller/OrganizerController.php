@@ -12,11 +12,9 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use AppBundle\Entity\Organizer;
 use AppBundle\Form\OrganizerType;
-use AppBundle\Services\UserService;
-use AppBundle\Services\CodeService;
+use AppBundle\Services\UserService;;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class OrganizerController extends Controller

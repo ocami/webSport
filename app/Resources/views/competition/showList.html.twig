@@ -5,11 +5,6 @@
     <button class="btn-xs btn-info" onclick="location.href = '{{ path('competition_show_byOrganizer') }}'">Toutes mes compétitions</button>
 {% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/jquery.mCustomScrollbar.min.css') }}"/>
-
-{% endblock %}
 
 {% block body %}
     <div class="text-right">
@@ -41,7 +36,7 @@
 
     {% block javascripts %}
         {{ parent() }}
-        <script src="{{ asset('js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
+
 
         <script>
             competitionShowList();

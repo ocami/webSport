@@ -1,9 +1,9 @@
-    {% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %}
 
     {% block stylesheets %}
         {{ parent() }}
-        <link rel="stylesheet" href="https://cdn.datatables.net/select/1.2.5/css/select.bootstrap.min.css"/>
         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"/>
+
         <style>
             #tables {
                 min-height: 10em;
@@ -21,6 +21,8 @@
                 cursor: zoom-in;
                 color: #1b6d85;
             }
+
+
         </style>
 
     {% endblock %}
@@ -67,11 +69,11 @@
                                     <a href='{{ path('competition_show', {'id':race.competition.id} ) }}'><span
                                                 class="glyphicon glyphicon-circle-arrow-left"></span></a>
                                     <span class="">{{ race.competition.name }}</span>
-                                    <div class="organizer">Orga : {{ race.competition.organizer.name }}</div>
                                 </div>
                                 <div class="col-xs-4">
                                     <span class="distance">{{ race.distance }} KM</span>
                                 </div>
+                                <div class="organizer col-xs-12">Orga : {{ race.competition.organizer.name }}</div>
                             </div>
                         </div>
                     </div>
@@ -125,7 +127,7 @@
             <div id="loader-div"></div>
             <div id="tables" class="row">
                 <div id="table-race-container">
-                    <table id="table-race" class="display" cellspacing="0" width="100%">
+                    <table id="table-race" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                         <tr id="row-table-race">
                         </tr>
@@ -134,7 +136,7 @@
                 </div>
 
                 <div id="table-race-category-container">
-                    <table id="table-race-category" class="display" cellspacing="0" width="100%">
+                    <table id="table-race-category" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                         <tr id="row-table-race-category">
                         </tr>
@@ -150,8 +152,9 @@
 
     {% block javascripts %}
         {{ parent() }}
-
         <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+
 
         <script>
             var race = {{ race.id }};
@@ -160,12 +163,10 @@
                 inchampionship = true;
             }{% endif %}
 
-
-
             raceShow(race,inchampionship);
 
             {% if is_granted('ROLE_ORGANIZER') %}
-                openNav();
+            openNav();
             {% endif %}
 
 

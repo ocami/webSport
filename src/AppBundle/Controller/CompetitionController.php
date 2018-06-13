@@ -7,11 +7,9 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Competition;
-use AppBundle\Entity\Organizer;
 use AppBundle\Services\GeoJsonService;
 use AppBundle\Services\UserService;
 use AppBundle\Entity\Race;
-use SebastianBergmann\CodeCoverage\Report\Html\Renderer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;

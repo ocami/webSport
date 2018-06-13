@@ -37,7 +37,6 @@ class AddressRepository extends \Doctrine\ORM\EntityRepository
         return $rc;
     }
 
-
     /**
      * @return array string
      */
@@ -51,7 +50,6 @@ class AddressRepository extends \Doctrine\ORM\EntityRepository
 
         return $rc;
     }
-
 
     /**
      * @return array string

@@ -10,7 +10,6 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\RaceCompetitor;
 use AppBundle\Entity\Competitor;
-use AppBundle\Repository\CompetitorRepository;
 use AppBundle\Entity\Race;
 use AppBundle\Services\CodeService;
 use AppBundle\Services\UserService;
