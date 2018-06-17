@@ -24,6 +24,7 @@ class RaceService
     private $cs;
     private $ts;
     private $ac;
+    private $compS;
 
 
     public function __construct(
@@ -31,14 +32,15 @@ class RaceService
         UserService $us,
         TokenStorageInterface $ts,
         AuthorizationChecker $ac,
-        CodeService $cs)
+        CodeService $cs,
+        CompetitionService $compS)
     {
         $this->em = $em;
         $this->us = $us;
         $this->cs = $cs;
         $this->ts = $ts;
         $this->ac = $ac;
-
+        $this->compS = $compS;
     }
 
 
@@ -50,12 +52,37 @@ class RaceService
         foreach ($categoriesId as $category) {
             $category = $this->em->getRepository(Category::class)->find($category);
 
-            if (!$race->getCategories()->contains($category))
-                $race->addCategory($category);
+            $race->addCategory($category);
 
             if (!$competition->getCategories()->contains($category))
                 $competition->addCategory($category);
         }
+
+        $this->em->persist($race);
+        $this->em->persist($competition);
+        $this->em->flush();
+        $this->cs->generateCode($race);
+    }
+
+    public function update(Race $race)
+    {
+        $categoriesId = json_decode($race->getCategoriesString());
+        $competition = $race->getCompetition();
+        $oldCategories = $race->getCategories();
+
+        foreach ($oldCategories as $category) {
+            if ((!in_array($category->getId(),$categoriesId)))
+                $race->removeCategory($category);
+        }
+
+        foreach ($categoriesId as $categoryId) {
+            $category = $this->em->getRepository(Category::class)->find($categoryId);
+
+            if (!$race->getCategories()->contains($category))
+                $race->addCategory($category);
+        }
+
+        $this->compS->categoriesUpdate($competition);
 
         $this->em->persist($race);
         $this->em->persist($competition);
@@ -94,10 +121,10 @@ class RaceService
 
     public function postSelectOne(Race $race)
     {
-            $nbC = $this->em->getRepository(Category::class)->count();
+        $nbC = $this->em->getRepository(Category::class)->count();
 
-            if (count($race->getCategories()) == $nbC)
-                $race->setFullCat(true);
+        if (count($race->getCategories()) == $nbC)
+            $race->setFullCat(true);
 
         return $race;
     }
@@ -108,7 +135,7 @@ class RaceService
             return 2;
 
         if ($race->getCategories()->contains($this->us->getCategoryCompetitor($competitor)))
-            if($race->getEnrol())
+            if ($race->getEnrol())
                 return 1;
 
         return 0;

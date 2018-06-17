@@ -2,7 +2,6 @@
 
 {% block organizer_menu %}
     <button class="btn-xs btn-success" onclick="location.href = '{{ path('competition_new') }}'">Ajouter une compétition</button>
-    <button class="btn-xs btn-info" onclick="location.href = '{{ path('competition_show_byOrganizer') }}'">Toutes mes compétitions</button>
 {% endblock %}
 
 
@@ -40,7 +39,6 @@
 
         <script>
             competitionShowList();
-            panelCategoriesScroll();
             {% if is_granted('ROLE_ORGANIZER') %}
             openNav();
             {% endif %}

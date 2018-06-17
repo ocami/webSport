@@ -87,7 +87,7 @@ class CompetitionController extends Controller
 
             $this->get(CompetitionService::class)->create($competition, $organizer);
 
-            $request->getSession()->getFlashBag()->add('success', 'Compétition bien enregistrée');
+            $request->getSession()->getFlashBag()->add('success', 'Compétition "'.$competition->getName().'" bien enregistrée');
 
             return $this->redirectToRoute('competition_show_byOrganizer');
         }

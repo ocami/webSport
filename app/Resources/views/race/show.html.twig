@@ -33,6 +33,10 @@
 
     {% block organizer_menu %}
         {% if race.isOrganizer == true %}
+            {% if race.supervised == false %}
+                <button class="btn-xs btn-success" onclick="location.href = '{{ path('race_edit', {'id':race.id} ) }}'">Editer</button>
+            {% endif %}
+
             {% if race.enrol == true %}
                 <button class="btn-xs btn-success" onclick="location.href = '{{ path('race_enrol_closed', {'id':race.id} ) }}'">Clore les inscriptions</button>
                 <button class="btn-xs btn-warning" onclick="location.href = '{{ path('race_simulateEnrol', {'id':race.id} ) }}'">Simuler inscription</button>
@@ -41,6 +45,9 @@
             {% if race.state == 1 %}
                 <button class="btn-xs btn-warning" onclick="location.href = '{{ path('race_competitorsTimes', {'id':race.id} ) }}'">Importer les temps de courses</button>
             {% endif %}
+
+            <button class="btn-xs btn-info" onclick="location.href = '{{ path('competition_show', {'id':race.competition.id} ) }}'">Retour à la compétion</button>
+
         {% endif %}
     {% endblock %}
 

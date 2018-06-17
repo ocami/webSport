@@ -11,6 +11,7 @@ namespace AppBundle\Services;
 use AppBundle\Entity\Competition;
 use AppBundle\Entity\Competitor;
 use AppBundle\Entity\Category;
+use AppBundle\Entity\Race;
 use Doctrine\ORM\EntityManagerInterface;
 use AppBundle\Entity\Location;
 use AppBundle\Entity\Organizer;
@@ -52,6 +53,9 @@ class CompetitionService
     public function postSelect($competitions)
     {
         foreach ($competitions as $competition) {
+
+            
+
             $nbC = $this->em->getRepository(Category::class)->count();
 
             if (count($competition->getCategories()) == $nbC)
@@ -100,7 +104,7 @@ class CompetitionService
 
     /**
      *
-     *@return array
+     * @return array
      */
     public function mapData()
     {
@@ -110,7 +114,7 @@ class CompetitionService
         $competitions = $this->em->getRepository(Competition::class)->allValidByDate();
         $competitions = $this->us->addUserDataInCompetitions($competitions);
 
-        foreach ($competitions as $competition){
+        foreach ($competitions as $competition) {
 
             if ($competition->getIsPassed())
                 array_push($pastCompetitions, $this->popUpString($competition));
@@ -185,6 +189,35 @@ class CompetitionService
         return $competition;
     }
 
+    public function categoriesUpdate(Competition $competition)
+    {
 
+        $races = $competition->getRaces();
+        $categoriesId = [];
+        $oldCategories = $competition->getCategories();
+        $oldCategoriesID = [];
+
+        foreach ($races as $race) {
+            foreach ($race->getCategories() as $category) {
+                if ((!in_array($category->getId(), $categoriesId)))
+                    array_push($categoriesId, $category->getId());
+            }
+        }
+
+        foreach ($oldCategories as $category) {
+            if ((!in_array($category->getId(), $categoriesId)))
+                $competition->removeCategory($category);
+
+            array_push($oldCategoriesID, $category->getId());
+        }
+
+        foreach ($categoriesId as $categoryId) {
+            if ((!in_array($categoryId, $oldCategoriesID)))
+                $competition->addCategory($this->em->getRepository(Category::class)->find($categoryId));
+        }
+
+
+        return $competition;
+    }
 
 }

@@ -28,40 +28,6 @@
 
             padding: 1em 1em 1em 1em;
         }
-
-        /* ocmDateTime*/
-        #ocm-dt-time, .time-input .n2 {
-            padding: 0 !important;
-            margin: 2em 0 1em 0 !important;
-        }
-
-        #ocm-dt-time input {
-            height: 100%;
-            width: 100%;
-            text-align: center;
-            font-size: 20px;
-        }
-
-        #ocm-dt-time .separator {
-            height: 100%;
-            width: 100%;
-            font-size: 30px;
-            margin-top: -0.2em;
-            display: block;
-        }
-
-        #ocm-dt-date-show {
-            font-size: 20px;
-            text-align: center;
-            margin-top: 1em;
-            font-weight: bold;
-        }
-
-        .calendar-show {
-            width: 200px;
-            margin: auto;
-        }
-
     </style>
 
 {% endblock %}
@@ -108,7 +74,7 @@
         </div>
         <div class="form-group has-feedback race-form-border">
             <label for="date-time" class="control-label">Date</label>
-            {{ form_widget(form.dateTime, {'attr':  {'class':"form-control"}}) }}
+            {{ form_widget(form.dateTime, {'attr':  {'class':"form-control", 'style':"display: none"}}) }}
             <div class="row">
                 <div id="race-form-dateTime" class="col-sm-offset-2 col-sm-6"></div>
             </div>
@@ -120,8 +86,6 @@
 
         {{ form_end(form) }}
     </div>
-
-
 
 {% endblock %}
 
@@ -143,7 +107,5 @@
              "defaultHour": 12,
              "defaultMinute": 30
          });
-
      </script>
-
  {% endblock %}

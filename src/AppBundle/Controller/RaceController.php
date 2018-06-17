@@ -95,7 +95,7 @@ class RaceController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-            $this->get(RaceService::class)->create($race);
+            $this->get(RaceService::class)->update($race);
 
             $request->getSession()->getFlashBag()->add('success', $race->getName() . ' à été modifiée');
 
@@ -120,7 +120,6 @@ class RaceController extends Controller
         $race = $this->getDoctrine()->getRepository(Race::class)->toString($race);
         return new JsonResponse($race);
     }
-
 
     /**
      * @Route("/race/search", options={"expose"=true}, name="races_search")

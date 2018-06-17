@@ -63,9 +63,9 @@
                         toutes catégories
                     </div>
                 {% else %}
-                    <div class="panel-categories">
+                    <div data-simplebar class="panel-categories">
                         {% for category in race.categories %}
-                            <span style="margin-left: 1em">{{ category.name }}</span><br>
+                            <span>{{ category.name }}</span><br>
                         {% endfor %}
                     </div>
                 {% endif %}

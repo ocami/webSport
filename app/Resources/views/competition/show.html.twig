@@ -15,6 +15,7 @@
     {% if competition.isOrganizer %}
         <button class="btn-xs btn-success"  onclick="location.href = '{{ path('race_new', {'id':competition.id} ) }}'">Ajouter une course</button>
         <button class="btn-xs btn-success" onclick="location.href = '{{ path('competition_edit', {'id':competition.id} ) }}'">Editer</button>
+        <button class="btn-xs btn-info" onclick="location.href = '{{ path('competition_show_byOrganizer') }}'">Toutes mes compétitions</button>
     {% endif %}
 {% endblock %}
 
@@ -91,7 +92,6 @@
         {{ parent() }}
 
         <script>
-            panelCategoriesScroll();
             {% if is_granted('ROLE_ORGANIZER') %}
                 openNav();
             {% endif %}

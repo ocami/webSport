@@ -35,7 +35,7 @@ function navbarBadgeAdmin() {
                 });
             }
         },
-        error: function() {
+        error: function () {
             ajaxError();
         }
     });
@@ -44,7 +44,7 @@ function navbarBadgeAdmin() {
 /***********************************************************************************************************************
  /   home/index.html.twig
  /**********************************************************************************************************************/
-function homeIndex(){
+function homeIndex() {
     loaderStart();
 
     // map leaflet**************************************************************************************************>
@@ -82,7 +82,7 @@ function homeIndex(){
         success: function (data) {
             mapConstructor(data);
         },
-        error: function() {
+        error: function () {
             ajaxError();
         }
     });
@@ -150,7 +150,7 @@ function profilData(user) {
             $('#profile-category').text(data.category);
             $('#profile-age').text(data.age + ' ans');
         },
-        error: function() {
+        error: function () {
             ajaxError();
         }
     });
@@ -418,7 +418,7 @@ function adminRaces() {
             $categories.append(" <div class='col-xs-3 col-lg-2'><button class='btn-xs btn-info col-xs-12' disabled>" + value.name + "</button> </div>");
         });
 
-        if(data.race.requestInChampionship)
+        if (data.race.requestInChampionship)
             cb.prop('checked', true).checkboxradio('refresh');
         else
             cb.prop('checked', false).checkboxradio('refresh');
@@ -559,11 +559,14 @@ function raceCategories() {
     var categories;
 
     // Initalize
-    $(function () {
-        $("#race-form-categories input").checkboxradio();
-    });
+    $("#race-form-categories input").checkboxradio();
+    if(catInput.val())
+        categoriesUpdate();
 
+    if($('#appbundle_race_requestInChampionship').prop('checked'))
+        $('#cb-championship').prop('checked', true).checkboxradio('refresh');
 
+    //events
     cbChamp.click(function () {
         if (this.checked)
             champCheck.prop('checked', true);
@@ -577,14 +580,26 @@ function raceCategories() {
         else
             cbOnce.prop('checked', false).checkboxradio('refresh');
 
-        categoriesUpdate();
+        categoriesChange();
     });
 
     cbOnce.click(function () {
-        categoriesUpdate()
+        categoriesChange()
     });
 
-    function categoriesUpdate() {
+    //functions
+    function categoriesUpdate(){
+        var oldCategories = $.parseJSON(catInput.val());
+
+        cbOnce.each(function () {
+           if(oldCategories.includes($(this).val()))
+               $(this).prop('checked', true).checkboxradio('refresh');
+        });
+
+        categoriesChange();
+    }
+
+    function categoriesChange() {
         var i = 0;
         categories = [];
         cbOnce.each(function () {
@@ -595,6 +610,9 @@ function raceCategories() {
 
         if (categories.length < i)
             cbAllCat.prop('checked', false).checkboxradio('refresh');
+
+        if(categories.length === i)
+            cbAllCat.prop('checked', true).checkboxradio('refresh');
 
         if (categories.length > 0)
             catInput.val(JSON.stringify(categories));
@@ -1036,18 +1054,18 @@ function searchBarRace() {
                 $('#radio-championship-0').prop('checked', true);
 
             refreshChampionship('active');
-        }else
+        } else
             refreshChampionship('disable');
 
         if (updateDataSearch.enrol) {
 
-            if ($.inArray('1',updateDataSearch.enrol) !== -1)
+            if ($.inArray('1', updateDataSearch.enrol) !== -1)
                 $('#canEnrol').prop('checked', true);
 
-            if ($.inArray('2',updateDataSearch.enrol) !== -1)
+            if ($.inArray('2', updateDataSearch.enrol) !== -1)
                 $('#isEnrol').prop('checked', true);
 
-            if ($.inArray('3',updateDataSearch.enrol) !== -1)
+            if ($.inArray('3', updateDataSearch.enrol) !== -1)
                 $('#participated').prop('checked', true);
 
             refreshCompetitor();
@@ -1332,7 +1350,7 @@ function searchBarRace() {
         if (cptCompetitorInfoChecked === 0) {
             switchDisable($switcher);
             dataSearch.enrol = null;
-        } else{
+        } else {
             if (cptCompetitorInfoChecked === cptCompetitorInfo)
                 switchActive($switcher);
             else
@@ -1410,7 +1428,7 @@ function competitorSearchRace(dateSearch) {
     var today = todayDate();
     var date;
 
-    if(dateSearch === 'future')
+    if (dateSearch === 'future')
         date = {min: today, max: null};
     else
         date = {min: null, max: today};
@@ -1421,7 +1439,7 @@ function competitorSearchRace(dateSearch) {
         dist: {min: null, max: null},
         date: date,
         inChampionship: null,
-        enrol: ['2','3']
+        enrol: ['2', '3']
     };
 
     var path = Routing.generate('races_search', {
@@ -1440,7 +1458,7 @@ function searchRaceAll() {
         dist: {min: null, max: null},
         date: {min: today, max: null},
         inChampionship: null,
-        enrol : null
+        enrol: null
     };
 
     var path = Routing.generate('races_search', {
@@ -1454,11 +1472,10 @@ function searchLayout() {
 
     //init
     searchBarRace();
-    panelCategoriesScroll();
 
-    if($( window ).width() <= 751){
-       // $('#left-container').hide();
-       $('#index-container').css('margin-left','0em')
+    if ($(window).width() <= 751) {
+        // $('#left-container').hide();
+        $('#index-container').css('margin-left', '0em')
     }
 
     var $indexContent = $('#index-content');
@@ -1500,14 +1517,14 @@ function searchLayout() {
         $indexContent.show();
     });
 
-    $( window ).resize(function() {
-        if($( window ).width() <= 751){
+    $(window).resize(function () {
+        if ($(window).width() <= 751) {
             // $('#left-container').hide();
-            $('#index-container').css('margin-left','0em');
+            $('#index-container').css('margin-left', '0em');
         }
-        else{
+        else {
             // $('#left-container').show();
-            $('#index-container').css('margin-left','16em');
+            $('#index-container').css('margin-left', '16em');
         }
     });
 
@@ -1589,7 +1606,7 @@ function searchLayout() {
 /***********************************************************************************************************************
  /   FOSUserBundle/views/Registration/register_content.html.twig
  /**********************************************************************************************************************/
-function registration(){
+function registration() {
     $(function () {
         var radioBtn = $("#gender-radio input");
         var genderInput = $('#appbundle_competitor_sexe');
@@ -1624,31 +1641,16 @@ function registration(){
     });
 }
 
-/***********************************************************************************************************************
- /   race\modelList.html.twig
- /**********************************************************************************************************************/
-function panelCategoriesScroll(){
-    $('.panel-categories').mCustomScrollbar({
-        snapAmount:40,
-        scrollButtons:{enable:true},
-        keyboard:{scrollAmount:40},
-        mouseWheel:{deltaFactor:40},
-        scrollInertia:400,
-        theme: 'rounded-dark'
-        /*setHeight:40*/
-    });
-}
-
 // sidenav organizer ///////////////////////////////////////////////////////////////////////////////////////////////////
 function openNav() {
     document.getElementById("sidenav-organizer").style.width = "11em";
     document.getElementById("main").style.marginLeft = "11em";
-    $('.sidenav-open').css('display','inline');
+    $('.sidenav-open').css('display', 'inline');
 }
 
 function closeNav() {
     document.getElementById("sidenav-organizer").style.width = "0";
-    document.getElementById("main").style.marginLeft= "0";
+    document.getElementById("main").style.marginLeft = "0";
 }
 
 //Loader////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1698,15 +1700,15 @@ function parseDateUsToFr(date) {
 function todayDate() {
     var today = new Date();
     var dd = today.getDate();
-    var mm = today.getMonth()+1; //January is 0!
+    var mm = today.getMonth() + 1; //January is 0!
     var yyyy = today.getFullYear();
 
-    if(dd<10) {
-        dd = '0'+dd
+    if (dd < 10) {
+        dd = '0' + dd
     }
 
-    if(mm<10) {
-        mm = '0'+mm
+    if (mm < 10) {
+        mm = '0' + mm
     }
 
     today = yyyy + '-' + mm + '-' + dd;
@@ -1716,14 +1718,14 @@ function todayDate() {
 
 //ajax error////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function ajaxError() {
-    $('#info').css('display','block');
+    $('#info').css('display', 'block');
     $('#info span').text('Erreur requête ajax');
     loaderStop();
 }
 
-$('#info-button').click(function() {
+$('#info-button').click(function () {
     location.reload();
-    $('#info').css('display' , 'none');
+    $('#info').css('display', 'none');
 });
 
 
@@ -1997,7 +1999,7 @@ $('#info-button').click(function() {
                     nextStep('address');
                 }
             },
-            error: function() {
+            error: function () {
                 ajaxError();
             }
         });
@@ -2195,8 +2197,8 @@ $('#info-button').click(function() {
 
 }(jQuery));
 
-$( window ).resize(function() {
-    console.log($( window ).width());
+$(window).resize(function () {
+    console.log($(window).width());
 });
 
 
