@@ -127,20 +127,8 @@ class RaceController extends Controller
      */
     public function search(Request $request)
     {
-        /*$data = array(
-            'categories' => null,
-            'dep' => null,
-            'dist' => null,
-            'date' => null,
-            'inChampionship' => null,
-            'enrol' => null,
-            'competitorRegister' => array(3)
-        );*/
-
         $dataRequest = $request->query->get('dataSearch');
         $data = json_decode($dataRequest, true);
-
-        //var_dump($data);
 
         $categories = $this->getDoctrine()->getRepository(Category::class)->categoriesByGender();
         $regions = $this->getDoctrine()->getRepository(Address::class)->departements();

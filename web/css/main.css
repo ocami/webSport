@@ -251,7 +251,6 @@ race/show.html.twig
     font-size: larger;
 }
 
-
 .panel-show .map-link img {
     height: 1.8em;
     margin-top: 2em;
@@ -301,7 +300,6 @@ race/show.html.twig
 .panel-heading{
     border-bottom: 0px;
 }
-
 
 /*jQuery UI autocomplete for bootstrap*/
 .ui-autocomplete {

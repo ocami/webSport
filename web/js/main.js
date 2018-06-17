@@ -1431,16 +1431,35 @@ function competitorSearchRace(dateSearch) {
     window.location = path;
 }
 
+function searchRaceAll() {
+    var today = todayDate();
+
+    var dataSearch = {
+        categories: null,
+        dep: null,
+        dist: {min: null, max: null},
+        date: {min: today, max: null},
+        inChampionship: null,
+        enrol : null
+    };
+
+    var path = Routing.generate('races_search', {
+        dataSearch: JSON.stringify(dataSearch)
+    });
+
+    window.location = path;
+}
+
 function searchLayout() {
 
     //init
     searchBarRace();
     panelCategoriesScroll();
 
-    if($( window ).width() <= 768){
+    if($( window ).width() <= 751){
+       // $('#left-container').hide();
        $('#index-container').css('margin-left','0em')
     }
-
 
     var $indexContent = $('#index-content');
     var $smallMap = $('#small-map');
@@ -1482,10 +1501,14 @@ function searchLayout() {
     });
 
     $( window ).resize(function() {
-        if($( window ).width() <= 768)
+        if($( window ).width() <= 751){
+            // $('#left-container').hide();
             $('#index-container').css('margin-left','0em');
-        else
+        }
+        else{
+            // $('#left-container').show();
             $('#index-container').css('margin-left','16em');
+        }
     });
 
 
