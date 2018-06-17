@@ -1432,9 +1432,14 @@ function competitorSearchRace(dateSearch) {
 }
 
 function searchLayout() {
+
     //init
     searchBarRace();
     panelCategoriesScroll();
+
+    if($( window ).width() <= 768){
+       $('#index-container').css('margin-left','0em')
+    }
 
 
     var $indexContent = $('#index-content');
@@ -1462,7 +1467,6 @@ function searchLayout() {
     initialiseMap();
 
     // Event**************************************************************************************************>
-
     $btMap.click(function () {
         $indexContent.hide();
         $indexMapConatiner.show();
@@ -1476,6 +1480,14 @@ function searchLayout() {
         $indexMapConatiner.hide();
         $indexContent.show();
     });
+
+    $( window ).resize(function() {
+        if($( window ).width() <= 768)
+            $('#index-container').css('margin-left','0em');
+        else
+            $('#index-container').css('margin-left','16em');
+    });
+
 
     // Functions**************************************************************************************************>
     function initialiseMap() {
@@ -2159,6 +2171,13 @@ $('#info-button').click(function() {
 
 
 }(jQuery));
+
+$( window ).resize(function() {
+    console.log($( window ).width());
+});
+
+
+
 
 
 

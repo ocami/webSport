@@ -267,6 +267,7 @@ race/show.html.twig
     font-size: 2em;
     padding-top: 1em;
     display: none;
+    color: #FFFFFF;
 }
 
 .sidenav-organizer {
@@ -301,7 +302,6 @@ race/show.html.twig
     border-bottom: 0px;
 }
 
-/**Location form*******************************************************************************************************/
 
 /*jQuery UI autocomplete for bootstrap*/
 .ui-autocomplete {
@@ -358,7 +358,6 @@ race/show.html.twig
     height: 180px;
     margin-bottom: 1em;
 }
-
 
 /**Location form*******************************************************************************************************/
 #full-page{

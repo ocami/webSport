@@ -142,13 +142,13 @@ class CompetitionService
             "'>Voir cette compétition</a><br>";
 
         if ($competition->getInChampionship())
-            $description = $description . "<img class='leaflet-popup-img' src='../img/cup.jpg'/>";
+            $description = $description . "<img class='leaflet-popup-img' src='/webSport/web/img/cup.jpg'/>";
 
         if ($competition->getCompetitorRegister() == 1)
-            $description = $description . "<img class='leaflet-popup-img' src='../img/canRegister.png'/>";
+            $description = $description . "<img class='leaflet-popup-img' src='/webSport/web/img/canRegister.png'/>";
 
         if ($competition->getCompetitorRegister() == 2)
-            $description = $description . "<img class='leaflet-popup-img' src='../img/race_start.png'/>";
+            $description = $description . "<img class='leaflet-popup-img' src='/webSport/web/img/race_start.png'/>";
 
         $properties = array(
             'name' => $competition->getName(),

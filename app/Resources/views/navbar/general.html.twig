@@ -1,4 +1,4 @@
-<nav id="navbar-general" class="navbar navbar-default">
+{#<nav id="navbar-general" class="navbar navbar-default">
     <div class="container-fluid">
     <div class="navbar-header">
         <span class="sidenav-open" onclick="openNav()">&#9776;</span>
@@ -90,9 +90,107 @@
         {% endif %}
     </ul>
     </div><!-- /.container-fluid -->
+</nav>#}
+
+
+<nav id="navbar-general" class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <span class="sidenav-open" onclick="openNav()">&#9776;</span>
+
+            <a class="navbar-brand" href="{{ path('index') }}">Web Sport</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+                <li><a href="#">Actualités</a></li>
+                <li><a href="{{ path('competition_show_all') }}">Compétitions</a></li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Championats<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ path('championship_show',{'id':'1'}) }}">Cadets masculin</a></li>
+                        <li><a href="{{ path('championship_show',{'id':'2'}) }}">Juniors masculin</a></li>
+                        <li><a href="{{ path('championship_show',{'id':'3'}) }}">Espoirs masculin</a></li>
+                        <li><a href="{{ path('championship_show',{'id':'4'}) }}">Seniors masculin</a></li>
+                        <li><a href="{{ path('championship_show',{'id':'5'}) }}">Master masculin</a></li>
+                        <li><a href="{{ path('championship_show',{'id':'6'}) }}">Cadets féminine</a></li>
+                        <li><a href="{{ path('championship_show',{'id':'7'}) }}">Juniors féminine</a></li>
+                        <li><a href="{{ path('championship_show',{'id':'8'}) }}">Espoirs féminine</a></li>
+                        <li><a href="{{ path('championship_show',{'id':'9'}) }}">Seniors féminine</a></li>
+                        <li><a href="{{ path('championship_show',{'id':'10'}) }}">Master féminine</a></li>
+
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li><a href="{{ path('admin_races') }}"><span id="badge" class="badge badge-success"></span></a></li>
+                {% endif %}
+
+                {% if app.user %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">Mon compte<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+
+                            {% if is_granted('ROLE_COMPETITOR') %}
+                                <li><a id="profile-href" data="{{ app.user.id }}" href="#" data-toggle="modal"
+                                       data-target="#competitor-modal">Mon profile</a></li>
+                                <li><a href="#" onclick="competitorSearchRace('passed')">Mes courses passées</a></li>
+                                <li><a href="#" onclick="competitorSearchRace('future')">Mes courses à venir</a></li>
+                            {% endif %}
+                            <hr>
+                            {% if is_granted('ROLE_ORGANIZER') %}
+                                <li class="title">Organisateur</li>
+                                <li><a href="{{ path('competition_show_byOrganizer') }}">Mes compétitions</a></li>
+                            {% endif %}
+
+                            {% if is_granted('ROLE_COMPETITOR') == false %}
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'competitor'}) }}">Devenir
+                                        compétiteur</a></li>
+                            {% endif %}
+
+                            {% if is_granted('ROLE_ORGANIZER') == false %}
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'organizer'}) }}">Devenir
+                                        organisateur</a></li>
+                            {% endif %}
+
+                        </ul>
+                    </li>
+
+                    <button type="button" class="btn btn-default navbar-btn"
+                            onclick="location.href = '{{ path('fos_user_security_logout') }}';">Déconnexion
+                    </button>
+                {% else %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">Créer un compte<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'competitor'}) }}">Competiteur</a>
+                            </li>
+                            <li><a href="{{ path('redirectBeforeRegister',{'toCreate':'organizer'}) }}">Organisateur</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <button type="button" class="btn btn-default navbar-btn"
+                                onclick="location.href = '{{ path('fos_user_security_login') }}';">Connexion
+                        </button>
+
+                    </li>
+
+                {% endif %}
+            </ul>
+        </div>
+    </div>
 </nav>
-
-
-
-
 
