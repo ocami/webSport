@@ -27,50 +27,9 @@ class CodeService
         $this->em = $em;
     }
 
-    public function generate($entity)
-    {
-        $number = $this->lastCodeId($entity);
-
-        switch (get_class($entity))
-        {
-            case Organizer::class :
-                $code = 'ORGAN_'.$number;
-                break;
-
-            case Competitor::class :
-                $code = 'CPTOR_'.$number;
-                break;
-
-            case Championship::class :
-                $code = 'CSHIP_'.$number;
-                break;
-
-            case Competition::class :
-                $code = 'COMPN_'.$this->codeFormat($entity->getOrganizer()->getId()).'_'.$number;
-                break;
-
-            case Race::class :
-                $codeCompetition = $this->codeFormat($entity->getCompetition()->getId());
-
-                if($entity->getChampionships()->isEmpty())
-                    $code = 'RACEF_'.$codeCompetition.'_'.$number;
-                else
-                    $code = 'RACEC_'.$codeCompetition.'_'.$number;
-                break;
-
-            case Category::class :
-                $code = 'CATEG_'.$number;
-                break;
-        }
-
-        $entity->setCode($code);
-
-        return $entity;
-    }
-
     public function generateCode($entity)
     {
-        $number = $this->codeFormat($entity->getId());
+        $number = $this->codeFormat($this->lastCodeId($entity));
 
         switch (get_class($entity))
         {
@@ -94,9 +53,9 @@ class CodeService
                 $codeCompetition = $this->codeFormat($entity->getCompetition()->getId());
 
                 if($entity->getChampionships()->isEmpty())
-                $code = 'RACEF_'.$codeCompetition.'_'.$number;
+                $code = 'C_'.$codeCompetition.'_'.$number;
             else
-                $code = 'RACEC_'.$codeCompetition.'_'.$number;
+                $code = 'CC_'.$codeCompetition.'_'.$number;
                 break;
 
             case Category::class :
@@ -107,11 +66,7 @@ class CodeService
                 $code = 'RC_'.$this->codeFormat(($entity->getRace()->getId())).'_'.$this->codeFormat(($entity->getCompetitor()->getId()));
         }
 
-
         $entity->setCode($code);
-
-        $this->em->persist($entity);
-        $this->em->flush();
 
         return $entity;
     }

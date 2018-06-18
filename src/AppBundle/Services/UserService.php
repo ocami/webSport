@@ -92,11 +92,11 @@ class UserService
         }
         $userApp->setUserId($this->user->getId());
 
+        $userApp = $this->cs->generateCode($userApp);
 
         $this->em->persist($userApp);
         $this->em->persist($this->user);
         $this->em->flush();
-        $this->cs->generate($userApp);
 
         $token = $this->refreshToken();
         $this->ts->setToken($token);

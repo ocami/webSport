@@ -31,13 +31,13 @@ class homeController extends Controller
         $categories = $this->getDoctrine()->getRepository(Category::class)->categoriesByGender();
         $regions = $this->getDoctrine()->getRepository(Address::class)->departements();
         $competitions = $this->getDoctrine()->getRepository(Competition::class)->allValidFirstFive();
-        $competitions = $this->get(CompetitionService::class)->postSelect($competitions);
         $competitions = $this->get(UserService::class)->addUserDataInCompetitions($competitions);
+        $competitions = $this->get(CompetitionService::class)->postSelect($competitions);
 
         return $this->render('home/index.html.twig', array(
             'competitor' => $competitor,
             'categories' => $categories,
-            'competitions' => $competitions,
+            'competitions' => $competitions['future'],
             'regions' => $regions,
             'dataSearch' => null,
         ));
@@ -48,6 +48,12 @@ class homeController extends Controller
      */
     public function test(Request $request)
     {
+
+        $competition = $this->getDoctrine()->getRepository(Competition::class)->find(2);
+
+        $result = $this->getDoctrine()->getRepository(Competition::class)->countNotSupervisedRace($competition);
+
+
         return $this->render('home/test.html.twig');
     }
 }

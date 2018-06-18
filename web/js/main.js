@@ -474,9 +474,10 @@ function adminRaces() {
  /**********************************************************************************************************************/
 function competitionShowList() {
 
-    var btnCompetitionPassed = $('#competitionDisplayButton');
-    var competitionsNoPassed = $('#competitionsNoPassed');
-    var competitionsPassed = $('#competitionsPassed');
+    var btnCompetitionPassed = $('#competition-list-button');
+    var title = $('#competition-list-title');
+    var futureCompetitions = $('#future-competition');
+    var passedCompetitons = $('#passed-competition');
 
     btnCompetitionPassed.click(function () {
         if (btnCompetitionPassed.val() == 'future')
@@ -486,17 +487,19 @@ function competitionShowList() {
     });
 
     function competitionDisplayPassed() {
-        btnCompetitionPassed.text("Compétition à venir");
+        btnCompetitionPassed.text("Compétitions à venir");
+        title.text("Compétitions passées");
         btnCompetitionPassed.val('future');
-        competitionsNoPassed.css('display', "none");
-        competitionsPassed.css('display', "block");
+        futureCompetitions.css('display', "none");
+        passedCompetitons.css('display', "block");
     }
 
     function competitionDisplayNoPassed() {
-        btnCompetitionPassed.text("Compétition passées");
+        btnCompetitionPassed.text("Compétitions passées");
+        title.text("Compétitions à venir");
         btnCompetitionPassed.val('passed');
-        competitionsNoPassed.css('display', "block");
-        competitionsPassed.css('display', "none");
+        futureCompetitions.css('display', "block");
+        passedCompetitons.css('display', "none");
     }
 };
 
@@ -1159,7 +1162,7 @@ function searchBarRace() {
         refreshCompetitor();
     });
 
-    $('#button-search').click(function () {
+    $('#button-search, #button-search-xs').click(function () {
         var path = Routing.generate('races_search', {
             dataSearch: JSON.stringify(dataSearch)
         });

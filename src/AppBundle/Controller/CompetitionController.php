@@ -28,7 +28,7 @@ class CompetitionController extends Controller
     {
         $competition = $this->get(UserService::class)->addUserDataInCompetition($competition);
 
-        if($competition->getIsOrganizer())
+        if ($competition->getIsOrganizer())
             $races = $this->getDoctrine()->getRepository(Race::class)->findByCompetition($competition->getId());
         else
             $races = $this->getDoctrine()->getRepository(Race::class)->allValidByCompetition($competition->getId());
@@ -48,8 +48,9 @@ class CompetitionController extends Controller
     public function showAll()
     {
         $competitions = $this->getDoctrine()->getRepository(Competition::class)->allValidByDate();
-        $competitions = $this->get(CompetitionService::class)->postSelect($competitions);
         $competitions = $this->get(UserService::class)->addUserDataInCompetitions($competitions);
+        //return array of competitions => passed/future
+        $competitions = $this->get(CompetitionService::class)->postSelect($competitions);
 
         return $this->render('competition/showList.html.twig', array(
             'competitions' => $competitions
@@ -62,10 +63,20 @@ class CompetitionController extends Controller
      */
     public function showByOrganizer()
     {
+        $competitionRepository = $this->getDoctrine()->getRepository(Competition::class);
         $organizer = $this->get(UserService::class)->getOrganizer();
-        $competitions = $this->getDoctrine()->getRepository(Competition::class)->byOrganizer($organizer->getId());
-        $competitions = $this->get(CompetitionService::class)->postSelect($competitions);
+
+        $competitions = $competitionRepository->byOrganizer($organizer->getId());
         $competitions = $this->get(UserService::class)->addUserDataInCompetitions($competitions);
+        //return array of competitions => passed/future
+        $competitions = $this->get(CompetitionService::class)->postSelect($competitions);
+
+        foreach ($competitions['future'] as $competition) {
+            $nbRaceNotSupervised = $competitionRepository->countNotSupervisedRace($competition);
+
+            if ($nbRaceNotSupervised > 0)
+                $competition->setNbRaceNotSupervised($nbRaceNotSupervised);
+        }
 
         return $this->render('competition/showList.html.twig', array(
             'competitions' => $competitions
@@ -87,7 +98,7 @@ class CompetitionController extends Controller
 
             $this->get(CompetitionService::class)->create($competition, $organizer);
 
-            $request->getSession()->getFlashBag()->add('success', 'Compétition "'.$competition->getName().'" bien enregistrée');
+            $request->getSession()->getFlashBag()->add('success', 'Compétition "' . $competition->getName() . '" bien enregistrée');
 
             return $this->redirectToRoute('competition_show_byOrganizer');
         }
@@ -112,7 +123,7 @@ class CompetitionController extends Controller
 
             $this->get(CompetitionService::class)->create($competition, $organizer);
 
-            $request->getSession()->getFlashBag()->add('success', $competition->getName().' modifiée');
+            $request->getSession()->getFlashBag()->add('success', $competition->getName() . ' modifiée');
 
             return $this->redirectToRoute('competition_show_byOrganizer');
         }

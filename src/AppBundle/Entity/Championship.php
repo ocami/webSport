@@ -219,14 +219,4 @@ class Championship
     {
         return $this->category;
     }
-
-    /**
-     * @ORM\PrePersist
-     */
-    public function generateCode()
-    {
-        /*
-        $this->setCode('000007');
-        */
-    }
 }

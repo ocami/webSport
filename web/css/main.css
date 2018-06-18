@@ -29,7 +29,11 @@
     z-index: 100;
 }
 
-/* modal competitor info ******************************************************************************************** */
+#search-bar .panel-group{
+    margin-bottom: 1em;
+}
+
+    /* modal competitor info ******************************************************************************************** */
 #competitor-modal input.hidden {
     position: absolute;
     left: -9999px;

@@ -52,17 +52,24 @@ class CompetitionService
      */
     public function postSelect($competitions)
     {
+        $nbC = $this->em->getRepository(Category::class)->count();
+        $culledCompetitions = array(
+            'passed' => [],
+            'future' => []
+        );
+
         foreach ($competitions as $competition) {
-
-            
-
-            $nbC = $this->em->getRepository(Category::class)->count();
 
             if (count($competition->getCategories()) == $nbC)
                 $competition->setFullCat(true);
+
+            if($competition->getIsPassed())
+                array_push($culledCompetitions['passed'],$competition);
+            else
+                array_push($culledCompetitions['future'],$competition);
         }
 
-        return $competitions;
+        return $culledCompetitions;
     }
 
     /**

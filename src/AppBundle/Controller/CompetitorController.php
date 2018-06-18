@@ -90,10 +90,10 @@ class CompetitorController extends Controller
         $raceComp = new RaceCompetitor();
         $raceComp->setCompetitor($competitor);
         $raceComp->setRace($race);
+        $raceComp = $this->get(CodeService::class)->generateCode($raceComp);
         $em = $this->getDoctrine()->getManager();
         $em->persist($raceComp);
         $em->flush();
-        $this->get(CodeService::class)->generateCode($raceComp);
         $request->getSession()->getFlashBag()->add('success', 'Votre inscription est enregistrée');
 
         return $this->redirectToRoute('competition_show', array('id'=>$race->getCompetition()->getId()));

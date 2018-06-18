@@ -28,7 +28,7 @@ class CompetitionRepository extends \Doctrine\ORM\EntityRepository
      */
     public function allValidFirstFive()
     {
-        $date = date('Y-m-d', strtotime('now') );
+        $date = date('Y-m-d', strtotime('now'));
 
         $competitions = $this->createQueryBuilder('c')
             ->orderBy('c.dateStart')
@@ -58,6 +58,19 @@ class CompetitionRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()->getResult();
 
         return $competitions;
+    }
+
+    public function countNotSupervisedRace(Competition $competition)
+    {
+        $rawSql = "SELECT COUNT(r.id) FROM competition c
+                   INNER JOIN race r ON  c.id = r.competition_id
+                   WHERE c.id = ".$competition->getId()."
+                   AND r.supervised = 0";
+
+        $stmt = $this->getEntityManager()->getConnection()->prepare($rawSql);
+        $stmt->execute([]);
+
+        return $stmt->fetchColumn();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

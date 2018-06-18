@@ -29,7 +29,7 @@
 <div class="row">
     {% for label, messages in app.flashes %}
         {% for message in messages %}
-            <div class="alert alert-{{ label }} col-sm-offset-2 col-sm-8">
+            <div class="alert alert-{{ label }} col-sm-offset-2 col-sm-8" style="text-align: center">
                 {{ message }}
             </div>
         {% endfor %}
@@ -43,7 +43,7 @@
 </div>
 
 <!-- Body -->
-<div class="container">
+{#<div class="container">
     <div class="row">
         <div class="visible-lg hidden-md hidden-sm hidden-xs alert alert-danger col-xs-12" align="center">lg</div>
         <div class="hidden-lg visible-md hidden-sm hidden-xs alert alert-success col-xs-12" align="center">md</div>
@@ -51,7 +51,7 @@
         <div class="hidden-lg hidden-md hidden-sm visible-xs alert alert-warning col-xs-12" align="center">xs</div>
 
     </div>
-</div>
+</div>#}
 
 
 <div class="container">

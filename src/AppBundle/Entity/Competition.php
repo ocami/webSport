@@ -17,6 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="competition")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\CompetitionRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Competition
 {
@@ -137,6 +138,11 @@ class Competition
      * @var Boolean
      */
     private $fullCat = false;
+
+    /**
+     * @var int
+     */
+    private $nbRaceNotSupervised;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Organizer", inversedBy ="competitions")
@@ -511,19 +517,25 @@ class Competition
     }
 
     /**
-     * Get passed
+     * Set isPassed
+     * @param boolean $isPassed
+     * @return Race
+     */
+    private function setIsPassed($isPassed)
+    {
+        $this->isPassed = $isPassed;
+
+        return $this;
+    }
+
+    /**
+     * Get isPassed
      *
      * @return boolean
      */
     public function getIsPassed()
     {
-        $now = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
-        $dateEnd = new \DateTime($this->dateEnd, new \DateTimeZone('Europe/Paris'));
-
-        if ($dateEnd < $now)
-            return true;
-
-        return false;
+        return $this->isPassed;
     }
 
     /**
@@ -551,12 +563,12 @@ class Competition
     }
 
     /**
-     * Set fullCat
-     *
-     * @param boolean $fullCat
-     *
-     * @return Race
-     */
+ * Set fullCat
+ *
+ * @param boolean $fullCat
+ *
+ * @return Race
+ */
     public function setFullCat($fullCat)
     {
         $this->fullCat = $fullCat;
@@ -574,5 +586,40 @@ class Competition
         return $this->fullCat;
     }
 
+    /**
+     * Set nbRaceNotSupervised
+     *
+     * @param int $nbRaceNotSupervised
+     *
+     * @return Race
+     */
+    public function setNbRaceNotSupervised($nbRaceNotSupervised)
+    {
+        $this->nbRaceNotSupervised = $nbRaceNotSupervised;
 
+        return $this;
+    }
+
+    /**
+     * Get nbRaceNotSupervised
+     *
+     * @return int
+     */
+    public function getNbRaceNotSupervised()
+    {
+        return $this->nbRaceNotSupervised;
+    }
+    
+    /** callback ******************************************************************************************************/
+
+    /**
+     * @ORM\PostLoad
+     */
+    public function updateIsPassed()
+    {
+        if ($this->getDateEnd() < date('Y-m-d'))
+            $this->setIsPassed(true);
+        else
+            $this->setIsPassed(false);
+    }
 }

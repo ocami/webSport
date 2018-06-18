@@ -1,47 +1,44 @@
 {% extends 'base.html.twig' %}
 
 {% block organizer_menu %}
-    <button class="btn-xs btn-success" onclick="location.href = '{{ path('competition_new') }}'">Ajouter une compétition</button>
+    <button class="btn-xs btn-success" onclick="location.href = '{{ path('competition_new') }}'">Ajouter une
+        compétition
+    </button>
 {% endblock %}
 
 
 {% block body %}
-    <div class="text-right">
-        <button class="btn-xs btn-primary" id="competitionDisplayButton" value="future">
-            Compétition passées
-        </button>
+
+    <button class="btn-xs btn-primary pull-right" id="competition-list-button" value="passed">
+        Compétitions passées
+    </button>
+
+    <h4 id="competition-list-title">Compétitions à venir</h4>
+
+    <div class="row" id="future-competition" style="display: block;">
+        {% for competition in competitions.future %}
+            <div class="col-xs-12 col-sm-6">
+                {% include 'competition/modelList.twig' %}
+            </div>
+        {% endfor %}
     </div>
-    <br>
-    <div class="row">
 
-
-        {% for competition in competitions %}
-        {% if competition.isPassed %}
-        <div id="competitionsPassed">
+    <div class="row" id="passed-competition" style="display: none;">
+        {% for competition in competitions.passed %}
             <div class="col-xs-12 col-sm-6">
                 {% include 'competition/modelList.twig' %}
             </div>
-        </div>
-        {% else %}
-        <div id="competitionsNoPassed">
-            <div class="col-xs-12 col-sm-6">
-                {% include 'competition/modelList.twig' %}
-            </div>
-        </div>
-        {% endif %}
         {% endfor %}
     </div>
 {% endblock %}
 
-    {% block javascripts %}
-        {{ parent() }}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        competitionShowList();
+        {% if is_granted('ROLE_ORGANIZER') %}
+        openNav();
+        {% endif %}
+    </script>
 
-
-        <script>
-            competitionShowList();
-            {% if is_granted('ROLE_ORGANIZER') %}
-            openNav();
-            {% endif %}
-        </script>
-
-    {% endblock %}
+{% endblock %}

@@ -58,10 +58,14 @@ class RaceService
                 $competition->addCategory($category);
         }
 
+        $race =  $this->cs->generateCode($race);
+
+        if(!$race->getName())
+            $race->setName($race->getCode());
+
         $this->em->persist($race);
         $this->em->persist($competition);
         $this->em->flush();
-        $this->cs->generateCode($race);
     }
 
     public function update(Race $race)
@@ -87,7 +91,6 @@ class RaceService
         $this->em->persist($race);
         $this->em->persist($competition);
         $this->em->flush();
-        $this->cs->generateCode($race);
     }
 
     public function toString(Race $race)
