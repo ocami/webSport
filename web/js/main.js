@@ -1527,7 +1527,7 @@ function searchLayout() {
         }
         else {
             // $('#left-container').show();
-            $('#index-container').css('margin-left', '16em');
+            $('#index-container').css('margin-left', '17em');
         }
     });
 
@@ -1604,6 +1604,49 @@ function searchLayout() {
         });
     }
 
+}
+
+/***********************************************************************************************************************
+ /   race\showSearch.html.twig
+ /**********************************************************************************************************************/
+function showSearch() {
+    var $searchBar = $('#search-bar');
+    var $searchBarXs = $('#search-bar-xs');
+    var $searchButtonXs = $('#button-search-xs');
+    var $searchButton = $('#button-search');
+
+    searchBarWidth();
+
+    $(window).resize(function () {
+        searchBarWidth();
+    });
+
+    function searchBarWidth() {
+        var width = $(window).width();
+
+        if (width <= 751) {
+            $searchButtonXs.before($searchBar);
+            $searchBar.css('margin-top', '0em');
+
+            if (width > 650)
+                $searchBarXs.css('padding', '0em 15em 0em 15em');
+
+            if (width < 650 && width > 500)
+                $searchBarXs.css('padding', '0em 10em 0em 10em');
+
+            if (width < 500 && width > 375)
+                $searchBarXs.css('padding', '0em 5em 0em 5em');
+
+            if (width < 375)
+                $searchBarXs.css('padding', '0em 0.5em 0em 0.5em');
+        }
+        else {
+            $searchButton.after($searchBar);
+            $searchBar.css('margin-top', '16em');
+        }
+
+        loaderStop();
+    }
 }
 
 /***********************************************************************************************************************
