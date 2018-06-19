@@ -1,4 +1,4 @@
-<div id="panel-competition-list" class="panel panel-success">
+<div id="panel-competition-list" class="panel panel-success panel-model panel-model-competition">
     <div class="panel-heading">
         <span class="panel-title">{{ competition.name }} </span>
         <span class="pull-right panel-header-img">
@@ -11,31 +11,31 @@
             {% endif %}
             </span>
     </div>
-    <div class="panel-body panel-body-competition">
-        <h4 style="text-align: center">Du {{ competition.dateStart|date("d/m/Y") }}
-            au {{ competition.dateEnd|date("d/m/Y") }}</h4>
+    <div class="panel-body">
+        <div class="date">Du {{ competition.dateStart|date("d/m") }} au {{ competition.dateEnd|date("d/m/Y") }}</div>
 
-        <div class="row">
-
-            <div class="col-xs-7" style="text-align: center">
+        <div class="col-xs-7 location">
+            <div class="location">
                 {{ competition.location.street }}<br>
-                {{ competition.location.postCode }} {{ competition.location.city }}<br><br>
-                <span class="nbRace">{{ competition.nbValidRaces }} courses</span>
+                {{ competition.location.postCode }} {{ competition.location.city }}
             </div>
-
-            <div class="col-xs-5 panel-categories-container">
-                {% if competition.fullCat %}
-                    <div class="panel-category-all ">toutes catégories</div>
-                {% else %}
-                    <div data-simplebar class="panel-categories">
-                        {% for category in competition.categories %}
-                            <span style="margin-left: 1em">{{ category.name }}</span><br>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-            <span class="col-xs-12" style="font-size: smaller">Organisé par {{ competition.organizer.name }}</span>
+            <div class="nbRace">{{ competition.nbValidRaces }} courses</div>
         </div>
+
+
+        <div class="col-xs-5 categories-container">
+            {% if competition.fullCat %}
+                <div class="category-all ">toutes catégories</div>
+            {% else %}
+                <div data-simplebar class="categories">
+                    {% for category in competition.categories %}
+                        <li><span class="glyphicon glyphicon-arrow-right"></span> {{ category.name }}</li><br>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <span class="col-xs-12 organizer">Organisé par {{ competition.organizer.name }}</span>
+
     </div>
     <div class="panel-footer">
         <input type="button" class="btn-xs btn-info" value="Détail"

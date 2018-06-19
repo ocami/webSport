@@ -29,7 +29,7 @@
     z-index: 100;
 }
 
-#search-bar .panel-group{
+#search-bar .panel-group {
     margin-bottom: 1em;
 }
 
@@ -148,18 +148,7 @@ div#fade-content {
     max-height: 200px;
 }
 
-/**model-panel*********************************************************************************************************/
-.panel-categories {
-    height: 6em;
-    overflow: hidden;
-}
-
-.panel-category-all {
-    height: 6em;
-    padding-top: 2em;
-    font-weight: bold;
-}
-
+/**all panel***********************************************************************************************************/
 .panel-header-img img {
     height: 2em;
     padding: 0.2em;
@@ -171,18 +160,68 @@ div#fade-content {
     height: 1.8em;
 }
 
-/**model-panel-race****************************************************************************************************/
+/**model-panel*********************************************************************************************************/
 
+.panel-model .panel-body {
+    padding: 0.5em 0.1em 0.1em 0.1em;
 
+}
 
-/**model-panel-competition*********************************************************************************************/
+.panel-model .panel-body * {
+    padding-right: 0.1em;
+    padding-left: 0.1em;
+}
 
-
-#panel-competition-list .panel-body .nbRace {
-    display: block;
-    text-align: right;
+.panel-model .date {
+    text-align: center;
     font-weight: bold;
 }
+
+.panel-model .location {
+    text-align: center;
+    padding-top: 0.2em;
+}
+
+.panel-model .nbRace {
+    text-align: center;
+    font-weight: bold;
+    padding-top: 0.2em;
+
+}
+
+.panel-model .categories-container {
+    height: 6em;
+}
+
+.panel-model .category-all {
+    padding-top: 1.5em;
+    font-weight: bold;
+}
+
+.panel-model .categories {
+    height: 90%;
+    overflow: hidden;
+    font-size: 0.8em;
+}
+
+.panel-model .categories li {
+    display: inline-block;
+}
+
+.panel-model .categories li span {
+    color: #636363;
+    font-size: 0.6em;
+    top: -0.2em;
+}
+
+.panel-model .organizer {
+    font-weight: lighter;
+    font-size: 0.8em;
+}
+
+/**model-panel-race****************************************************************************************************/
+
+/**model-panel-competition*********************************************************************************************/
 
 /**show-panel**********************************************************************************************************/
 
@@ -197,7 +236,7 @@ race/show.html.twig
     padding-bottom: 0.1em;
 }
 
-.panel-show .panel-body{
+.panel-show .panel-body {
     min-height: 5em;
     padding-bottom: 0.1em;
 }
@@ -207,7 +246,6 @@ race/show.html.twig
     text-align: center;
     font-size: larger;
 }
-
 
 .panel-show .location-panel span {
     display: block;
@@ -221,7 +259,7 @@ race/show.html.twig
     font-size: larger;
 }
 
-.panel-show .first-panel .panel-body{
+.panel-show .first-panel .panel-body {
     padding-bottom: 0em;
 }
 
@@ -230,9 +268,9 @@ race/show.html.twig
 }
 
 .panel-show .first-panel .organizer {
-    display: block;
-    font-weight: lighter;
-    padding-top: 0.8em;
+        display: block;
+        font-weight: lighter;
+        padding-top: 0.8em;
 }
 
 .panel-show .first-panel .distance {
@@ -291,11 +329,11 @@ race/show.html.twig
 }
 
 #main {
-     transition: margin-left .5s;
- }
+    transition: margin-left .5s;
+}
 
 /**Bootstrap*******************************************************************************************************/
-.panel-heading{
+.panel-heading {
     border-bottom: 0px;
 }
 
@@ -356,7 +394,7 @@ race/show.html.twig
 }
 
 /**Location form*******************************************************************************************************/
-#full-page{
+#full-page {
     height: 90vh;
     width: 100%;
     position: absolute;
@@ -401,7 +439,7 @@ race/show.html.twig
 }
 
 /**Loader**************************************************************************************************************/
-#loader-full{
+#loader-full {
     height: 55vh; /* equals max image height */
     width: 100%;
     white-space: nowrap; /* this is required unless you put the helper span closely near the img */
