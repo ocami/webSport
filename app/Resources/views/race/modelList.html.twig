@@ -90,17 +90,17 @@
         {% endif %}
 
         {% if race.isOrganizer == true %}
-            <input type="button" class="btn-xs btn-success" value="Editer"
-                   onclick="location.href = '{{ path('race_edit', {'id': race.id}) }}';">
-            <span class="panel-footer-img">
+            <span class="organizer-content">
+                <input type="button" class="btn-xs btn-success organizer-content" value="Editer"
+                       onclick="location.href = '{{ path('race_edit', {'id': race.id}) }}';">
+                <span class="panel-footer-img">
                 {% if race.supervised %}
                     {{ race.valid|validImg }}
                 {% else %}
                     <img src="{{ asset('img/question.png ') }}" class="pull-right">
                 {% endif %}
+                </span>
             </span>
-
-
         {% endif %}
     </div>
 </div>

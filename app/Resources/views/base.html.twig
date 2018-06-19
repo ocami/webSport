@@ -88,6 +88,10 @@
         }, 2000);
     </script>{% endif %}
 
+    {% if is_granted('ROLE_ORGANIZER') %}
+    <script>
+        organizerResponsive();
+    </script>{% endif %}
 
     {% if is_granted('ROLE_COMPETITOR') %}
     <script>
@@ -96,8 +100,6 @@
         }, 3000);
 
     </script>{% endif %}
-
-
 
 
 {% endblock %}

@@ -1,4 +1,3 @@
-
 <div id="panel-competition-list" class="panel panel-success">
     <div class="panel-heading">
         <span class="panel-title">{{ competition.name }} </span>
@@ -43,17 +42,20 @@
                onclick="location.href = '{{ path('competition_show', {'id': competition.id}) }}';">
 
         {% if competition.isOrganizer == true %}
-            <input type="button" class="btn-xs btn-success" value="Editer"
-                   onclick="location.href = '{{ path('competition_edit', {'id': competition.id}) }}';">
+            <span class="organizer-content">
+                <input type="button" class="btn-xs btn-success" value="Editer"
+                       onclick="location.href = '{{ path('competition_edit', {'id': competition.id}) }}';">
 
-            <input type="button" class="btn-xs btn-success" value="Ajouter une course"
-                   onclick="location.href = '{{ path('race_new', {'id':competition.id} ) }}';">
+                <input type="button" class="btn-xs btn-success" value="Ajouter une course"
+                       onclick="location.href = '{{ path('race_new', {'id':competition.id} ) }}';">
 
-            {% if competition.nbRaceNotSupervised %}
-                <span class="badge badge-warning pull-right" style="margin-left: 1em">{{ competition.nbRaceNotSupervised }}</span>
-            {% endif %}
+                {% if competition.nbRaceNotSupervised %}
+                    <span class="badge badge-warning pull-right"
+                          style="margin-left: 1em">{{ competition.nbRaceNotSupervised }}</span>
+                {% endif %}
 
-            <span class="panel-footer-img">{{ competition.valid|validImg }}</span>
+                <span class="panel-footer-img">{{ competition.valid|validImg }}</span>
+            </span>
         {% endif %}
     </div>
 </div>

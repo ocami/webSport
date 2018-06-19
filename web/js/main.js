@@ -9,36 +9,38 @@ var language = {
         "previous": "précédent"
     }
 };
+var windowsSize = $(window).width();
 
 /***********************************************************************************************************************
  /   navbar/general.html.twig
  /**********************************************************************************************************************/
 function navbarBadgeAdmin() {
+    if (windowsSize > 800) {
+        var path = Routing.generate('race_countNotSupervised');
+        $.ajax({
+            url: path,
+            dataType: "json",
+            success: function (data) {
+                var badge = $('#badge');
+                badge.text(data);
 
-    var path = Routing.generate('race_countNotSupervised');
-    $.ajax({
-        url: path,
-        dataType: "json",
-        success: function (data) {
-            var badge = $('#badge');
-            badge.text(data);
-
-            if (data == 0) {
-                badge.attr({
-                    "title": "Pas de nouvelle course à valider",
-                    "class": "badge badge-success"
-                });
-            } else {
-                badge.attr({
-                    "title": "Nouvelles courses à valider",
-                    "class": "badge badge-warning"
-                });
+                if (data == 0) {
+                    badge.attr({
+                        "title": "Pas de nouvelle course à valider",
+                        "class": "badge badge-success"
+                    });
+                } else {
+                    badge.attr({
+                        "title": "Nouvelles courses à valider",
+                        "class": "badge badge-warning"
+                    });
+                }
+            },
+            error: function () {
+                ajaxError();
             }
-        },
-        error: function () {
-            ajaxError();
-        }
-    });
+        });
+    }
 }
 
 /***********************************************************************************************************************
@@ -563,10 +565,10 @@ function raceCategories() {
 
     // Initalize
     $("#race-form-categories input").checkboxradio();
-    if(catInput.val())
+    if (catInput.val())
         categoriesUpdate();
 
-    if($('#appbundle_race_requestInChampionship').prop('checked'))
+    if ($('#appbundle_race_requestInChampionship').prop('checked'))
         $('#cb-championship').prop('checked', true).checkboxradio('refresh');
 
     //events
@@ -591,12 +593,12 @@ function raceCategories() {
     });
 
     //functions
-    function categoriesUpdate(){
+    function categoriesUpdate() {
         var oldCategories = $.parseJSON(catInput.val());
 
         cbOnce.each(function () {
-           if(oldCategories.includes($(this).val()))
-               $(this).prop('checked', true).checkboxradio('refresh');
+            if (oldCategories.includes($(this).val()))
+                $(this).prop('checked', true).checkboxradio('refresh');
         });
 
         categoriesChange();
@@ -614,7 +616,7 @@ function raceCategories() {
         if (categories.length < i)
             cbAllCat.prop('checked', false).checkboxradio('refresh');
 
-        if(categories.length === i)
+        if (categories.length === i)
             cbAllCat.prop('checked', true).checkboxradio('refresh');
 
         if (categories.length > 0)
@@ -1689,9 +1691,11 @@ function registration() {
 
 // sidenav organizer ///////////////////////////////////////////////////////////////////////////////////////////////////
 function openNav() {
-    document.getElementById("sidenav-organizer").style.width = "11em";
-    document.getElementById("main").style.marginLeft = "11em";
-    $('.sidenav-open').css('display', 'inline');
+    if (windowsSize > 800) {
+        document.getElementById("sidenav-organizer").style.width = "11em";
+        document.getElementById("main").style.marginLeft = "11em";
+        $('.sidenav-open').css('display', 'inline');
+    }
 }
 
 function closeNav() {
@@ -2242,6 +2246,34 @@ $('#info-button').click(function () {
 
 
 }(jQuery));
+
+function organizerResponsive() {
+
+    console.log('organizerResponsive');
+
+    checkElements();
+
+    $(window).resize(function () {
+        checkElements();
+    });
+
+    function checkElements() {
+        windowsSize = $(window).width();
+
+        if (windowsSize < 815) {
+            $('#sidenav-organizer').hide();
+            $('#badge').hide();
+            $('.sidenav-open').hide();
+            $('.organizer-content').hide();
+            document.getElementById("main").style.marginLeft = "0";
+        }else {
+            $('#sidenav-organizer').show();
+            $('#badge').show();
+            $('.sidenav-open').show();
+            $('.organizer-content').show();
+        }
+    }
+}
 
 $(window).resize(function () {
     console.log($(window).width());
