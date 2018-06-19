@@ -70,12 +70,6 @@ class RaceController extends Controller
             return $this->redirectToRoute('competition_show', array('id' => $competition->getId()));
         }
 
-        /* return $this->render('race/test.html.twig', array(
-             'race' => $race,
-             'categories' => $categories,
-             'form' => $form->createView()
-         ));*/
-
         return $this->render('race/new.html.twig', array(
             'race' => $race,
             'categories' => $categories,

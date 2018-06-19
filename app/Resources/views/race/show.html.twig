@@ -10,7 +10,9 @@
             }
 
             #race-show-categories button {
+                width: 11em;
                 margin-bottom: 1em;
+                /*margin: 0em 1em 1em 0em;*/
             }
 
             .row-ranck {
@@ -34,19 +36,33 @@
     {% block organizer_menu %}
         {% if race.isOrganizer == true %}
             {% if race.supervised == false %}
-                <button class="btn-xs btn-success" onclick="location.href = '{{ path('race_edit', {'id':race.id} ) }}'">Editer</button>
+                <button class="btn-xs btn-success" onclick="location.href = '{{ path('race_edit', {'id':race.id} ) }}'">
+                    Editer
+                </button>
             {% endif %}
 
             {% if race.enrol == true %}
-                <button class="btn-xs btn-success" onclick="location.href = '{{ path('race_enrol_closed', {'id':race.id} ) }}'">Clore les inscriptions</button>
-                <button class="btn-xs btn-warning" onclick="location.href = '{{ path('race_simulateEnrol', {'id':race.id} ) }}'">Simuler inscription</button>
+                <button class="btn-xs btn-success"
+                        onclick="location.href = '{{ path('race_enrol_closed', {'id':race.id} ) }}'">Clore les
+                    inscriptions
+                </button>
+                <button class="btn-xs btn-warning"
+                        onclick="location.href = '{{ path('race_simulateEnrol', {'id':race.id} ) }}'">Simuler
+                    inscription
+                </button>
             {% endif %}
 
             {% if race.state == 1 %}
-                <button class="btn-xs btn-warning" onclick="location.href = '{{ path('race_competitorsTimes', {'id':race.id} ) }}'">Importer les temps de courses</button>
+                <button class="btn-xs btn-warning"
+                        onclick="location.href = '{{ path('race_competitorsTimes', {'id':race.id} ) }}'">Importer les
+                    temps de courses
+                </button>
             {% endif %}
 
-            <button class="btn-xs btn-info" onclick="location.href = '{{ path('competition_show', {'id':race.competition.id} ) }}'">Retour à la compétion</button>
+            <button class="btn-xs btn-info"
+                    onclick="location.href = '{{ path('competition_show', {'id':race.competition.id} ) }}'">Retour à la
+                compétion
+            </button>
 
         {% endif %}
     {% endblock %}
@@ -57,7 +73,7 @@
                 <!--panels-->
                 <div class="row panel-show">
                     <!--race panel-->
-                    <div class="col-xs-4">
+                    <div class="col-md-4">
                         <div class="panel panel-primary first-panel">
                             <div class="panel-heading">
                                 <span class="title">{{ race.name }}</span>
@@ -86,23 +102,24 @@
                     </div>
 
                     <!--datetime panel-->
-                    <div class="col-xs-4">
+                    <div class="col-md-4">
                         <div class="panel panel-primary date-time-panel">
                             <div class="panel-heading "><span class="glyphicon glyphicon-time"></span></div>
                             <div class="panel-body">
                                 <span class="date-day">{{ race.dateTime|localizeddate('none', 'none', 'fr_BR', null, "cccc d MMMM") }}</span>
-                                <span class="date-hour">{{ race.dateTime|date('H') }} H {{ race.dateTime|date('i') }}</span>
+                                <span class="date-hour">{{ race.dateTime|date('H') }}
+                                    H {{ race.dateTime|date('i') }}</span>
                             </div>
                         </div>
                     </div>
 
                     <!--location panel-->
-                    <div class="col-xs-4">
+                    <div class="col-md-4">
                         <div class="panel panel-primary location-panel">
                             <div class="panel-heading">
                                 <span class="glyphicon glyphicon-map-marker"></span>
                                 <span class="pull-right map-link">
-                                    {{ asset('img/google_map.jpg')|googleMapLink(race.competition.location.x,race.competition.location.y)}}
+                                    {{ asset('img/google_map.jpg')|googleMapLink(race.competition.location.x,race.competition.location.y) }}
                                 </span>
                             </div>
                             <div class="panel-body race-location">
@@ -114,14 +131,15 @@
 
                 </div>
                 <!--buttons categories-->
-                <div id="race-show-categories" class="row">
-                    <div class="col-xs-3 col-lg-2">
-                        <button class="btn-xs btn-primary col-xs-12" value="all">Classement général</button>
+                <div id="race-show-categories" class="col-xs-12">
+                    <div class="btn-container col-xs-6 col-sm-3 col-md-2 col-lg-2">
+                        <button class="btn-xs btn-primary" value="all">Classement général</button>
                     </div>
+
                     {% for c in race.categories %}
-                        <div class="btn-category col-xs-3 col-lg-2">
-                            <button class="btn-xs btn-info col-xs-12" value="{{ c.id }}">{{ c.name }}</button>
-                        </div>
+                    <div class="btn-container col-xs-6 col-sm-3 col-md-2 col-lg-2">
+                        <button class="btn-xs btn-info" value="{{ c.id }}">{{ c.name }}</button>
+                    </div>
                     {% endfor %}
                 </div>
             </div>
@@ -143,7 +161,8 @@
                 </div>
 
                 <div id="table-race-category-container">
-                    <table id="table-race-category" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <table id="table-race-category" class="table table-striped table-bordered" cellspacing="0"
+                           width="100%">
                         <thead>
                         <tr id="row-table-race-category">
                         </tr>
@@ -170,13 +189,11 @@
                 inchampionship = true;
             }{% endif %}
 
-            raceShow(race,inchampionship);
+            raceShow(race, inchampionship);
 
             {% if is_granted('ROLE_ORGANIZER') %}
             openNav();
             {% endif %}
-
-
 
 
         </script>

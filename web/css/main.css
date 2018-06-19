@@ -33,7 +33,7 @@
     margin-bottom: 1em;
 }
 
-    /* modal competitor info ******************************************************************************************** */
+/* modal competitor info ******************************************************************************************** */
 #competitor-modal input.hidden {
     position: absolute;
     left: -9999px;
@@ -149,11 +149,6 @@ div#fade-content {
 }
 
 /**model-panel*********************************************************************************************************/
-
-panel-categories-container{
-    background: #718C00;
-}
-
 .panel-categories {
     height: 6em;
     overflow: hidden;
@@ -178,18 +173,10 @@ panel-categories-container{
 
 /**model-panel-race****************************************************************************************************/
 
-@media (max-width: 400px) {
-    #panel-race-list .panel-body {
-        padding: 0 0 0 0px;
-    }
-}
+
 
 /**model-panel-competition*********************************************************************************************/
-@media (max-width: 400px) {
-    #panel-competition-list .panel-body {
-        padding: 0 0 0 0px;
-    }
-}
+
 
 #panel-competition-list .panel-body .nbRace {
     display: block;
@@ -206,11 +193,13 @@ race/show.html.twig
 */
 
 .panel-show .panel-heading {
-    height: 36.36px;
+    min-height: 3em;
+    padding-bottom: 0.1em;
 }
 
 .panel-show .panel-body{
-    height: 77.27px;
+    min-height: 5em;
+    padding-bottom: 0.1em;
 }
 
 .panel-show .date-time-panel span {
@@ -218,6 +207,7 @@ race/show.html.twig
     text-align: center;
     font-size: larger;
 }
+
 
 .panel-show .location-panel span {
     display: block;
@@ -231,6 +221,10 @@ race/show.html.twig
     font-size: larger;
 }
 
+.panel-show .first-panel .panel-body{
+    padding-bottom: 0em;
+}
+
 .panel-show .first-panel .competition span {
     font-size: larger;
 }
@@ -238,7 +232,7 @@ race/show.html.twig
 .panel-show .first-panel .organizer {
     display: block;
     font-weight: lighter;
-    padding-top: 1em;
+    padding-top: 0.8em;
 }
 
 .panel-show .first-panel .distance {

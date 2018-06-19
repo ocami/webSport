@@ -33,9 +33,9 @@
         <span class="panel-distance">{{ race.distance }} KM</span>
         <span class="panel-title">{{ race.name }}</span>
         <span class="pull-right panel-header-img">
-                        {% if race.inChampionship %}
-                            <img src="{{ asset('img/cup.jpg') }}">
-                        {% endif %}
+            {% if race.inChampionship %}
+                <img src="{{ asset('img/cup.jpg') }}">
+            {% endif %}
 
             {% if race.valid %}
                 {{ race.competitorRegister|registerImg }}

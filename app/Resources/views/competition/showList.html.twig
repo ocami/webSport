@@ -15,17 +15,17 @@
 
     <h4 id="competition-list-title">Compétitions à venir</h4>
 
-    <div class="row" id="future-competition" style="display: block;">
+    <div id="future-competition" style="display: block;">
         {% for competition in competitions.future %}
-            <div class="col-xs-12 col-sm-6">
+            <div class="col-sm-offset-1 col-sm-10 col-md-offset-0 col-md-6">
                 {% include 'competition/modelList.twig' %}
             </div>
         {% endfor %}
     </div>
 
-    <div class="row" id="passed-competition" style="display: none;">
+    <div id="passed-competition" style="display: none;">
         {% for competition in competitions.passed %}
-            <div class="col-xs-12 col-sm-6">
+            <div class="col-sm-offset-1 col-sm-10 col-md-offset-0 col-md-6">
                 {% include 'competition/modelList.twig' %}
             </div>
         {% endfor %}

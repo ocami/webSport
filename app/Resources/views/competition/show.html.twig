@@ -13,9 +13,15 @@
 
 {% block organizer_menu %}
     {% if competition.isOrganizer %}
-        <button class="btn-xs btn-success"  onclick="location.href = '{{ path('race_new', {'id':competition.id} ) }}'">Ajouter une course</button>
-        <button class="btn-xs btn-success" onclick="location.href = '{{ path('competition_edit', {'id':competition.id} ) }}'">Editer</button>
-        <button class="btn-xs btn-info" onclick="location.href = '{{ path('competition_show_byOrganizer') }}'">Toutes mes compétitions</button>
+        <button class="btn-xs btn-success" onclick="location.href = '{{ path('race_new', {'id':competition.id} ) }}'">
+            Ajouter une course
+        </button>
+        <button class="btn-xs btn-success"
+                onclick="location.href = '{{ path('competition_edit', {'id':competition.id} ) }}'">Editer
+        </button>
+        <button class="btn-xs btn-info" onclick="location.href = '{{ path('competition_show_byOrganizer') }}'">Toutes
+            mes compétitions
+        </button>
     {% endif %}
 {% endblock %}
 
@@ -25,11 +31,11 @@
 
 {% block body %}
 
-    <div class="row competition-show">
+    <div class="competition-show">
         <!--panels-->
-        <div class="row panel-show">
+        <div class="panel-show">
             <!--competition panel-->
-            <div class="col-xs-4">
+            <div class="col-md-4">
                 <div class="panel panel-success first-panel">
                     <div class="panel-heading competition-title">
                         <span class="title">{{ competition.name }} </span>
@@ -51,7 +57,7 @@
             </div>
 
             <!--datetime panel-->
-            <div class="col-xs-4">
+            <div class="col-md-4">
                 <div class="panel panel-success date-time-panel">
                     <div class="panel-heading "><span class="glyphicon glyphicon-time"></span></div>
                     <div class="panel-body">
@@ -62,7 +68,7 @@
             </div>
 
             <!--location panel-->
-            <div class="col-xs-4">
+            <div class="col-md-4">
                 <div class="panel panel-success location-panel">
                     <div class="panel-heading">
                         <span class="glyphicon glyphicon-map-marker"></span>
@@ -78,22 +84,21 @@
             </div>
 
         </div>
-
-        {% for race in races %}
-            <div class="col-xs-12 col-sm-6">
-                {{ include('race/modelList.html.twig') }}
-            </div>
-        {% endfor %}
+            {% for race in races %}
+                <div class="col-sm-offset-1 col-sm-10 col-md-offset-0 col-md-6">
+                    {{ include('race/modelList.html.twig') }}
+                </div>
+            {% endfor %}
     </div>
 
 {% endblock %}
 
 {% block javascripts %}
-        {{ parent() }}
+    {{ parent() }}
 
-        <script>
-            {% if is_granted('ROLE_ORGANIZER') %}
-                openNav();
-            {% endif %}
-        </script>
-    {% endblock %}
+    <script>
+        {% if is_granted('ROLE_ORGANIZER') %}
+        openNav();
+        {% endif %}
+    </script>
+{% endblock %}
