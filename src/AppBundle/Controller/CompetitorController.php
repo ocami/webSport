@@ -74,7 +74,7 @@ class CompetitorController extends Controller
     }
 
     /**
-     * @Route("/competitor/addRace/{race}"), name"competitor_addRace")
+     * @Route("/competitor/add_race/{race}"), name"competitor_add_race")
      * @Security("has_role('ROLE_COMPETITOR')")
      */
     public function addRace(Request $request, Race $race)
@@ -96,11 +96,11 @@ class CompetitorController extends Controller
         $em->flush();
         $request->getSession()->getFlashBag()->add('success', 'Votre inscription est enregistrée');
 
-        return $this->redirectToRoute('competition_show', array('id'=>$race->getCompetition()->getId()));
+        return $this->redirectToRoute('race_show', array('id'=>$race->getId()));
     }
 
     /**
-     * @Route("/competitor/removeRace/{race}"), name"competitor_removeRace")
+     * @Route("/competitor/remove_race/{race}"), name"competitor_remove_race")
      * @Security("has_role('ROLE_COMPETITOR')")
      */
     public function removeRace(Request $request, Race $race)

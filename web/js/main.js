@@ -634,7 +634,9 @@ function raceCategories() {
 function raceShow(race, inchampionship) {
 
     var $categories = $('#race-show-categories');
-    var $btnCategories = $('#race-show-categories button');
+    var $allBtnCategories = $('.race-show').find('button');
+    var $btnCategories = $('#race-show-categories').find('button');
+    var $collapseBtnCategories = $('#race-show-panel-categories').find('button');
     var container = $('#tables');
     var rowTable;
 
@@ -646,11 +648,18 @@ function raceShow(race, inchampionship) {
     });
 
     //events
-    $btnCategories.click(function () {
+    $allBtnCategories.click(function () {
         container.removeClass();
         ranckTable($(this).val());
+    });
+
+    $btnCategories.click(function () {
         $btnCategories.attr('class', 'btn-xs btn-info col-xs-12');
         $(this).attr('class', 'btn-xs btn-primary col-xs-12');
+    });
+
+    $collapseBtnCategories.click(function () {
+        $("#collapse-race-categories").collapse('hide');
     });
 
     $('.profile-href').click(function () {
@@ -726,7 +735,7 @@ function raceShow(race, inchampionship) {
         }
 
         loaderDivStop(container);
-        $('html, body').animate({scrollTop: $($categories).offset().top}, 750);
+        $('html, body').animate({scrollTop: $(container).offset().top}, 750);
 
 
         function raceOpenOptions() {
@@ -1691,7 +1700,7 @@ function registration() {
 
 // sidenav organizer ///////////////////////////////////////////////////////////////////////////////////////////////////
 function openNav() {
-    if (windowsSize > 800) {
+    if (windowsSize > 815) {
         document.getElementById("sidenav-organizer").style.width = "11em";
         document.getElementById("main").style.marginLeft = "11em";
         $('.sidenav-open').css('display', 'inline');
@@ -2261,17 +2270,17 @@ function organizerResponsive() {
         windowsSize = $(window).width();
 
         if (windowsSize < 815) {
-            $('#sidenav-organizer').hide();
+            /*$('#sidenav-organizer').hide();*/
             $('#badge').hide();
             $('.sidenav-open').hide();
             $('.organizer-content').hide();
-            document.getElementById("main").style.marginLeft = "0";
+            closeNav();
         }else {
-            $('#sidenav-organizer').show();
+            /*$('#sidenav-organizer').show();*/
             $('#badge').show();
             $('.sidenav-open').show();
             $('.organizer-content').show();
-            document.getElementById("main").style.marginLeft = "11em";
+            openNav();
         }
     }
 }

@@ -226,8 +226,6 @@ div#fade-content {
     }
 }
 
-/****************************************************************************************/
-
 @media (min-width: 450px) {
     .panel-model .panel-body {
         padding-bottom: 0.1em;

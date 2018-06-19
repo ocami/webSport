@@ -24,6 +24,54 @@
                 color: #1b6d85;
             }
 
+            .race-show .list-group-item {
+                padding: 0em 1em 0em 1em;
+            }
+
+            .race-show .panel-group {
+                margin: 0em;
+                padding: 0em 0.5em 0em 0.5em;
+            }
+
+            .race-show .panel-heading {
+                padding: 0.1em 1em 0.1em 1em;
+                text-align: center;
+                font-size: 1em;
+            }
+
+            .race-show .btn-general {
+                font-size: 1em;
+                margin: 0em;
+                padding: 0em 0.5em 0em 0.5em;
+            }
+
+            #race-show-panel-categories {
+                padding: 0em;
+            }
+
+            #race-show-panel-categories * {
+
+            }
+
+            @media (max-width: 435px) {
+                #race-show-categories {
+                    display: none;
+                }
+
+                #race-show-panel-categories {
+                    display: block;
+                }
+            }
+
+            @media (min-width: 435px) {
+                #race-show-categories {
+                    display: block;
+                }
+
+                #race-show-panel-categories {
+                    display: none;
+                }
+            }
 
         </style>
 
@@ -69,9 +117,9 @@
 
     {% block body %}
         {% block show_race %}
-            <div class="race-show">
+            <div class="race-show row">
                 <!--panels-->
-                <div class="row panel-show">
+                <div class="panel-show col-xs-12">
                     <!--race panel-->
                     <div class="col-md-4">
                         <div class="panel panel-primary first-panel">
@@ -132,26 +180,46 @@
                 </div>
                 <!--buttons categories-->
                 <div id="race-show-categories" class="col-xs-12">
-                    <div class="btn-container col-xs-6 col-sm-3 col-md-2 col-lg-2">
+                    <div class="btn-container col-xs-4 col-sm-3 col-md-2 col-lg-2">
                         <button class="btn-xs btn-primary" value="all">Classement général</button>
                     </div>
-
                     {% for c in race.categories %}
-                    <div class="btn-container col-xs-6 col-sm-3 col-md-2 col-lg-2">
-                        <button class="btn-xs btn-info" value="{{ c.id }}">{{ c.name }}</button>
-                    </div>
+                        <div class="btn-container col-xs-4 col-sm-3 col-md-2 col-lg-2">
+                            <button class="btn-xs btn-info" value="{{ c.id }}">{{ c.name }}</button>
+                        </div>
                     {% endfor %}
+                </div>
+                <!--collapse categories-->
+                <div id="race-show-panel-categories" class="col-xs-12">
+                    <button class="btn-xs btn-primary btn-general col-xs-4" value="all">Général</button>
+                    <div class="panel-group col-xs-8">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    <a data-toggle="collapse" href="#collapse-race-categories">Catégories</a>
+                                </div>
+                            </div>
+                            <div id="collapse-race-categories" class="panel-collapse collapse">
+                                <ul class="list-group">
+                                    {% for c in race.categories %}
+                                        <li class="list-group-item" style="text-align: center">
+                                            <button class="btn-xs btn-link" value="{{ c.id }}">{{ c.name }}</button>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         {% endblock %}
         <!----------------------------------------------------------------------------------------------------------------->
 
-
         {% block ranck_race %}
             <br>
             <div id="loader-div"></div>
             <div id="tables" class="row">
-                <div id="table-race-container">
+                <div id="table-race-container" class="col-xs-12">
                     <table id="table-race" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                         <tr id="row-table-race">
@@ -171,9 +239,6 @@
                 </div>
             </div>
         {% endblock %}
-
-
-
     {% endblock %}
 
     {% block javascripts %}
