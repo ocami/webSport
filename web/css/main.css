@@ -161,65 +161,141 @@ div#fade-content {
 }
 
 /**model-panel*********************************************************************************************************/
-
-.panel-model .panel-body {
-    padding: 0.5em 0.1em 0.1em 0.1em;
-
+.simplebar-content {
+    overflow-x: hidden;
 }
 
-.panel-model .panel-body * {
-    padding-right: 0.1em;
-    padding-left: 0.1em;
+@media (max-width: 450px) {
+    .panel-model .panel-body {
+        padding: 0.5em 0.1em 0.1em 0.1em;
+    }
+
+    .panel-model .panel-body * {
+        padding-right: 0.1em;
+        padding-left: 0.1em;
+    }
+
+    .panel-model .date {
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .panel-model .location {
+        text-align: center;
+        padding-top: 0.2em;
+    }
+
+    .panel-model .nbRace {
+        text-align: center;
+        font-weight: bold;
+        padding-top: 0.2em;
+
+    }
+
+    .panel-model .categories-container {
+        height: 6em;
+    }
+
+    .panel-model .category-all {
+        padding-top: 1.5em;
+        font-weight: bold;
+    }
+
+    .panel-model .categories {
+        padding-top: 0.5em;
+        max-height: 90%;
+        overflow: hidden;
+        font-size: 0.8em;
+        width: 100%;
+    }
+
+    .panel-model .categories .glyphicon {
+        color: #636363;
+        font-size: 0.6em;
+        top: -0.2em;
+    }
+
+    .panel-model .organizer {
+        font-weight: lighter;
+        font-size: 0.8em;
+    }
+
+    .panel-model .competition-link {
+        padding-top: 0.2em;
+        color: #b5d7a5;
+    }
 }
 
-.panel-model .date {
-    text-align: center;
-    font-weight: bold;
-}
+/****************************************************************************************/
 
-.panel-model .location {
-    text-align: center;
-    padding-top: 0.2em;
-}
+@media (min-width: 450px) {
+    .panel-model .panel-body {
+        padding-bottom: 0.1em;
+    }
 
-.panel-model .nbRace {
-    text-align: center;
-    font-weight: bold;
-    padding-top: 0.2em;
+    .panel-model .date {
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.5em;
+    }
 
-}
+    .panel-model .location {
+        text-align: center;
+        padding-top: 0.2em;
+    }
 
-.panel-model .categories-container {
-    height: 6em;
-}
+    .panel-model .nbRace {
+        text-align: center;
+        font-weight: bold;
+        padding-top: 0.5em;
+    }
 
-.panel-model .category-all {
-    padding-top: 1.5em;
-    font-weight: bold;
-}
+    .panel-model .categories-container {
+        height: 6em;
+    }
 
-.panel-model .categories {
-    height: 90%;
-    overflow: hidden;
-    font-size: 0.8em;
-}
+    .panel-model .category-all {
+        padding-top: 1.5em;
+        font-weight: bold;
+    }
 
-.panel-model .categories li {
-    display: inline-block;
-}
+    .panel-model .categories {
+        padding-top: 0.5em;
+        max-height: 90%;
+        overflow: hidden;
+        width: 100%;
+    }
 
-.panel-model .categories li span {
-    color: #636363;
-    font-size: 0.6em;
-    top: -0.2em;
-}
+    .panel-model .categories .glyphicon {
+        color: #636363;
+        font-size: 0.6em;
+        top: -0.2em;
+    }
 
-.panel-model .organizer {
-    font-weight: lighter;
-    font-size: 0.8em;
+    .panel-model .organizer {
+        font-weight: lighter;
+        font-size: 0.9em;
+    }
+
+    .panel-model .competition-link {
+        padding-top: 1em;
+        color: #b5d7a5;
+    }
 }
 
 /**model-panel-race****************************************************************************************************/
+.panel-model .distance {
+    border-radius: 25px;
+    background: #FFFFFF;
+    padding: 0.2em;
+    height: 2em;
+    font-weight: bold;
+    color: #2e6da4;
+}
+
+.panel-model .competition-link .glyphicon {
+    color: #b5d7a5;
+}
 
 /**model-panel-competition*********************************************************************************************/
 
@@ -268,9 +344,9 @@ race/show.html.twig
 }
 
 .panel-show .first-panel .organizer {
-        display: block;
-        font-weight: lighter;
-        padding-top: 0.8em;
+    display: block;
+    font-weight: lighter;
+    padding-top: 0.8em;
 }
 
 .panel-show .first-panel .distance {

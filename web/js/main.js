@@ -2271,6 +2271,7 @@ function organizerResponsive() {
             $('#badge').show();
             $('.sidenav-open').show();
             $('.organizer-content').show();
+            document.getElementById("main").style.marginLeft = "11em";
         }
     }
 }
@@ -2278,6 +2279,7 @@ function organizerResponsive() {
 $(window).resize(function () {
     console.log($(window).width());
 });
+
 
 
 

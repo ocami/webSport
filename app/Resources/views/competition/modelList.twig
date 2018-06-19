@@ -29,7 +29,7 @@
             {% else %}
                 <div data-simplebar class="categories">
                     {% for category in competition.categories %}
-                        <li><span class="glyphicon glyphicon-arrow-right"></span> {{ category.name }}</li><br>
+                        <div><span class="glyphicon glyphicon-arrow-right"></span> {{ category.name }}</div>
                     {% endfor %}
                 </div>
             {% endif %}
