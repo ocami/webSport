@@ -920,12 +920,12 @@ function organizerNavBar() {
 
         if (windowsSize < 815) {
             $('#badge').hide();
-            $('.sidenav-open').hide();
+            $('#organizerNavBar-open').hide();
             $('.organizer-content').hide();
             closeOrganizerNav();
         }else {
             $('#badge').show();
-            $('.sidenav-open').show();
+            $('#organizerNavBar-open').show();
             $('.organizer-content').show();
             openOrganizerNav();
         }
@@ -934,14 +934,14 @@ function organizerNavBar() {
 
 function openOrganizerNav() {
     if (windowsSize > 815) {
-        document.getElementById("sidenav-organizer").style.width = "11em";
+        document.getElementById("organizerNavBar").style.width = "11em";
         document.getElementById("main").style.marginLeft = "11em";
         $('.sidenav-open').css('display', 'inline');
     }
 }
 
 function closeOrganizerNav() {
-    document.getElementById("sidenav-organizer").style.width = "0";
+    document.getElementById("organizerNavBar").style.width = "0";
     document.getElementById("main").style.marginLeft = "0";
 }
 

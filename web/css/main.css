@@ -5,7 +5,7 @@
 /***********************************************--PAGES--**************************************************************/
 
 /*home/index.html.twig***********************************/
-    @media (max-width: 450px){
+    @media (max-width: 500px){
     #index h2{
         font-size: 1.5em;
     }
@@ -161,7 +161,7 @@ div#fade-content {
 
 /***********************************************--PANEL--**************************************************************/
 /**all panel*****************************/
-@media (max-width: 450px){
+@media (max-width: 500px){
     .panel-header-img img {
         height: 1.5em;
         padding: 0.2em;
@@ -170,7 +170,7 @@ div#fade-content {
     }
 }
 
-@media (min-width: 450px){
+@media (min-width: 500px){
     .panel-header-img img {
         height: 2em;
         padding: 0.2em;
@@ -197,7 +197,25 @@ div#fade-content {
         overflow-x: hidden;
     }
 
-    @media (max-width: 450px) {
+    .panel-model .location {
+        text-align: center;
+        padding-top: 0.2em;
+        border-radius: 12px 12px 12px 12px;
+        -moz-border-radius: 12px 12px 12px 12px;
+        -webkit-border-radius: 12px 12px 12px 12px;
+    }
+
+    .panel-model-competition .location {
+        border: 2px solid #dff0d8;
+        background: rgba(223, 240, 216, 0.5)
+    }
+
+    .panel-model-race .location {
+        border: 2px solid rgba(51, 122, 183, 0.4);;
+        background: rgba(51, 122, 183, 0.1);
+    }
+
+    @media (max-width: 500px) {
         .races-container, .competitions-container{
             padding: 0em;
         }
@@ -223,11 +241,6 @@ div#fade-content {
         .panel-model .date {
             text-align: center;
             font-weight: bold;
-        }
-
-        .panel-model .location {
-            text-align: center;
-            padding-top: 0.2em;
         }
 
         .panel-model .nbRace {
@@ -276,7 +289,7 @@ div#fade-content {
         }
     }
 
-    @media (min-width: 450px) {
+    @media (min-width: 500px) {
         .panel-model .panel-body {
             padding-bottom: 0.1em;
         }
@@ -285,11 +298,6 @@ div#fade-content {
             text-align: center;
             font-weight: bold;
             font-size: 1.5em;
-        }
-
-        .panel-model .location {
-            text-align: center;
-            padding-top: 0.2em;
         }
 
         .panel-model .nbRace {
@@ -335,7 +343,7 @@ div#fade-content {
         /    use in :
         /    race/modelList.html.twig
         /*******************************************/
-        @media (max-width: 450px){
+        @media (max-width: 500px){
             .panel-model .distance {
                 font-size: 0.9em;
                 border-radius: 25px;
@@ -347,7 +355,7 @@ div#fade-content {
             }
         }
 
-        @media (min-width: 450px){
+        @media (min-width: 500px){
             .panel-model .distance {
                 border-radius: 25px;
                 background: #FFFFFF;
@@ -558,8 +566,7 @@ div#fade-content {
     margin: 0em;
 }
 
-
-.sidenav-open {
+#organizerNavBar-open {
     cursor: pointer;
     font-size: 2em;
     padding-top: 1em;
@@ -567,7 +574,7 @@ div#fade-content {
     color: #FFFFFF;
 }
 
-.sidenav-organizer {
+#organizerNavBar {
     height: 100%;
     width: 0em;
     position: fixed;
@@ -579,11 +586,11 @@ div#fade-content {
     transition: 0.5s;
 }
 
-.sidenav-organizer .content {
+#organizerNavBar .content {
     padding-top: 60px;
 }
 
-.sidenav-organizer button {
+#organizerNavBar button {
     display: block;
     margin: 1em 0em 0em 1em;
     width: 10em;
