@@ -149,221 +149,409 @@ div#fade-content {
 }
 
 /**all panel***********************************************************************************************************/
-.panel-header-img img {
-    height: 2em;
-    padding: 0.2em;
-    background: #FFFFFF;
-    border-radius: 50%;
+@media (max-width: 450px){
+    .panel-header-img img {
+        height: 1.5em;
+        padding: 0.2em;
+        background: #FFFFFF;
+        border-radius: 50%;
+    }
 }
+
+@media (min-width: 450px){
+    .panel-header-img img {
+        height: 2em;
+        padding: 0.2em;
+        background: #FFFFFF;
+        border-radius: 50%;
+    }
+}
+
 
 .panel-footer-img img {
     height: 1.8em;
 }
 
-/**model-panel*********************************************************************************************************/
-.simplebar-content {
-    overflow-x: hidden;
-}
-
-@media (max-width: 450px) {
-    .panel-model .panel-body {
-        padding: 0.5em 0.1em 0.1em 0.1em;
+    /**model-panel**************************/
+    .simplebar-content {
+        overflow-x: hidden;
     }
 
-    .panel-model .panel-body * {
-        padding-right: 0.1em;
-        padding-left: 0.1em;
+    @media (max-width: 450px) {
+        .panel-model .panel-body {
+            padding: 0.5em 0.1em 0.1em 0.1em;
+        }
+
+        .panel-model .panel-body * {
+            padding-right: 0.1em;
+            padding-left: 0.1em;
+        }
+
+        .panel-model .panel-heading{
+            padding-left: 0.3em;
+            padding-right: 0.3em;
+        }
+
+        .panel-model .panel-title{
+            font-size: 1em;
+        }
+
+        .panel-model .date {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .panel-model .location {
+            text-align: center;
+            padding-top: 0.2em;
+        }
+
+        .panel-model .nbRace {
+            text-align: center;
+            font-weight: bold;
+            padding-top: 0.2em;
+
+        }
+
+        .panel-model .category-all {
+            padding-top: 0.5em;
+            font-weight: bold;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        .panel-model .categories {
+            padding-top: 0.5em;
+            overflow: hidden;
+            font-size: 0.8em;
+            width: 100%;
+        }
+
+        .panel-model .categories .glyphicon {
+            color: #636363;
+            font-size: 0.6em;
+            top: -0.2em;
+        }
+
+        .panel-model .organizer {
+            padding-top: 0.2em;
+            font-weight: lighter;
+            font-size: 0.8em;
+            opacity: 0.5;
+        }
+
+        .panel-model .competition-link {
+            padding-top: 0.3em;
+            color: #b5d7a5;
+            line-height: 0.9em;
+        }
+
+        .panel-model .panel-footer{
+            padding-top: 0.2em;
+            padding-bottom: 0.2em;
+        }
     }
 
-    .panel-model .date {
+    @media (min-width: 450px) {
+        .panel-model .panel-body {
+            padding-bottom: 0.1em;
+        }
+
+        .panel-model .date {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+
+        .panel-model .location {
+            text-align: center;
+            padding-top: 0.2em;
+        }
+
+        .panel-model .nbRace {
+            text-align: center;
+            font-weight: bold;
+            padding-top: 0.5em;
+        }
+
+        .panel-model .category-all {
+            font-weight: bold;
+            padding-top: 1.5em;
+        }
+
+        .panel-model .categories {
+            padding-top: 0.5em;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .panel-model .categories .glyphicon {
+            color: #636363;
+            font-size: 0.6em;
+            top: -0.2em;
+        }
+
+        .panel-model .organizer {
+            font-weight: lighter;
+            font-size: 0.9em;
+            padding-top: 0.8em;
+            padding-left: 0.2em;
+        }
+
+        .panel-model .competition-link {
+            padding-top: 0.9em;
+            padding-left: 0em;
+            color: #b5d7a5;
+            line-height: 0.9em;
+        }
+    }
+
+        /**model-panel-race**/
+        @media (max-width: 450px){
+            .panel-model .distance {
+                font-size: 0.9em;
+                border-radius: 25px;
+                background: #FFFFFF;
+                padding: 0.3em 0.2em 0.2em 0.2em;
+                height: 2em;
+                font-weight: bold;
+                color: #2e6da4;
+            }
+        }
+
+        @media (min-width: 450px){
+            .panel-model .distance {
+                border-radius: 25px;
+                background: #FFFFFF;
+                padding: 0.2em;
+                height: 2em;
+                font-weight: bold;
+                color: #2e6da4;
+            }
+
+            .panel-model-race .categories {
+                padding-top: 0.5em;
+                overflow: hidden;
+                width: 100%;
+            }
+        }
+
+        .panel-model .competition-link .glyphicon {
+            color: #b5d7a5;
+        }
+
+    /**show-panel****************************/
+    @media (max-width: 350px){
+
+        .panel-show .panel-heading {
+            padding: 0.5em 0em 0.5em 0em;
+        }
+
+        .panel-show .panel-body {
+            padding: 0.1em;
+            font-size: 0.8em;
+        }
+
+        .panel-show .date-time-panel span {
+            display: block;
+            text-align: center;
+            font-size: larger;
+        }
+
+        .panel-show .location-panel span {
+            display: block;
+            text-align: center;
+            font-size: larger;
+        }
+
+        .panel-show .title {
+            display: inline;
+            font-weight: bolder;
+            font-size: larger;
+            padding-left: 0.2em;
+        }
+
+        .panel-show .first-panel .title{
+            font-size: 1em;
+        }
+
+        .panel-show .first-panel .panel-body {
+            padding: 0.5em 0em 0.5em 0.5em
+        }
+
+        .panel-show .first-panel .competition span {
+            font-size: larger;
+        }
+
+        .panel-show .first-panel .organizer {
+            display: block;
+            font-weight: lighter;
+            padding-top: 0.7em;
+        }
+
+        .panel-show .first-panel .distance {
+            display: block;
+            text-align: center;
+            font-weight: bolder;
+            font-size: larger;
+        }
+
+        .panel-show .first-panel .nb-race {
+            display: block;
+            text-align: center;
+            font-weight: bolder;
+            font-size: larger;
+        }
+
+        .panel-show .map-link img {
+            height: 1.8em;
+            margin-top: 0.6em;
+        }
+    }
+
+    @media (min-width: 350px){
+        .panel-show .panel-body {
+            min-height: 5em;
+            padding-bottom: 0.1em;
+        }
+
+        .panel-show .panel-heading {
+            min-height: 3em;
+            padding-bottom: 0.1em;
+        }
+
+        .panel-show .date-time-panel span {
+            display: block;
+            text-align: center;
+            font-size: larger;
+        }
+
+        .panel-show .location-panel span {
+            display: block;
+            text-align: center;
+            font-size: larger;
+        }
+
+        .panel-show .title {
+            display: inline;
+            font-weight: bolder;
+            font-size: larger;
+        }
+
+        .panel-show .first-panel .panel-body {
+            padding-bottom: 0em;
+        }
+
+        .panel-show .first-panel .competition span {
+            font-size: larger;
+        }
+
+        .panel-show .first-panel .organizer {
+            display: block;
+            font-weight: lighter;
+            padding-top: 0.8em;
+        }
+
+        .panel-show .first-panel .distance {
+            display: block;
+            text-align: center;
+            font-weight: bolder;
+            font-size: larger;
+        }
+
+        .panel-show .first-panel .nb-race {
+            display: block;
+            text-align: center;
+            font-weight: bolder;
+            font-size: larger;
+        }
+
+        .panel-show .map-link img {
+            height: 1.8em;
+            margin-top: 2em;
+        }
+    }
+
+/*race-show************************************************************************************************************/
+    /*categories**/
+    .race-show .list-group-item {
+        padding: 0em 1em 0em 1em;
+    }
+
+    .race-show .panel-group {
+        margin: 0em;
+        padding: 0em 0.5em 0em 0.5em;
+    }
+
+    .race-show .btn-general {
+        font-size: 1em;
+        margin: 0em;
+        padding: 0em 0.5em 0em 0.5em;
+    }
+
+    #race-show-panel-categories {
+        padding: 0em;
+    }
+
+    #race-show-panel-categories * {
+
+    }
+
+    @media (max-width: 435px) {
+        #race-show-categories {
+            display: none;
+        }
+
+        #race-show-panel-categories {
+            display: block;
+        }
+    }
+
+    @media (min-width: 435px) {
+        #race-show-categories {
+            display: block;
+        }
+
+        #race-show-panel-categories {
+            display: none;
+        }
+    }
+
+    /**table**/
+    #show-race-tables {
+        min-height: 10em;
+    }
+
+    #show-race-tables .row-ranck {
         text-align: center;
-        font-weight: bold;
     }
 
-    .panel-model .location {
-        text-align: center;
-        padding-top: 0.2em;
+    #show-race-tables .profile-href {
+        cursor: zoom-in;
+        color: #1b6d85;
     }
 
-    .panel-model .nbRace {
-        text-align: center;
-        font-weight: bold;
-        padding-top: 0.2em;
-
+    #race-show-categories button {
+        width: 11em;
+        margin-bottom: 1em;
+        /*margin: 0em 1em 1em 0em;*/
     }
 
-    .panel-model .categories-container {
-        height: 6em;
-    }
-
-    .panel-model .category-all {
-        padding-top: 1.5em;
-        font-weight: bold;
-    }
-
-    .panel-model .categories {
-        padding-top: 0.5em;
-        max-height: 90%;
-        overflow: hidden;
-        font-size: 0.8em;
-        width: 100%;
-    }
-
-    .panel-model .categories .glyphicon {
-        color: #636363;
-        font-size: 0.6em;
-        top: -0.2em;
-    }
-
-    .panel-model .organizer {
-        font-weight: lighter;
-        font-size: 0.8em;
-    }
-
-    .panel-model .competition-link {
-        padding-top: 0.2em;
-        color: #b5d7a5;
-    }
+/**admin/races*******************************************************************/
+#admin-race-categories button {
+    margin-bottom: 1em;
 }
 
-@media (min-width: 450px) {
-    .panel-model .panel-body {
-        padding-bottom: 0.1em;
-    }
-
-    .panel-model .date {
-        text-align: center;
-        font-weight: bold;
-        font-size: 1.5em;
-    }
-
-    .panel-model .location {
-        text-align: center;
-        padding-top: 0.2em;
-    }
-
-    .panel-model .nbRace {
-        text-align: center;
-        font-weight: bold;
-        padding-top: 0.5em;
-    }
-
-    .panel-model .categories-container {
-        height: 6em;
-    }
-
-    .panel-model .category-all {
-        padding-top: 1.5em;
-        font-weight: bold;
-    }
-
-    .panel-model .categories {
-        padding-top: 0.5em;
-        max-height: 90%;
-        overflow: hidden;
-        width: 100%;
-    }
-
-    .panel-model .categories .glyphicon {
-        color: #636363;
-        font-size: 0.6em;
-        top: -0.2em;
-    }
-
-    .panel-model .organizer {
-        font-weight: lighter;
-        font-size: 0.9em;
-    }
-
-    .panel-model .competition-link {
-        padding-top: 1em;
-        color: #b5d7a5;
-    }
+#admin-races-table .stringDate {
+    visibility: hidden;
 }
 
-/**model-panel-race****************************************************************************************************/
-.panel-model .distance {
-    border-radius: 25px;
-    background: #FFFFFF;
-    padding: 0.2em;
-    height: 2em;
-    font-weight: bold;
-    color: #2e6da4;
+#admin-races-table img{
+    height: 1.5em;
 }
 
-.panel-model .competition-link .glyphicon {
-    color: #b5d7a5;
-}
-
-/**model-panel-competition*********************************************************************************************/
-
-/**show-panel**********************************************************************************************************/
-
-/* race-show */
-/*
-admin/races.html.twig
-race/show.html.twig
-*/
-
-.panel-show .panel-heading {
-    min-height: 3em;
-    padding-bottom: 0.1em;
-}
-
-.panel-show .panel-body {
-    min-height: 5em;
-    padding-bottom: 0.1em;
-}
-
-.panel-show .date-time-panel span {
-    display: block;
+#admin-races-table .distance{
     text-align: center;
-    font-size: larger;
-}
-
-.panel-show .location-panel span {
-    display: block;
-    text-align: center;
-    font-size: larger;
-}
-
-.panel-show .title {
-    display: inline;
-    font-weight: bolder;
-    font-size: larger;
-}
-
-.panel-show .first-panel .panel-body {
-    padding-bottom: 0em;
-}
-
-.panel-show .first-panel .competition span {
-    font-size: larger;
-}
-
-.panel-show .first-panel .organizer {
-    display: block;
-    font-weight: lighter;
-    padding-top: 0.8em;
-}
-
-.panel-show .first-panel .distance {
-    display: block;
-    text-align: center;
-    font-weight: bolder;
-    font-size: larger;
-}
-
-.panel-show .first-panel .nb-race {
-    display: block;
-    text-align: center;
-    font-weight: bolder;
-    font-size: larger;
-}
-
-.panel-show .map-link img {
-    height: 1.8em;
-    margin-top: 2em;
 }
 
 /**sSidenav-organizer organizer****************************************************************************************/

@@ -44,17 +44,6 @@
 
 <!-- Body -->
 <div class="container">
-    <div class="row">
-        <div class="visible-lg hidden-md hidden-sm hidden-xs alert alert-danger col-xs-12" align="center">lg</div>
-        <div class="hidden-lg visible-md hidden-sm hidden-xs alert alert-success col-xs-12" align="center">md</div>
-        <div class="hidden-lg hidden-md visible-sm hidden-xs alert alert-info col-xs-12" align="center">sm</div>
-        <div class="hidden-lg hidden-md hidden-sm visible-xs alert alert-warning col-xs-12" align="center">xs</div>
-
-    </div>
-</div>
-
-
-<div class="container">
     <!-- sidenav organizer -->
     {% if is_granted('ROLE_ORGANIZER') %}
         <div id="sidenav-organizer" class="sidenav-organizer">
@@ -88,11 +77,6 @@
         }, 2000);
     </script>{% endif %}
 
-    {% if is_granted('ROLE_ORGANIZER') %}
-    <script>
-        organizerResponsive();
-    </script>{% endif %}
-
     {% if is_granted('ROLE_COMPETITOR') %}
     <script>
         setTimeout(function () {
@@ -100,8 +84,6 @@
         }, 3000);
 
     </script>{% endif %}
-
-
 {% endblock %}
 
 </body>

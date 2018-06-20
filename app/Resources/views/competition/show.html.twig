@@ -3,12 +3,6 @@
 {% block stylesheets %}
     {{ parent() }}
 
-    <style>
-        .competition-show .address {
-            margin-top: 2em;
-        }
-    </style>
-
 {% endblock %}
 
 {% block organizer_menu %}
@@ -31,6 +25,8 @@
 
 {% block body %}
 
+    {{ 0|loader }}
+
     <div class="competition-show">
         <!--panels-->
         <div class="panel-show">
@@ -50,8 +46,8 @@
                             </span>
                     </div>
                     <div class="panel-body row">
-                        <span class="nb-race">{{ competition.nbValidRaces }} courses</span>
-                        <span class="organizer"> Organisateur : {{ competition.organizer.name }}</span>
+                        <span class="nb-race col-xs-12">{{ competition.nbValidRaces }} courses</span>
+                        <span class="organizer col-xs-12"> Orga : {{ competition.organizer.name }}</span>
                     </div>
                 </div>
             </div>
@@ -98,7 +94,9 @@
 
     <script>
         {% if is_granted('ROLE_ORGANIZER') %}
-        openNav();
+        organizerResponsive();
         {% endif %}
+        panelCategoriesHeight();
+        loaderStop();
     </script>
 {% endblock %}

@@ -16,53 +16,30 @@
         <div class="date">{{ race.dateTime|localizeddate('none', 'none', 'fr_BR', null, "cccc d MMMM") }} {{ race.dateTime|date('H') }}
             H {{ race.dateTime|date('i') }}</div>
 
-{#        <div class="col-xs-8 col-lg-7 race-location">
-            <a div="panel-race-competition" href="#"
-               onclick="location.href = '{{ path('competition_show', {'id':race.competition.id} ) }}';">{{ race.competition.name }}</a><br><br>
-            <span style="text-align: center" class="col-xs-12">
-                            {{ race.competition.location.street }}<br>
-                {{ race.competition.location.postCode }} {{ race.competition.location.city }}
-                        </span>
-        </div>#}
-
-        <div class="col-xs-7">
-            <div class="location">
-                {{ race.competition.location.street }}<br>
-                {{ race.competition.location.postCode }} {{ race.competition.location.city }}
+        <div class="col-xs-12">
+            <div class="col-xs-7 location-container" value="{{ race.id }}">
+                <div class="location col-xs-12">
+                    {{ race.competition.location.street }}<br>
+                    {{ race.competition.location.postCode }} {{ race.competition.location.city }}
+                </div>
+                <div class="competition-link col-xs-12">
+                    <a href='{{ path('competition_show', {'id':race.competition.id} ) }}'><span
+                                class="glyphicon glyphicon-circle-arrow-left"></span></a>
+                    <span class="">{{ race.competition.name }}</span>
+                </div>
+            </div>
+            <div class="col-xs-5">
+                {% if race.fullCat %}
+                    <div class="category-all">toutes catégories</div>
+                {% else %}
+                    <div data-simplebar id="categories-{{ race.id }}"  class="categories">
+                        {% for category in race.categories %}
+                            <div><span class="glyphicon glyphicon-arrow-right"></span> {{ category.name }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
         </div>
-
-{#        <div class="col-xs-4 panel-categories-container">
-            {% if race.fullCat %}
-                <div class="panel-category-all">
-                    toutes catégories
-                </div>
-            {% else %}
-                <div data-simplebar class="panel-categories">
-                    {% for category in race.categories %}
-                        <span>{{ category.name }}</span><br>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>#}
-
-        <div class="col-xs-5 categories-container">
-            {% if race.fullCat %}
-                <div class="category-all ">toutes catégories</div>
-            {% else %}
-                <div data-simplebar class="categories">
-                    {% for category in race.categories %}
-                        <div><span class="glyphicon glyphicon-arrow-right"></span> {{ category.name }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="competition-link">
-            <a href='{{ path('competition_show', {'id':race.competition.id} ) }}'><span class="glyphicon glyphicon-circle-arrow-left"></span></a>
-            <span class="">{{ race.competition.name }}</span>
-        </div>
-
     </div>
     <div class="panel-footer">
         <input type="button" class="btn-xs btn-info" value="Détail"

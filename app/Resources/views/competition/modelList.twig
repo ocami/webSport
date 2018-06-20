@@ -13,28 +13,27 @@
     </div>
     <div class="panel-body">
         <div class="date">Du {{ competition.dateStart|date("d/m") }} au {{ competition.dateEnd|date("d/m/Y") }}</div>
-
-        <div class="col-xs-7 location">
-            <div class="location">
-                {{ competition.location.street }}<br>
-                {{ competition.location.postCode }} {{ competition.location.city }}
+        <div class="col-xs-12">
+            <div class="col-xs-7 location-container" value="{{ competition.id }}">
+                <div class="location">
+                    {{ competition.location.street }}<br>
+                    {{ competition.location.postCode }} {{ competition.location.city }}
+                </div>
+                <div class="nbRace">{{ competition.nbValidRaces }} courses</div>
             </div>
-            <div class="nbRace">{{ competition.nbValidRaces }} courses</div>
-        </div>
-
-
-        <div class="col-xs-5 categories-container">
-            {% if competition.fullCat %}
-                <div class="category-all ">toutes catégories</div>
-            {% else %}
-                <div data-simplebar class="categories">
+            <div class="col-xs-5">
+                {% if competition.fullCat %}
+                <div class="category-all">toutes catégories</div>
+                {% else %}
+                <div data-simplebar id="categories-{{ competition.id }}" class="categories">
                     {% for category in competition.categories %}
                         <div><span class="glyphicon glyphicon-arrow-right"></span> {{ category.name }}</div>
                     {% endfor %}
                 </div>
-            {% endif %}
+                {% endif %}
+            </div>
         </div>
-        <span class="col-xs-12 organizer">Organisé par {{ competition.organizer.name }}</span>
+        <span class="col-xs-12 organizer">Orga : {{ competition.organizer.name }}</span>
 
     </div>
     <div class="panel-footer">

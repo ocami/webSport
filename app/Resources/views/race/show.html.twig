@@ -3,78 +3,6 @@
     {% block stylesheets %}
         {{ parent() }}
         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"/>
-
-        <style>
-            #tables {
-                min-height: 10em;
-            }
-
-            #race-show-categories button {
-                width: 11em;
-                margin-bottom: 1em;
-                /*margin: 0em 1em 1em 0em;*/
-            }
-
-            .row-ranck {
-                text-align: center;
-            }
-
-            .profile-href {
-                cursor: zoom-in;
-                color: #1b6d85;
-            }
-
-            .race-show .list-group-item {
-                padding: 0em 1em 0em 1em;
-            }
-
-            .race-show .panel-group {
-                margin: 0em;
-                padding: 0em 0.5em 0em 0.5em;
-            }
-
-            .race-show .panel-heading {
-                padding: 0.1em 1em 0.1em 1em;
-                text-align: center;
-                font-size: 1em;
-            }
-
-            .race-show .btn-general {
-                font-size: 1em;
-                margin: 0em;
-                padding: 0em 0.5em 0em 0.5em;
-            }
-
-            #race-show-panel-categories {
-                padding: 0em;
-            }
-
-            #race-show-panel-categories * {
-
-            }
-
-            @media (max-width: 435px) {
-                #race-show-categories {
-                    display: none;
-                }
-
-                #race-show-panel-categories {
-                    display: block;
-                }
-            }
-
-            @media (min-width: 435px) {
-                #race-show-categories {
-                    display: block;
-                }
-
-                #race-show-panel-categories {
-                    display: none;
-                }
-            }
-
-        </style>
-
     {% endblock %}
 
     {% block title %}
@@ -218,7 +146,7 @@
         {% block ranck_race %}
             <br>
             <div id="loader-div"></div>
-            <div id="tables" class="row">
+            <div id="show-race-tables" class="row">
                 <div id="table-race-container" class="col-xs-12">
                     <table id="table-race" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
@@ -254,13 +182,11 @@
                 inchampionship = true;
             }{% endif %}
 
-            raceShow(race, inchampionship);
-
             {% if is_granted('ROLE_ORGANIZER') %}
-            openNav();
+            organizerResponsive();
             {% endif %}
 
-
+            raceShow(race, inchampionship);
         </script>
 
     {% endblock %}

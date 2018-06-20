@@ -9,13 +9,15 @@
 
 {% block body %}
 
+    {{ 0|loader }}
+
     <button class="btn-xs btn-primary pull-right" id="competition-list-button" value="passed">
         Compétitions passées
     </button>
 
     <h4 id="competition-list-title">Compétitions à venir</h4>
 
-    <div id="future-competition" style="display: block;">
+    <div id="future-competition">
         {% for competition in competitions.future %}
             <div class="col-sm-offset-1 col-sm-10 col-md-offset-0 col-md-6">
                 {% include 'competition/modelList.twig' %}
@@ -23,7 +25,9 @@
         {% endfor %}
     </div>
 
-    <div id="passed-competition" style="display: none;">
+    <div id="passed-competition">
+        <h4 id="competition-list-title-passed">Compétitions passées</h4>
+
         {% for competition in competitions.passed %}
             <div class="col-sm-offset-1 col-sm-10 col-md-offset-0 col-md-6">
                 {% include 'competition/modelList.twig' %}
@@ -35,10 +39,10 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        competitionShowList();
         {% if is_granted('ROLE_ORGANIZER') %}
-        openNav();
+        organizerResponsive();
         {% endif %}
+        competitionShowList();
     </script>
 
 {% endblock %}

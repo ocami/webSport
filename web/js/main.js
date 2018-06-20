@@ -481,13 +481,21 @@ function competitionShowList() {
     var futureCompetitions = $('#future-competition');
     var passedCompetitons = $('#passed-competition');
 
+    //init
+    panelCategoriesHeight();
+    loaderStop();
+
+    //event
     btnCompetitionPassed.click(function () {
+        $('#competition-list-title-passed').hide();
+
         if (btnCompetitionPassed.val() == 'future')
             competitionDisplayNoPassed();
         else
             competitionDisplayPassed();
     });
 
+    //function
     function competitionDisplayPassed() {
         btnCompetitionPassed.text("Compétitions à venir");
         title.text("Compétitions passées");
@@ -736,7 +744,6 @@ function raceShow(race, inchampionship) {
 
         loaderDivStop(container);
         $('html, body').animate({scrollTop: $(container).offset().top}, 750);
-
 
         function raceOpenOptions() {
             options.columns = [
@@ -1486,11 +1493,12 @@ function searchLayout() {
 
     //init
     searchBarRace();
-
     if ($(window).width() <= 751) {
-        // $('#left-container').hide();
         $('#index-container').css('margin-left', '0em')
     }
+    panelCategoriesHeight();
+    loaderStop();
+
 
     var $indexContent = $('#index-content');
     var $smallMap = $('#small-map');
@@ -1788,8 +1796,8 @@ $('#info-button').click(function () {
 });
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////PLUG-IN///////////////////////////////////////////////////////////////
+
+//********************************************/PLUG-IN/****************************************************************/
 
 //$locationForm plug-in/////////////////////////////////////////////////////////////////////////////////////////////////
 (function ($) {
@@ -2257,9 +2265,6 @@ $('#info-button').click(function () {
 }(jQuery));
 
 function organizerResponsive() {
-
-    console.log('organizerResponsive');
-
     checkElements();
 
     $(window).resize(function () {
@@ -2289,10 +2294,11 @@ $(window).resize(function () {
     console.log($(window).width());
 });
 
+function panelCategoriesHeight() {
+    $('.location-container').each(function () {
+        var heigth = $(this).height();
+        var id = $(this).attr('value');
 
-
-
-
-
-
-
+        $('#categories-'+id).css('height',heigth+'px');
+    });
+}
