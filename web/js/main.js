@@ -1750,7 +1750,7 @@ function ajaxError() {
 
 //***********************************************/PLUG-IN/*************************************************************/
 
-//$locationForm plug-in//////
+//locationForm plug-in//////
 (function ($) {
 
     var $output;

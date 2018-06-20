@@ -1,123 +1,99 @@
-@media (max-width: 450px){
+#main {
+    transition: margin-left .5s;
+}
+
+/***********************************************--PAGES--**************************************************************/
+
+/*home/index.html.twig***********************************/
+    @media (max-width: 450px){
     #index h2{
         font-size: 1.5em;
     }
 }
 
+/*race/show.html.twig************************************/
+    /*categories**/
+    .race-show .list-group-item {
+        padding: 0em 1em 0em 1em;
+    }
 
-/* search-bar ******************************************************************************************************* */
-#search-bar .panel-heading {
-    height: 1.5em;
-    padding: 0em;
-}
+    .race-show .panel-group {
+        margin: 0em;
+        padding: 0em 0.5em 0em 0.5em;
+    }
 
-#search-bar .panel-title .glyphicon {
-    margin: 0.2em 1em 0em 1em;
-}
+    .race-show .btn-general {
+        font-size: 1em;
+        margin: 0em;
+        padding: 0em 0.5em 0em 0.5em;
+    }
 
-#search-bar .no-padding > [class*='col-'] {
-    max-height: 1em;
-}
+    #race-show-panel-categories {
+        padding: 0em;
+    }
 
-#search-bar .switchContainer {
-    padding-top: 0.2em;
-}
+    #race-show-panel-categories * {
 
-#search-bar .panel-heading {
-    height: 1.5em;
-    padding: 0em;
-}
+    }
 
-#search-bar .dep-container {
-    padding: 1em 0em 0em 0.5em;
-}
+    @media (max-width: 435px) {
+        #race-show-categories {
+            display: none;
+        }
 
-#search-bar .cb-heading {
-    z-index: 100;
-}
+        #race-show-panel-categories {
+            display: block;
+        }
+    }
 
-#search-bar .panel-group {
-    margin-bottom: 1em;
-}
+    @media (min-width: 435px) {
+        #race-show-categories {
+            display: block;
+        }
 
-/* modal competitor info ******************************************************************************************** */
-#competitor-modal input.hidden {
-    position: absolute;
-    left: -9999px;
-}
+        #race-show-panel-categories {
+            display: none;
+        }
+    }
 
-#competitor-modal #profile-image1 {
-    cursor: pointer;
+    /**table**/
+    #show-race-tables {
+        min-height: 10em;
+    }
 
-    width: 100px;
-    height: 100px;
-    border: 2px solid #03b1ce;
-}
+    #show-race-tables .row-ranck {
+        text-align: center;
+    }
 
-#competitor-modal .tital {
-    font-size: 16px;
-    font-weight: 500;
-}
+    #show-race-tables .profile-href {
+        cursor: zoom-in;
+        color: #1b6d85;
+    }
 
-#competitor-modal .bot-border {
-    border-bottom: 1px #f8f8f8 solid;
-    margin: 5px 0 5px 0
-}
+    #race-show-categories button {
+        width: 11em;
+        margin-bottom: 1em;
+        /*margin: 0em 1em 1em 0em;*/
+    }
 
-#competitor-modal .modal-content {
-    height: 0px;
-}
+/**admin/races.html.twig*******************************************************************/
+    #admin-race-categories button {
+        margin-bottom: 1em;
+    }
 
-/* nav bar general ************************************************************************************************** */
-#navbar-general .dropdown-menu {
-    z-index: 9999;
-}
+    #admin-races-table .stringDate {
+        visibility: hidden;
+    }
 
-#navbar-general .badge {
-    padding: 1px 9px 2px;
-    font-size: 12.025px;
-    font-weight: bold;
-    white-space: nowrap;
-    color: #ffffff;
-    background-color: #999999;
-    -webkit-border-radius: 9px;
-    -moz-border-radius: 9px;
-    border-radius: 9px;
-}
+    #admin-races-table img{
+        height: 1.5em;
+    }
 
-#navbar-general .badge:hover {
-    color: #ffffff;
-    text-decoration: none;
-    cursor: pointer;
-}
+    #admin-races-table .distance{
+        text-align: center;
+    }
 
-#navbar-general .badge-warning {
-    background-color: #a91c1f;
-}
-
-#navbar-general .badge-warning:hover {
-    background-color: #c6504b;
-}
-
-#navbar-general .badge-success {
-    background-color: #468847;
-}
-
-#navbar-general .badge-success:hover {
-    background-color: #356635;
-}
-
-#navbar-general .title {
-    color: #3845ff;
-    margin-left: 0.5em;
-}
-
-hr {
-    margin: 0em;
-}
-
-/**index INFO**********************************************************************************************************/
-
+/***********************************************--ACTU--***************************************************************/
 .info-img {
     max-width: 8em;
     max-height: 8em;
@@ -155,7 +131,36 @@ div#fade-content {
     max-height: 200px;
 }
 
-/**all panel***********************************************************************************************************/
+/***********************************************--MODAL--**************************************************************/
+#competitor-modal input.hidden {
+    position: absolute;
+    left: -9999px;
+}
+
+#competitor-modal #profile-image1 {
+    cursor: pointer;
+
+    width: 100px;
+    height: 100px;
+    border: 2px solid #03b1ce;
+}
+
+#competitor-modal .tital {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+#competitor-modal .bot-border {
+    border-bottom: 1px #f8f8f8 solid;
+    margin: 5px 0 5px 0
+}
+
+#competitor-modal .modal-content {
+    height: 0px;
+}
+
+/***********************************************--PANEL--**************************************************************/
+/**all panel*****************************/
 @media (max-width: 450px){
     .panel-header-img img {
         height: 1.5em;
@@ -174,11 +179,20 @@ div#fade-content {
     }
 }
 
+.panel-heading {
+    border-bottom: 0px;
+}
+
 .panel-footer-img img {
     height: 1.8em;
 }
 
-    /**model-panel**************************/
+    /*== model-panel============================= */
+    /********************************************
+    /    use in :
+    /    competition/modelList.html.twig
+    /    race/modelList.html.twig
+    /*******************************************/
     .simplebar-content {
         overflow-x: hidden;
     }
@@ -317,6 +331,10 @@ div#fade-content {
     }
 
         /**model-panel-race**/
+        /********************************************
+        /    use in :
+        /    race/modelList.html.twig
+        /*******************************************/
         @media (max-width: 450px){
             .panel-model .distance {
                 font-size: 0.9em;
@@ -350,7 +368,13 @@ div#fade-content {
             color: #b5d7a5;
         }
 
-    /**show-panel****************************/
+    /* == show-panel ========================== */
+    /********************************************
+    /    use in :
+    /    competition/show.html.twig
+    /    race/show.html.twig
+    /    admin/races.html.twig
+    /*******************************************/
     @media (max-width: 350px){
 
         .panel-show .panel-heading {
@@ -482,92 +506,58 @@ div#fade-content {
         }
     }
 
-/*race-show************************************************************************************************************/
-    /*categories**/
-    .race-show .list-group-item {
-        padding: 0em 1em 0em 1em;
-    }
-
-    .race-show .panel-group {
-        margin: 0em;
-        padding: 0em 0.5em 0em 0.5em;
-    }
-
-    .race-show .btn-general {
-        font-size: 1em;
-        margin: 0em;
-        padding: 0em 0.5em 0em 0.5em;
-    }
-
-    #race-show-panel-categories {
-        padding: 0em;
-    }
-
-    #race-show-panel-categories * {
-
-    }
-
-    @media (max-width: 435px) {
-        #race-show-categories {
-            display: none;
-        }
-
-        #race-show-panel-categories {
-            display: block;
-        }
-    }
-
-    @media (min-width: 435px) {
-        #race-show-categories {
-            display: block;
-        }
-
-        #race-show-panel-categories {
-            display: none;
-        }
-    }
-
-    /**table**/
-    #show-race-tables {
-        min-height: 10em;
-    }
-
-    #show-race-tables .row-ranck {
-        text-align: center;
-    }
-
-    #show-race-tables .profile-href {
-        cursor: zoom-in;
-        color: #1b6d85;
-    }
-
-    #race-show-categories button {
-        width: 11em;
-        margin-bottom: 1em;
-        /*margin: 0em 1em 1em 0em;*/
-    }
-
-/**admin/races*******************************************************************/
-#admin-race-categories button {
-    margin-bottom: 1em;
-}
-
-#admin-races-table .stringDate {
-    visibility: hidden;
-}
-
-#admin-races-table img{
-    height: 1.5em;
-}
-
-#admin-races-table .distance{
-    text-align: center;
-}
-
-/**Sidenav-organizer organizer****************************************************************************************/
+/***********************************************--NAV BAR--************************************************************/
 #navbar-general {
     z-index: 2;
 }
+
+#navbar-general .dropdown-menu {
+    z-index: 9999;
+}
+
+#navbar-general .badge {
+    padding: 1px 9px 2px;
+    font-size: 12.025px;
+    font-weight: bold;
+    white-space: nowrap;
+    color: #ffffff;
+    background-color: #999999;
+    -webkit-border-radius: 9px;
+    -moz-border-radius: 9px;
+    border-radius: 9px;
+}
+
+#navbar-general .badge:hover {
+    color: #ffffff;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#navbar-general .badge-warning {
+    background-color: #a91c1f;
+}
+
+#navbar-general .badge-warning:hover {
+    background-color: #c6504b;
+}
+
+#navbar-general .badge-success {
+    background-color: #468847;
+}
+
+#navbar-general .badge-success:hover {
+    background-color: #356635;
+}
+
+#navbar-general .title {
+    color: #3845ff;
+    margin-left: 0.5em;
+}
+
+#navbar-general hr {
+    margin: 0em;
+}
+
 
 .sidenav-open {
     cursor: pointer;
@@ -587,7 +577,6 @@ div#fade-content {
     background-color: #ffffff;
     overflow-x: hidden;
     transition: 0.5s;
-    /*padding-top: 60px;*/
 }
 
 .sidenav-organizer .content {
@@ -600,16 +589,80 @@ div#fade-content {
     width: 10em;
 }
 
-#main {
-    transition: margin-left .5s;
+/***********************************************--SEARCH BAR--*********************************************************/
+#search-bar .panel-heading {
+    height: 1.5em;
+    padding: 0em;
 }
 
-/**Bootstrap*******************************************************************************************************/
-.panel-heading {
-    border-bottom: 0px;
+#search-bar .panel-title .glyphicon {
+    margin: 0.2em 1em 0em 1em;
 }
 
-/*jQuery UI autocomplete for bootstrap*/
+#search-bar .no-padding > [class*='col-'] {
+    max-height: 1em;
+}
+
+#search-bar .switchContainer {
+    padding-top: 0.2em;
+}
+
+#search-bar .panel-heading {
+    height: 1.5em;
+    padding: 0em;
+}
+
+#search-bar .dep-container {
+    padding: 1em 0em 0em 0.5em;
+}
+
+#search-bar .cb-heading {
+    z-index: 100;
+}
+
+#search-bar .panel-group {
+    margin-bottom: 1em;
+}
+
+/***********************************************--LOADER--*************************************************************/
+#full-page {
+    height: 90vh;
+    width: 100%;
+    position: absolute;
+    background-color: #FFFFFF;
+    z-index: 999;
+    overflow: visible;
+    left: 0;
+    top: 4em;
+}
+
+#loader-full {
+    height: 55vh; /* equals max image height */
+    width: 100%;
+    white-space: nowrap; /* this is required unless you put the helper span closely near the img */
+    text-align: center;
+    margin: 1em 0;
+    z-index: 999;
+    overflow: visible;
+    background: #ffffff url('https://loading.io/spinners/fidget-spinner/lg.fidget-spinner.gif') no-repeat center center;
+    background-size: 20%;
+}
+
+#loader-div {
+    height: 55vh; /* equals max image height */
+    width: 100%;
+    white-space: nowrap; /* this is required unless you put the helper span closely near the img */
+    text-align: center;
+    margin: 1em 0;
+    z-index: 998;
+    overflow: visible;
+    background: #ffffff url('https://media.giphy.com/media/xUPGciElNYVE4PKc4o/giphy.gif') no-repeat center center;
+    background-size: 65%;
+    display: none;
+}
+
+/***********************************************--LocationForm plug-in--***********************************************/
+/*autocomplete */
 .ui-autocomplete {
     position: absolute;
     top: 100%;
@@ -660,24 +713,13 @@ div#fade-content {
     background-image: none;
 }
 
+/*map */
 #location-map {
     height: 180px;
     margin-bottom: 1em;
 }
 
-/**Location form*******************************************************************************************************/
-#full-page {
-    height: 90vh;
-    width: 100%;
-    position: absolute;
-    background-color: #FFFFFF;
-    z-index: 999;
-    overflow: visible;
-    left: 0;
-    top: 4em;
-}
-
-/* ocmDateTime ********************************************************************************************************/
+/***********************************************--ocmDateTime plug-in--************************************************/
 #ocm-dt-time, .time-input .n2 {
     padding: 0 !important;
     margin: 2em 0 1em 0 !important;
@@ -708,30 +750,4 @@ div#fade-content {
 #ocm-dt-time .calendar-show {
     width: 200px;
     margin: auto;
-}
-
-/**Loader**************************************************************************************************************/
-#loader-full {
-    height: 55vh; /* equals max image height */
-    width: 100%;
-    white-space: nowrap; /* this is required unless you put the helper span closely near the img */
-    text-align: center;
-    margin: 1em 0;
-    z-index: 999;
-    overflow: visible;
-    background: #ffffff url('https://loading.io/spinners/fidget-spinner/lg.fidget-spinner.gif') no-repeat center center;
-    background-size: 20%;
-}
-
-#loader-div {
-    height: 55vh; /* equals max image height */
-    width: 100%;
-    white-space: nowrap; /* this is required unless you put the helper span closely near the img */
-    text-align: center;
-    margin: 1em 0;
-    z-index: 998;
-    overflow: visible;
-    background: #ffffff url('https://media.giphy.com/media/xUPGciElNYVE4PKc4o/giphy.gif') no-repeat center center;
-    background-size: 65%;
-    display: none;
 }
