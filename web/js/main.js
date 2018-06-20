@@ -1,248 +1,6 @@
-var language = {
-    "search": "Rechercher:",
-    "lengthMenu": "Voir _MENU_ compétiteurs  par page",
-    "zeroRecords": "Aucune inscription",
-    "paginate": {
-        "first": "Premier",
-        "last": "Dernier",
-        "next": "Suivant",
-        "previous": "précédent"
-    }
-};
 var windowsSize = $(window).width();
 
-/***********************************************************************************************************************
- /   navbar/general.html.twig
- /**********************************************************************************************************************/
-function navbarBadgeAdmin() {
-    if (windowsSize > 800) {
-        var path = Routing.generate('race_countNotSupervised');
-        $.ajax({
-            url: path,
-            dataType: "json",
-            success: function (data) {
-                var badge = $('#badge');
-                badge.text(data);
-
-                if (data == 0) {
-                    badge.attr({
-                        "title": "Pas de nouvelle course à valider",
-                        "class": "badge badge-success"
-                    });
-                } else {
-                    badge.attr({
-                        "title": "Nouvelles courses à valider",
-                        "class": "badge badge-warning"
-                    });
-                }
-            },
-            error: function () {
-                ajaxError();
-            }
-        });
-    }
-}
-
-/***********************************************************************************************************************
- /   home/index.html.twig
- /**********************************************************************************************************************/
-function homeIndex() {
-    loaderStart();
-
-    // map leaflet**************************************************************************************************>
-    var osmLayer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-        maxZoom: 18
-    });
-    var watercolorLayer = L.tileLayer('http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg', {
-        attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-        maxZoom: 18
-    });
-
-    // icon**************************************************************************************************>
-    var pastIcon = L.icon({
-        iconUrl: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/256/Map-Marker-Marker-Outside-Pink-icon.png',
-        iconSize: [30, 30],
-        iconAnchor: [11, 31],
-        popupAnchor: [5, -25],
-
-    });
-    var futureIcon = L.icon({
-        iconUrl: 'http://www.iconarchive.com/download/i57834/icons-land/vista-map-markers/Map-Marker-Marker-Outside-Chartreuse.ico',
-        iconSize: [30, 30],
-        iconAnchor: [11, 31],
-        popupAnchor: [5, -25],
-
-    });
-
-
-    // data********************************************************************************************************>
-    var path = Routing.generate('competition_get_geojson');
-
-    $.ajax({
-        url: path,
-        success: function (data) {
-            mapConstructor(data);
-        },
-        error: function () {
-            ajaxError();
-        }
-    });
-
-    function mapConstructor(data) {
-
-        //Build layers **************************************************************************************************>
-        var FuturCompetitionLayer = layerBuild(data.futureCompetitions, pastIcon);
-        var PastCompetitionLayer = layerBuild(data.pastCompetitions, futureIcon);
-
-        //Build map **************************************************************************************************>
-        var map = L.map('indexMap', {
-            center: [46.52863469527167, 2.43896484375],
-            zoom: 5,
-            layers: [osmLayer, PastCompetitionLayer, FuturCompetitionLayer]
-        });
-
-        //Layers Control **************************************************************************************************>
-        var baseMaps = {
-            "osmLayer": osmLayer,
-            "watercolorLayer": watercolorLayer
-        };
-        var overlayMaps = {
-            "A venir": FuturCompetitionLayer,
-            "Passées": PastCompetitionLayer
-        };
-
-        L.control.layers(baseMaps, overlayMaps).addTo(map);
-
-        loaderStop();
-    }
-
-    function layerBuild(data, icon) {
-        return L.geoJSON(data, {
-            pointToLayer: function (geoJsonPoint, latlng) {
-                return L.marker(latlng, {icon: icon});
-            }
-        }).bindPopup(function (layer) {
-            return layer.feature.properties.description;
-        });
-    }
-}
-
-/***********************************************************************************************************************
- /   modal/profile_competitor.html.twig
- /**********************************************************************************************************************/
-function navbarCompetitorProfile() {
-    var $profile = $('#profile-href');
-
-    $profile.click(function () {
-        var user = $(this).attr("data");
-        profilData(user);
-
-    });
-}
-
-function profilData(user) {
-
-    var path = Routing.generate('competitor_json_userId', {userId: user});
-
-    $.ajax({
-        url: path,
-        success: function (data) {
-            $('#profile-name').text(data.firstName + ' ' + data.lastName);
-            $('#profile-category').text(data.category);
-            $('#profile-age').text(data.age + ' ans');
-        },
-        error: function () {
-            ajaxError();
-        }
-    });
-}
-
-/***********************************************************************************************************************
- /   championship/show.html.twig
- /
- /**********************************************************************************************************************/
-function championshipShow(category) {
-    var $btnCategories = $('#championship-show-categories').find('button');
-    var $container = $('#table');
-
-    var options = {
-        destroy: true,
-        language: language,
-        bInfo: false,
-        order: [[0, "asc"]]
-    };
-    options.columns = [
-        {data: 'ranck', className: "row-ranck"},
-        {
-            "data": "lastName",
-            "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
-            }
-        },
-        {
-            "data": "firstName",
-            "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
-            }
-        },
-        {data: 'points', className: "row-ranck"},
-    ];
-    options.columnDefs = [
-        {
-            targets: 0,
-            width: "5%"
-        },
-        {
-            targets: 3,
-            width: "5%"
-        }
-    ];
-
-    //inti
-    ranckTable(category);
-
-    //Envents
-    $btnCategories.click(function () {
-
-        ranckTable($(this).val());
-        $btnCategories.attr('class', 'btn-xs btn-info col-xs-12');
-        $(this).attr('class', 'btn-xs btn-primary col-xs-12');
-    });
-
-    $('.profile-href').click(function () {
-        var user = $(this).attr("data");
-        profilData(user);
-    });
-
-    function ranckTable(category) {
-        loaderDivStart($container);
-
-        var path = Routing.generate('championship_json', {
-            idCategory: category
-        });
-
-        $.ajax({
-            url: path,
-            success: function (data) {
-                displayTable(data, category);
-            },
-            error: function () {
-                ajaxError();
-            }
-        });
-    }
-
-    function displayTable(data, category) {
-        options.data = data;
-
-        $('#table-championship').DataTable(options);
-        loaderDivStop($container);
-        loaderStop();
-    }
-
-}
-
+//***********************************************/OTHER/***************************************************************/
 /***********************************************************************************************************************
  /   admin/races.html.twig
  /
@@ -513,128 +271,18 @@ function competitionShowList() {
     }
 };
 
-/***********************************************************************************************************************
- /   competition\new.html.twig
- /**********************************************************************************************************************/
-function competitionFormDates() {
-    var inputDateStart = $('#appbundle_competition_dateStart');
-    var inputDateEnd = $('#appbundle_competition_dateEnd');
-    var dpStart = $('#dpStart');
-    var dpEnd = $('#dpEnd');
-
-    $('.datepicker').datepicker({
-        language: 'fr',
-        format: 'dd-mm-yyyy',
-        todayBtn: 'linked',
-        autoclose: true,
-    });
-
-    if (inputDateStart.val().length !== 0)
-        dpStart.datepicker('update', parseDateUsToFr(inputDateStart.val()));
-
-    if (inputDateEnd.val().length !== 0)
-        dpEnd.datepicker('update', parseDateUsToFr(inputDateEnd.val()));
-
-    dpStart.on('changeDate', function () {
-        var startDate = parseDateFrToUs(dpStart.datepicker('getFormattedDate'));
-        inputDateStart.val(startDate);
-        inputDateStart.trigger('change');
-        dpEnd.datepicker(
-            'setStartDate', dpStart.datepicker('getDate')
-        );
-    });
-
-    dpEnd.on('changeDate', function () {
-        var startDate = parseDateFrToUs(dpEnd.datepicker('getFormattedDate'));
-        inputDateEnd.val(startDate);
-        inputDateEnd.trigger('change');
-        dpStart.datepicker(
-            'setEndDate', dpEnd.datepicker('getDate')
-        );
-    });
-}
-
-/***********************************************************************************************************************
- /   race\new.html.twig
- /**********************************************************************************************************************/
-function raceDistance() {
-    $('#distance-widget').change(function () {
-        $('#appbundle_race_distance').val($('#distance-widget').val())
-    })
-}
-
-function raceCategories() {
-    var cbAllCat = $('#cbCategories-all');
-    var cbOnce = $('#category-once input');
-    var cbChamp = $('#cb-championship');
-    var catInput = $('#appbundle_race_categoriesString');
-    var champCheck = $('#appbundle_race_requestInChampionship');
-    var categories;
-
-    // Initalize
-    $("#race-form-categories input").checkboxradio();
-    if (catInput.val())
-        categoriesUpdate();
-
-    if ($('#appbundle_race_requestInChampionship').prop('checked'))
-        $('#cb-championship').prop('checked', true).checkboxradio('refresh');
-
-    //events
-    cbChamp.click(function () {
-        if (this.checked)
-            champCheck.prop('checked', true);
-        else
-            champCheck.prop('checked', false);
-    });
-
-    cbAllCat.click(function () {
-        if (this.checked)
-            cbOnce.prop('checked', true).checkboxradio('refresh');
-        else
-            cbOnce.prop('checked', false).checkboxradio('refresh');
-
-        categoriesChange();
-    });
-
-    cbOnce.click(function () {
-        categoriesChange()
-    });
-
-    //functions
-    function categoriesUpdate() {
-        var oldCategories = $.parseJSON(catInput.val());
-
-        cbOnce.each(function () {
-            if (oldCategories.includes($(this).val()))
-                $(this).prop('checked', true).checkboxradio('refresh');
-        });
-
-        categoriesChange();
+//***********************************************/TABLES/**************************************************************/
+var language = {
+    "search": "Rechercher:",
+    "lengthMenu": "Voir _MENU_ compétiteurs  par page",
+    "zeroRecords": "Aucune inscription",
+    "paginate": {
+        "first": "Premier",
+        "last": "Dernier",
+        "next": "Suivant",
+        "previous": "précédent"
     }
-
-    function categoriesChange() {
-        var i = 0;
-        categories = [];
-        cbOnce.each(function () {
-            i++;
-            if (this.checked)
-                categories.push($(this).val());
-        });
-
-        if (categories.length < i)
-            cbAllCat.prop('checked', false).checkboxradio('refresh');
-
-        if (categories.length === i)
-            cbAllCat.prop('checked', true).checkboxradio('refresh');
-
-        if (categories.length > 0)
-            catInput.val(JSON.stringify(categories));
-        else
-            catInput.val('');
-
-        catInput.trigger('change');
-    }
-}
+};
 
 /***********************************************************************************************************************
  /   race\show.html.twig
@@ -651,8 +299,6 @@ function raceShow(race, inchampionship) {
     //init
     $(document).ready(function () {
         ranckTable('all');
-
-
     });
 
     //events
@@ -970,8 +616,411 @@ function raceShow(race, inchampionship) {
 }
 
 /***********************************************************************************************************************
- /   searchBarRace
+ /   championship/show.html.twig
+ /
  /**********************************************************************************************************************/
+function championshipShow(category) {
+    var $btnCategories = $('#championship-show-categories').find('button');
+    var $container = $('#table');
+
+    var options = {
+        destroy: true,
+        language: language,
+        bInfo: false,
+        order: [[0, "asc"]]
+    };
+    options.columns = [
+        {data: 'ranck', className: "row-ranck"},
+        {
+            "data": "lastName",
+            "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
+            }
+        },
+        {
+            "data": "firstName",
+            "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
+            }
+        },
+        {data: 'points', className: "row-ranck"},
+    ];
+    options.columnDefs = [
+        {
+            targets: 0,
+            width: "5%"
+        },
+        {
+            targets: 3,
+            width: "5%"
+        }
+    ];
+
+    //inti
+    ranckTable(category);
+
+    //Envents
+    $btnCategories.click(function () {
+
+        ranckTable($(this).val());
+        $btnCategories.attr('class', 'btn-xs btn-info col-xs-12');
+        $(this).attr('class', 'btn-xs btn-primary col-xs-12');
+    });
+
+    $('.profile-href').click(function () {
+        var user = $(this).attr("data");
+        profilData(user);
+    });
+
+    function ranckTable(category) {
+        loaderDivStart($container);
+
+        var path = Routing.generate('championship_json', {
+            idCategory: category
+        });
+
+        $.ajax({
+            url: path,
+            success: function (data) {
+                displayTable(data, category);
+            },
+            error: function () {
+                ajaxError();
+            }
+        });
+    }
+
+    function displayTable(data, category) {
+        options.data = data;
+
+        $('#table-championship').DataTable(options);
+        loaderDivStop($container);
+        loaderStop();
+    }
+
+}
+
+//***********************************************/FORMS/***************************************************************/
+/***********************************************************************************************************************
+ /   FOSUserBundle/views/Registration/register_content.html.twig
+ /**********************************************************************************************************************/
+function registration() {
+    $(function () {
+        var radioBtn = $("#gender-radio input");
+        var genderInput = $('#appbundle_competitor_sexe');
+
+        radioBtn.checkboxradio();
+
+        radioBtn.click(function () {
+            if (this.checked) {
+                genderInput.val($(this).val());
+                genderInput.trigger('change');
+            }
+        });
+    });
+
+    var inputDate = $('#appbundle_competitor_date');
+    var dp = $('#register-form-dp');
+
+    dp.datepicker({
+        language: 'fr',
+        format: 'dd-mm-yyyy',
+        startView: 2,
+        autoclose: true,
+        todayHighlight: true
+    });
+
+
+    dp.on('changeDate', function () {
+        var compDate = parseDateFrToUs(dp.datepicker('getFormattedDate'));
+        inputDate.val(compDate);
+        inputDate.trigger('change');
+
+    });
+}
+
+/***********************************************************************************************************************
+ /   race\new.html.twig
+ /**********************************************************************************************************************/
+function raceDistance() {
+    $('#distance-widget').change(function () {
+        $('#appbundle_race_distance').val($('#distance-widget').val())
+    })
+}
+
+function raceCategories() {
+    var cbAllCat = $('#cbCategories-all');
+    var cbOnce = $('#category-once input');
+    var cbChamp = $('#cb-championship');
+    var catInput = $('#appbundle_race_categoriesString');
+    var champCheck = $('#appbundle_race_requestInChampionship');
+    var categories;
+
+    // Initalize
+    $("#race-form-categories input").checkboxradio();
+    if (catInput.val())
+        categoriesUpdate();
+
+    if ($('#appbundle_race_requestInChampionship').prop('checked'))
+        $('#cb-championship').prop('checked', true).checkboxradio('refresh');
+
+    //events
+    cbChamp.click(function () {
+        if (this.checked)
+            champCheck.prop('checked', true);
+        else
+            champCheck.prop('checked', false);
+    });
+
+    cbAllCat.click(function () {
+        if (this.checked)
+            cbOnce.prop('checked', true).checkboxradio('refresh');
+        else
+            cbOnce.prop('checked', false).checkboxradio('refresh');
+
+        categoriesChange();
+    });
+
+    cbOnce.click(function () {
+        categoriesChange()
+    });
+
+    //functions
+    function categoriesUpdate() {
+        var oldCategories = $.parseJSON(catInput.val());
+
+        cbOnce.each(function () {
+            if (oldCategories.includes($(this).val()))
+                $(this).prop('checked', true).checkboxradio('refresh');
+        });
+
+        categoriesChange();
+    }
+
+    function categoriesChange() {
+        var i = 0;
+        categories = [];
+        cbOnce.each(function () {
+            i++;
+            if (this.checked)
+                categories.push($(this).val());
+        });
+
+        if (categories.length < i)
+            cbAllCat.prop('checked', false).checkboxradio('refresh');
+
+        if (categories.length === i)
+            cbAllCat.prop('checked', true).checkboxradio('refresh');
+
+        if (categories.length > 0)
+            catInput.val(JSON.stringify(categories));
+        else
+            catInput.val('');
+
+        catInput.trigger('change');
+    }
+}
+
+/***********************************************************************************************************************
+ /   competition\new.html.twig
+ /**********************************************************************************************************************/
+function competitionFormDates() {
+    var inputDateStart = $('#appbundle_competition_dateStart');
+    var inputDateEnd = $('#appbundle_competition_dateEnd');
+    var dpStart = $('#dpStart');
+    var dpEnd = $('#dpEnd');
+
+    $('.datepicker').datepicker({
+        language: 'fr',
+        format: 'dd-mm-yyyy',
+        todayBtn: 'linked',
+        autoclose: true,
+    });
+
+    if (inputDateStart.val().length !== 0)
+        dpStart.datepicker('update', parseDateUsToFr(inputDateStart.val()));
+
+    if (inputDateEnd.val().length !== 0)
+        dpEnd.datepicker('update', parseDateUsToFr(inputDateEnd.val()));
+
+    dpStart.on('changeDate', function () {
+        var startDate = parseDateFrToUs(dpStart.datepicker('getFormattedDate'));
+        inputDateStart.val(startDate);
+        inputDateStart.trigger('change');
+        dpEnd.datepicker(
+            'setStartDate', dpStart.datepicker('getDate')
+        );
+    });
+
+    dpEnd.on('changeDate', function () {
+        var startDate = parseDateFrToUs(dpEnd.datepicker('getFormattedDate'));
+        inputDateEnd.val(startDate);
+        inputDateEnd.trigger('change');
+        dpStart.datepicker(
+            'setEndDate', dpEnd.datepicker('getDate')
+        );
+    });
+}
+
+//***********************************************/MODAL/***************************************************************/
+/***********************************************************************************************************************
+ /   modal/profile_competitor.html.twig
+ /**********************************************************************************************************************/
+function navbarCompetitorProfile() {
+    var $profile = $('#profile-href');
+
+    $profile.click(function () {
+        var user = $(this).attr("data");
+        profilData(user);
+
+    });
+}
+
+function profilData(user) {
+
+    var path = Routing.generate('competitor_json_userId', {userId: user});
+
+    $.ajax({
+        url: path,
+        success: function (data) {
+            $('#profile-name').text(data.firstName + ' ' + data.lastName);
+            $('#profile-category').text(data.category);
+            $('#profile-age').text(data.age + ' ans');
+        },
+        error: function () {
+            ajaxError();
+        }
+    });
+}
+
+//***********************************************/PANEL/***************************************************************/
+function panelCategoriesHeight() {
+    $('.location-container').each(function () {
+        var heigth = $(this).height();
+        var id = $(this).attr('value');
+
+        $('#categories-'+id).css('height',heigth+'px');
+    });
+}
+
+//***********************************************/NAV BAR/*************************************************************/
+function organizerNavBar() {
+
+    //init
+    checkElements();
+
+    //events
+    $(window).resize(function () {
+        checkElements();
+    });
+
+    //functions
+    function checkElements() {
+        windowsSize = $(window).width();
+
+        if (windowsSize < 815) {
+            $('#badge').hide();
+            $('.sidenav-open').hide();
+            $('.organizer-content').hide();
+            closeOrganizerNav();
+        }else {
+            $('#badge').show();
+            $('.sidenav-open').show();
+            $('.organizer-content').show();
+            openOrganizerNav();
+        }
+    }
+}
+
+function openOrganizerNav() {
+    if (windowsSize > 815) {
+        document.getElementById("sidenav-organizer").style.width = "11em";
+        document.getElementById("main").style.marginLeft = "11em";
+        $('.sidenav-open').css('display', 'inline');
+    }
+}
+
+function closeOrganizerNav() {
+    document.getElementById("sidenav-organizer").style.width = "0";
+    document.getElementById("main").style.marginLeft = "0";
+}
+
+/***********************************************************************************************************************
+ /   navbar/general.html.twig
+ /**********************************************************************************************************************/
+function navbarBadgeAdmin() {
+    if (windowsSize > 800) {
+        var path = Routing.generate('race_countNotSupervised');
+        $.ajax({
+            url: path,
+            dataType: "json",
+            success: function (data) {
+                var badge = $('#badge');
+                badge.text(data);
+
+                if (data == 0) {
+                    badge.attr({
+                        "title": "Pas de nouvelle course à valider",
+                        "class": "badge badge-success"
+                    });
+                } else {
+                    badge.attr({
+                        "title": "Nouvelles courses à valider",
+                        "class": "badge badge-warning"
+                    });
+                }
+            },
+            error: function () {
+                ajaxError();
+            }
+        });
+    }
+}
+
+//***********************************************/SEARCH BAR/**********************************************************/
+/***********************************************************************************************************************
+ /   race\showSearch.html.twig
+ /**********************************************************************************************************************/
+function showSearch() {
+    var $searchBar = $('#search-bar');
+    var $searchBarXs = $('#search-bar-xs');
+    var $searchButtonXs = $('#button-search-xs');
+    var $searchButton = $('#button-search');
+
+    searchBarWidth();
+
+    $(window).resize(function () {
+        searchBarWidth();
+    });
+
+    function searchBarWidth() {
+        var width = $(window).width();
+
+        if (width <= 751) {
+            $searchButtonXs.before($searchBar);
+            $searchBar.css('margin-top', '0em');
+
+            if (width > 650)
+                $searchBarXs.css('padding', '0em 15em 0em 15em');
+
+            if (width < 650 && width > 500)
+                $searchBarXs.css('padding', '0em 10em 0em 10em');
+
+            if (width < 500 && width > 375)
+                $searchBarXs.css('padding', '0em 5em 0em 5em');
+
+            if (width < 375)
+                $searchBarXs.css('padding', '0em 0.5em 0em 0.5em');
+        }
+        else {
+            $searchButton.after($searchBar);
+            $searchBar.css('margin-top', '16em');
+        }
+
+        loaderStop();
+    }
+}
+
 function searchBarRace() {
 
     var dataSearch = {
@@ -1625,102 +1674,7 @@ function searchLayout() {
 
 }
 
-/***********************************************************************************************************************
- /   race\showSearch.html.twig
- /**********************************************************************************************************************/
-function showSearch() {
-    var $searchBar = $('#search-bar');
-    var $searchBarXs = $('#search-bar-xs');
-    var $searchButtonXs = $('#button-search-xs');
-    var $searchButton = $('#button-search');
-
-    searchBarWidth();
-
-    $(window).resize(function () {
-        searchBarWidth();
-    });
-
-    function searchBarWidth() {
-        var width = $(window).width();
-
-        if (width <= 751) {
-            $searchButtonXs.before($searchBar);
-            $searchBar.css('margin-top', '0em');
-
-            if (width > 650)
-                $searchBarXs.css('padding', '0em 15em 0em 15em');
-
-            if (width < 650 && width > 500)
-                $searchBarXs.css('padding', '0em 10em 0em 10em');
-
-            if (width < 500 && width > 375)
-                $searchBarXs.css('padding', '0em 5em 0em 5em');
-
-            if (width < 375)
-                $searchBarXs.css('padding', '0em 0.5em 0em 0.5em');
-        }
-        else {
-            $searchButton.after($searchBar);
-            $searchBar.css('margin-top', '16em');
-        }
-
-        loaderStop();
-    }
-}
-
-/***********************************************************************************************************************
- /   FOSUserBundle/views/Registration/register_content.html.twig
- /**********************************************************************************************************************/
-function registration() {
-    $(function () {
-        var radioBtn = $("#gender-radio input");
-        var genderInput = $('#appbundle_competitor_sexe');
-
-        radioBtn.checkboxradio();
-
-        radioBtn.click(function () {
-            if (this.checked) {
-                genderInput.val($(this).val());
-                genderInput.trigger('change');
-            }
-        });
-    });
-
-    var inputDate = $('#appbundle_competitor_date');
-    var dp = $('#register-form-dp');
-
-    dp.datepicker({
-        language: 'fr',
-        format: 'dd-mm-yyyy',
-        startView: 2,
-        autoclose: true,
-        todayHighlight: true
-    });
-
-
-    dp.on('changeDate', function () {
-        var compDate = parseDateFrToUs(dp.datepicker('getFormattedDate'));
-        inputDate.val(compDate);
-        inputDate.trigger('change');
-
-    });
-}
-
-// sidenav organizer ///////////////////////////////////////////////////////////////////////////////////////////////////
-function openNav() {
-    if (windowsSize > 815) {
-        document.getElementById("sidenav-organizer").style.width = "11em";
-        document.getElementById("main").style.marginLeft = "11em";
-        $('.sidenav-open').css('display', 'inline');
-    }
-}
-
-function closeNav() {
-    document.getElementById("sidenav-organizer").style.width = "0";
-    document.getElementById("main").style.marginLeft = "0";
-}
-
-//Loader////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//***********************************************/LOADER/**************************************************************/
 function loaderStop() {
     $('#full-page').fadeOut(1000);
 }
@@ -1739,7 +1693,26 @@ function loaderDivStop(divToLoad) {
     divToLoad.show();
 }
 
-//Tools/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//***********************************************/TOOLS/***************************************************************/
+function todayDate() {
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if (dd < 10) {
+        dd = '0' + dd
+    }
+
+    if (mm < 10) {
+        mm = '0' + mm
+    }
+
+    today = yyyy + '-' + mm + '-' + dd;
+
+    return today;
+}
+
 function parseDateFrToUs(date) {
 
     var d = new Date(date.split("-").reverse().join("-"));
@@ -1764,42 +1737,20 @@ function parseDateUsToFr(date) {
     return newdate;
 }
 
-function todayDate() {
-    var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth() + 1; //January is 0!
-    var yyyy = today.getFullYear();
-
-    if (dd < 10) {
-        dd = '0' + dd
-    }
-
-    if (mm < 10) {
-        mm = '0' + mm
-    }
-
-    today = yyyy + '-' + mm + '-' + dd;
-
-    return today;
-}
-
-//ajax error////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function ajaxError() {
     $('#info').css('display', 'block');
     $('#info span').text('Erreur requête ajax');
     loaderStop();
+
+    $('#info-button').click(function () {
+        location.reload();
+        $('#info').css('display', 'none');
+    });
 }
 
-$('#info-button').click(function () {
-    location.reload();
-    $('#info').css('display', 'none');
-});
+//***********************************************/PLUG-IN/*************************************************************/
 
-
-
-//********************************************/PLUG-IN/****************************************************************/
-
-//$locationForm plug-in/////////////////////////////////////////////////////////////////////////////////////////////////
+//$locationForm plug-in//////
 (function ($) {
 
     var $output;
@@ -2161,7 +2112,7 @@ $('#info-button').click(function () {
 
 }(jQuery));
 
-//ocmDateTime plug-in///////////////////////////////////////////////////////////////////////////////////////////////////
+//ocmDateTime plug-in////////
 (function ($) {
 
     var $dateShow = $("<div id='ocm-dt-date-show'></div>");
@@ -2263,42 +2214,3 @@ $('#info-button').click(function () {
 
 
 }(jQuery));
-
-function organizerResponsive() {
-    checkElements();
-
-    $(window).resize(function () {
-        checkElements();
-    });
-
-    function checkElements() {
-        windowsSize = $(window).width();
-
-        if (windowsSize < 815) {
-            /*$('#sidenav-organizer').hide();*/
-            $('#badge').hide();
-            $('.sidenav-open').hide();
-            $('.organizer-content').hide();
-            closeNav();
-        }else {
-            /*$('#sidenav-organizer').show();*/
-            $('#badge').show();
-            $('.sidenav-open').show();
-            $('.organizer-content').show();
-            openNav();
-        }
-    }
-}
-
-$(window).resize(function () {
-    console.log($(window).width());
-});
-
-function panelCategoriesHeight() {
-    $('.location-container').each(function () {
-        var heigth = $(this).height();
-        var id = $(this).attr('value');
-
-        $('#categories-'+id).css('height',heigth+'px');
-    });
-}

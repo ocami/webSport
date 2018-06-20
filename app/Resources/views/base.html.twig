@@ -48,7 +48,7 @@
     {% if is_granted('ROLE_ORGANIZER') %}
         <div id="sidenav-organizer" class="sidenav-organizer">
             <div class="content">
-                <button class="btn-xs btn-default sidenav-close" onclick="closeNav()">Fermer</button>
+                <button class="btn-xs btn-default sidenav-close" onclick="closeOrganizerNav()">Fermer</button>
                 {% block organizer_menu %}
                 {% endblock %}
             </div>

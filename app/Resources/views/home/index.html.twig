@@ -1,7 +1,11 @@
 {% extends 'searchLayout.html.twig' %}
 
  {% block search_content %}
-     <div class="col-md-8">
+     <div id="index" class="col-md-8">
+         <div class="row">
+             <button class="btn-sm btn-link pull-right visible-xs" onclick="searchRaceAll()">Rechercher courses <span
+                         class="glyphicon glyphicon-chevron-right"></span></button>
+         </div>
          <div class="row">
              <h2 style="text-align: center">Prochaines compétitions</h2>
              {% for competition in competitions %}
@@ -9,8 +13,8 @@
              {% endfor %}
          </div>
          <div class="row">
-             <button class="btn-sm btn-link pull-right" onclick="location.href = '{{ path('competition_show_all') }}'">Toutes les compétitions <span class="glyphicon glyphicon-chevron-right"></span></button>
-             <button class="btn-sm btn-link pull-right visible-xs" onclick="searchRaceAll()">Rechercher courses <span class="glyphicon glyphicon-chevron-right"></span></button>
+             <button class="btn-sm btn-link pull-right" onclick="location.href = '{{ path('competition_show_all') }}'">
+                 Toutes les compétitions <span class="glyphicon glyphicon-chevron-right"></span></button>
          </div>
      </div>
      <div class="col-md-4">

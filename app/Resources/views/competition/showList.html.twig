@@ -19,7 +19,7 @@
 
     <div id="future-competition">
         {% for competition in competitions.future %}
-            <div class="col-sm-offset-1 col-sm-10 col-md-offset-0 col-md-6">
+            <div class="col-sm-offset-1 col-sm-10 col-md-offset-0 col-md-6 competitions-container">
                 {% include 'competition/modelList.twig' %}
             </div>
         {% endfor %}
@@ -29,7 +29,7 @@
         <h4 id="competition-list-title-passed">Compétitions passées</h4>
 
         {% for competition in competitions.passed %}
-            <div class="col-sm-offset-1 col-sm-10 col-md-offset-0 col-md-6">
+            <div class="col-sm-offset-1 col-sm-10 col-md-offset-0 col-md-6 competitions-container">
                 {% include 'competition/modelList.twig' %}
             </div>
         {% endfor %}
@@ -40,7 +40,7 @@
     {{ parent() }}
     <script>
         {% if is_granted('ROLE_ORGANIZER') %}
-        organizerResponsive();
+        organizerNavBar();
         {% endif %}
         competitionShowList();
     </script>

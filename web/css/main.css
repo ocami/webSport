@@ -1,3 +1,10 @@
+@media (max-width: 450px){
+    #index h2{
+        font-size: 1.5em;
+    }
+}
+
+
 /* search-bar ******************************************************************************************************* */
 #search-bar .panel-heading {
     height: 1.5em;
@@ -167,7 +174,6 @@ div#fade-content {
     }
 }
 
-
 .panel-footer-img img {
     height: 1.8em;
 }
@@ -178,6 +184,10 @@ div#fade-content {
     }
 
     @media (max-width: 450px) {
+        .races-container, .competitions-container{
+            padding: 0em;
+        }
+
         .panel-model .panel-body {
             padding: 0.5em 0.1em 0.1em 0.1em;
         }
@@ -214,7 +224,7 @@ div#fade-content {
         }
 
         .panel-model .category-all {
-            padding-top: 0.5em;
+            padding-top: 1.5em;
             font-weight: bold;
             font-size: 0.9em;
             text-align: center;
@@ -554,7 +564,7 @@ div#fade-content {
     text-align: center;
 }
 
-/**sSidenav-organizer organizer****************************************************************************************/
+/**Sidenav-organizer organizer****************************************************************************************/
 #navbar-general {
     z-index: 2;
 }
