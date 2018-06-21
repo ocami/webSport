@@ -13,16 +13,20 @@
 
 /*race/show.html.twig************************************/
     /*categories**/
-    .race-show .list-group-item {
+    #race-show-panel-categories .panel-heading{
+        padding: 0em;
+    }
+
+    #race-show-panel-categories .list-group-item {
         padding: 0em 1em 0em 1em;
     }
 
-    .race-show .panel-group {
+    #race-show-panel-categories .panel-group {
         margin: 0em;
         padding: 0em 0.5em 0em 0.5em;
     }
 
-    .race-show .btn-general {
+    #race-show-panel-categories .btn-general {
         font-size: 1em;
         margin: 0em;
         padding: 0em 0.5em 0em 0.5em;
@@ -44,6 +48,13 @@
         #race-show-panel-categories {
             display: block;
         }
+
+        /**table**/
+        #show-race-tables {
+            min-height: 10em;
+            margin: 0em;
+            padding: 0em;
+        }
     }
 
     @media (min-width: 435px) {
@@ -56,10 +67,7 @@
         }
     }
 
-    /**table**/
-    #show-race-tables {
-        min-height: 10em;
-    }
+
 
     #show-race-tables .row-ranck {
         text-align: center;
@@ -203,16 +211,6 @@ div#fade-content {
         border-radius: 12px 12px 12px 12px;
         -moz-border-radius: 12px 12px 12px 12px;
         -webkit-border-radius: 12px 12px 12px 12px;
-    }
-
-    .panel-model-competition .location {
-        border: 2px solid #dff0d8;
-        background: rgba(223, 240, 216, 0.5)
-    }
-
-    .panel-model-race .location {
-        border: 2px solid rgba(51, 122, 183, 0.4);;
-        background: rgba(51, 122, 183, 0.1);
     }
 
     @media (max-width: 500px) {
@@ -375,6 +373,22 @@ div#fade-content {
         .panel-model .competition-link .glyphicon {
             color: #b5d7a5;
         }
+
+        .panel-model-race .location {
+            border: 2px solid rgba(51, 122, 183, 0.4);;
+            background: rgba(51, 122, 183, 0.1);
+        }
+
+        /**model-panel-competition**/
+        /********************************************
+        /    use in :
+        /    competition/modelList.html.twig
+        /*******************************************/
+        .panel-model-competition .location {
+            border: 2px solid #dff0d8;
+            background: rgba(223, 240, 216, 0.5)
+        }
+
 
     /* == show-panel ========================== */
     /********************************************

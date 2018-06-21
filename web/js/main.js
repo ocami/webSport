@@ -289,11 +289,10 @@ var language = {
  /**********************************************************************************************************************/
 function raceShow(race, inchampionship) {
 
-    var $categories = $('#race-show-categories');
-    var $allBtnCategories = $('.race-show').find('button');
+    var $allBtnCategories = $('#race-show').find('button');
     var $btnCategories = $('#race-show-categories').find('button');
     var $collapseBtnCategories = $('#race-show-panel-categories').find('button');
-    var container = $('#tables');
+    var $container = $('#show-race-tables');
     var rowTable;
 
     //init
@@ -303,7 +302,7 @@ function raceShow(race, inchampionship) {
 
     //events
     $allBtnCategories.click(function () {
-        container.removeClass();
+        $container.removeClass();
         ranckTable($(this).val());
     });
 
@@ -322,7 +321,7 @@ function raceShow(race, inchampionship) {
     });
 
     function ranckTable(category) {
-        loaderDivStart(container);
+        loaderDivStart($container);
 
         var path = Routing.generate('race_Table', {
             idRace: race,
@@ -346,7 +345,8 @@ function raceShow(race, inchampionship) {
             destroy: true,
             language: language,
             bInfo: false,
-            order: [[0, "asc"]]
+            order: [[0, "asc"]],
+            responsive: true
         };
 
         if (category === 'all') {
@@ -388,8 +388,8 @@ function raceShow(race, inchampionship) {
             $('#table-race-category').dataTable(options);
         }
 
-        loaderDivStop(container);
-        $('html, body').animate({scrollTop: $(container).offset().top}, 750);
+        loaderDivStop($container);
+        $('html, body').animate({scrollTop: $($container).offset().top}, 750);
 
         function raceOpenOptions() {
             options.columns = [
@@ -413,10 +413,12 @@ function raceShow(race, inchampionship) {
             rowTable.append("<th>Prénom</th>");
             rowTable.append("<th>Catégorie</th>");
 
-            container.addClass('col-lg-offset-3 col-lg-6');
+            $container.addClass('col-lg-offset-2 col-lg-8');
         }
 
         function raceClosedOptions() {
+            console.log('raceClosedOptions');
+
             options.columns = [
                 {data: 'number', className: "row-ranck"},
                 {
@@ -431,13 +433,7 @@ function raceShow(race, inchampionship) {
                         $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
                     }
                 },
-                {data: 'category'}
-            ];
-            options.columnDefs = [
-                {
-                    targets: 0,
-                    width: "5%"
-                }
+                {data: 'category'},
             ];
 
             rowTable.empty();
@@ -446,10 +442,12 @@ function raceShow(race, inchampionship) {
             rowTable.append("<th>Prénom</th>");
             rowTable.append("<th>Catégorie</th>");
 
-            container.addClass('col-lg-offset-2 col-lg-8');
+            $container.addClass('col-lg-offset-2 col-lg-8');
         }
 
         function racePassedOptions() {
+            console.log('racePassedOptions');
+
             options.columns = [
                 {data: 'ranck', className: "row-ranck"},
                 {
@@ -483,6 +481,12 @@ function raceShow(race, inchampionship) {
                     width: "5%"
                 }
             ];
+            options.columnDefs = [
+                {
+                    targets: 1,
+                    width: "5%"
+                }
+            ];
 
             rowTable.empty();
             rowTable.append("<th>Gen.</th>");
@@ -502,10 +506,13 @@ function raceShow(race, inchampionship) {
                 rowTable.append("<th>Point</th>");
             }
 
-            container.addClass('col-lg-offset-1 col-lg-10');
+            $container.addClass('col-lg-offset-1 col-lg-10');
         }
 
         function raceCategoryOpenOptions() {
+            console.log('raceCategoryOpenOptions');
+
+
             options.columns = [
                 {
                     "data": "lastName",
@@ -525,10 +532,13 @@ function raceShow(race, inchampionship) {
             rowTable.append("<th>Nom</th>");
             rowTable.append("<th>Prénom</th>");
 
-            container.addClass('col-lg-offset-3 col-lg-6');
+            $container.addClass('col-lg-offset-3 col-lg-6');
         }
 
         function raceCategoryCloseOptions() {
+            console.log('raceCategoryCloseOptions');
+
+
             options.columns = [
                 {data: 'number', className: "row-ranck"},
                 {
@@ -556,10 +566,12 @@ function raceShow(race, inchampionship) {
             rowTable.append("<th>Nom</th>");
             rowTable.append("<th>Prénom</th>");
 
-            container.addClass('col-lg-offset-3 col-lg-6');
+            $container.addClass('col-lg-offset-3 col-lg-6');
         }
 
         function raceCategoryPassedOptions() {
+            console.log('raceCategoryPassedOptions');
+
             options.columns = [
                 {data: 'ranckCategory', className: "row-ranck"},
                 {

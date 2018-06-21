@@ -2,38 +2,113 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.2/css/responsive.dataTables.min.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.2/css/responsive.bootstrap.min.css"/>
 
 
     <style>
 
-
-        #truc{
-            height: 6em;
-            width: 4em;
-            overflow: hidden;
+        #table-race-container{
+            padding: 0em;
+            margin: 0em;
         }
 
     </style>
+
 
 {% endblock %}
 
 {% block body %}
 
-
-    <div id="truc" data-simplebar>
-        <li>truc</li>
-        <li>truc</li>
-
+    <div id="show-race-tables" class="row">
+        <div id="table-race-container" class="col-xs-12">
+            <table id="table-race" class="table table-striped table-bordered dt-responsive nowrap" width="100%">
+                <thead>
+                <tr id="row-table-race"></tr>
+                </thead>
+            </table>
+        </div>
     </div>
-
-
 {% endblock %}
-
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.2/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.2/js/responsive.bootstrap.min.js"></script>
+
+
+    <script>
+
+        var rowTable = $('#row-table-race');
+        var $allBtnCategories = $('#race-show').find('button');
+        var $btnCategories = $('#race-show-categories').find('button');
+        var $collapseBtnCategories = $('#race-show-panel-categories').find('button');
+        var $container = $('#show-race-tables');
+
+
+        var path = Routing.generate('race_Table', {
+            idRace: 2,
+            category: 'all'
+        });
+
+        $.ajax({
+            url: path,
+            success: function (data) {
+                displayTable(data, 'all');
+            },
+            error: function () {
+                ajaxError();
+            }
+        });
+
+        var options = {
+            language: language,
+            responsive: true,
+            bInfo: false,
+            data: [],
+            columns: [],
+            columnDefs: []
+        };
+
+        function displayTable(data, category) {
+
+            rowTable.empty();
+            rowTable.append("<th>Doss.</th>");
+            rowTable.append("<th>Nom</th>");
+            rowTable.append("<th>Prénom</th>");
+            rowTable.append("<th>Catégorie</th>");
+
+            $container.addClass('col-lg-offset-3 col-lg-6');
+
+            options.data = data.competitors,
+                options.columns = [
+                    {data: 'number', className: "row-ranck"},
+                    {
+                        "data": "lastName",
+                        "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                            $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
+                        }
+                    },
+                    {
+                        "data": "firstName",
+                        "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                            $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
+                        }
+                    },
+                    {data: 'category'},
+                ];
+            options.columnDefs = [{"width": "1%", "targets": 0}];
+
+            $('#table-race').dataTable(options);
+        }
+
+
+    </script>
+
+
 
 {% endblock %}
 
