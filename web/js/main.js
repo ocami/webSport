@@ -911,40 +911,36 @@ function panelCategoriesHeight() {
         var heigth = $(this).height();
         var id = $(this).attr('value');
 
-        $('#categories-'+id).css('height',heigth+'px');
+        $('#categories-' + id).css('height', heigth + 'px');
     });
 }
 
 //***********************************************/NAV BAR/*************************************************************/
 function organizerNavBar() {
 
-    //init
-    checkElements();
-
-    //events
-    $(window).resize(function () {
+  /*      //init
         checkElements();
-    });
 
-    //functions
-    function checkElements() {
-        windowsSize = $(window).width();
+        //events
+        $(window).resize(function () {
+            checkElements();
+        });
 
-        if (windowsSize < 815) {
-            $('#badge').hide();
-            $('#organizerNavBar-open').hide();
-            $('.organizer-content').hide();
-            closeOrganizerNav();
-        }else {
-            $('#badge').show();
-            $('#organizerNavBar-open').show();
-            $('.organizer-content').show();
-            openOrganizerNav();
-        }
-    }
+        //functions
+        function checkElements() {
+            windowsSize = $(window).width();
+
+            if (windowsSize < 815) {
+                $('#badge').hide();
+                $('#organizerNavBar-open').hide();
+            }else {
+                $('#badge').show();
+                $('.organizer-content').show();
+            }
+        }*/
 }
 
-function openOrganizerNav() {
+/*function openOrganizerNav() {
     if (windowsSize > 815) {
         document.getElementById("organizerNavBar").style.width = "11em";
         document.getElementById("main").style.marginLeft = "11em";
@@ -955,7 +951,7 @@ function openOrganizerNav() {
 function closeOrganizerNav() {
     document.getElementById("organizerNavBar").style.width = "0";
     document.getElementById("main").style.marginLeft = "0";
-}
+}*/
 
 /***********************************************************************************************************************
  /   navbar/general.html.twig
@@ -2226,3 +2222,21 @@ function ajaxError() {
 
 
 }(jQuery));
+
+
+//***********************************************/TEST/*************************************************************/
+var test = $('#user-bar');
+/*$(window).scroll(function () {
+    console.log('scroll');
+    console.log( $('#test-bar').position().top);
+});*/
+
+$(window).scroll(function(){
+    console.log($(this).scrollTop());
+
+    if ($(this).scrollTop() > 54) {
+        test.addClass('fixed');
+    } else {
+        test.removeClass('fixed');
+    }
+});

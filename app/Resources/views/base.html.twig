@@ -18,12 +18,17 @@
 
 <body>
 
+<!-- nav-bar -->
 {% include 'navbar/general.html.twig' %}
 
-{% if is_granted('ROLE_COMPETITOR') %}
-    {% include 'modal/profile_competitor.html.twig' %}
-{% endif %}
-
+<div id="user-bar">
+    {% if is_granted('ROLE_ORGANIZER') %}
+        <span class="organizer-content">{% block organizer_menu %}{% endblock %}</span>
+    {% endif %}
+    {% if is_granted('ROLE_COMPETITOR') %}
+        <span id="competitor-info" class="competitor-content">{% block organizer_menu %}{% endblock %}</span>
+    {% endif %}
+</div>
 
 <!-- flashes info app -->
 <div class="row">
@@ -43,23 +48,17 @@
 </div>
 
 <!-- Body -->
-<div class="container">
-    <!-- sidenav organizer -->
-    {% if is_granted('ROLE_ORGANIZER') %}
-        <div id="organizerNavBar">
-            <div class="content">
-                <button class="btn-xs btn-default sidenav-close" onclick="closeOrganizerNav()">Fermer</button>
-                {% block organizer_menu %}
-                {% endblock %}
-            </div>
-        </div>
-    {% endif %}
-
+<div id="container-base" class="container">
     <div id="main">
         {% block body %}
         {% endblock %}
     </div>
 </div>
+
+<!-- modal -->
+{% if is_granted('ROLE_COMPETITOR') %}
+    {% include 'modal/profile_competitor.html.twig' %}
+{% endif %}
 
 {% block javascripts %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -79,10 +78,10 @@
 
     {% if is_granted('ROLE_COMPETITOR') %}
     <script>
+
         setTimeout(function () {
             navbarCompetitorProfile()
         }, 3000);
-
     </script>{% endif %}
 {% endblock %}
 

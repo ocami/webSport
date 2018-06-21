@@ -580,7 +580,7 @@ div#fade-content {
     margin: 0em;
 }
 
-#organizerNavBar-open {
+/*#organizerNavBar-open {
     cursor: pointer;
     font-size: 2em;
     padding-top: 1em;
@@ -608,7 +608,7 @@ div#fade-content {
     display: block;
     margin: 1em 0em 0em 1em;
     width: 10em;
-}
+}*/
 
 /***********************************************--SEARCH BAR--*********************************************************/
 #search-bar .panel-heading {
@@ -772,3 +772,37 @@ div#fade-content {
     width: 200px;
     margin: auto;
 }
+
+
+/***********************************************--bar test--************************************************/
+
+#user-bar{
+    width: 100%;
+    background-color: #f3f3f3;
+    padding-left: 2em;
+    z-index: 5;
+}
+
+#user-bar *{
+    margin-top: 0.3em;
+    margin-bottom: 0.2em;
+}
+
+.fixed{
+    position:fixed; top:0; left:0;
+}
+
+#container-base{
+    margin-top: 2em;
+}
+
+#navbar-general{
+    margin-bottom: 0em;
+}
+
+@media (max-width: 768px){
+    .organizer-content{
+        display: none;
+    }
+}
+
