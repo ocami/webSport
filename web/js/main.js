@@ -301,7 +301,8 @@ function raceShow(race, inchampionship) {
     });
 
     //events
-    $allBtnCategories.click(function () {
+    $allBtnCategories.click(function ()
+    {
         $container.removeClass();
         ranckTable($(this).val());
     });
@@ -1704,18 +1705,28 @@ function loaderStop() {
     $('#full-page').fadeOut(1000);
 }
 
-function loaderDivStart(divToLoad) {
+function loaderDivStart(divToLoad,height) {
+
     var $loaderDiv = $("#loader-div");
-    $loaderDiv.height(divToLoad.height());
-    $loaderDiv.width(divToLoad.width());
-    divToLoad.hide();
+
+    if(divToLoad){
+        $loaderDiv.height(divToLoad.height());
+        $loaderDiv.width(divToLoad.width());
+        divToLoad.hide();
+    }else{
+        $loaderDiv.height(height);
+        $loaderDiv.width('100%');
+    }
+
     $loaderDiv.show();
 }
 
 function loaderDivStop(divToLoad) {
     var $loaderDiv = $("#loader-div");
     $loaderDiv.hide();
-    divToLoad.show();
+
+    if(divToLoad)
+        divToLoad.show();
 }
 
 //***********************************************/TOOLS/***************************************************************/

@@ -47,7 +47,7 @@
 
     {% block body %}
         {% block show_race %}
-            <d  iv id="race-show" class="row">
+            <div id="race-show" class="row">
                 <!--panels-->
                 <div class="panel-show col-xs-12">
                     <!--race panel-->
@@ -85,8 +85,7 @@
                             <div class="panel-heading "><span class="glyphicon glyphicon-time"></span></div>
                             <div class="panel-body">
                                 <span class="date-day">{{ race.dateTime|localizeddate('none', 'none', 'fr_BR', null, "cccc d MMMM") }}</span>
-                                <span class="date-hour">{{ race.dateTime|date('H') }}
-                                    H {{ race.dateTime|date('i') }}</span>
+                                <span class="date-hour">{{ race.dateTime|date('H') }} H {{ race.dateTime|date('i') }}</span>
                             </div>
                         </div>
                     </div>

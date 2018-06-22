@@ -13,58 +13,55 @@
 
 /*race/show.html.twig************************************/
     /*categories**/
-    #race-show-panel-categories .panel-heading{
+    #categories-button button {
+        width: 11em;
+        margin-bottom: 1em;
+        /*margin: 0em 1em 1em 0em;*/
+    }
+
+    #categories-list .btn-general {
+        font-size: 1.1em;
+        margin: 0em;
         padding: 0em;
     }
 
-    #race-show-panel-categories .list-group-item {
+    #categories-list .panel-heading{
+        padding: 0.1em 0em 0.1em 0em;
+        text-align: center;
+    }
+
+    #categories-list .list-group-item {
         padding: 0em 1em 0em 1em;
     }
 
-    #race-show-panel-categories .panel-group {
+    #categories-list .panel-group {
         margin: 0em;
         padding: 0em 0.5em 0em 0.5em;
     }
 
-    #race-show-panel-categories .btn-general {
-        font-size: 1em;
-        margin: 0em;
-        padding: 0em 0.5em 0em 0.5em;
-    }
-
-    #race-show-panel-categories {
-        padding: 0em;
-    }
-
-    #race-show-panel-categories * {
-
-    }
 
     @media (max-width: 435px) {
-        #race-show-categories {
+        #categories-button{
             display: none;
         }
 
-        #race-show-panel-categories {
+        #categories-list{
             display: block;
-        }
-
-        /**table**/
-        #show-race-tables {
-            min-height: 10em;
-            margin: 0em;
-            padding: 0em;
         }
     }
 
     @media (min-width: 435px) {
-        #race-show-categories {
+        #categories-button{
             display: block;
         }
 
-        #race-show-panel-categories {
+        #categories-list{
             display: none;
         }
+    }
+
+    #show-race-tables{
+        padding-top: 1em;
     }
 
     #show-race-tables .row-ranck {
@@ -74,12 +71,6 @@
     #show-race-tables .profile-href {
         cursor: zoom-in;
         color: #1b6d85;
-    }
-
-    #race-show-categories button {
-        width: 11em;
-        margin-bottom: 1em;
-        /*margin: 0em 1em 1em 0em;*/
     }
 
 /**admin/races.html.twig*******************************************************************/

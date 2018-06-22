@@ -7,7 +7,6 @@
  */
 
 namespace AppBundle\Controller;
-
 use AppBundle\Entity\Address;
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Competition;
@@ -19,6 +18,8 @@ use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Services\UserService;
 use AppBundle\Services\MessageGenerator;
 
+use AppBundle\Entity\Race;
+use AppBundle\Services\RaceService;
 
 class homeController extends Controller
 {
@@ -44,15 +45,18 @@ class homeController extends Controller
     }
 
     /**
-     * @Route("/test", name="test")
+     * @Route("/test/{id}", options={"expose"=true}, name="test")
      */
-    public function test(Request $request)
+    public function test(Race $race)
     {
-        $competition = $this->getDoctrine()->getRepository(Competition::class)->find(2);
+        $competitor = $this->get(UserService::class)->getCompetitor();
 
-        $result = $this->getDoctrine()->getRepository(Competition::class)->countNotSupervisedRace($competition);
+        $race = $this->get(UserService::class)->addUserDataInRace($race);
+        $race = $this->get(RaceService::class)->postSelectOne($race);
 
-
-        return $this->render('home/test.html.twig');
+        return $this->render('home/test.html.twig', array(
+            'race' => $race,
+            'competitor' => $competitor
+        ));
     }
 }
