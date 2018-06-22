@@ -26,7 +26,10 @@
         <span class="organizer-content">{% block organizer_menu %}{% endblock %}</span>
     {% endif %}
     {% if is_granted('ROLE_COMPETITOR') %}
-        <span id="competitor-info" class="competitor-content">{% block organizer_menu %}{% endblock %}</span>
+        <span class="competitor-content">
+            {% block competitor_menu %}{% endblock %}
+            <span class="next-race pull-right"></span>
+        </span>
     {% endif %}
 </div>
 
@@ -78,7 +81,7 @@
 
     {% if is_granted('ROLE_COMPETITOR') %}
     <script>
-
+        userBarCompetitor();
         setTimeout(function () {
             navbarCompetitorProfile()
         }, 3000);

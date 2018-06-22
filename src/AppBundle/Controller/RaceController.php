@@ -29,7 +29,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class RaceController extends Controller
 {
     /**
-     * @Route("/race/show/{id}", name="race_show")
+     * @Route("/race/show/{id}", options={"expose"=true}, name="race_show")
      */
     public function show(Race $race)
     {

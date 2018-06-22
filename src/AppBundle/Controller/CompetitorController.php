@@ -119,4 +119,18 @@ class CompetitorController extends Controller
 
         return $this->redirectToRoute('competition_show', array('id'=>$race->getCompetition()->getId()));
     }
+
+    /**
+     * @Route("/competitor/next_race", options={"expose"=true}, name="competitor_next_race")
+     */
+    public function nextRace(Request $request)
+    {
+        $competitor = $this->get(UserService::class)->getCompetitor()->getId();
+
+        $nextRace = $this->getDoctrine()->getRepository(Competitor::class)->nextRace($competitor);
+
+
+        return new JsonResponse($nextRace);
+    }
+
 }

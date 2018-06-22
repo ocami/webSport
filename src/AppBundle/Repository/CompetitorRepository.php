@@ -39,4 +39,22 @@ class CompetitorRepository extends \Doctrine\ORM\EntityRepository
 
         return $c;
     }
+
+    public function nextRace($competitor)
+    {
+        $date = date('Y-m-d H:i:s', strtotime('now'));
+
+        $rawSql = "SELECT r.id, r.date_time FROM race_competitor rc
+                   INNER JOIN competitor c on rc.competitor_id = c.id
+                   INNER JOIN race r on rc.race_id = r.id
+                   WHERE c.id = " . $competitor . "
+                   AND r.date_time > '" . $date . "'
+                   ORDER BY r.date_time
+                   LIMIT 1";
+
+        $stmt = $this->getEntityManager()->getConnection()->prepare($rawSql);
+        $stmt->execute([]);
+
+        return $stmt->fetch();
+    }
 }

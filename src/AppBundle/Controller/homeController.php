@@ -48,7 +48,6 @@ class homeController extends Controller
      */
     public function test(Request $request)
     {
-
         $competition = $this->getDoctrine()->getRepository(Competition::class)->find(2);
 
         $result = $this->getDoctrine()->getRepository(Competition::class)->countNotSupervisedRace($competition);

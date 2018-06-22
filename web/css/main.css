@@ -780,12 +780,17 @@ div#fade-content {
     width: 100%;
     background-color: #f3f3f3;
     padding-left: 2em;
+    padding-right: 1em;
     z-index: 5;
 }
 
 #user-bar *{
     margin-top: 0.3em;
     margin-bottom: 0.2em;
+}
+
+#user-bar .next-race{
+    cursor: pointer;
 }
 
 .fixed{
