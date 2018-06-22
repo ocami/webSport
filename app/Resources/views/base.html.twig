@@ -52,10 +52,8 @@
 
 <!-- Body -->
 <div id="container-base" class="container">
-    <div id="main">
-        {% block body %}
-        {% endblock %}
-    </div>
+    {% block body %}
+    {% endblock %}
 </div>
 
 <!-- modal -->
@@ -72,20 +70,22 @@
     {#<script src="{{ asset('js/main.min.js') }}"></script>#}
     <script src="{{ asset('js/main.js') }}"></script>
 
-    {% if is_granted('ROLE_ADMIN') %}
     <script>
+        userBar();
+
+        {% if is_granted('ROLE_ADMIN') %}
         setTimeout(function () {
             navbarBadgeAdmin()
         }, 2000);
-    </script>{% endif %}
+        {% endif %}
 
-    {% if is_granted('ROLE_COMPETITOR') %}
-    <script>
+        {% if is_granted('ROLE_COMPETITOR') %}
         userBarCompetitor();
         setTimeout(function () {
             navbarCompetitorProfile()
         }, 3000);
-    </script>{% endif %}
+        {% endif %}
+    </script>
 {% endblock %}
 
 </body>

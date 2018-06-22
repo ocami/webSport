@@ -59,7 +59,7 @@
         {% endif %}
 
         {% if race.isOrganizer == true %}
-            <span class="organizer-content">
+            <span class="organizer-content hidden-xs">
                 <input type="button" class="btn-xs btn-success organizer-content" value="Editer"
                        onclick="location.href = '{{ path('race_edit', {'id': race.id}) }}';">
                 <span class="panel-footer-img">

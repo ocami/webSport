@@ -41,7 +41,7 @@
                onclick="location.href = '{{ path('competition_show', {'id': competition.id}) }}';">
 
         {% if competition.isOrganizer == true %}
-            <span class="organizer-content">
+            <span class="organizer-content hidden-xs">
                 <input type="button" class="btn-xs btn-success" value="Editer"
                        onclick="location.href = '{{ path('competition_edit', {'id': competition.id}) }}';">
 

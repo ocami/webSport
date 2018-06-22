@@ -186,10 +186,6 @@
                 inchampionship = true;
             }{% endif %}
 
-            {% if is_granted('ROLE_ORGANIZER') %}
-            organizerNavBar();
-            {% endif %}
-
             raceShow(race, inchampionship);
         </script>
 

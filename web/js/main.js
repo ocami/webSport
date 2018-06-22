@@ -916,42 +916,59 @@ function panelCategoriesHeight() {
 }
 
 //***********************************************/NAV BAR/*************************************************************/
-function organizerNavBar() {
+function userBar() {
+    var test = $('#user-bar');
 
-    /*      //init
-          checkElements();
+    $(window).scroll(function () {
 
-          //events
-          $(window).resize(function () {
-              checkElements();
-          });
-
-          //functions
-          function checkElements() {
-              windowsSize = $(window).width();
-
-              if (windowsSize < 815) {
-                  $('#badge').hide();
-                  $('#organizerNavBar-open').hide();
-              }else {
-                  $('#badge').show();
-                  $('.organizer-content').show();
-              }
-          }*/
+        if ($(this).scrollTop() > 54) {
+            test.addClass('fixed');
+        } else {
+            test.removeClass('fixed');
+        }
+    });
 }
 
-/*function openOrganizerNav() {
-    if (windowsSize > 815) {
-        document.getElementById("organizerNavBar").style.width = "11em";
-        document.getElementById("main").style.marginLeft = "11em";
-        $('.sidenav-open').css('display', 'inline');
+function userBarCompetitor() {
+
+    var txtNextRace = $('#user-bar').find('.next-race');
+    var race;
+
+    //init
+    getDateNextRaceDate();
+
+    //event
+    txtNextRace.click(function () {
+        window.location = Routing.generate('race_show', {id: race});
+    });
+
+    //functions
+    function getDateNextRaceDate() {
+
+        var path = Routing.generate('competitor_next_race');
+
+        $.ajax({
+            url: path,
+            success: function (data) {
+                if(data){
+                    race = data.id;
+                    setTxtDate(data.date_time);
+                }
+            },
+            error: function () {
+                ajaxError();
+            }
+        });
+    }
+
+    function setTxtDate(date) {
+        var dt = date.split(/[\s \- :]+/);
+        date = new Date(Date.UTC(dt[0], dt[1] - 1, dt[2], 0, 0, 0));
+        var options = {weekday: 'long', month: 'long', day: 'numeric'};
+        var txt = 'Prochaine course : ' + date.toLocaleDateString('fr-FR', options) + ' ' + dt[3] + 'H' + dt[4];
+        txtNextRace.text(txt);
     }
 }
-
-function closeOrganizerNav() {
-    document.getElementById("organizerNavBar").style.width = "0";
-    document.getElementById("main").style.marginLeft = "0";
-}*/
 
 /***********************************************************************************************************************
  /   navbar/general.html.twig
@@ -2225,58 +2242,4 @@ function ajaxError() {
 
 
 //***********************************************/TEST/*************************************************************/
-var test = $('#user-bar');
-/*$(window).scroll(function () {
-    console.log('scroll');
-    console.log( $('#test-bar').position().top);
-});*/
-
-$(window).scroll(function () {
-
-    if ($(this).scrollTop() > 54) {
-        test.addClass('fixed');
-    } else {
-        test.removeClass('fixed');
-    }
-});
-
-function userBarCompetitor() {
-
-    var txtNextRace = $('#user-bar').find('.next-race');
-    var race;
-
-    //init
-    getDateNextRaceDate();
-
-    //event
-    txtNextRace.click(function () {
-
-        window.location = Routing.generate('race_show', {id: race});
-    });
-
-    //functions
-    function getDateNextRaceDate() {
-
-        var path = Routing.generate('competitor_next_race');
-
-        $.ajax({
-            url: path,
-            success: function (data) {
-                race = data.id;
-                setTxtDate(data.date_time);
-            },
-            error: function () {
-                ajaxError();
-            }
-        });
-    }
-
-    function setTxtDate(date) {
-        var dt = date.split(/[\s \- :]+/);
-        date = new Date(Date.UTC(dt[0], dt[1] - 1, dt[2], 0, 0, 0));
-        var options = {weekday: 'long', month: 'long', day: 'numeric'};
-        var txt = 'Prochaine course : ' + date.toLocaleDateString('fr-FR', options) + ' ' + dt[3] + 'H' + dt[4];
-        txtNextRace.text(txt);
-    }
-}
 

@@ -93,9 +93,6 @@
     {{ parent() }}
 
     <script>
-        {% if is_granted('ROLE_ORGANIZER') %}
-        organizerNavBar();
-        {% endif %}
         panelCategoriesHeight();
         loaderStop();
     </script>

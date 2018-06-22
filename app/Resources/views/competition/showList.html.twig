@@ -39,9 +39,6 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        {% if is_granted('ROLE_ORGANIZER') %}
-        organizerNavBar();
-        {% endif %}
         competitionShowList();
     </script>
 

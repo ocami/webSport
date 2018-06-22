@@ -117,7 +117,7 @@ class CompetitorController extends Controller
             $request->getSession()->getFlashBag()->add('success', 'Votre inscription est annulée');
         }
 
-        return $this->redirectToRoute('competition_show', array('id'=>$race->getCompetition()->getId()));
+        return $this->redirectToRoute('race_show', array('id'=>$race->getId()));
     }
 
     /**

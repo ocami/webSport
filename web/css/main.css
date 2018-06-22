@@ -1,5 +1,5 @@
-#main {
-    transition: margin-left .5s;
+#container-base{
+    margin-top: 1em;
 }
 
 /***********************************************--PAGES--**************************************************************/
@@ -66,8 +66,6 @@
             display: none;
         }
     }
-
-
 
     #show-race-tables .row-ranck {
         text-align: center;
@@ -580,35 +578,37 @@ div#fade-content {
     margin: 0em;
 }
 
-/*#organizerNavBar-open {
+#user-bar{
+    width: 100%;
+    background-color: #f3f3f3;
+    padding-left: 2em;
+    padding-right: 1em;
+    z-index: 5;
+}
+
+#user-bar *{
+    margin-top: 0.3em;
+    margin-bottom: 0.2em;
+}
+
+#user-bar .next-race{
     cursor: pointer;
-    font-size: 2em;
-    padding-top: 1em;
-    display: none;
-    color: #FFFFFF;
+    color: #286090;
 }
 
-#organizerNavBar {
-    height: 100%;
-    width: 0em;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: #ffffff;
-    overflow-x: hidden;
-    transition: 0.5s;
+@media (max-width: 768px){
+    #user-bar .organizer-content{
+        display: none;
+    }
 }
 
-#organizerNavBar .content {
-    padding-top: 60px;
+.fixed{
+    position:fixed; top:0; left:0;
 }
 
-#organizerNavBar button {
-    display: block;
-    margin: 1em 0em 0em 1em;
-    width: 10em;
-}*/
+#navbar-general{
+    margin-bottom: 0em;
+}
 
 /***********************************************--SEARCH BAR--*********************************************************/
 #search-bar .panel-heading {
@@ -772,42 +772,3 @@ div#fade-content {
     width: 200px;
     margin: auto;
 }
-
-
-/***********************************************--bar test--************************************************/
-
-#user-bar{
-    width: 100%;
-    background-color: #f3f3f3;
-    padding-left: 2em;
-    padding-right: 1em;
-    z-index: 5;
-}
-
-#user-bar *{
-    margin-top: 0.3em;
-    margin-bottom: 0.2em;
-}
-
-#user-bar .next-race{
-    cursor: pointer;
-}
-
-.fixed{
-    position:fixed; top:0; left:0;
-}
-
-#container-base{
-    margin-top: 2em;
-}
-
-#navbar-general{
-    margin-bottom: 0em;
-}
-
-@media (max-width: 768px){
-    .organizer-content{
-        display: none;
-    }
-}
-
