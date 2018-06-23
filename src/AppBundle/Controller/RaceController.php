@@ -230,6 +230,7 @@ class RaceController extends Controller
         }
 
         $data['race_state'] = $race->getState();
+        $data['inChampionship'] = $race->getInChampionship();
         $data['competitors'] = $competitors;
 
         return new JsonResponse($data);

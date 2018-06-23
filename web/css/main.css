@@ -202,6 +202,10 @@ div#fade-content {
         -webkit-border-radius: 12px 12px 12px 12px;
     }
 
+    .panel-model .map-link img {
+        height: 1.5em;
+    }
+
     @media (max-width: 500px) {
         .races-container, .competitions-container{
             padding: 0em;

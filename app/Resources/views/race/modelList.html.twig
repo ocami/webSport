@@ -19,6 +19,7 @@
         <div class="col-xs-12">
             <div class="col-xs-7 location-container" value="{{ race.id }}">
                 <div class="location col-xs-12">
+                    <span class="map-link pull-right">{{ asset('img/google_map.jpg')|googleMapLink(race.competition.location.x,race.competition.location.y) }}</span>
                     {{ race.competition.location.street }}<br>
                     {{ race.competition.location.postCode }} {{ race.competition.location.city }}
                 </div>
@@ -46,7 +47,6 @@
                onclick="location.href = '{{ path('race_show', {'id': race.id}) }}';">
 
         {% if is_granted('ROLE_COMPETITOR') %}
-            {% if race.valid %}
                 {% if race.competitorRegister == 1 %}
                     <input type="button" class="btn-xs btn-info" value="S'inscrire"
                            onclick="location.href = '{{ path('app_competitor_addrace', {'race': race.id}) }}';">
@@ -55,7 +55,6 @@
                     <input type="button" class="btn-xs btn-info" value="Annuler"
                            onclick="location.href = '{{ path('app_competitor_removerace', {'race': race.id}) }}';">
                 {% endif %}
-            {% endif %}
         {% endif %}
 
         {% if race.isOrganizer == true %}

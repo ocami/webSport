@@ -170,27 +170,25 @@ class UserService
 
     public function RaceRegisterStatus(Race $race)
     {
-        if ($this->em->getRepository(RaceCompetitor::class)->competitorIsRegisterToRace($race, $this->competitor))
-            if ($race->getPassed())
-                return 3;
-            else
-                return 2;
+        if ($race->getValid()) {
+            if ($this->em->getRepository(RaceCompetitor::class)->competitorIsRegisterToRace($race, $this->competitor))
+                if ($race->getPassed())
+                    return 3;
+                else
+                    return 2;
 
-        if ($race->getCategories()->contains($this->getCategoryCompetitor()))
-            if ($race->getEnrol())
-                return 1;
-
+            if ($race->getCategories()->contains($this->getCategoryCompetitor()))
+                if ($race->getEnrol())
+                    return 1;
+        }
         return 0;
     }
 
     public function CompetitionRegisterStatus(Competition $competition)
     {
-
         $r = 0;
         foreach ($competition->getRaces() as $race) {
-
-            if($race->getValid()){
-
+            if ($race->getValid()) {
 
                 $s = $this->RaceRegisterStatus($race);
 
