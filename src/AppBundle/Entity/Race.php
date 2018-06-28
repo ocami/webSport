@@ -22,6 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\RaceRepository")
  */
 class Race
+
 {
     /**
      * @var int
@@ -44,7 +45,7 @@ class Race
      * @ORM\Column(name="name", type="string", length=255, nullable=true)
      *
      * @Assert\Length(max=50)
-     * @Assert\Regex("/^([a-zA-Z0-9_-àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ ]){0,50}$/")
+     * @Assert\Regex("/^([a-zA-Z0-9_-àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ' ]){0,50}$/")
      */
     private $name;
 

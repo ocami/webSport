@@ -271,6 +271,7 @@ class RaceController extends Controller
     public function importCompetitorsTimes(Request $request, Race $race)
     {
         $this->get(RanckService::class)->importCompetitorsTimes($race);
+        $request->getSession()->getFlashBag()->add('success', 'Temps de course importés');
         $race->setState(2);
         $em = $this->getDoctrine()->getManager();
         $em->persist($race);

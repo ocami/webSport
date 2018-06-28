@@ -1,26 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends 'ranckLayout.html.twig' %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"/>
-    <style>
-        #table {
-            min-height: 10em;
-        }
 
-        #championship-show-categories button {
-            margin-bottom: 1em;
-        }
-
-        .row-ranck {
-            text-align: center;
-        }
-
-        .profile-href {
-            cursor: zoom-in;
-            color: #1b6d85;
-        }
-    </style>
 {% endblock %}
 
 {% block title %}
@@ -29,25 +11,45 @@
 
 
 {% block body %}
-
-    {{ 0|loader }}
-
-    <!--buttons categories-->
-    <div id="championship-show-categories" class="row">
-        {% for c in categories %}
-            <div class="btn-category col-xs-3 col-lg-2">
-                <button class="btn-xs btn-info col-xs-12" value="{{ c.id }}">{{ c.name }}</button>
+    <div id="championship-categories" class="row">
+        <div id="categories-button" class="col-xs-12">
+            {% for c in categories %}
+                <div class="btn-container col-xs-4 col-sm-3 col-md-2 col-lg-2">
+                    <button class="btn-xs btn-info" value="{{ c.id }}">{{ c.name }}</button>
+                </div>
+            {% endfor %}
+        </div>
+        <div id="categories-list" class="col-xs-offset-2 col-xs-8">
+            <div class="panel-group">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <a data-toggle="collapse" href="#collapse-race-categories">Catégories</a>
+                        </div>
+                    </div>
+                    <div id="collapse-race-categories" class="panel-collapse collapse">
+                        <ul class="list-group">
+                            {% for c in categories %}
+                                <li class="list-group-item" style="text-align: center">
+                                    <button class="btn-xs btn-link" value="{{ c.id }}">{{ c.name }}</button>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
             </div>
-        {% endfor %}
+        </div>
     </div>
-    <!----------------------------------------------------------------------------------------------------------------->
-    <br>
-    <div id="loader-div" class="col-xs-offset-2 col-xs-8"></div>
-    <div id="table" class="col-xs-offset-2 col-xs-8">
-        <div id="table-race-category-container">
-            <table id="table-championship" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <!--loader-->
+    <div id="loader" class="row">
+        <div id="loader-div"></div>
+    </div>
+    <!--tables-->
+    <div class="row">
+        <div id="table-championship-container" class="table-model col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-lg-offset-3 col-lg-6" style="visibility: hidden">
+            <table id="table-championship" class="table table-striped table-bordered dt-responsive nowrap" width="100%">
                 <thead>
-                <tr id="row-table-race-category">
+                <tr class="table-row">
                     <th>Cls</th>
                     <th>Nom</th>
                     <th>Prénom</th>
@@ -57,21 +59,105 @@
             </table>
         </div>
     </div>
-
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
 
     <script>
+        var loaderHeight = $(window).height() - $('#championship-categories').height();
+        loaderDivStart(null, loaderHeight);
 
-        var category = {{ championship.category.id }};
+        var championship = {{ championship.id }};
 
-        championshipShow(category);
+        championshipShow(championship, loaderHeight);
 
+        function championshipShow(championship, loaderHeight) {
 
+            var $btn = $('#categories-button').find('button');
+            var $btnList = $('#categories-list').find('button');
+            var $container = $('#table-championship-container');
+            var $tableChampionship = $('#table-championship');
+
+            //init
+            getData(championship);
+
+            //events
+            $btn.click(function () {
+                loaderDivStart(null, loaderHeight);
+                getData($(this).val());
+                $btn.attr('class', 'btn-xs btn-info col-xs-12');
+                $(this).attr('class', 'btn-xs btn-primary col-xs-12');
+            });
+
+            $btnList.click(function () {
+                loaderDivStart(null, loaderHeight);
+                getData($(this).val());
+                $("#collapse-race-categories").collapse('hide');
+            });
+
+            //functions
+            function getData(category) {
+                $container.css('visibility', 'hidden');
+                var path = Routing.generate('championship_json', {
+                    idCategory: category
+                });
+
+                $.ajax({
+                    url: path,
+                    success: function (data) {
+                        tableConstructor(data);
+                    },
+                    error: function () {
+                        ajaxError();
+                    }
+                });
+            }
+
+            function tableConstructor(data) {
+                var options = {
+                    language: language,
+                    responsive: true,
+                    bInfo: false,
+                    destroy: true,
+                    data: data,
+                    columns: [
+                        {data: 'ranck', className: "row-ranck"},
+                        {
+                            "data": "lastName",
+                            "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                                $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
+                            }
+                        },
+                        {
+                            "data": "firstName",
+                            "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                                $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
+                            }
+                        },
+                        {data: 'points', className: "row-ranck"},
+                    ],
+                    columnDefs: [
+                        {
+                            targets: 0,
+                            width: "5%"
+                        },
+                        {
+                            targets: 3,
+                            width: "5%"
+                        }
+                    ]
+                };
+
+                $tableChampionship.dataTable(options);
+
+                loaderDivStop();
+                $container.css('visibility', 'visible');
+            }
+        }
     </script>
 
+
+
 {% endblock %}
+

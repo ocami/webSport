@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -54,9 +55,9 @@ class RaceCompetitor extends AbstractEntity
     private $ranckCategory;
 
     /**
-     * @var Time
+     * @var Integer
      *
-     * @ORM\Column(name="chrono", type="time", nullable=true)
+     * @ORM\Column(name="chrono", type="integer", nullable=true)
      */
     private $chrono;
 

@@ -99,12 +99,12 @@ function adminRaces() {
         tableSelectRow(indexSelected - 1);
     });
 
-    cb.click(function () {
+    /*cb.click(function () {
         if (this.checked)
             cbChampionship(true);
         else
             cbChampionship(false);
-    });
+    });*/
 
     $('#valid').click(function () {
         loaderDivStart($raceShow);
@@ -287,43 +287,37 @@ var language = {
 /***********************************************************************************************************************
  /   race\show.html.twig
  /**********************************************************************************************************************/
-function raceShow(race, inchampionship) {
+function raceShow(race, loaderHeight) {
+    var $btn = $('#categories-button').find('button');
+    var $btnList = $('#categories-list').find('button');
+    var $container = $('#show-race-tables').find('.table-container');
 
-    var $allBtnCategories = $('#race-show').find('button');
-    var $btnCategories = $('#race-show-categories').find('button');
-    var $collapseBtnCategories = $('#race-show-panel-categories').find('button');
-    var $container = $('#show-race-tables');
+    var $tableRace = $('#table-race');
+    var $tableRaceContainer = $('#table-race-container');
+    var $tableCategory = $('#table-category');
+    var $tableCategoryContainer = $('#table-category-container');
     var rowTable;
 
     //init
-    $(document).ready(function () {
-        ranckTable('all');
-    });
+    getData('all');
 
     //events
-    $allBtnCategories.click(function ()
-    {
-        $container.removeClass();
-        ranckTable($(this).val());
-    });
-
-    $btnCategories.click(function () {
-        $btnCategories.attr('class', 'btn-xs btn-info col-xs-12');
+    $btn.click(function () {
+        loaderDivStart(null, loaderHeight);
+        getData($(this).val());
+        $btn.attr('class', 'btn-xs btn-info col-xs-12');
         $(this).attr('class', 'btn-xs btn-primary col-xs-12');
     });
 
-    $collapseBtnCategories.click(function () {
+    $btnList.click(function () {
+        loaderDivStart(null, loaderHeight);
+        getData($(this).val());
         $("#collapse-race-categories").collapse('hide');
     });
 
-    $('.profile-href').click(function () {
-        var user = $(this).attr("data");
-        profilData(user);
-    });
-
-    function ranckTable(category) {
-        loaderDivStart($container);
-
+    //functions
+    function getData(category) {
+        $container.css('visibility', 'hidden');
         var path = Routing.generate('race_Table', {
             idRace: race,
             category: category
@@ -332,7 +326,7 @@ function raceShow(race, inchampionship) {
         $.ajax({
             url: path,
             success: function (data) {
-                displayTable(data, category);
+                displayTest(data, category);
             },
             error: function () {
                 ajaxError();
@@ -340,18 +334,25 @@ function raceShow(race, inchampionship) {
         });
     }
 
-    function displayTable(data, category) {
+    function displayTest(data, category) {
+
         var options = {
-            data: data.competitors,
-            destroy: true,
             language: language,
+            responsive: true,
             bInfo: false,
-            order: [[0, "asc"]],
-            responsive: true
+            destroy: true,
+            data: [],
+            columns: [],
+            columnDefs: []
         };
 
+        $container.removeClass();
+        options.data = data.competitors;
+
         if (category === 'all') {
-            rowTable = $('#row-table-race');
+
+            rowTable = $tableRace.find('.table-row')
+
             switch (data.race_state) {
                 case 0:
                     raceOpenOptions();
@@ -365,12 +366,15 @@ function raceShow(race, inchampionship) {
                     racePassedOptions();
                     break;
             }
-            $('#table-race-category-container').hide();
-            $('#table-race-container').show();
-            $('#table-race').dataTable(options);
+
+            $tableCategoryContainer.hide();
+            $tableRaceContainer.show();
+            $tableRace.dataTable(options);
 
         } else {
-            rowTable = $('#row-table-race-category');
+
+            rowTable = $tableCategory.find('.table-row');
+
             switch (data.race_state) {
                 case 0:
                     raceCategoryOpenOptions();
@@ -384,13 +388,16 @@ function raceShow(race, inchampionship) {
                     raceCategoryPassedOptions();
                     break;
             }
-            $('#table-race-container').hide();
-            $('#table-race-category-container').show();
-            $('#table-race-category').dataTable(options);
+
+            $tableRaceContainer.hide();
+            $tableCategoryContainer.show();
+            $tableCategory.dataTable(options);
         }
 
-        loaderDivStop($container);
-        $('html, body').animate({scrollTop: $($container).offset().top}, 750);
+
+        $('html, body').animate({scrollTop: $('#loader').offset().top}, 750);
+        loaderDivStop();
+        $container.css('visibility', 'visible');
 
         function raceOpenOptions() {
             options.columns = [
@@ -418,7 +425,6 @@ function raceShow(race, inchampionship) {
         }
 
         function raceClosedOptions() {
-            console.log('raceClosedOptions');
 
             options.columns = [
                 {data: 'number', className: "row-ranck"},
@@ -436,6 +442,12 @@ function raceShow(race, inchampionship) {
                 },
                 {data: 'category'},
             ];
+            options.columnDefs = [
+                {
+                    targets: 0,
+                    width: "1%"
+                }
+            ];
 
             rowTable.empty();
             rowTable.append("<th>Dossard</th>");
@@ -447,7 +459,6 @@ function raceShow(race, inchampionship) {
         }
 
         function racePassedOptions() {
-            console.log('racePassedOptions');
 
             options.columns = [
                 {data: 'ranck', className: "row-ranck"},
@@ -463,28 +474,22 @@ function raceShow(race, inchampionship) {
                         $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
                     }
                 },
-                {data: 'number', className: "row-ranck"},
                 {data: 'chronoString', className: "row-ranck"},
+                {data: 'number', className: "row-ranck"},
                 {data: 'category'},
                 {data: 'ranckCategory', className: "row-ranck"}
             ];
             options.columnDefs = [
                 {
                     targets: 0,
-                    width: "5%"
+                    width: "1%"
                 },
                 {
-                    targets: 3,
+                    targets: 4,
                     width: "5%"
                 },
                 {
                     targets: 6,
-                    width: "5%"
-                }
-            ];
-            options.columnDefs = [
-                {
-                    targets: 1,
                     width: "5%"
                 }
             ];
@@ -493,12 +498,12 @@ function raceShow(race, inchampionship) {
             rowTable.append("<th>Gen.</th>");
             rowTable.append("<th>Nom</th>");
             rowTable.append("<th>Prénom</th>");
-            rowTable.append("<th>Doss.</th>");
             rowTable.append("<th>Chrono</th>");
+            rowTable.append("<th>Doss.</th>");
             rowTable.append("<th>Catégorie</th>");
             rowTable.append("<th>Cls.</th>");
 
-            if (inchampionship) {
+            if (data.inChampionship) {
                 options.columns.push({data: 'points', className: "row-ranck"});
                 options.columnDefs.push({
                     targets: 7,
@@ -511,9 +516,6 @@ function raceShow(race, inchampionship) {
         }
 
         function raceCategoryOpenOptions() {
-            console.log('raceCategoryOpenOptions');
-
-
             options.columns = [
                 {
                     "data": "lastName",
@@ -537,9 +539,6 @@ function raceShow(race, inchampionship) {
         }
 
         function raceCategoryCloseOptions() {
-            console.log('raceCategoryCloseOptions');
-
-
             options.columns = [
                 {data: 'number', className: "row-ranck"},
                 {
@@ -558,7 +557,7 @@ function raceShow(race, inchampionship) {
             options.columnDefs = [
                 {
                     targets: 0,
-                    width: "5%"
+                    width: "1%"
                 }
             ];
 
@@ -571,8 +570,6 @@ function raceShow(race, inchampionship) {
         }
 
         function raceCategoryPassedOptions() {
-            console.log('raceCategoryPassedOptions');
-
             options.columns = [
                 {data: 'ranckCategory', className: "row-ranck"},
                 {
@@ -587,17 +584,17 @@ function raceShow(race, inchampionship) {
                         $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
                     }
                 },
-                {data: 'number', className: "row-ranck"},
                 {data: 'chronoString', className: "row-ranck"},
+                {data: 'number', className: "row-ranck"},
                 {data: 'ranck', className: "row-ranck"}
             ];
             options.columnDefs = [
                 {
                     targets: 0,
-                    width: "5%"
+                    width: "1%"
                 },
                 {
-                    targets: 3,
+                    targets: 4,
                     width: "5%"
                 },
                 {
@@ -610,11 +607,11 @@ function raceShow(race, inchampionship) {
             rowTable.append("<th>Cls</th>");
             rowTable.append("<th>Nom</th>");
             rowTable.append("<th>Prénom</th>");
-            rowTable.append("<th>Doss</th>");
             rowTable.append("<th>Chrono</th>");
+            rowTable.append("<th>Doss</th>");
             rowTable.append("<th>Gen.</th>");
 
-            if (inchampionship) {
+            if (data.inChampionship) {
                 options.columns.push({data: 'points', className: "row-ranck"});
                 options.columnDefs.push({
                     targets: 5,
@@ -623,7 +620,7 @@ function raceShow(race, inchampionship) {
                 rowTable.append("<th>Point</th>");
             }
 
-            container.addClass('col-lg-offset-2 col-lg-8');
+            $container.addClass('col-lg-offset-2 col-lg-8');
         }
     }
 }
@@ -632,7 +629,7 @@ function raceShow(race, inchampionship) {
  /   championship/show.html.twig
  /
  /**********************************************************************************************************************/
-function championshipShow(category) {
+/*function championshipShow(category) {
     var $btnCategories = $('#championship-show-categories').find('button');
     var $container = $('#table');
 
@@ -711,7 +708,7 @@ function championshipShow(category) {
         loaderStop();
     }
 
-}
+}*/
 
 //***********************************************/FORMS/***************************************************************/
 /***********************************************************************************************************************

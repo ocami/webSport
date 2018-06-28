@@ -60,35 +60,47 @@
         }
     }
 
-    #show-race-tables{
-        padding-top: 1em;
-    }
 
-    #show-race-tables .row-ranck {
-        text-align: center;
-    }
-
-    #show-race-tables .profile-href {
-        cursor: zoom-in;
-        color: #1b6d85;
-    }
 
 /**admin/races.html.twig*******************************************************************/
     #admin-race-categories button {
         margin-bottom: 1em;
     }
 
-    #admin-races-table .stringDate {
-        visibility: hidden;
-    }
 
-    #admin-races-table img{
-        height: 1.5em;
-    }
 
-    #admin-races-table .distance{
-        text-align: center;
-    }
+/***********************************************--TABLES--*************************************************************/
+/*== model table============================= */
+/********************************************
+/    use in :
+/    show/race.html.twig
+/    show/championship.html.twig
+/*******************************************/
+.table-model{
+    padding-top: 1em;
+}
+
+.table-model .row-ranck {
+    text-align: center;
+}
+
+.table-model .profile-href {
+    cursor: zoom-in;
+    color: #1b6d85;
+}
+
+/**admin/races.html.twig************/
+#admin-races-table .stringDate {
+    visibility: hidden;
+}
+
+#admin-races-table img{
+    height: 1.5em;
+}
+
+#admin-races-table .distance{
+    text-align: center;
+}
 
 /***********************************************--ACTU--***************************************************************/
 .info-img {

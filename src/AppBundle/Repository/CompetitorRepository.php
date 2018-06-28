@@ -30,6 +30,41 @@ class CompetitorRepository extends \Doctrine\ORM\EntityRepository
         return $c[0];
     }
 
+    public function racesStat(Competitor $competitor)
+    {
+        $competitor = $competitor->getId();
+
+        $y = date('Y', strtotime('now'));
+        $dateStart = $y.'-01-01 00:00:00';
+        $dateEnd = $y.'-12-31 23:59:59';
+
+        $rawSqlAll =  " SELECT
+                        COUNT(r.id) as allNbRace,
+                        SUM(CASE When r.in_championship = 1 Then 1 Else 0 End) as icNbRace,
+                        SUM(CASE When r.in_championship = 0 Then 1 Else 0 End) as ncNbRace,
+                        SUM(r.distance) as allDistance, 
+                        SUM(CASE When r.in_championship = 1 Then r.distance Else 0 End) as icDistance,
+                        SUM(CASE When r.in_championship = 0 Then r.distance Else 0 End) as ncDistance,
+                        SUM(rc.chrono) as allChrono,
+                        SUM(CASE When r.in_championship = 1 Then rc.chrono Else 0 End) as icChrono,
+                        SUM(CASE When r.in_championship = 0 Then rc.chrono Else 0 End) as ncChrono
+                        FROM race_competitor rc
+                        INNER JOIN race r ON rc.race_id = r.id
+                        WHERE rc.competitor_id = '".$competitor."'
+                        AND r.date_time BETWEEN '".$dateStart."' AND '".$dateEnd."'";
+
+        $stmt = $this->getEntityManager()->getConnection()->prepare($rawSqlAll);
+        $stmt->execute([]);
+
+        $data = $stmt->fetch();
+
+        $data['allSpeed'] = round(($data['allDistance'] / $data['allChrono']) * 3600, 2) ;
+        $data['icSpeed'] = round(($data['icDistance'] / $data['icChrono']) * 3600,2);
+        $data['ncSpeed'] = round(($data['ncDistance'] / $data['ncChrono']) * 3600,2);
+
+        return $data;
+    }
+
     public function firstAll($nb)
     {
         $c = $this->createQueryBuilder('c')

@@ -15,11 +15,12 @@
         <div class="date">Du {{ competition.dateStart|date("d/m") }} au {{ competition.dateEnd|date("d/m/Y") }}</div>
         <div class="col-xs-12">
             <div class="col-xs-7 location-container" value="{{ competition.id }}">
-                <div class="location">
+                <div class="location col-xs-12">
+                    <span class="map-link pull-right">{{ asset('img/google_map.jpg')|googleMapLink(competition.location.x,competition.location.y) }}</span>
                     {{ competition.location.street }}<br>
                     {{ competition.location.postCode }} {{ competition.location.city }}
                 </div>
-                <div class="nbRace">{{ competition.nbValidRaces }} courses</div>
+                <div class="nbRace col-xs-12">{{ competition.nbValidRaces }} courses</div>
             </div>
             <div class="col-xs-5">
                 {% if competition.fullCat %}

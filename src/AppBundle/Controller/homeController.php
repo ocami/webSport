@@ -10,6 +10,8 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Address;
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Competition;
+use AppBundle\Entity\Competitor;
+use AppBundle\Entity\RaceCompetitor;
 use AppBundle\Form\RaceNewType;
 use AppBundle\Services\CompetitionService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -20,6 +22,8 @@ use AppBundle\Services\MessageGenerator;
 
 use AppBundle\Entity\Race;
 use AppBundle\Services\RaceService;
+use AppBundle\Entity\Championship;
+use AppBundle\Entity\ChampionshipCompetitor;
 
 class homeController extends Controller
 {
@@ -47,16 +51,19 @@ class homeController extends Controller
     /**
      * @Route("/test/{id}", options={"expose"=true}, name="test")
      */
-    public function test(Race $race)
+    public function test(Competitor $competitor)
     {
-        $competitor = $this->get(UserService::class)->getCompetitor();
+        $rc = $this->getDoctrine()->getRepository(RaceCompetitor::class)->findBy(array('competitor'=>$competitor));
+        $cc = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->findBy(array('competitor'=>$competitor));
+        $racesStat= $this->getDoctrine()->getRepository(Competitor::class)->racesStat($competitor);
 
-        $race = $this->get(UserService::class)->addUserDataInRace($race);
-        $race = $this->get(RaceService::class)->postSelectOne($race);
+        var_dump($competitor);
 
         return $this->render('home/test.html.twig', array(
-            'race' => $race,
-            'competitor' => $competitor
+            'competitor'=>$competitor,
+            'rc' => $rc,
+            'cc' => $cc,
+            'racesStat' => $racesStat
         ));
     }
 }

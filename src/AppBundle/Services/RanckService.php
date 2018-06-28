@@ -139,7 +139,7 @@ class RanckService
 
             $time = $base * $race->getDistance() * $iCat * $level * $random;
 
-            $rc->setChrono(new \DateTime(gmdate("H:i:s", $time)));
+            $rc->setChrono($time);
             $rc->setChronoString(gmdate("H:i:s", $time));
             $this->em->persist($rc);
 
@@ -291,7 +291,7 @@ class RanckService
 
     private function point($pos)
     {
-        if ($pos > 10)
+        if ($pos > 39)
             return 0;
 
         $liste = array(
