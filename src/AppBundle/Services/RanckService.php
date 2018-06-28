@@ -142,43 +142,9 @@ class RanckService
             $rc->setChrono($time);
             $rc->setChronoString(gmdate("H:i:s", $time));
             $this->em->persist($rc);
-
-            //var_dump(date("H:i:s", $time));
         }
-
         $this ->em->flush();
-
     }
-
-    public function importCompetitorsTimes2($race)
-    {
-        $raceCompetitors = $this->em->getRepository(RaceCompetitor::class)->findByRace($race);
-
-        foreach ($raceCompetitors as $rc) {
-            $time = $this->tools->randomDate('2:00:00', '3:30:00', 'H:i:s');
-            $rc->setChrono($time);
-            $rc->setChronoString($time->format('H:i:s'));
-            $this->em->persist($rc);
-        }
-
-        $this->em->flush();
-
-        $raceCompetitors = $this->em->getRepository(RaceCompetitor::class)->rcOrderByChrono($race);
-
-        $i = 0;
-        foreach ($raceCompetitors as $rc) {
-            $i++;
-            $rc->setRanck($i);
-            $this->em->persist($rc);
-        }
-
-        if ($race->getInChampionship())
-            $this->championshipSetPoints($race);
-
-        $race->setPassed(true);
-        $this->em->flush();
-    }
-
 
     public function generateCompetitorsNumber($race)
     {
@@ -193,7 +159,6 @@ class RanckService
         $this->em->persist($race);
         $this->em->flush();
     }
-
 
     public function raceRanck($race)
     {
@@ -337,15 +302,5 @@ class RanckService
         );
 
         return $liste[$pos];
-    }
-
-    public function raceCategorieRanck($race, $category)
-    {
-        $data = new \ArrayObject();
-        $rc = $this->em->getRepository(RaceCompetitor::class)->categoriesRanckToString($category, $race);
-        $data = array();
-
-
-        return $rc;
     }
 }
