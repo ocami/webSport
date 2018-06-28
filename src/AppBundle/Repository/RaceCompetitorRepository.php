@@ -80,18 +80,6 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
         return $rc;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * @return array string
      */
