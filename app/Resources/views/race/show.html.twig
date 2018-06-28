@@ -17,22 +17,24 @@
             </button>
         {% endif %}
 
-        {% if race.enrol == true %}
-            <button class="btn-xs btn-success"
-                    onclick="location.href = '{{ path('race_enrol_closed', {'id':race.id} ) }}'">Clore les
-                inscriptions
-            </button>
-            <button class="btn-xs btn-warning"
-                    onclick="location.href = '{{ path('race_simulateEnrol', {'id':race.id} ) }}'">Simuler
-                inscription
-            </button>
-        {% endif %}
+        {% if race.valid %}
+            {% if race.enrol == true %}
+                <button class="btn-xs btn-success"
+                        onclick="location.href = '{{ path('race_enrol_closed', {'id':race.id} ) }}'">Clore les
+                    inscriptions
+                </button>
+                <button class="btn-xs btn-warning"
+                        onclick="location.href = '{{ path('race_simulateEnrol', {'id':race.id} ) }}'">Simuler
+                    inscription
+                </button>
+            {% endif %}
 
-        {% if race.state == 1 %}
-            <button class="btn-xs btn-warning"
-                    onclick="location.href = '{{ path('race_competitorsTimes', {'id':race.id} ) }}'">Importer les
-                temps de courses
-            </button>
+            {% if race.state == 1 %}
+                <button class="btn-xs btn-warning"
+                        onclick="location.href = '{{ path('race_competitorsTimes', {'id':race.id} ) }}'">Importer les
+                    temps de courses
+                </button>
+            {% endif %}
         {% endif %}
     {% endif %}
 {% endblock %}
