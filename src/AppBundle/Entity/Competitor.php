@@ -85,9 +85,9 @@ class Competitor
     private $level;
     
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\ChampionshipCompetitor",mappedBy="competitor")
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\ChampionshipCompetitor",mappedBy="competitor")
      */
-    private $championships;
+    private $championship;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\RaceCompetitor", mappedBy="competitor")
@@ -104,7 +104,6 @@ class Competitor
      */
     public function __construct()
     {
-        $this->championships = new \Doctrine\Common\Collections\ArrayCollection();
         $this->races = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -263,41 +262,6 @@ class Competitor
     }
 
     /**
-     * Add championship
-     *
-     * @param \AppBundle\Entity\ChampionshipCompetitor $championship
-     *
-     * @return Competitor
-     */
-    public function addChampionship(\AppBundle\Entity\ChampionshipCompetitor $championship)
-    {
-        $championship->setCompetitor($this);
-        $this->championships[] = $championship;
-
-        return $this;
-    }
-
-    /**
-     * Remove championship
-     *
-     * @param \AppBundle\Entity\ChampionshipCompetitor $championship
-     */
-    public function removeChampionship(\AppBundle\Entity\ChampionshipCompetitor $championship)
-    {
-        $this->championships->removeElement($championship);
-    }
-
-    /**
-     * Get championships
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getChampionships()
-    {
-        return $this->championships;
-    }
-
-    /**
      * Add race
      *
      * @param \AppBundle\Entity\RaceCompetitor $race
@@ -377,6 +341,30 @@ class Competitor
     public function getCategory()
     {
         return $this->category;
+    }
+
+    /**
+     * Set championship
+     *
+     * @param string $championship
+     *
+     * @return Competitor
+     */
+    public function setChampionship($championship)
+    {
+        $this->championship = $championship;
+
+        return $this;
+    }
+
+    /**
+     * Get championship
+     *
+     * @return string
+     */
+    public function getChampionship()
+    {
+        return $this->championship;
     }
 
     /**
