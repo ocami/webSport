@@ -49,15 +49,16 @@ class homeController extends Controller
     }
 
     /**
-     * @Route("/test/{id}", options={"expose"=true}, name="test")
+     * @Route("/test", options={"expose"=true}, name="test")
      */
-    public function test(Competitor $competitor)
+    public function test()
     {
+        $competitor = $this->get(UserService::class)->getCompetitor();
         $rc = $this->getDoctrine()->getRepository(RaceCompetitor::class)->findBy(array('competitor'=>$competitor));
-        $cc = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->findBy(array('competitor'=>$competitor));
+        $cc = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->findOneBy(array('competitor'=>$competitor));
         $racesStat= $this->getDoctrine()->getRepository(Competitor::class)->racesStat($competitor);
 
-        var_dump($competitor);
+        //  var_dump($cc);
 
         return $this->render('home/test.html.twig', array(
             'competitor'=>$competitor,
