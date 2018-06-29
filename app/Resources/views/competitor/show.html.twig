@@ -1,0 +1,145 @@
+{% extends 'ranckLayout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+{% endblock %}
+
+{% block title %}
+    {{ parent() }} Profile {{ competitor.lastName }}
+{% endblock %}
+
+{% block competitor_menu %}
+    {% if app.user.id == competitor.userId %}
+        <input type="button" class="btn-xs btn-info" value="Changer de mot de passe"
+               onclick="location.href = '{{ path('fos_user_change_password') }}';">
+        <input type="button" class="btn-xs btn-info" value="Editer">
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+
+    <div id="competitor-show">
+        <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="cs-user col-xs-12">
+                <div class="col-xs-4"><img alt="User Pic"
+                                           src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg"
+                                           id="profile-image1"
+                                           class="img-circle img-responsive"></div>
+                <div class="user col-xs-8">
+                    <span>{{ competitor.firstName }}</span><br>
+                    <span>{{ competitor.lastName }}</span><br>
+                    <span>{{ competitor.age }} ans</span>
+                    {% if is_granted('ROLE_COMPETITOR') %}
+                        {% if app.user.id == competitor.userId %}
+                            <hr>
+                            <span>Id : {{ app.user.username }}</span><br>
+                            <span>{{ app.user.email }}</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="cs-panel-container col-xs-12 col-sm-6 col-md-4">
+            <div class="cs-panel cs-panel-category">
+                <div class="user">{{ competitor.category.name }} </div>
+                {% if cc %}
+                    <span class="cs-label">Classement :</span><span> {{ cc.ranck }} </span><br>
+                    <span class="cs-label">Points :</span> <span> {{ cc.points }} </span>
+                {% else %}
+                    <div>Non classé</div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="cs-panel-container col-xs-12 col-sm-12 col-md-4">
+            <div class="cs-panel cs-panel-all">
+                <span class="cs-label">Nombre de courses : </span> <span>{{ racesStat.allNbRace }}</span><br>
+                <span class="cs-label">Distance parcourue : </span> <span>{{ racesStat.allDistance }} Km</span><br>
+                <span class="cs-label">Vitesse moyenne : </span> <span>{{ racesStat.allSpeed }} Km/h</span>
+            </div>
+        </div>
+
+        <div class="col-xs-12 cs-races">
+            <div class="col-md-4 cs-title">Championat</div>
+            <div class="col-md-8 cs-stat">
+                <span>Nombre de courses : {{ racesStat.icNbRace }}</span>
+                <span>Distance parcourue : {{ racesStat.icDistance }} Km</span>
+                <span>Vitesse moyenne : {{ racesStat.icSpeed }} Km/h</span>
+            </div>
+            <table class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
+                <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Date</th>
+                    <th>Ville</th>
+                    <th>Dist.</th>
+                    <th>Temps</th>
+                    <th>Clt.</th>
+                    <th>Points</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for rc in rc %}
+                    {% if  rc.race.inChampionship %}
+                        <tr>
+                            <td>{{ rc.race.name }}</td>
+                            <td>{{ rc.race.dateTime|localizeddate('none', 'none', 'fr_BR', null, "cccc d MMMM") }}</td>
+                            <td>{{ rc.race.competition.location.city }}</td>
+                            <td class="row-ranck">{{ rc.race.distance }}</td>
+                            <td class="row-ranck">{{ rc.chronoString }}</td>
+                            <td class="row-ranck">{{ rc.ranckCategory }}</td>
+                            <td class="row-ranck">{{ rc.points }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-xs-12 cs-races">
+            <div class="col-md-4 cs-title">Libre</div>
+            <div class="col-md-8 cs-stat">
+                <span>Nombre de courses : {{ racesStat.ncNbRace }}</span>
+                <span>Distance parcourue : {{ racesStat.ncDistance }} Km</span>
+                <span>Vitesse moyenne : {{ racesStat.ncSpeed }} Km/h</span>
+            </div>
+            <table class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
+                <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Date</th>
+                    <th>Ville</th>
+                    <th>Dist.</th>
+                    <th>Temps</th>
+                    <th>Clt.</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for rc in rc %}
+                    {% if not rc.race.inChampionship %}
+                        <tr>
+                            <td>{{ rc.race.name }}</td>
+                            <td>{{ rc.race.dateTime|localizeddate('none', 'none', 'fr_BR', null, "cccc d MMMM") }}</td>
+                            <td>{{ rc.race.competition.location.city }}</td>
+                            <td class="row-ranck">{{ rc.race.distance }}</td>
+                            <td class="row-ranck">{{ rc.chronoString }}</td>
+                            <td class="row-ranck">{{ rc.ranckCategory }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        competitorShow();
+    </script>
+
+{% endblock %}
+

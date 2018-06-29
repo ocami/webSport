@@ -2,6 +2,10 @@
     margin-top: 1em;
 }
 
+hr{
+    margin: 0;
+}
+
 /***********************************************--PAGES--**************************************************************/
 
 /*home/index.html.twig***********************************/
@@ -70,6 +74,9 @@
 
 
 /***********************************************--TABLES--*************************************************************/
+.row-ranck {
+    text-align: center;
+}
 /*== model table============================= */
 /********************************************
 /    use in :
@@ -78,10 +85,6 @@
 /*******************************************/
 .table-model{
     padding-top: 1em;
-}
-
-.table-model .row-ranck {
-    text-align: center;
 }
 
 .table-model .profile-href {
@@ -101,6 +104,7 @@
 #admin-races-table .distance{
     text-align: center;
 }
+
 
 /***********************************************--ACTU--***************************************************************/
 .info-img {
@@ -532,6 +536,79 @@ div#fade-content {
             margin-top: 2em;
         }
     }
+
+/**competitor/show.html.twig************/
+@media (min-width: 992px ) {
+    .cs-stat {
+        margin-top: 1em;
+    }
+}
+
+.cs-user {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.cs-panel {
+    margin-bottom: 1em;
+    border-radius: 10px 10px 10px 10px;
+    -moz-border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+    border: 1px solid #000000;
+    padding: 1em 1em 1em 1em;
+}
+
+#competitor-show img {
+    max-height: 5em;
+}
+
+.cs-label {
+    display: inline-block;
+}
+
+.cs-panel-all .cs-label {
+    width: 10em;
+}
+
+.cs-panel-category .cs-label {
+    width: 6.5em;
+}
+
+.cs-panel-category span, .cs-panel-all span {
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+#competitor-show .user {
+    text-align: center;
+    font-weight: bold;
+}
+
+.cs-races {
+    margin-top: 2em;
+    border-radius: 10px 10px 10px 10px;
+    -moz-border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+    border: 1px solid #000000;
+}
+
+.cs-title {
+    font-weight: bolder;
+    font-size: 2em;
+}
+
+.cs-stat span {
+    margin-bottom: 1em;
+    padding: 0.2em 1em 0.1em 1em;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 0.9em;
+    background-color: #5eb5e0;
+    border-radius: 10px 10px 10px 10px;
+    -moz-border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+    border: 0px solid #000000;
+}
 
 /***********************************************--NAV BAR--************************************************************/
 #navbar-general {

@@ -11,8 +11,10 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\RaceCompetitor;
 use AppBundle\Entity\Competitor;
 use AppBundle\Entity\Race;
+use AppBundle\Entity\ChampionshipCompetitor;
 use AppBundle\Services\CodeService;
 use AppBundle\Services\UserService;
+use AppBundle\Services\CompetitorService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -46,16 +48,37 @@ class CompetitorController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_COMPETITOR')")
-     * @Route("competitor/show"), name"competitor_show")
+     * @Route("competitor/show/{id}", options={"expose"=true}, name="competitor_show")
      */
-    public function show(Request $request)
+    public function show(Competitor $competitor)
+    {
+        $competitor = $this->get(CompetitorService::class)->setCategoryCompetitor($competitor);
+
+        return $this->showCompetitor($competitor);
+    }
+
+    /**
+     * @Route("competitor/show_current", options={"expose"=true}, name="competitor_show_current")
+     */
+    public function showCurrent()
     {
         $competitor = $this->get(UserService::class)->getCompetitor();
 
+        return $this->showCompetitor($competitor);
+    }
+
+
+    private function showCompetitor(Competitor $competitor)
+    {
+        $rc = $this->getDoctrine()->getRepository(RaceCompetitor::class)->findBy(array('competitor' => $competitor));
+        $cc = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->findOneBy(array('competitor' => $competitor));
+        $racesStat = $this->getDoctrine()->getRepository(Competitor::class)->racesStat($competitor);
+
         return $this->render('competitor/show.html.twig', array(
             'competitor' => $competitor,
-            'user' => $this->getUser()
+            'rc' => $rc,
+            'cc' => $cc,
+            'racesStat' => $racesStat
         ));
     }
 
@@ -65,7 +88,7 @@ class CompetitorController extends Controller
     public function getJson(Request $request)
     {
         $userId = $request->query->get('userId');
-        $competitor = $this->getDoctrine()->getRepository(Competitor::class)->findOneBy(array('userId'=>$userId));
+        $competitor = $this->getDoctrine()->getRepository(Competitor::class)->findOneBy(array('userId' => $userId));
         $cData = $this->getDoctrine()->getRepository(Competitor::class)->toString($competitor);
         $cData['category'] = $this->get(UserService::class)->getCategoryCompetitor()->getName();
         $cData['age'] = $competitor->getAge();
@@ -80,7 +103,7 @@ class CompetitorController extends Controller
     public function addRace(Request $request, Race $race)
     {
         $competitor = $this->get(UserService::class)->getCompetitor();
-        $competitorIsRegisterToRace = $this->getDoctrine()->getRepository(RaceCompetitor::class)->competitorIsRegisterToRace($race,$competitor);
+        $competitorIsRegisterToRace = $this->getDoctrine()->getRepository(RaceCompetitor::class)->competitorIsRegisterToRace($race, $competitor);
 
         if ($competitorIsRegisterToRace) {
             $request->getSession()->getFlashBag()->add('success', 'Vous êtes déjà inscrit à cette course');
@@ -96,7 +119,7 @@ class CompetitorController extends Controller
         $em->flush();
         $request->getSession()->getFlashBag()->add('success', 'Votre inscription est enregistrée');
 
-        return $this->redirectToRoute('race_show', array('id'=>$race->getId()));
+        return $this->redirectToRoute('race_show', array('id' => $race->getId()));
     }
 
     /**
@@ -109,15 +132,15 @@ class CompetitorController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $rc = $em->getRepository(RaceCompetitor::class)->getRC($race,$competitor);
+        $rc = $em->getRepository(RaceCompetitor::class)->getRC($race, $competitor);
 
-        if (!is_null($rc)){
+        if (!is_null($rc)) {
             $em->remove($rc);
             $em->flush();
             $request->getSession()->getFlashBag()->add('success', 'Votre inscription est annulée');
         }
 
-        return $this->redirectToRoute('race_show', array('id'=>$race->getId()));
+        return $this->redirectToRoute('race_show', array('id' => $race->getId()));
     }
 
     /**

@@ -629,62 +629,33 @@ function raceShow(race, loaderHeight) {
  /   championship/show.html.twig
  /
  /**********************************************************************************************************************/
-/*function championshipShow(category) {
-    var $btnCategories = $('#championship-show-categories').find('button');
-    var $container = $('#table');
+function championshipShow(championship, loaderHeight) {
 
-    var options = {
-        destroy: true,
-        language: language,
-        bInfo: false,
-        order: [[0, "asc"]]
-    };
-    options.columns = [
-        {data: 'ranck', className: "row-ranck"},
-        {
-            "data": "lastName",
-            "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
-            }
-        },
-        {
-            "data": "firstName",
-            "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
-            }
-        },
-        {data: 'points', className: "row-ranck"},
-    ];
-    options.columnDefs = [
-        {
-            targets: 0,
-            width: "5%"
-        },
-        {
-            targets: 3,
-            width: "5%"
-        }
-    ];
+    var $btn = $('#categories-button').find('button');
+    var $btnList = $('#categories-list').find('button');
+    var $container = $('#table-championship-container');
+    var $tableChampionship = $('#table-championship');
 
-    //inti
-    ranckTable(category);
+    //init
+    getData(championship);
 
-    //Envents
-    $btnCategories.click(function () {
-
-        ranckTable($(this).val());
-        $btnCategories.attr('class', 'btn-xs btn-info col-xs-12');
+    //events
+    $btn.click(function () {
+        loaderDivStart(null, loaderHeight);
+        getData($(this).val());
+        $btn.attr('class', 'btn-xs btn-info col-xs-12');
         $(this).attr('class', 'btn-xs btn-primary col-xs-12');
     });
 
-    $('.profile-href').click(function () {
-        var user = $(this).attr("data");
-        profilData(user);
+    $btnList.click(function () {
+        loaderDivStart(null, loaderHeight);
+        getData($(this).val());
+        $("#collapse-race-categories").collapse('hide');
     });
 
-    function ranckTable(category) {
-        loaderDivStart($container);
-
+    //functions
+    function getData(category) {
+        $container.css('visibility', 'hidden');
         var path = Routing.generate('championship_json', {
             idCategory: category
         });
@@ -692,7 +663,7 @@ function raceShow(race, loaderHeight) {
         $.ajax({
             url: path,
             success: function (data) {
-                displayTable(data, category);
+                tableConstructor(data);
             },
             error: function () {
                 ajaxError();
@@ -700,15 +671,73 @@ function raceShow(race, loaderHeight) {
         });
     }
 
-    function displayTable(data, category) {
-        options.data = data;
+    function tableConstructor(data) {
+        var options = {
+            language: language,
+            responsive: true,
+            bInfo: false,
+            destroy: true,
+            data: data,
+            columns: [
+                {data: 'ranck', className: "row-ranck"},
+                {
+                    "data": "lastName",
+                    "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                        $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
+                    }
+                },
+                {
+                    "data": "firstName",
+                    "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                        $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
+                    }
+                },
+                {data: 'points', className: "row-ranck"},
+            ],
+            columnDefs: [
+                {
+                    targets: 0,
+                    width: "5%"
+                },
+                {
+                    targets: 3,
+                    width: "5%"
+                }
+            ]
+        };
 
-        $('#table-championship').DataTable(options);
-        loaderDivStop($container);
-        loaderStop();
+        $tableChampionship.dataTable(options);
+
+        loaderDivStop();
+        $container.css('visibility', 'visible');
     }
+}
 
-}*/
+/***********************************************************************************************************************
+ /   competitor/show.html.twig
+ /
+ /**********************************************************************************************************************/
+function competitorShow() {
+    var options = {
+        responsive: true,
+        bInfo: false,
+        lengthChange: false,
+        searching: false,
+        paging: false,
+        columnDefs: [
+            {targets: 0, responsivePriority: 1},
+            {targets: 1, responsivePriority: 5},
+            {targets: 2, responsivePriority: 6},
+            {targets: 3, width: "1%", responsivePriority: 2},
+            {targets: 4, responsivePriority: 4},
+            {targets: 5, width: "1%", responsivePriority: 3},
+        ]
+    };
+
+    $(document).ready(function () {
+        $('table').DataTable(options);
+    });
+}
 
 //***********************************************/FORMS/***************************************************************/
 /***********************************************************************************************************************
