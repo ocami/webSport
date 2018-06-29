@@ -13,6 +13,19 @@ use AppBundle\Entity\Championship;
 class ChampionshipCompetitorRepository extends \Doctrine\ORM\EntityRepository
 
 {
+
+    public function StringByCompetitor($competitor){
+
+        $c = $this->createQueryBuilder('c')
+            ->select('c.ranck, c.points')
+            ->where('c.competitor = :id')
+            ->setParameter('id',$competitor)
+            ->getQuery()->getOneOrNullResult();
+
+        return $c;
+    }
+
+
     /**
      * @return array string
      */
