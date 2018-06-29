@@ -35,7 +35,7 @@ class UserService
     public function __construct(TokenStorageInterface $ts,
                                 AuthorizationCheckerInterface $ac,
                                 EntityManagerInterface $em,
-                                CategoryService $cts,
+                                CompetitorService $cts,
                                 CodeService $cs)
     {
         $this->ts = $ts;
@@ -100,20 +100,6 @@ class UserService
 
         $token = $this->refreshToken();
         $this->ts->setToken($token);
-    }
-
-    /**
-     * @param Competitor $competitor
-     * @return Category
-     */
-    public function getCategoryCompetitor()
-    {
-        $competitorYear = $this->competitor->getDateObject()->format('Y');
-        $gender = $this->competitor->getSexe();
-
-        $category = $this->cts->getCategory($competitorYear, $gender);
-
-        return $category;
     }
 
     public function addUserDataInRaces($races)
@@ -212,7 +198,7 @@ class UserService
     public function getCompetitor()
     {
         if ($this->competitor)
-            $this->competitor->setCategory($this->getCategoryCompetitor());
+            $this->competitor = $this->cts->setCategoryCompetitor($this->competitor);
 
         return $this->competitor;
     }

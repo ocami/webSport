@@ -1,0 +1,52 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: alex
+ * Date: 14/01/2018
+ * Time: 08:21
+ */
+
+namespace AppBundle\Services;
+
+use AppBundle\Entity\Category;
+use AppBundle\Entity\Competitor;
+use Doctrine\ORM\EntityManagerInterface;
+
+
+class CompetitorService
+{
+    private $em;
+
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
+    public function getCompetitor($competitor)
+    {
+        $competitor = $this->em->getRepository(Competitor::class)->find($competitor);
+        $competitor = $this->setCategoryCompetitor($competitor);
+
+        return $competitor;
+    }
+
+    public function setCategoryCompetitor(Competitor $competitor)
+    {
+        $competitorYear = $competitor->getDateObject()->format('Y');
+
+        $gender = $competitor->getSexe();
+        $categories = $this->em->getRepository(Category::class)->findAll();
+        foreach ($categories as $category) {
+
+            if ($competitorYear <= $category->getAgeMin()
+                && $competitorYear >= $category->getAgeMax()
+                && $category->getSexe() == $gender
+            ){
+                $competitor->setCategory($category);
+                return $competitor;
+            }
+        }
+        return $competitor;
+    }
+}
