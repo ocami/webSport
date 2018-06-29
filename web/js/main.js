@@ -1770,6 +1770,13 @@ function parseDateUsToFr(date) {
     return newdate;
 }
 
+function stringDate(date) {
+    var dt = date.split(/[\s \- :]+/);
+    date = new Date(Date.UTC(dt[0], dt[1] - 1, dt[2], 0, 0, 0));
+    var options = {weekday: 'long', month: 'long', day: 'numeric'};
+    return date.toLocaleDateString('fr-FR', options);
+}
+
 function ajaxError() {
     $('#info').css('display', 'block');
     $('#info span').text('Erreur requête ajax');
