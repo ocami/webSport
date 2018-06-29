@@ -50,8 +50,10 @@ class UserService
         else
             $this->competitor = null;
 
-        if ($this->ac->isGranted('ROLE_COMPETITOR'))
+        if ($this->ac->isGranted('ROLE_COMPETITOR')){
             $this->competitor = $this->em->getRepository(Competitor::class)->findOneByUserId($this->user);
+            $this->competitor = $this->cts->setCategoryCompetitor($this->competitor);
+        }
         else
             $this->competitor = null;
     }
@@ -163,7 +165,7 @@ class UserService
                 else
                     return 2;
 
-            if ($race->getCategories()->contains($this->getCategoryCompetitor()))
+            if ($race->getCategories()->contains($this->competitor->getCategory()))
                 if ($race->getEnrol())
                     return 1;
         }
@@ -197,9 +199,6 @@ class UserService
      */
     public function getCompetitor()
     {
-        if ($this->competitor)
-            $this->competitor = $this->cts->setCategoryCompetitor($this->competitor);
-
         return $this->competitor;
     }
 

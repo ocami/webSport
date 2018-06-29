@@ -7,6 +7,7 @@
  */
 
 namespace AppBundle\Controller;
+
 use AppBundle\Entity\Address;
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Competition;
@@ -14,6 +15,7 @@ use AppBundle\Entity\Competitor;
 use AppBundle\Entity\RaceCompetitor;
 use AppBundle\Form\RaceNewType;
 use AppBundle\Services\CompetitionService;
+use AppBundle\Services\CompetitorService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,6 +26,8 @@ use AppBundle\Entity\Race;
 use AppBundle\Services\RaceService;
 use AppBundle\Entity\Championship;
 use AppBundle\Entity\ChampionshipCompetitor;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 
 class homeController extends Controller
 {
@@ -53,18 +57,12 @@ class homeController extends Controller
      */
     public function test()
     {
-        $competitor = $this->get(UserService::class)->getCompetitor();
-        $rc = $this->getDoctrine()->getRepository(RaceCompetitor::class)->findBy(array('competitor'=>$competitor));
-        $cc = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->findOneBy(array('competitor'=>$competitor));
-        $racesStat= $this->getDoctrine()->getRepository(Competitor::class)->racesStat($competitor);
-
-        //  var_dump($cc);
 
         return $this->render('home/test.html.twig', array(
-            'competitor'=>$competitor,
-            'rc' => $rc,
-            'cc' => $cc,
-            'racesStat' => $racesStat
+
         ));
     }
+
+
+
 }

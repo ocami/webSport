@@ -1,92 +1,7 @@
-{% extends 'ranckLayout.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block stylesheets %}
     {{ parent() }}
-
-    <style>
-
-        @media (max-width: 350px) {
-
-        }
-
-        @media (min-width: 992px ) {
-            .cs-stat {
-                margin-top: 1em;
-            }
-        }
-
-        .cs-user{
-            margin-top: 1em;
-            margin-bottom: 1em;
-        }
-
-        .cs-panel {
-            margin-bottom: 1em;
-            border-radius: 10px 10px 10px 10px;
-            -moz-border-radius: 10px 10px 10px 10px;
-            -webkit-border-radius: 10px 10px 10px 10px;
-            border: 1px solid #000000;
-            padding: 1em 1em 1em 1em;
-        }
-
-        #competitor-show img {
-            max-height: 5em;
-        }
-
-        .cs-label {
-            display: inline-block;
-        }
-
-        .cs-panel-all .cs-label {
-            width: 10em;
-        }
-
-        .cs-panel-category .cs-label {
-            width: 6.5em;
-        }
-
-        .cs-panel-category span, .cs-panel-all span{
-            font-weight: bold;
-            font-size: 0.9em;
-        }
-
-        .user {
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .cs-races {
-            margin-top: 2em;
-            border-radius: 10px 10px 10px 10px;
-            -moz-border-radius: 10px 10px 10px 10px;
-            -webkit-border-radius: 10px 10px 10px 10px;
-            border: 1px solid #000000;
-        }
-
-        .cs-title {
-            font-weight: bolder;
-            font-size: 2em;
-        }
-
-        .cs-stat span {
-            margin-bottom: 1em;
-            padding: 0.2em 1em 0.1em 1em;
-            display: inline-block;
-            font-weight: bold;
-            font-size: 0.9em;
-            background-color: #5eb5e0;
-            border-radius: 10px 10px 10px 10px;
-            -moz-border-radius: 10px 10px 10px 10px;
-            -webkit-border-radius: 10px 10px 10px 10px;
-            border: 0px solid #000000;
-        }
-
-        .row-ranck{
-            text-align: center;
-        }
-
-
-    </style>
 
 {% endblock %}
 
@@ -95,144 +10,22 @@
 {% endblock %}
 
 
+
 {% block body %}
 
-    <div id="competitor-show">
-        <div class="col-xs-12 col-sm-6 col-md-4">
-            <div class="cs-user col-xs-12">
-                <div class="col-xs-4"><img alt="User Pic"
-                                           src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg"
-                                           id="profile-image1"
-                                           class="img-circle img-responsive"></div>
-                <div class="user col-xs-8">
-                    <span>{{ competitor.firstName }}</span><br>
-                    <span>{{ competitor.lastName }}</span><br>
-                    <span>{{ competitor.age }} ans</span>
-                </div>
-            </div>
-        </div>
-        <div class="cs-panel-container col-xs-12 col-sm-6 col-md-4">
-            <div class="cs-panel cs-panel-category">
-                <div class="user">{{ competitor.category.name }} </div>
-                {% if cc %}
-                    <span class="cs-label">Classement :</span><span> {{ cc.ranck }} </span><br>
-                    <span class="cs-label">Points :</span> <span> {{ cc.points }} </span>
-                {% else %}
-                    <div>Non classé</div>
-                {% endif %}
-            </div>
-        </div>
-        <div class="cs-panel-container col-xs-12 col-sm-12 col-md-4">
-            <div class="cs-panel cs-panel-all">
-                <span class="cs-label">Nombre de courses : </span> <span>{{ racesStat.allNbRace }}</span><br>
-                <span class="cs-label">Distance parcourue : </span> <span>{{ racesStat.allDistance }} Km</span><br>
-                <span class="cs-label">Vitesse moyenne : </span> <span>{{ racesStat.allSpeed }} Km/h</span>
-            </div>
-        </div>
 
-        <div class="col-xs-12 cs-races">
-            <div class="col-md-4 cs-title">Championat</div>
-            <div class="col-md-8 cs-stat">
-                <span>Nombre de courses : {{ racesStat.icNbRace }}</span>
-                <span>Distance parcourue : {{ racesStat.icDistance }} Km</span>
-                <span>Vitesse moyenne : {{ racesStat.icSpeed }} Km/h</span>
-            </div>
-            <table class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
-                <thead>
-                <tr>
-                    <th>Course</th>
-                    <th>Date</th>
-                    <th>Ville</th>
-                    <th>Dist.</th>
-                    <th>Temps</th>
-                    <th>Clt.</th>
-                    <th>Points</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for rc in rc %}
-                    {% if  rc.race.inChampionship %}
-                        <tr>
-                            <td>{{ rc.race.name }}</td>
-                            <td>{{ rc.race.dateTime|localizeddate('none', 'none', 'fr_BR', null, "cccc d MMMM") }}</td>
-                            <td>{{ rc.race.competition.location.city }}</td>
-                            <td class="row-ranck">{{ rc.race.distance }}</td>
-                            <td class="row-ranck">{{ rc.chronoString }}</td>
-                            <td class="row-ranck">{{ rc.ranckCategory }}</td>
-                            <td class="row-ranck">{{ rc.points }}</td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="col-xs-12 cs-races">
-            <div class="col-md-4 cs-title">Libre</div>
-            <div class="col-md-8 cs-stat">
-                <span>Nombre de courses : {{ racesStat.ncNbRace }}</span>
-                <span>Distance parcourue : {{ racesStat.ncDistance }} Km</span>
-                <span>Vitesse moyenne : {{ racesStat.ncSpeed }} Km/h</span>
-            </div>
-            <table class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
-                <thead>
-                <tr>
-                    <th>Course</th>
-                    <th>Date</th>
-                    <th>Ville</th>
-                    <th>Dist.</th>
-                    <th>Temps</th>
-                    <th>Clt.</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for rc in rc %}
-                    {% if not rc.race.inChampionship %}
-                        <tr>
-                            <td>{{ rc.race.name }}</td>
-                            <td>{{ rc.race.dateTime|localizeddate('none', 'none', 'fr_BR', null, "cccc d MMMM") }}</td>
-                            <td>{{ rc.race.competition.location.city }}</td>
-                            <td class="row-ranck">{{ rc.race.distance }}</td>
-                            <td class="row-ranck">{{ rc.chronoString }}</td>
-                            <td class="row-ranck">{{ rc.ranckCategory }}</td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#competitor-modal2">Open Modal</button>
 
 {% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
+    {% block javascripts %}
+        {{ parent() }}
 
-    <script>
-        var options = {
-            language: language,
-            responsive: true,
-            bInfo: false,
-            lengthChange: false,
-            searching: false,
-            paging: false,
-            columnDefs: [
-                { targets: 0, responsivePriority: 1 },
-                { targets: 1,  responsivePriority: 5 },
-                { targets: 2, responsivePriority: 6},
-                { targets: 3, width: "1%", responsivePriority: 2},
-                { targets: 4, responsivePriority: 4},
-                { targets: 5, width: "1%", responsivePriority: 3},
-            ]
-        };
+        <script>
+
+        </script>
 
 
-        $(document).ready(function () {
-            $('table').DataTable(options);
-        });
 
-
-    </script>
-
-{% endblock %}
+    {% endblock %}
 
