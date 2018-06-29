@@ -915,21 +915,60 @@ function navbarCompetitorProfile() {
     });
 }
 
-function profilData(user) {
+function profilData(id) {
+    var $container = $('.modal-container');
 
-    var path = Routing.generate('competitor_json_userId', {userId: user});
+    //init
+    loaderDivStart($container);
+    getData(id);
 
-    $.ajax({
-        url: path,
-        success: function (data) {
-            $('#profile-name').text(data.firstName + ' ' + data.lastName);
-            $('#profile-category').text(data.category);
-            $('#profile-age').text(data.age + ' ans');
-        },
-        error: function () {
-            ajaxError();
-        }
+    //event
+    $('.competitor-profile').click(function () {
+        window.location.href =  Routing.generate('competitor_show', {id: id});
     });
+
+    //functions
+    function getData(id) {
+        var path = Routing.generate('json_competitor', {id: id});
+
+        $.ajax({
+            url: path,
+            success: function (data) {
+                inputText(data);
+            },
+            error: function () {
+                ajaxError();
+            }
+        });
+    }
+
+    function inputText(data) {
+        $('.firstName').text(data.competitor.firstName + ' ');
+        $('.lastName').text(data.competitor.lastName);
+        $('.age').text(data.competitor.age + ' ans');
+        $('.category').text(data.competitor.category);
+
+        if (!data.championship) {
+            $('.ic-races').hide();
+            $('.no-ranck').show();
+        } else {
+            $('.ranck').text(data.championship.ranck);
+            $('.points').text(data.championship.points);
+            $('.icNbRace').text(data.raceStat.icNbRace);
+            $('.icDistance').text(data.raceStat.icDistance + ' Km');
+            $('.icSpeed').text(data.raceStat.icSpeed + ' Km/h');
+        }
+
+        if (data.raceStat.ncNbRace == 0) {
+            $('.nc-races').hide();
+        } else {
+            $('.ncNbRace').text(data.raceStat.ncNbRace);
+            $('.ncDistance').text(data.raceStat.ncDistance + ' Km');
+            $('.ncSpeed').text(data.raceStat.ncSpeed + ' Km/h');
+        }
+
+        loaderDivStop($container);
+    }
 }
 
 //***********************************************/PANEL/***************************************************************/

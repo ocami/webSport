@@ -145,31 +145,11 @@ div#fade-content {
 }
 
 /***********************************************--MODAL--**************************************************************/
-#competitor-modal input.hidden {
-    position: absolute;
-    left: -9999px;
-}
-
-#competitor-modal #profile-image1 {
-    cursor: pointer;
-
-    width: 100px;
-    height: 100px;
-    border: 2px solid #03b1ce;
-}
-
-#competitor-modal .tital {
-    font-size: 16px;
-    font-weight: 500;
-}
-
-#competitor-modal .bot-border {
-    border-bottom: 1px #f8f8f8 solid;
-    margin: 5px 0 5px 0
-}
-
-#competitor-modal .modal-content {
-    height: 0px;
+.modal-title {
+    font-weight: bold;
+    font-size: 0.9em;
+    padding-bottom: 1em;
+    text-align: center;
 }
 
 /***********************************************--PANEL--**************************************************************/

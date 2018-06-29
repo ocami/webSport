@@ -50,10 +50,9 @@ class CompetitorController extends Controller
     /**
      * @Route("competitor/show/{id}", options={"expose"=true}, name="competitor_show")
      */
-    public function show(Competitor $competitor)
+    public function show($id)
     {
-        $competitor = $this->get(CompetitorService::class)->setCategoryCompetitor($competitor);
-
+        $competitor = $this->get(CompetitorService::class)->getCompetitor($id);
         return $this->showCompetitor($competitor);
     }
 
@@ -67,33 +66,23 @@ class CompetitorController extends Controller
         return $this->showCompetitor($competitor);
     }
 
-
-    private function showCompetitor(Competitor $competitor)
-    {
-        $rc = $this->getDoctrine()->getRepository(RaceCompetitor::class)->findBy(array('competitor' => $competitor));
-        $cc = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->findOneBy(array('competitor' => $competitor));
-        $racesStat = $this->getDoctrine()->getRepository(Competitor::class)->racesStat($competitor);
-
-        return $this->render('competitor/show.html.twig', array(
-            'competitor' => $competitor,
-            'rc' => $rc,
-            'cc' => $cc,
-            'racesStat' => $racesStat
-        ));
-    }
-
     /**
-     * @Route("/competitor/jsonByUser", options={"expose"=true}, name="competitor_json_userId")
+     * @Route("competitor/json_competitor", options={"expose"=true}, name="json_competitor")
      */
-    public function getJson(Request $request)
+    public function jsonCompetittor(Request $request)
     {
-        $userId = $request->query->get('userId');
-        $competitor = $this->getDoctrine()->getRepository(Competitor::class)->findOneBy(array('userId' => $userId));
-        $cData = $this->getDoctrine()->getRepository(Competitor::class)->toString($competitor);
-        $cData['category'] = $this->get(UserService::class)->getCategoryCompetitor()->getName();
-        $cData['age'] = $competitor->getAge();
+        $id = $request->query->get('id');
 
-        return new JsonResponse($cData);
+        $competitor = $this->get(CompetitorService::class)->getCompetitor($id);
+
+        $data['competitor'] = $this->getDoctrine()->getRepository(Competitor::class)->toString($id);
+        $data['competitor']['age'] = $competitor->getAge();
+        $data['competitor']['category'] = $competitor->getCategory()->getName();
+        $data['championship'] = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->StringByCompetitor($id);
+        $data['raceStat'] =  $this->getDoctrine()->getRepository(Competitor::class)->racesStat($id);
+
+
+        return new JsonResponse($data);
     }
 
     /**
@@ -154,6 +143,20 @@ class CompetitorController extends Controller
 
 
         return new JsonResponse($nextRace);
+    }
+
+    private function showCompetitor(Competitor $competitor)
+    {
+        $rc = $this->getDoctrine()->getRepository(RaceCompetitor::class)->findBy(array('competitor' => $competitor));
+        $cc = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->findOneBy(array('competitor' => $competitor));
+        $racesStat = $this->getDoctrine()->getRepository(Competitor::class)->racesStat($competitor->getId());
+
+        return $this->render('competitor/show.html.twig', array(
+            'competitor' => $competitor,
+            'rc' => $rc,
+            'cc' => $cc,
+            'racesStat' => $racesStat
+        ));
     }
 
 }

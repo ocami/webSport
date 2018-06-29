@@ -1,59 +1,56 @@
 {% block body %}
     <!-- Modal -->
-    <div id="competitor-modal" class="modal fade" role="dialog">
+    <div class="modal fade" id="competitor-modal" role="dialog">
         <div class="modal-dialog">
 
             <!-- Modal content-->
             <div class="modal-content">
-                <div class="modal-body">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading"><h4>Profile</h4></div>
-                            <div class="panel-body">
-
-                                <div class="box box-info">
-
-                                    <div class="box-body">
-                                        <div class="col-sm-6">
-                                            <div align="center"><img alt="User Pic"
-                                                                     src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg"
-                                                                     id="profile-image1"
-                                                                     class="img-circle img-responsive">
-
-                                                <input id="profile-image-upload" class="hidden" type="file">
-
-                                                <!--Upload Image Js And Css-->
-                                            </div>
-
-                                            <br>
-
-                                            <!-- /input-group -->
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <h4 id="profile-name" style="color:#00b1b1;"></h4></span>
-                                            <span><p id="profile-category"></p></span>
-                                            <span><p id="profile-age"></p></span>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                        <hr style="margin:5px 0 5px 0;">
-
-
-                                        {#<div class="col-sm-5 col-xs-6 tital ">Classement :</div>#}
-                                        {#<div class="col-sm-7 col-xs-6 ">Prasad</div>#}
-                                        {#<div class="clearfix"></div>#}
-                                        {#<div class="bot-border"></div>#}
-                                        <!-- /.box-body -->
-                                    </div>
-                                    <!-- /.box -->
-
-                                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Fermer</button>
-
+                <div class="modal-body col-xs-12">
+                    <div class="modal-container">
+                        <div id="competitor-show">
+                            <div class="cs-user col-md-6 col-xs-12">
+                                <div class="col-xs-4"><img alt="User Pic"
+                                                           src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg"
+                                                           id="profile-image1"
+                                                           class="img-circle img-responsive"></div>
+                                <div class="user col-xs-8">
+                                    <span class="firstName"></span>
+                                    <span class="lastName"></span><br>
+                                    <span class="age"></span>
                                 </div>
-
-
                             </div>
+                            <div class="cs-panel-container col-xs-12 col-sm-6 col-md-4 col-md-6">
+                                <div class="cs-panel cs-panel-category">
+                                    <div class="user category"></div>
+                                    <span class="cs-label ic-races">Classement :</span><span class="ranck ic-races"> </span><br>
+                                    <span class="cs-label ic-races">Points :</span> <span class="points ic-races"></span>
+                                    <div class="no-ranck" style="display: none">Non classé</div>
+                                </div>
+                            </div>
+                            <div class="cs-panel-container col-xs-12 col-sm-12 col-md-6">
+                                <div class="cs-panel cs-panel-all ic-races">
+                                    <div class="modal-title">Championat</div>
+                                    <span class="cs-label">Nombre de courses : </span> <span class="icNbRace"></span><br>
+                                    <span class="cs-label">Distance parcourue : </span> <span class="icDistance"></span><br>
+                                    <span class="cs-label">Vitesse moyenne : </span> <span class="icSpeed"></span>
+                                </div>
+                            </div>
+                            <div class="cs-panel-container col-xs-12 col-sm-12 col-md-6">
+                                <div class="cs-panel cs-panel-all nc-races">
+                                    <div class="modal-title">Courses libres</div>
+                                    <span class="cs-label">Nombre de courses : </span> <span class="ncNbRace"></span><br>
+                                    <span class="cs-label">Distance parcourue : </span> <span class="ncDistance"></span><br>
+                                    <span class="cs-label">Vitesse moyenne : </span> <span class="ncSpeed"></span>
+                                </div>
+                            </div>
+
+
                         </div>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-info competitor-profile" value="Voir profil complet">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
                 </div>
             </div>
 

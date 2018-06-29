@@ -44,7 +44,6 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
         return $rc;
     }
 
-
     /**
      * @return array string
      */
@@ -239,6 +238,33 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
 
 
         $races = array('racePassed' => $racesPassed, 'raceNoPassed' => $racesNoPassed);
+
+        return $races;
+    }
+
+    public function dataTable($competitor){
+        $rc = $this->createQueryBuilder('rc')
+            ->innerJoin('rc.race', 'r')
+            ->innerJoin('r.competition', 'compet')
+            ->innerJoin('compet.location','loc')
+            ->select('r.id, r.inChampionship, r.passed, r.name, r.dateTime, r.distance, rc.ranckCategory, rc.chronoString, rc.points, loc.city')
+            ->andWhere('r.passed=:bool')
+            ->setParameter('bool', true)
+            ->where('rc.competitor = :idCompetitor')
+            ->setParameter('idCompetitor', $competitor)
+            ->orderBy('r.dateTime', 'DESC');
+
+        $raceIc = $rc
+            ->andWhere('r.inChampionship=:bool')
+            ->setParameter('bool', true)
+            ->getQuery()->getResult();
+
+        $racesNc = $rc
+            ->andWhere('r.inChampionship=:bool')
+            ->setParameter('bool', false)
+            ->getQuery()->getResult();
+
+        $races = array('racesIc' => $raceIc, 'racesNc' => $racesNc);
 
         return $races;
     }

@@ -13,27 +13,20 @@ use AppBundle\Entity\Competitor;
  */
 class CompetitorRepository extends \Doctrine\ORM\EntityRepository
 {
-    /**
-     * @param Competitor $competitor
-     * @return Race|array
-     * contains array competitor data
-     *
-     */
-    public function toString(Competitor $competitor)
+
+    public function toString($competitor)
     {
         $c = $this->createQueryBuilder('c')
-            ->select('c.firstName,c.lastName,c.date')
+            ->select('c.firstName,c.lastName,c.id')
             ->where('c.id = :id')
-            ->setParameter('id', $competitor->getId())
-            ->getQuery()->getResult();
+            ->setParameter('id', $competitor)
+            ->getQuery()->getSingleResult();
 
-        return $c[0];
+        return $c;
     }
 
-    public function racesStat(Competitor $competitor)
+    public function racesStat($competitor)
     {
-        $competitor = $competitor->getId();
-
         $y = date('Y', strtotime('now'));
         $dateStart = $y . '-01-01 00:00:00';
         $dateEnd = $y . '-12-31 23:59:59';
