@@ -75,7 +75,6 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
         return $race;
     }
 
-
     public function lastId($class)
     {
         return $this->createQueryBuilder('a')
@@ -84,7 +83,6 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
-
 
     public function countNotSupervisedRaces()
     {
