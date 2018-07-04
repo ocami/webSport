@@ -14,9 +14,8 @@ use AppBundle\Entity\ChampionshipCompetitor;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\RaceCompetitor;
 use Doctrine\ORM\EntityManagerInterface;
-use Proxies\__CG__\AppBundle\Entity\Competitor;
+use AppBundle\Entity\Competitor;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-
 
 class RanckService
 {
