@@ -73,8 +73,6 @@ class CompetitionRepository extends \Doctrine\ORM\EntityRepository
         return $stmt->fetchColumn();
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     public function isValid(Competition $competition)
     {
         $nb = $this->createQueryBuilder('c')

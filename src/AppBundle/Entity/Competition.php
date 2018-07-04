@@ -53,7 +53,7 @@ class Competition
      *
      * @Assert\Length(min=5)
      * @Assert\Length(max=50)
-     * @Assert\Regex("/^([a-zA-Z0-9_-àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ ]){5,50}$/")
+     * @Assert\Regex("/^([a-zA-Z0-9_-àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ' ]){0,50}$/")
      */
     private $name;
 

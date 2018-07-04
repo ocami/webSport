@@ -65,17 +65,6 @@ class AddressRepository extends \Doctrine\ORM\EntityRepository
         return $rc;
     }
 
-    //region
-    Public function regions()
-    {
-        $rawSql = "SELECT * FROM regions ";
-
-        $stmt = $this->getEntityManager()->getConnection()->prepare($rawSql);
-        $stmt->execute([]);
-
-        return $stmt->fetchAll();
-    }
-
     //dep
     Public function dep($region)
     {
@@ -111,6 +100,15 @@ class AddressRepository extends \Doctrine\ORM\EntityRepository
         return $regionsArray;
     }
 
+    //region
+    Private function regions()
+    {
+        $rawSql = "SELECT * FROM regions ";
 
+        $stmt = $this->getEntityManager()->getConnection()->prepare($rawSql);
+        $stmt->execute([]);
+
+        return $stmt->fetchAll();
+    }
 
 }

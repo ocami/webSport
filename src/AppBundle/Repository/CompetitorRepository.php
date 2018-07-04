@@ -66,16 +66,6 @@ class CompetitorRepository extends \Doctrine\ORM\EntityRepository
         return $data;
     }
 
-    public function firstAll($nb)
-    {
-        $c = $this->createQueryBuilder('c')
-            ->where('c.id <= :nb')
-            ->setParameter('nb', $nb)
-            ->getQuery()->getResult();
-
-        return $c;
-    }
-
     public function nextRace($competitor)
     {
         $date = date('Y-m-d H:i:s', strtotime('now'));
@@ -92,5 +82,16 @@ class CompetitorRepository extends \Doctrine\ORM\EntityRepository
         $stmt->execute([]);
 
         return $stmt->fetch();
+    }
+
+    //for demo mode
+    public function firstAll($nb)
+    {
+        $c = $this->createQueryBuilder('c')
+            ->where('c.id <= :nb')
+            ->setParameter('nb', $nb)
+            ->getQuery()->getResult();
+
+        return $c;
     }
 }

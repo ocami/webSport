@@ -75,15 +75,6 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
         return $race;
     }
 
-    public function lastId($class)
-    {
-        return $this->createQueryBuilder('a')
-            ->select('MAX(e.id)')
-            ->from('AppBundle:' . $class, 'e')
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
     public function countNotSupervisedRaces()
     {
         $nb = $this->createQueryBuilder('r')

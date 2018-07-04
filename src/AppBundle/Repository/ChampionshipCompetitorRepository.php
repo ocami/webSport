@@ -13,7 +13,6 @@ use AppBundle\Entity\Championship;
 class ChampionshipCompetitorRepository extends \Doctrine\ORM\EntityRepository
 
 {
-
     public function StringByCompetitor($competitor){
 
         $c = $this->createQueryBuilder('c')
@@ -24,7 +23,6 @@ class ChampionshipCompetitorRepository extends \Doctrine\ORM\EntityRepository
 
         return $c;
     }
-
 
     /**
      * @return array string
@@ -54,22 +52,5 @@ class ChampionshipCompetitorRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()->getResult();
 
         return $cc;
-    }
-
-    /**
-     * @return array string
-     */
-    public function ccOrderByRanckToString($category)
-    {
-        $rc =  $this->createQueryBuilder('cc')
-            ->innerJoin('cc.competitor', 'c')
-            ->innerJoin('rc.championship', 'ch')
-            ->select('c.code, c.firstName, c.lastName, cc.ranck, cc.points')
-            ->where('ch.category = :category')
-            ->setParameter('category', $category)
-            ->orderBy('cc.ranck')
-            ->getQuery()->getResult();
-
-        return $rc;
     }
 }

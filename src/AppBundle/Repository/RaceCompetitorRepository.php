@@ -80,32 +80,6 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @return array string
-     */
-    public function rcOrderByRanckToString($race)
-    {
-        $rc = $this->createQueryBuilder('rc')
-            ->innerJoin('rc.competitor', 'c')
-            ->select('
-            c.code, 
-            rc.number, 
-            rc.ranck, 
-            rc.ranckCategory, 
-            rc.chronoString, 
-            rc.points, 
-            c.firstName, 
-            c.lastName, 
-            c.date, 
-            c.sexe')
-            ->where('rc.race = :race')
-            ->setParameter('race', $race)
-            ->orderBy('rc.ranck')
-            ->getQuery()->getResult();
-
-        return $rc;
-    }
-
-    /**
      * @return array object
      */
     public function rcOrderByChrono($race)
@@ -241,32 +215,4 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
 
         return $races;
     }
-
-    public function dataTable($competitor){
-        $rc = $this->createQueryBuilder('rc')
-            ->innerJoin('rc.race', 'r')
-            ->innerJoin('r.competition', 'compet')
-            ->innerJoin('compet.location','loc')
-            ->select('r.id, r.inChampionship, r.passed, r.name, r.dateTime, r.distance, rc.ranckCategory, rc.chronoString, rc.points, loc.city')
-            ->andWhere('r.passed=:bool')
-            ->setParameter('bool', true)
-            ->where('rc.competitor = :idCompetitor')
-            ->setParameter('idCompetitor', $competitor)
-            ->orderBy('r.dateTime', 'DESC');
-
-        $raceIc = $rc
-            ->andWhere('r.inChampionship=:bool')
-            ->setParameter('bool', true)
-            ->getQuery()->getResult();
-
-        $racesNc = $rc
-            ->andWhere('r.inChampionship=:bool')
-            ->setParameter('bool', false)
-            ->getQuery()->getResult();
-
-        $races = array('racesIc' => $raceIc, 'racesNc' => $racesNc);
-
-        return $races;
-    }
-
 }
