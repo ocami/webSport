@@ -4,8 +4,6 @@ namespace AppBundle\Repository;
 
 use AppBundle\Entity\Competition;
 use Doctrine\ORM\EntityRepository;
-use AppBundle\Entity\Race;
-use phpDocumentor\Reflection\Types\Integer;
 
 class RaceRepository extends EntityRepository
 {

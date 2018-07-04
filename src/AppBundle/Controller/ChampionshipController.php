@@ -22,7 +22,7 @@ class ChampionshipController extends Controller
     /**
      * @Route("/championship/show/{id}", name="championship_show")
      */
-    public function showAction(Championship $championship)
+    public function show(Championship $championship)
     {
         $championships = $this->getDoctrine()->getRepository(Championship::class)->findAll();
         $categories = $this->getDoctrine()->getRepository(Category::class)->findAll();
@@ -37,7 +37,7 @@ class ChampionshipController extends Controller
     /**
      * @Route("championship/championship_json", options={"expose"=true}, name="championship_json")
      */
-    public function race_Table(Request $request)
+    public function rankTable(Request $request)
     {
         $idCategory = $request->query->get('idCategory');
         $championship = $this->getDoctrine()->getRepository(Championship::class)->findOneByCategory($idCategory);

@@ -7,7 +7,6 @@ use AppBundle\Entity\Category;
 use AppBundle\Entity\Competitor;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\RaceCompetitor;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 
 class RaceCompetitorRepository extends EntityRepository
