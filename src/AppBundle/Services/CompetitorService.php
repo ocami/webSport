@@ -49,4 +49,12 @@ class CompetitorService
         }
         return $competitor;
     }
+
+    public function setCategoryCompetitors($competitors){
+        for($i=0;$i<count($competitors);$i++){
+            $competitors[$i] = $this->setCategoryCompetitor($competitors[$i]);
+        }
+
+        return $competitors;
+    }
 }
