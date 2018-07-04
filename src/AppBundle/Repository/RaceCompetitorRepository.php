@@ -27,8 +27,8 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
             ->select('
             c.code, 
             rc.number, 
-            rc.ranck, 
-            rc.ranckCategory, 
+            rc.rank, 
+            rc.rankCategory, 
             rc.chronoString, 
             rc.points, 
             c.id,
@@ -38,7 +38,7 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
             c.sexe')
             ->where('rc.race = :race')
             ->setParameter('race', $race)
-            ->orderBy('rc.ranck')
+            ->orderBy('rc.rank')
             ->getQuery()->getResult();
 
         return $rc;
@@ -54,8 +54,8 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
             ->select('
             c.code, 
             rc.number, 
-            rc.ranck, 
-            rc.ranckCategory, 
+            rc.rank, 
+            rc.rankCategory, 
             rc.chronoString, 
             rc.points, 
             c.id,
@@ -96,11 +96,11 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
     /**
      * @return array string
      */
-    public function categoriesRanckToString(Category $category, Race $race)
+    public function categoriesRankToString(Category $category, Race $race)
     {
         $rc = $this->createQueryBuilder('rc')
             ->innerJoin('rc.competitor', 'c')
-            ->select('c.id, c.code, rc.number, rc.ranck, rc.chronoString, c.firstName, c.lastName')
+            ->select('c.id, c.code, rc.number, rc.rank, rc.chronoString, c.firstName, c.lastName')
             ->where('rc.race = :race')
             ->andWhere('c.date > :dateMax AND c.date < :dateMin')
             ->setParameter('race', $race->getId())
@@ -120,7 +120,7 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
     /**
      * @return array object
      */
-    public function categoriesRanck(Category $category, Race $race)
+    public function categoriesRank(Category $category, Race $race)
     {
         $rc = $this->createQueryBuilder('rc')
             ->innerJoin('rc.competitor', 'c')
@@ -194,7 +194,7 @@ class RaceCompetitorRepository extends \Doctrine\ORM\EntityRepository
         $rc = $this->createQueryBuilder('rc')
             ->innerJoin('rc.race', 'r')
             ->innerJoin('r.competition', 'compet')
-            ->select('r.id, r.passed, r.name, r.date, rc.ranck, rc.chronoString, compet.ville')
+            ->select('r.id, r.passed, r.name, r.date, rc.rank, rc.chronoString, compet.ville')
             ->where('rc.competitor = :idCompetitor')
             ->setParameter('idCompetitor', $competitor->getId());
 

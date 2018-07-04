@@ -56,8 +56,8 @@ class DevService
            case 'delete-races' :
                $stmt = $this->deleteRaces($stmt);
 
-           case 'delete-ranck' :
-               $stmt = $this->deleteRaceRanck($stmt);
+           case 'delete-rank' :
+               $stmt = $this->deleteRaceRank($stmt);
        }
 
         return $this->stmt($stmt);
@@ -76,7 +76,7 @@ class DevService
             return false;
     }
 
-    private function deleteRaceRanck($stmt){
+    private function deleteRaceRank($stmt){
         $sql = '
         DELETE FROM race_competitor;
         DELETE FROM championship_competitor;
@@ -374,7 +374,7 @@ class DevService
 (31, 9),
 (31, 10);
 
-                INSERT INTO `race_competitor` (`id`, `race_id`, `competitor_id`, `number`, `ranck`, `chrono`, `chrono_string`, `code`, `points`, `ranck_category`) VALUES
+                INSERT INTO `race_competitor` (`id`, `race_id`, `competitor_id`, `number`, `rank`, `chrono`, `chrono_string`, `code`, `points`, `rank_category`) VALUES
 (1, 1, 101, 44, 14, 2814, '00:46:54', 'RC_001_101', NULL, 4),
 (2, 1, 1, 15, 98, 4698, '01:18:17', 'RC_001_001', NULL, 5),
 (3, 1, 2, 22, 47, 3459, '00:57:39', 'RC_001_002', NULL, 5),
@@ -846,7 +846,7 @@ class DevService
 (469, 7, 100, 82, 83, 8477, '02:21:16', 'RC_007_100', 30, 10),
 (470, 22, 101, NULL, NULL, NULL, NULL, 'RC_022_101', NULL, NULL);
 
-        INSERT INTO `championship_competitor` (`id`, `championship_id`, `competitor_id`, `points`, `ranck`) VALUES
+        INSERT INTO `championship_competitor` (`id`, `championship_id`, `competitor_id`, `points`, `rank`) VALUES
 (1, 2, 30, 100, 1),
 (2, 2, 21, 90, 2),
 (3, 2, 12, 80, 3),

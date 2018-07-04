@@ -43,9 +43,9 @@ class ChampionshipCompetitor
     /**
      * @var int
      *
-     * @ORM\Column(name="ranck", type="integer", nullable=true)
+     * @ORM\Column(name="rank", type="integer", nullable=true)
      */
-    private $ranck;
+    private $rank;
 
 
     /**
@@ -83,27 +83,27 @@ class ChampionshipCompetitor
     }
 
     /**
-     * Set ranck
+     * Set rank
      *
-     * @param integer $ranck
+     * @param integer $rank
      *
      * @return ChampionshipCompetitor
      */
-    public function setRanck($ranck)
+    public function setRank($rank)
     {
-        $this->ranck = $ranck;
+        $this->rank = $rank;
 
         return $this;
     }
 
     /**
-     * Get ranck
+     * Get rank
      *
      * @return integer
      */
-    public function getRanck()
+    public function getRank()
     {
-        return $this->ranck;
+        return $this->rank;
     }
 
     /**

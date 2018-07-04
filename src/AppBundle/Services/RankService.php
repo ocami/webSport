@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use AppBundle\Entity\Competitor;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class RanckService
+class RankService
 {
     private $ts;
     private $em;
@@ -57,7 +57,7 @@ class RanckService
             $i++;
             $competitor = $rc->getCompetitor();
 
-            $rc->setRanck($i);
+            $rc->setRank($i);
 
             foreach ($race->getCategories() as $cat) {
 
@@ -70,7 +70,7 @@ class RanckService
                     $arrayCountRaceCat[$cat->getId()]++;
                     $count = $arrayCountRaceCat[$cat->getId()];
 
-                    $rc->setRanckCategory($count);
+                    $rc->setRankCategory($count);
 
                     if ($race->getInChampionship())
                         $rc->setPoints($this->point($count));
@@ -159,59 +159,59 @@ class RanckService
         $this->em->flush();
     }
 
-    public function raceRanck($race)
+    public function raceRank($race)
     {
         $rc = $this->em->getRepository(RaceCompetitor::class)->crOrderByChrono($race);
 
         $i = 0;
         foreach ($rc as $c) {
             $i++;
-            $c->setRanck($i);
+            $c->setRank($i);
         }
 
         return $rc;
     }
 
-    public function raceCategoriesRanck($race)
+    public function raceCategoriesRank($race)
     {
-        $categoriesRanck = new \ArrayObject();
+        $categoriesRank = new \ArrayObject();
 
         foreach ($race->getCategories() as $category) {
-            $rc = $this->em->getRepository(RaceCompetitor::class)->categoriesRanckToString($category, $race);
-            $categoryRanck = array(
+            $rc = $this->em->getRepository(RaceCompetitor::class)->categoriesRankToString($category, $race);
+            $categoryRank = array(
                 'category' => $category,
                 'competitors' => $rc
             );
-            $categoriesRanck->append($categoryRanck);
+            $categoriesRank->append($categoryRank);
         }
 
-        return $categoriesRanck;
+        return $categoriesRank;
     }
 
-    public function championshipsRanck()
+    public function championshipsRank()
     {
         $championships = $this->em->getRepository(Championship::class)->findAll();
-        $championshipsRanck = new \ArrayObject();
+        $championshipsRank = new \ArrayObject();
 
         foreach ($championships as $championship) {
 
             $cc = $this->em->getRepository(ChampionshipCompetitor::class)->allByChampionshipToString($championship);
 
-            $championshipRanck = array(
+            $championshipRank = array(
                 'championship' => $championship,
                 'competitors' => $cc
             );
-            $championshipsRanck->append($championshipRanck);
+            $championshipsRank->append($championshipRank);
         }
 
-        return $championshipsRanck;
+        return $championshipsRank;
     }
 
     private function championshipSetPoints($race)
     {
         foreach ($race->getCategories() as $category) {
 
-            $rcByCategory = $this->em->getRepository(RaceCompetitor::class)->categoriesRanck($category, $race);
+            $rcByCategory = $this->em->getRepository(RaceCompetitor::class)->categoriesRank($category, $race);
             $championship = $this->em->getRepository(Championship::class)->findOneByCategory($category);
 
             $i = 0;
@@ -232,10 +232,10 @@ class RanckService
         }
 
         $this->em->flush();
-        $this->championshipUpdateRanck($race);
+        $this->championshipUpdateRank($race);
     }
 
-    private function championshipUpdateRanck($race)
+    private function championshipUpdateRank($race)
     {
         foreach ($race->getCategories() as $category) {
             $championship = $this->em->getRepository(Championship::class)->findOneByCategory($category);
@@ -245,7 +245,7 @@ class RanckService
             foreach ($ccs as $row) {
 
                 $i++;
-                $row->setRanck($i);
+                $row->setRank($i);
                 $this->em->persist($row);
             }
         }

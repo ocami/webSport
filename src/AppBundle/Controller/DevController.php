@@ -18,7 +18,7 @@ use AppBundle\Services\CategoryService;
 use AppBundle\Services\RaceService;
 use AppBundle\Services\DevService;
 use AppBundle\Services\UserService;
-use AppBundle\Services\RanckService;
+use AppBundle\Services\RankService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

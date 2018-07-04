@@ -18,7 +18,7 @@ use AppBundle\Services\CategoryService;
 use AppBundle\Services\RaceService;
 use AppBundle\Services\DbService;
 use AppBundle\Services\UserService;
-use AppBundle\Services\RanckService;
+use AppBundle\Services\RankService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -150,16 +150,16 @@ class RaceController extends Controller
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * @Route("/race/showRanck/{id}", name="race_ranck_show")
+     * @Route("/race/showRank/{id}", name="race_rank_show")
      */
-    public function showRanck(Race $race)
+    public function showRank(Race $race)
     {
         $competitor = $this->get(UserService::class)->getCompetitor();
 
         $race = $this->get(UserService::class)->addUserDataInRace($race);
         $race = $this->get(RaceService::class)->postSelectOne($race);
 
-        return $this->render('race/showRanck.html.twig', array(
+        return $this->render('race/showRank.html.twig', array(
             'race' => $race,
             'competitor' => $competitor
         ));
@@ -192,7 +192,7 @@ class RaceController extends Controller
         $category = $this->getDoctrine()->getRepository(Category::class)->find($idCategory);
         $race = $this->getDoctrine()->getRepository(Race::class)->find($idRace);
 
-        $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->categoriesRanckToString($category, $race);
+        $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->categoriesRankToString($category, $race);
 
         return new JsonResponse($data);
     }
@@ -254,7 +254,7 @@ class RaceController extends Controller
      */
     public function enrolClosed(Request $request, Race $race)
     {
-        $this->get(RanckService::class)->generateCompetitorsNumber($race);
+        $this->get(RankService::class)->generateCompetitorsNumber($race);
         $request->getSession()->getFlashBag()->add('success', 'Inscriptions cloturées');
         $race->setState(1);
         $race->setEnrol(0);
@@ -270,7 +270,7 @@ class RaceController extends Controller
      */
     public function importCompetitorsTimes(Request $request, Race $race)
     {
-        $this->get(RanckService::class)->importCompetitorsTimes($race);
+        $this->get(RankService::class)->importCompetitorsTimes($race);
         $request->getSession()->getFlashBag()->add('success', 'Temps de course importés');
         $race->setState(2);
         $em = $this->getDoctrine()->getManager();

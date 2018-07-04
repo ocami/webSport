@@ -159,7 +159,7 @@ class Race
      * 
      * 1 : open enrol
      * 2 : close enrol
-     * 3 : passed / ranck
+     * 3 : passed / rank
      * 
      */
     private $state = 0;

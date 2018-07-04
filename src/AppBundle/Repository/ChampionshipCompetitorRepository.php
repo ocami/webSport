@@ -15,7 +15,7 @@ use AppBundle\Entity\Competitor;
 class ChampionshipCompetitorRepository extends EntityRepository
 {
     /**
-     * array strings [ranck,points] | null
+     * array strings [rank,points] | null
      *
      * @param  Competitor
      * @return array|null
@@ -24,7 +24,7 @@ class ChampionshipCompetitorRepository extends EntityRepository
     public function onceByCompetitorToString($competitor){
 
         $c = $this->createQueryBuilder('c')
-            ->select('c.ranck, c.points')
+            ->select('c.rank, c.points')
             ->where('c.competitor = :id')
             ->setParameter('id',$competitor)
             ->getQuery()->getOneOrNullResult();
@@ -50,7 +50,7 @@ class ChampionshipCompetitorRepository extends EntityRepository
     }
 
     /**
-     * array strings [ranck,points,competitor[id,code,firstName,lastName] order by points
+     * array strings [rank,points,competitor[id,code,firstName,lastName] order by points
      *
      * @param  Championship
      * @return array
@@ -59,7 +59,7 @@ class ChampionshipCompetitorRepository extends EntityRepository
     {
         $cc = $this->createQueryBuilder('cc')
             ->innerJoin('cc.competitor','c')
-            ->select('c.code, cc.ranck, cc.points, c.firstName, c.lastName, c.id')
+            ->select('c.code, cc.rank, cc.points, c.firstName, c.lastName, c.id')
             ->where('cc.championship = :championship')
             ->setParameter('championship',$championship->getId())
             ->orderBy('cc.points','DESC')

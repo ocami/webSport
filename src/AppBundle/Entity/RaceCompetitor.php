@@ -43,16 +43,16 @@ class RaceCompetitor extends AbstractEntity
     /**
      * @var int
      *
-     * @ORM\Column(name="ranck", type="integer", nullable=true)
+     * @ORM\Column(name="rank", type="integer", nullable=true)
      */
-    private $ranck;
+    private $rank;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="ranck_category", type="integer", nullable=true)
+     * @ORM\Column(name="rank_category", type="integer", nullable=true)
      */
-    private $ranckCategory;
+    private $rankCategory;
 
     /**
      * @var Integer
@@ -110,51 +110,51 @@ class RaceCompetitor extends AbstractEntity
     }
 
     /**
-     * Set ranck
+     * Set rank
      *
-     * @param integer $ranck
+     * @param integer $rank
      *
      * @return RaceCompetitor
      */
-    public function setRanck($ranck)
+    public function setRank($rank)
     {
-        $this->ranck = $ranck;
+        $this->rank = $rank;
 
         return $this;
     }
 
     /**
-     * Get ranck
+     * Get rank
      *
      * @return integer
      */
-    public function getRanck()
+    public function getRank()
     {
-        return $this->ranck;
+        return $this->rank;
     }
 
     /**
-     * Set ranckCategory
+     * Set rankCategory
      *
-     * @param integer $ranckCategory
+     * @param integer $rankCategory
      *
      * @return RaceCompetitor
      */
-    public function setRanckCategory($ranckCategory)
+    public function setRankCategory($rankCategory)
     {
-        $this->ranckCategory = $ranckCategory;
+        $this->rankCategory = $rankCategory;
 
         return $this;
     }
 
     /**
-     * Get ranckCategory
+     * Get rankCategory
      *
      * @return integer
      */
-    public function getRanckCategory()
+    public function getRankCategory()
     {
-        return $this->ranckCategory;
+        return $this->rankCategory;
     }
 
     /**

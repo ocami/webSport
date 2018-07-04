@@ -35,7 +35,7 @@ class DbService
         EntityManagerInterface $em,
         CodeService $cs,
         ContainerInterface $ci,
-        RanckService $rs,
+        RankService $rs,
         ToolsService $tools
     )
     {

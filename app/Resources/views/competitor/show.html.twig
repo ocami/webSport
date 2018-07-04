@@ -1,4 +1,4 @@
-{% extends 'ranckLayout.html.twig' %}
+{% extends 'rankLayout.html.twig' %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -44,7 +44,7 @@
             <div class="cs-panel cs-panel-category">
                 <div class="user">{{ competitor.category.name }} </div>
                 {% if cc %}
-                    <span class="cs-label">Classement :</span><span> {{ cc.ranck }} </span><br>
+                    <span class="cs-label">Classement :</span><span> {{ cc.rank }} </span><br>
                     <span class="cs-label">Points :</span> <span> {{ cc.points }} </span>
                 {% else %}
                     <div>Non classé</div>
@@ -85,10 +85,10 @@
                             <td>{{ rc.race.name }}</td>
                             <td>{{ rc.race.dateTime|localizeddate('none', 'none', 'fr_BR', null, "cccc d MMMM") }}</td>
                             <td>{{ rc.race.competition.location.city }}</td>
-                            <td class="row-ranck">{{ rc.race.distance }}</td>
-                            <td class="row-ranck">{{ rc.chronoString }}</td>
-                            <td class="row-ranck">{{ rc.ranckCategory }}</td>
-                            <td class="row-ranck">{{ rc.points }}</td>
+                            <td class="row-rank">{{ rc.race.distance }}</td>
+                            <td class="row-rank">{{ rc.chronoString }}</td>
+                            <td class="row-rank">{{ rc.rankCategory }}</td>
+                            <td class="row-rank">{{ rc.points }}</td>
                         </tr>
                     {% endif %}
                 {% endfor %}
@@ -121,9 +121,9 @@
                             <td>{{ rc.race.name }}</td>
                             <td>{{ rc.race.dateTime|localizeddate('none', 'none', 'fr_BR', null, "cccc d MMMM") }}</td>
                             <td>{{ rc.race.competition.location.city }}</td>
-                            <td class="row-ranck">{{ rc.race.distance }}</td>
-                            <td class="row-ranck">{{ rc.chronoString }}</td>
-                            <td class="row-ranck">{{ rc.ranckCategory }}</td>
+                            <td class="row-rank">{{ rc.race.distance }}</td>
+                            <td class="row-rank">{{ rc.chronoString }}</td>
+                            <td class="row-rank">{{ rc.rankCategory }}</td>
                         </tr>
                     {% endif %}
                 {% endfor %}
