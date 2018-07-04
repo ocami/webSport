@@ -8,44 +8,55 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Competition;
+use AppBundle\Entity\Address;
+use AppBundle\Entity\Race;
+use AppBundle\Entity\Category;
+use AppBundle\Entity\RaceCompetitor;
+use AppBundle\Form\RaceType;
+use AppBundle\Services\CategoryService;
+use AppBundle\Services\RaceService;
+use AppBundle\Services\DevService;
 use AppBundle\Services\UserService;
+use AppBundle\Services\RanckService;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 
 class DevController extends Controller
 {
+    /**
+     * @Route("/dev", name="dev_index")
+     */
+    public function home()
+    {
+        $cote = "'";
+
+        var_dump("c".$cote."est l".$cote."expression");
+
+        return $this->render('dev/index.html.twig', array());
+    }
+
+
 
     /**
-     * @Route("/dev/remove_competitions", name="dev_remove_competitions")
+     * @Route("/dev/request/action", options={"expose"=true}, name="dev_request")
      */
-    public function removeAllCompetitions()
+    public function request(Request $request)
     {
-        $conn = $this->getDoctrine()->getConnection();
+        $action = $request->get('action');
 
-        $sql = 'DELETE FROM race_category;
-DELETE FROM race_championship;
-DELETE FROM championship_competitor;
-DELETE FROM race_competitor;
-DELETE FROM race;
-DELETE FROM competition;
-DELETE FROM location;
+        $stmt = $this->get(DevService::class)->request($action);
 
-ALTER TABLE race_category AUTO_INCREMENT=0;
-ALTER TABLE race_championship AUTO_INCREMENT=0;
-ALTER TABLE championship_competitor AUTO_INCREMENT=0;
-ALTER TABLE race AUTO_INCREMENT=0;
-ALTER TABLE race_competitor AUTO_INCREMENT=0;
-ALTER TABLE location AUTO_INCREMENT=0;
-ALTER TABLE competition AUTO_INCREMENT=0;
-';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
+        if ($stmt)
+            $request->getSession()->getFlashBag()->add('success', $stmt);
+        else
+            $request->getSession()->getFlashBag()->add('alert', 'erreur');
 
-        var_dump($stmt->fetchAll());die;
-
-
-        return 'all remmove';
+        return $this->redirectToRoute('dev_index');
     }
 
     /**
@@ -68,5 +79,6 @@ ALTER TABLE competition AUTO_INCREMENT=0;
         ));
 
     }
+
 
 }

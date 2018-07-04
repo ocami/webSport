@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>WS !Dev!</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+
+<body>
+
+
+<div class="row">
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} col-sm-offset-2 col-sm-8" style="text-align: center">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>
+
+<div class="container">
+    <br>
+    <button class="btn-xs btn-success" value="initialize">
+        Réinitialiser
+    </button>
+
+    <button class="btn-xs btn-success" value="delete-organizer">
+        Suppimer organisateurs
+    </button>
+
+    <button class="btn-xs btn-success" value="delete-competitions">
+        Suppimer compétitions
+    </button>
+
+    <button class="btn-xs btn-success" value="delete-races">
+        Supprimer courses
+    </button>
+
+    <button class="btn-xs btn-success" value="delete-ranck">
+        Supprimer classement
+    </button>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+
+<script>
+   $('button').click(function () {
+
+       window.location.href =  Routing.generate('dev_request', {action: $(this).val()});
+
+   })
+</script>
