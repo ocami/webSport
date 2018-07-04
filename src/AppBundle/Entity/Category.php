@@ -35,9 +35,9 @@ class Category
     /**
      * @var string
      * @Assert\Length(min="1", max="2")
-     * @ORM\Column(name="sexe", type="string", length=2)
+     * @ORM\Column(name="gender", type="string", length=2)
      */
-    private $sexe;
+    private $gender;
 
     /**
      * @var string
@@ -101,27 +101,27 @@ class Category
     }
 
     /**
-     * Set sexe
+     * Set gender
      *
-     * @param string $sexe
+     * @param string $gender
      *
      * @return category
      */
-    public function setSexe($sexe)
+    public function setGender($gender)
     {
-        $this->sexe = $sexe;
+        $this->gender = $gender;
 
         return $this;
     }
 
     /**
-     * Get sexe
+     * Get gender
      *
      * @return string
      */
-    public function getSexe()
+    public function getGender()
     {
-        return $this->sexe;
+        return $this->gender;
     }
 
     /**

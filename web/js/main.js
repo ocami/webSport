@@ -326,7 +326,6 @@ function raceShow(race, loaderHeight) {
         $.ajax({
             url: path,
             success: function (data) {
-                console.log(data);
                 displayTest(data, category);
             },
             error: function () {
@@ -747,7 +746,7 @@ function competitorShow() {
 function registration() {
     $(function () {
         var radioBtn = $("#gender-radio input");
-        var genderInput = $('#appbundle_competitor_sexe');
+        var genderInput = $('#appbundle_competitor_gender');
 
         radioBtn.checkboxradio();
 

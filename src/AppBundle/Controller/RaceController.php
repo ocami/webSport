@@ -104,9 +104,8 @@ class RaceController extends Controller
      */
     public function getJson(Request $request)
     {
-        $race = $request->query->get('race');
-        $race = $this->getDoctrine()->getRepository(Race::class)->find($race);
-        $race = $this->getDoctrine()->getRepository(Race::class)->toString($race);
+        $id = $request->query->get('race');
+        $race = $this->getDoctrine()->getRepository(Race::class)->toString($id);
         return new JsonResponse($race);
     }
 
@@ -165,21 +164,7 @@ class RaceController extends Controller
         ));
     }
 
-    /**
-     * @Route("/race/competitor", name="races_by_competitor")
-     * @Security("has_role('ROLE_COMPETITOR')")
-     */
-    public function showByCompetitor()
-    {
-        $competitor = $this->get(UserService::class)->getCompetitor();
 
-        $races = $this->getDoctrine()->getRepository(RaceCompetitor::class)->byCompetitor($competitor);
-
-        return $this->render('competitor/showRaces.html.twig', array(
-            'racePassed' => $races['racePassed'],
-            'raceNoPassed' => $races['raceNoPassed']
-        ));
-    }
 
     /**
      * @Route("race/categoryTable", name="race_categoryTable")
@@ -192,7 +177,7 @@ class RaceController extends Controller
         $category = $this->getDoctrine()->getRepository(Category::class)->find($idCategory);
         $race = $this->getDoctrine()->getRepository(Race::class)->find($idRace);
 
-        $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->categoriesRankToString($category, $race);
+        $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->allByRaceCategoryToString($race, $category);
 
         return new JsonResponse($data);
     }
@@ -213,7 +198,7 @@ class RaceController extends Controller
 
             for ($i = 0; $i < count($competitors); $i++) {
                 $y = substr($competitors[$i]['date'], -10, 4);
-                $cat = $this->get(CategoryService::class)->getCategory($y, $competitors[$i]['sexe']);
+                $cat = $this->get(CategoryService::class)->getCategory($y, $competitors[$i]['gender']);
 
                 $competitors[$i]['category'] = $cat->getName();
             }
@@ -223,7 +208,7 @@ class RaceController extends Controller
 
             for ($i = 0; $i < count($competitors); $i++) {
                 $y = substr($competitors[$i]['date'], -10, 4);
-                $cat = $this->get(CategoryService::class)->getCategory($y, $competitors[$i]['sexe']);
+                $cat = $this->get(CategoryService::class)->getCategory($y, $competitors[$i]['gender']);
 
                 $competitors[$i]['category'] = $cat->getName();
             }

@@ -16,7 +16,7 @@ class CategoryType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('sexe', ChoiceType::class, array(
+            ->add('gender', ChoiceType::class, array(
                 'choices' => array(
                     'Mixte' => 'mx',
                     'Féminin' => 'f',

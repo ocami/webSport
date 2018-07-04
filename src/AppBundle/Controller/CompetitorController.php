@@ -75,10 +75,10 @@ class CompetitorController extends Controller
 
         $competitor = $this->get(CompetitorService::class)->getCompetitor($id);
 
-        $data['competitor'] = $this->getDoctrine()->getRepository(Competitor::class)->toString($id);
+        $data['competitor'] = $this->getDoctrine()->getRepository(Competitor::class)->toString($competitor);
         $data['competitor']['age'] = $competitor->getAge();
         $data['competitor']['category'] = $competitor->getCategory()->getName();
-        $data['championship'] = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->onceByCompetitorToString($id);
+        $data['championship'] = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->onceByCompetitorToString($competitor);
         $data['raceStat'] =  $this->getDoctrine()->getRepository(Competitor::class)->racesStat($competitor);
 
 
@@ -121,7 +121,7 @@ class CompetitorController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $rc = $em->getRepository(RaceCompetitor::class)->getRC($race, $competitor);
+        $rc = $em->getRepository(RaceCompetitor::class)->onceByRaceCompetitor($race, $competitor);
 
         if (!is_null($rc)) {
             $em->remove($rc);

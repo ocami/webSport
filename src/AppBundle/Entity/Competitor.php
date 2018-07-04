@@ -57,9 +57,9 @@ class Competitor
     /**
      * @var string
      *
-     * @ORM\Column(name="sexe", type="string", length=2)
+     * @ORM\Column(name="gender", type="string", length=2)
      */
-    private $sexe;
+    private $gender;
 
     /**
      * @var string
@@ -214,27 +214,27 @@ class Competitor
     }
 
     /**
-     * Set sexe
+     * Set gender
      *
-     * @param string $sexe
+     * @param string $gender
      *
      * @return Competitor
      */
-    public function setSexe($sexe)
+    public function setGender($gender)
     {
-        $this->sexe = $sexe;
+        $this->gender = $gender;
 
         return $this;
     }
 
     /**
-     * Get sexe
+     * Get gender
      *
      * @return string
      */
-    public function getSexe()
+    public function getGender()
     {
-        return $this->sexe;
+        return $this->gender;
     }
 
     /**

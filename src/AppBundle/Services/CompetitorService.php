@@ -35,13 +35,13 @@ class CompetitorService
     {
         $competitorYear = $competitor->getDateObject()->format('Y');
 
-        $gender = $competitor->getSexe();
+        $gender = $competitor->getGender();
         $categories = $this->em->getRepository(Category::class)->findAll();
         foreach ($categories as $category) {
 
             if ($competitorYear <= $category->getAgeMin()
                 && $competitorYear >= $category->getAgeMax()
-                && $category->getSexe() == $gender
+                && $category->getGender() == $gender
             ){
                 $competitor->setCategory($category);
                 return $competitor;

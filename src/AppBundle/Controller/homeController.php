@@ -12,22 +12,20 @@ use AppBundle\Entity\Address;
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Competition;
 use AppBundle\Entity\Competitor;
+use AppBundle\Entity\Race;
 use AppBundle\Repository\CompetitorRepository;
 use AppBundle\Entity\RaceCompetitor;
 use AppBundle\Form\RaceNewType;
 use AppBundle\Services\CompetitionService;
 use AppBundle\Services\CompetitorService;
+use AppBundle\Services\DemoService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Services\UserService;
 use AppBundle\Services\MessageGenerator;
 
-use AppBundle\Entity\Race;
-use AppBundle\Services\RaceService;
-use AppBundle\Entity\Championship;
-use AppBundle\Entity\ChampionshipCompetitor;
-use Symfony\Component\HttpFoundation\JsonResponse;
+
 
 
 class homeController extends Controller
@@ -59,16 +57,14 @@ class homeController extends Controller
     public function test()
     {
 
-        $competitor =  $this->getDoctrine()->getRepository(Competitor::class)->find(101);
-        $truc = $this->getDoctrine()->getRepository(Competitor::class)->nextRace($competitor);
+        $r = $this->getDoctrine()->getRepository(Race::class)->find(2);
+        $cat = $this->getDoctrine()->getRepository(Competitor::class)->find(52);
+        $c = $this->getDoctrine()->getRepository(RaceCompetitor::class)->onceByRaceCompetitor($r,$cat);
 
-        var_dump($truc);
+        var_dump($c);
 
-        return $this->render('home/test.html.twig', array(
-
-        ));
+        return $this->render('home/test.html.twig', array());
     }
-
 
 
 }

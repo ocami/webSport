@@ -23,7 +23,7 @@ class LoadCompetitor extends AbstractFixture implements OrderedFixtureInterface
         for ($i = 0; $i<5; $i++)
         {
            $competitor = new Competitor();
-           $competitor->setSexe('m');
+           $competitor->setGender('m');
            $competitor->setFirstName('FNCompetitor'.$i);
            $competitor->setLastName('LNCompetitor'.$i);
            $competitor->setDate(new \DateTime('14-03-1983'));

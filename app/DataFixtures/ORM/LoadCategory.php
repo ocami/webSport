@@ -21,7 +21,7 @@ class LoadCategory extends AbstractFixture implements OrderedFixtureInterface
     public function load(ObjectManager $manager)
     {
         $category = new Category();
-        $category->setSexe('m');
+        $category->setGender('m');
         $category->setAgeMax(1980);
         $category->setAgeMin(1990);
         $category->setName('category1');

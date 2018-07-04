@@ -15,12 +15,12 @@ class CompetitorRepository extends EntityRepository
 {
     /**
      * array strings [id,firstName,lastName]
-     * @param  Competitor
+     * @param  Competitor $competitor
      * @return array
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function toString($competitor)
+    public function toString(Competitor $competitor)
     {
         $c = $this->createQueryBuilder('c')
             ->select('c.firstName,c.lastName,c.id')
@@ -39,11 +39,11 @@ class CompetitorRepository extends EntityRepository
      * ic : races in championship
      * speed : average speed in km/h
      *
-     * @param  Competitor
+     * @param  Competitor $competitor
      * @return array
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function racesStat($competitor)
+    public function racesStat(Competitor $competitor)
     {
         $competitor = $competitor->getId();
         $y = date('Y', strtotime('now'));
@@ -87,11 +87,11 @@ class CompetitorRepository extends EntityRepository
 
     /**
      * array strings[race[id,dateTime]] | null : next race which competitor must participate
-     * @param  Competitor
+     * @param  Competitor $competitor
      * @return array|null
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function nextRace($competitor)
+    public function nextRace(Competitor $competitor)
     {
         $competitor = $competitor->getId();
         $date = date('Y-m-d H:i:s', strtotime('now'));
@@ -110,7 +110,7 @@ class CompetitorRepository extends EntityRepository
         return $stmt->fetch();
     }
 
-    //for demo mode
+    //for demo
     public function firstAll($nb)
     {
         $c = $this->createQueryBuilder('c')

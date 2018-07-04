@@ -24,7 +24,7 @@ class CompetitorType extends AbstractType
         $builder
             ->add('firstName')
             ->add('lastName')
-            ->add('sexe')
+            ->add('gender')
             ->add('date');
     }/**
      * {@inheritdoc}

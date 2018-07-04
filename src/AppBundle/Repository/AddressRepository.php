@@ -11,9 +11,7 @@ namespace AppBundle\Repository;
 class AddressRepository extends \Doctrine\ORM\EntityRepository
 {
 
-    /**
-     * @return array string
-     */
+
     public function citiesToString()
     {
         $rc =  $this->createQueryBuilder('c')
@@ -23,9 +21,7 @@ class AddressRepository extends \Doctrine\ORM\EntityRepository
         return $rc;
     }
 
-    /**
-     * @return array string
-     */
+
     public function citiesDataToString($villeSlug)
     {
         $rc =  $this->createQueryBuilder('c')
@@ -37,9 +33,7 @@ class AddressRepository extends \Doctrine\ORM\EntityRepository
         return $rc;
     }
 
-    /**
-     * @return array string
-     */
+
     public function citiesByDep($dep)
     {
         $rc =  $this->createQueryBuilder('c')
@@ -51,9 +45,7 @@ class AddressRepository extends \Doctrine\ORM\EntityRepository
         return $rc;
     }
 
-    /**
-     * @return array string
-     */
+
     public function getCode($villeSlug)
     {
         $rc =  $this->createQueryBuilder('c')

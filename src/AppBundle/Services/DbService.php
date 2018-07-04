@@ -65,7 +65,7 @@ class DbService
         $competitor->setFirstName('Admin');
         $competitor->setLastName('Admin');
         $competitor->setDate(new \DateTime('14-03-1983'));
-        $competitor->setSexe('m');
+        $competitor->setGender('m');
         $competitor->setUserId($userAdmin->getId());
         $this->em->persist($competitor);
         $this->em->flush();
@@ -98,7 +98,7 @@ class DbService
             $competitor->setFirstName($data['FirstName']);
             $competitor->setLastName($data['LastName']);
             $competitor->setDate($this->tools->randomDate());
-            $competitor->setSexe('m');
+            $competitor->setGender('m');
             $competitor->setUserId($i);
             $competitor->setCode('CPTOR_' . $this->cs->codeFormat($i));
             $this->em->persist($user);
@@ -128,7 +128,7 @@ class DbService
             $competitor->setFirstName($data['FirstName']);
             $competitor->setLastName($data['LastName']);
             $competitor->setDate($this->tools->randomDate());
-            $competitor->setSexe('f');
+            $competitor->setGender('f');
             $competitor->setUserId($i);
             $competitor->setCode('CPTOR_' . $this->cs->codeFormat($i));
             $this->em->persist($user);
@@ -171,7 +171,7 @@ class DbService
             $category = new Category();
             $category->setCode('CATEG_' . $this->cs->codeFormat($i));
             $category->setName($data['name']);
-            $category->setSexe($data['sexe']);
+            $category->setGender($data['gender']);
             $category->setAgeMax($data['ageMax']);
             $category->setAgeMin($data['ageMin']);
             $category->setCreateBy($data['createBy']);
@@ -194,7 +194,7 @@ class DbService
             $category = new Category();
             $category->setCode('CATEG_' . $this->cs->codeFormat($i));
             $category->setName($data['name']);
-            $category->setSexe($data['sexe']);
+            $category->setGender($data['gender']);
             $category->setAgeMax($data['ageMax']);
             $category->setAgeMin($data['ageMin']);
             $category->setCreateBy($data['createBy']);
@@ -232,7 +232,7 @@ class DbService
             $i++;
             $competitorYear = $competitor->getDateObject()->format('Y');
             foreach ($race->getCategories() as $category) {
-                if ($category->getSexe() == 'mx' OR $category->getSexe() == $competitor->getSexe()) {
+                if ($category->getGender() == 'mx' OR $category->getGender() == $competitor->getGender()) {
                     if ($competitorYear <= $category->getAgeMin() AND $competitorYear >= $category->getAgeMax()) {
                         $raceCompetitor = new RaceCompetitor();
                         $raceCompetitor->setRace($race);

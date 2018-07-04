@@ -17,11 +17,11 @@ class ChampionshipCompetitorRepository extends EntityRepository
     /**
      * array strings [rank,points] | null
      *
-     * @param  Competitor
+     * @param  Competitor $competitor
      * @return array|null
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function onceByCompetitorToString($competitor){
+    public function onceByCompetitorToString(Competitor $competitor){
 
         $c = $this->createQueryBuilder('c')
             ->select('c.rank, c.points')
@@ -35,10 +35,10 @@ class ChampionshipCompetitorRepository extends EntityRepository
     /**
      * collection of ChampionshipCompetitor order by points
      *
-     * @param  Championship
+     * @param  Championship $championship
      * @return array
      */
-    public function allByChampionship($championship)
+    public function allByChampionship(Championship $championship)
     {
         $cc = $this->createQueryBuilder('cc')
             ->where('cc.championship = :championship')
@@ -52,10 +52,10 @@ class ChampionshipCompetitorRepository extends EntityRepository
     /**
      * array strings [rank,points,competitor[id,code,firstName,lastName] order by points
      *
-     * @param  Championship
+     * @param  Championship $championship
      * @return array
      */
-    public function allByChampionshipToString($championship)
+    public function allByChampionshipToString(Championship $championship)
     {
         $cc = $this->createQueryBuilder('cc')
             ->innerJoin('cc.competitor','c')

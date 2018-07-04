@@ -31,7 +31,7 @@ class CategoryService
 
             if ($competitorYear <= $category->getAgeMin()
                 && $competitorYear >= $category->getAgeMax()
-                && $category->getSexe() == $gender
+                && $category->getGender() == $gender
             )
                 return $category;
         }

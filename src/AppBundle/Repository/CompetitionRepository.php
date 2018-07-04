@@ -46,10 +46,10 @@ class CompetitionRepository extends EntityRepository
 
     /**
      * Competitions collection
-     * @param Organizer
+     * @param Organizer $organizer
      * @return array
      */
-    public function allByOrganizer($organizer)
+    public function allByOrganizer(Organizer $organizer)
     {
         $competitions = $this->createQueryBuilder('c')
             ->orderBy('c.dateStart')
@@ -62,11 +62,11 @@ class CompetitionRepository extends EntityRepository
 
     /**
      *
-     * @param Competition
+     * @param Competition $competition
      * @return int
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function countNotSupervisedRace($competition)
+    public function countNotSupervisedRace(Competition $competition)
     {
         $rawSql = "SELECT COUNT(r.id) FROM competition c
                    INNER JOIN race r ON  c.id = r.competition_id
@@ -81,12 +81,12 @@ class CompetitionRepository extends EntityRepository
 
     /**
      * true if competition contain at least one valid race
-     * @param Competition
+     * @param Competition $competition
      * @return boolean
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function isValid($competition)
+    public function isValid(Competition $competition)
     {
         $nb = $this->createQueryBuilder('c')
             ->select('count(c)')
@@ -107,12 +107,12 @@ class CompetitionRepository extends EntityRepository
 
     /**
      * true if competition contain at least one inChampionship race
-     * @param Competition
+     * @param Competition $competition
      * @return boolean
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function isInChampionship($competition)
+    public function isInChampionship(Competition $competition)
     {
         $nb = $this->createQueryBuilder('c')
             ->select('count(c)')

@@ -44,7 +44,7 @@ class RankService
     {
         $this->genrateTime($race);
 
-        $raceCompetitors = $this->em->getRepository(RaceCompetitor::class)->rcOrderByChrono($race);
+        $raceCompetitors = $this->em->getRepository(RaceCompetitor::class)->allByRace($race);
         $arrayCountRaceCat = array();
 
         foreach ($race->getCategories() as $cat) {
@@ -62,8 +62,8 @@ class RankService
             foreach ($race->getCategories() as $cat) {
 
                 $y = substr($competitor->getDate(), -10, 4);
-                $competitorCat = $this->cs->getCategory($y, $competitor->getSexe());
-                $competitor->setCategory($this->cs->getCategory($y, $competitor->getSexe()));
+                $competitorCat = $this->cs->getCategory($y, $competitor->getGender());
+                $competitor->setCategory($this->cs->getCategory($y, $competitor->getGender()));
 
                 if ($competitorCat == $cat) {
                     $cpt++;
@@ -119,7 +119,7 @@ class RankService
 
             $competitor = $rc->getCompetitor();
             $y = substr($competitor->getDate(), -10, 4);
-            $competitorCat = $this->cs->getCategory($y, $competitor->getSexe())->getId();
+            $competitorCat = $this->cs->getCategory($y, $competitor->getGender())->getId();
 
 
             $competitorLevel = $competitor->getLevel();
@@ -148,7 +148,7 @@ class RankService
     public function generateCompetitorsNumber($race)
     {
         $i = 0;
-        $rc = $this->em->getRepository(RaceCompetitor::class)->competitorsEnrolByLastName($race);
+        $rc = $this->em->getRepository(RaceCompetitor::class)->allOrderByCompetitorLastName($race);
         foreach ($rc as $row) {
             $i++;
             $row->setNumber($i);
@@ -177,7 +177,7 @@ class RankService
         $categoriesRank = new \ArrayObject();
 
         foreach ($race->getCategories() as $category) {
-            $rc = $this->em->getRepository(RaceCompetitor::class)->categoriesRankToString($category, $race);
+            $rc = $this->em->getRepository(RaceCompetitor::class)->allByRaceCategoryToString($race, $category);
             $categoryRank = array(
                 'category' => $category,
                 'competitors' => $rc
@@ -211,7 +211,7 @@ class RankService
     {
         foreach ($race->getCategories() as $category) {
 
-            $rcByCategory = $this->em->getRepository(RaceCompetitor::class)->categoriesRank($category, $race);
+            $rcByCategory = $this->em->getRepository(RaceCompetitor::class)->allByRaceCategory($category, $race);
             $championship = $this->em->getRepository(Championship::class)->findOneByCategory($category);
 
             $i = 0;
