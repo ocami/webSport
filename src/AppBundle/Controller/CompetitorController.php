@@ -145,6 +145,13 @@ class CompetitorController extends Controller
         return new JsonResponse($nextRace);
     }
 
+
+
+    /**
+     * use by show($id) and showCurrent()
+     * @param Competitor $competitor
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     private function showCompetitor(Competitor $competitor)
     {
         $rc = $this->getDoctrine()->getRepository(RaceCompetitor::class)->findBy(array('competitor' => $competitor));

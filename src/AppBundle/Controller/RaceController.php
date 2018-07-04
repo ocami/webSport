@@ -146,42 +146,6 @@ class RaceController extends Controller
         ));
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * @Route("/race/showRank/{id}", name="race_rank_show")
-     */
-    public function showRank(Race $race)
-    {
-        $competitor = $this->get(UserService::class)->getCompetitor();
-
-        $race = $this->get(UserService::class)->addUserDataInRace($race);
-        $race = $this->get(RaceService::class)->postSelectOne($race);
-
-        return $this->render('race/showRank.html.twig', array(
-            'race' => $race,
-            'competitor' => $competitor
-        ));
-    }
-
-
-
-    /**
-     * @Route("race/categoryTable", name="race_categoryTable")
-     */
-    public function categoryTable(Request $request)
-    {
-        $idRace = $request->query->get('idRace');
-        $idCategory = $request->query->get('idCategory');
-
-        $category = $this->getDoctrine()->getRepository(Category::class)->find($idCategory);
-        $race = $this->getDoctrine()->getRepository(Race::class)->find($idRace);
-
-        $data = $this->getDoctrine()->getRepository(RaceCompetitor::class)->allByRaceCategoryToString($race, $category);
-
-        return new JsonResponse($data);
-    }
-
     /**
      * @Route("race/race_Table", options={"expose"=true}, name="race_Table")
      */
@@ -222,18 +186,6 @@ class RaceController extends Controller
     }
 
     /**
-     * @Route("/race/simulateEnrol/{id}", name="race_simulateEnrol")
-     * @Security("has_role('ROLE_ORGANIZER')")
-     */
-    public function simulateEnrol(Request $request, Race $race)
-    {
-        $this->get(DbService::class)->simulateRaceEnrols($race);
-
-        $request->getSession()->getFlashBag()->add('success', 'Inscriptions enregistrées');
-        return $this->redirectToRoute('race_show', array('id' => $race->getId()));
-    }
-
-    /**
      * @Route("/race/enrolClosed/{id}", name="race_enrol_closed")
      * @Security("has_role('ROLE_ORGANIZER')")
      */
@@ -246,6 +198,30 @@ class RaceController extends Controller
         $em = $this->getDoctrine()->getManager();
         $em->persist($race);
         $em->flush();
+        return $this->redirectToRoute('race_show', array('id' => $race->getId()));
+    }
+
+    /**
+     * @Route("race/countNotSupervised", options={"expose"=true}, name="race_countNotSupervised")
+     */
+    public function countNotSupervisedRaces(Request $request)
+    {
+        $nbNewRace = $this->getDoctrine()->getRepository(Race::class)->countNotSupervisedRaces();
+
+        return new JsonResponse($nbNewRace);
+    }
+
+    //For demo /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @Route("/race/simulateEnrol/{id}", name="race_simulateEnrol")
+     * @Security("has_role('ROLE_ORGANIZER')")
+     */
+    public function simulateEnrol(Request $request, Race $race)
+    {
+        $this->get(DbService::class)->simulateRaceEnrols($race);
+
+        $request->getSession()->getFlashBag()->add('success', 'Inscriptions enregistrées');
         return $this->redirectToRoute('race_show', array('id' => $race->getId()));
     }
 
@@ -263,15 +239,5 @@ class RaceController extends Controller
         $em->flush();
 
         return $this->redirectToRoute('race_show', array('id' => $race->getId()));
-    }
-
-    /**
-     * @Route("race/countNotSupervised", options={"expose"=true}, name="race_countNotSupervised")
-     */
-    public function countNotSupervisedRaces(Request $request)
-    {
-        $nbNewRace = $this->getDoctrine()->getRepository(Race::class)->countNotSupervisedRaces();
-
-        return new JsonResponse($nbNewRace);
     }
 }

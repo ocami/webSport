@@ -22,7 +22,7 @@ class OrganizerController extends Controller
     /**
      * @Route("/organizer/register"), name"organizer_register")
      */
-    public function registerAction(Request $request, UserService $userService)
+    public function register(Request $request)
     {
         $organizer = new Organizer();
         $form = $this->createForm(OrganizerType::class, $organizer);
@@ -40,8 +40,8 @@ class OrganizerController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ORGANIZER')")
      * @Route("organizer/show"), name"organizer_show")
+     * @Security("has_role('ROLE_ORGANIZER')")
      */
     public function show(Request $request)
     {
