@@ -78,8 +78,8 @@ class CompetitorController extends Controller
         $data['competitor'] = $this->getDoctrine()->getRepository(Competitor::class)->toString($id);
         $data['competitor']['age'] = $competitor->getAge();
         $data['competitor']['category'] = $competitor->getCategory()->getName();
-        $data['championship'] = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->StringByCompetitor($id);
-        $data['raceStat'] =  $this->getDoctrine()->getRepository(Competitor::class)->racesStat($id);
+        $data['championship'] = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->onceByCompetitorToString($id);
+        $data['raceStat'] =  $this->getDoctrine()->getRepository(Competitor::class)->racesStat($competitor);
 
 
         return new JsonResponse($data);
@@ -137,7 +137,7 @@ class CompetitorController extends Controller
      */
     public function nextRace(Request $request)
     {
-        $competitor = $this->get(UserService::class)->getCompetitor()->getId();
+        $competitor = $this->get(UserService::class)->getCompetitor();
 
         $nextRace = $this->getDoctrine()->getRepository(Competitor::class)->nextRace($competitor);
 
@@ -149,7 +149,7 @@ class CompetitorController extends Controller
     {
         $rc = $this->getDoctrine()->getRepository(RaceCompetitor::class)->findBy(array('competitor' => $competitor));
         $cc = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->findOneBy(array('competitor' => $competitor));
-        $racesStat = $this->getDoctrine()->getRepository(Competitor::class)->racesStat($competitor->getId());
+        $racesStat = $this->getDoctrine()->getRepository(Competitor::class)->racesStat($competitor);
 
         return $this->render('competitor/show.html.twig', array(
             'competitor' => $competitor,

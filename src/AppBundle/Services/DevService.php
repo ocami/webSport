@@ -26,7 +26,6 @@ class DevService
     private $user;
     private $message = '';
 
-
     public function __construct(
         TokenStorageInterface $ts,
         EntityManagerInterface $em,
@@ -966,8 +965,4 @@ class DevService
         return date('Y-m-d', strtotime('next '.$day.' + '.$nb.' week'));
     }
 
-    private function fistYear($day,$nb){
-        return date('Y-m-d', strtotime('first Sunday of next month'));
-
-    }
 }

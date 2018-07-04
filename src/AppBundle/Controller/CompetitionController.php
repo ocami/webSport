@@ -47,7 +47,7 @@ class CompetitionController extends Controller
      */
     public function showAll()
     {
-        $competitions = $this->getDoctrine()->getRepository(Competition::class)->allValidByDate();
+        $competitions = $this->getDoctrine()->getRepository(Competition::class)->allValid();
         $competitions = $this->get(UserService::class)->addUserDataInCompetitions($competitions);
         //return array of competitions => passed/future
         $competitions = $this->get(CompetitionService::class)->postSelect($competitions);
@@ -66,7 +66,7 @@ class CompetitionController extends Controller
         $competitionRepository = $this->getDoctrine()->getRepository(Competition::class);
         $organizer = $this->get(UserService::class)->getOrganizer();
 
-        $competitions = $competitionRepository->byOrganizer($organizer->getId());
+        $competitions = $competitionRepositoryallByOrganizer($organizer->getId());
         $competitions = $this->get(UserService::class)->addUserDataInCompetitions($competitions);
         //return array of competitions => passed/future
         $competitions = $this->get(CompetitionService::class)->postSelect($competitions);

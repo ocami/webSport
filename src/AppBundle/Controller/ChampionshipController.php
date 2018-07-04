@@ -41,7 +41,7 @@ class ChampionshipController extends Controller
     {
         $idCategory = $request->query->get('idCategory');
         $championship = $this->getDoctrine()->getRepository(Championship::class)->findOneByCategory($idCategory);
-        $data = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->competitorsOrderByPointsToString($championship);
+        $data = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->allByChampionshipToString($championship);
 
         return new JsonResponse($data);
     }

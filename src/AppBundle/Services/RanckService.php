@@ -196,7 +196,7 @@ class RanckService
 
         foreach ($championships as $championship) {
 
-            $cc = $this->em->getRepository(ChampionshipCompetitor::class)->competitorsOrderByPointsToString($championship);
+            $cc = $this->em->getRepository(ChampionshipCompetitor::class)->allByChampionshipToString($championship);
 
             $championshipRanck = array(
                 'championship' => $championship,
@@ -240,7 +240,7 @@ class RanckService
     {
         foreach ($race->getCategories() as $category) {
             $championship = $this->em->getRepository(Championship::class)->findOneByCategory($category);
-            $ccs = $this->em->getRepository(ChampionshipCompetitor::class)->ccOrderByPoints($championship);
+            $ccs = $this->em->getRepository(ChampionshipCompetitor::class)->allByChampionship($championship);
 
             $i = 0;
             foreach ($ccs as $row) {

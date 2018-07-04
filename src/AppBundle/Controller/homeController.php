@@ -12,6 +12,7 @@ use AppBundle\Entity\Address;
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Competition;
 use AppBundle\Entity\Competitor;
+use AppBundle\Repository\CompetitorRepository;
 use AppBundle\Entity\RaceCompetitor;
 use AppBundle\Form\RaceNewType;
 use AppBundle\Services\CompetitionService;
@@ -57,6 +58,11 @@ class homeController extends Controller
      */
     public function test()
     {
+
+        $competitor =  $this->getDoctrine()->getRepository(Competitor::class)->find(101);
+        $truc = $this->getDoctrine()->getRepository(Competitor::class)->nextRace($competitor);
+
+        var_dump($truc);
 
         return $this->render('home/test.html.twig', array(
 

@@ -2,11 +2,9 @@
 
 namespace AppBundle\Repository;
 
+use Doctrine\ORM\EntityRepository;
 
-use AppBundle\Entity\Category;
-use AppBundle\Entity\Organizer;
-
-class CategoryRepository extends \Doctrine\ORM\EntityRepository
+class CategoryRepository extends EntityRepository
 {
     public function categoriesByGender()
     {

@@ -118,7 +118,7 @@ class CompetitionService
         $pastCompetitions = array();
         $futureCompetitions = array();
 
-        $competitions = $this->em->getRepository(Competition::class)->allValidByDate();
+        $competitions = $this->em->getRepository(Competition::class)->allValid();
         $competitions = $this->us->addUserDataInCompetitions($competitions);
 
         foreach ($competitions as $competition) {

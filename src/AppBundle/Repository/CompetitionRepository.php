@@ -2,29 +2,30 @@
 
 namespace AppBundle\Repository;
 
-
+use Doctrine\ORM\EntityRepository;
 use AppBundle\Entity\Competition;
 use AppBundle\Entity\Organizer;
-use phpDocumentor\Reflection\Types\Integer;
 
-class CompetitionRepository extends \Doctrine\ORM\EntityRepository
+class CompetitionRepository extends EntityRepository
 {
     /**
-     * @return array of competitions separed in passed and not passed
+     * Competitions collection order by date
+     * @return array
      */
-    public function allValidByDate()
+    public function allValid()
     {
         $competitions = $this->createQueryBuilder('c')
-            ->orderBy('c.dateStart')
             ->Where('c.valid = :isValid')
             ->setParameter('isValid', true)
+            ->orderBy('c.dateStart')
             ->getQuery()->getResult();
 
         return $competitions;
     }
 
     /**
-     * @return array of competitions separed in passed and not passed
+     * collection of five most recent Competitions order by date
+     * @return array
      */
     public function allValidFirstFive()
     {
@@ -44,23 +45,28 @@ class CompetitionRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @return array of competitions separed in passed and not passed
-     *
-     * @param int $organizerId
-     *
+     * Competitions collection
+     * @param Organizer
+     * @return array
      */
-    public function byOrganizer($organizerId)
+    public function allByOrganizer($organizer)
     {
         $competitions = $this->createQueryBuilder('c')
             ->orderBy('c.dateStart')
             ->Where('c.organizer = :organizer')
-            ->setParameter('organizer', $organizerId)
+            ->setParameter('organizer', $organizer)
             ->getQuery()->getResult();
 
         return $competitions;
     }
 
-    public function countNotSupervisedRace(Competition $competition)
+    /**
+     *
+     * @param Competition
+     * @return int
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function countNotSupervisedRace($competition)
     {
         $rawSql = "SELECT COUNT(r.id) FROM competition c
                    INNER JOIN race r ON  c.id = r.competition_id
@@ -73,7 +79,14 @@ class CompetitionRepository extends \Doctrine\ORM\EntityRepository
         return $stmt->fetchColumn();
     }
 
-    public function isValid(Competition $competition)
+    /**
+     * true if competition contain at least one valid race
+     * @param Competition
+     * @return boolean
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function isValid($competition)
     {
         $nb = $this->createQueryBuilder('c')
             ->select('count(c)')
@@ -92,7 +105,14 @@ class CompetitionRepository extends \Doctrine\ORM\EntityRepository
         return false;
     }
 
-    public function isInChampionship(Competition $competition)
+    /**
+     * true if competition contain at least one inChampionship race
+     * @param Competition
+     * @return boolean
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function isInChampionship($competition)
     {
         $nb = $this->createQueryBuilder('c')
             ->select('count(c)')
