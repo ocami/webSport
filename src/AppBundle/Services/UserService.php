@@ -29,8 +29,8 @@ class UserService
     private $cs;
     private $cpts;
     private $user;
-    private $competitor;
-    private $organizer;
+    private $competitor = null;
+    private $organizer = null;
 
     public function __construct(TokenStorageInterface $ts,
                                 AuthorizationCheckerInterface $ac,
@@ -43,17 +43,14 @@ class UserService
         $this->em = $em;
         $this->cpts = $cpts;
         $this->cs = $cs;
+
         $this->user = $this->ts->getToken()->getUser();
 
         if ($this->ac->isGranted('ROLE_ORGANIZER'))
             $this->organizer = $this->em->getRepository(Organizer::class)->findOneByUserId($this->user);
-        else
-            $this->competitor = null;
 
         if ($this->ac->isGranted('ROLE_COMPETITOR'))
             $this->competitor = $this->em->getRepository(Competitor::class)->findOneByUserId($this->user);
-        else
-            $this->competitor = null;
     }
 
 

@@ -24,23 +24,27 @@
 
 <div class="container">
     <br>
-    <button class="btn-xs btn-success" value="initialize">
+    <button class="btn-xs btn-success" onclick="location.href = '{{ path('competitor_update_category') }}'">
+        competitors-update-category
+    </button>
+
+    <button class="btn-xs btn-success request" value="initialize">
         Réinitialiser
     </button>
 
-    <button class="btn-xs btn-success" value="delete-organizer">
+    <button class="btn-xs btn-success request" value="delete-organizer">
         Suppimer organisateurs
     </button>
 
-    <button class="btn-xs btn-success" value="delete-competitions">
+    <button class="btn-xs btn-success request" value="delete-competitions">
         Suppimer compétitions
     </button>
 
-    <button class="btn-xs btn-success" value="delete-races">
+    <button class="btn-xs btn-success request" value="delete-races">
         Supprimer courses
     </button>
 
-    <button class="btn-xs btn-success" value="delete-rank">
+    <button class="btn-xs btn-success request" value="delete-rank">
         Supprimer classement
     </button>
 </div>
@@ -52,7 +56,7 @@
 <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 
 <script>
-   $('button').click(function () {
+   $('.request').click(function () {
 
        window.location.href =  Routing.generate('dev_request', {action: $(this).val()});
 

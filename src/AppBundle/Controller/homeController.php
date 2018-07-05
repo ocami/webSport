@@ -19,13 +19,12 @@ use AppBundle\Form\RaceNewType;
 use AppBundle\Services\CompetitionService;
 use AppBundle\Services\CompetitorService;
 use AppBundle\Services\DemoService;
+use AppBundle\Services\ToolsService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Services\UserService;
 use AppBundle\Services\MessageGenerator;
-
-
 
 
 class homeController extends Controller
@@ -57,11 +56,9 @@ class homeController extends Controller
     public function test()
     {
 
-        $r = $this->getDoctrine()->getRepository(Race::class)->find(2);
-        $cat = $this->getDoctrine()->getRepository(Competitor::class)->find(52);
-        $c = $this->getDoctrine()->getRepository(RaceCompetitor::class)->onceByRaceCompetitor($r,$cat);
+        $this->getDoctrine()->getRepository(Category::class)->updateCompetitors();
 
-        var_dump($c);
+
 
         return $this->render('home/test.html.twig', array());
     }

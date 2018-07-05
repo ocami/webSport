@@ -145,8 +145,6 @@ class CompetitorController extends Controller
         return new JsonResponse($nextRace);
     }
 
-
-
     /**
      * use by show($id) and showCurrent()
      * @param Competitor $competitor

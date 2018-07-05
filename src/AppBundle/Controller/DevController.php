@@ -33,14 +33,8 @@ class DevController extends Controller
      */
     public function home()
     {
-        $cote = "'";
-
-        var_dump("c".$cote."est l".$cote."expression");
-
         return $this->render('dev/index.html.twig', array());
     }
-
-
 
     /**
      * @Route("/dev/request/action", options={"expose"=true}, name="dev_request")
@@ -58,6 +52,19 @@ class DevController extends Controller
 
         return $this->redirectToRoute('dev_index');
     }
+
+    /**
+     * @Route("/dev/competitor_update", options={"expose"=true}, name="competitor_update_category")
+     */
+    public function competitorsCategoryUpdate(Request $request)
+    {
+        $this->get(DevService::class)->competitorsCategoryUpdate();
+
+        $request->getSession()->getFlashBag()->add('success', 'mise à jour des catégories compétiteurs');
+
+        return $this->render('dev/index.html.twig', array());
+    }
+
 
     /**
      * @Route("/becomeAdmin", name="becomeAdmin")

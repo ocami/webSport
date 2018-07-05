@@ -9,6 +9,9 @@
 namespace AppBundle\Services;
 
 use AppBundle\Entity\Category;
+use AppBundle\Entity\Competitor;
+use AppBundle\Services\ToolsService;
+use AppBundle\Services\CompetitorService;
 use AppBundle\Entity\Championship;
 use AppBundle\Entity\ChampionshipCompetitor;
 use AppBundle\Entity\Race;
@@ -20,24 +23,115 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class DevService
 {
-    private $ts;
+    private $cs;
     private $em;
     private $tools;
-    private $user;
     private $message = '';
 
     public function __construct(
-        TokenStorageInterface $ts,
+        CompetitorService $cs,
         EntityManagerInterface $em,
         ToolsService $tools
     )
     {
-        $this->ts = $ts;
+        $this->cs = $cs;
         $this->em = $em;
         $this->tools = $tools;
-        $this->user = $this->ts->getToken()->getUser();
     }
 
+    public function competitorsCategoryUpdate(){
+        $catf = $this->em->getRepository(Category::class)->findBy(array('gender' => 'f'));
+        $catm = $this->em->getRepository(Category::class)->findBy(array('gender' => 'm'));
+        $cf = $this->em->getRepository(Competitor::class)->firstAllBygender(100, 'f');
+        $cm = $this->em->getRepository(Competitor::class)->firstAllBygender(100, 'm');
+
+        $cat = 0;
+        $min = 0;
+        $max = 0;
+
+        for ($i = 0; $i < count($cf); $i++) {
+            switch ($i) {
+                case 0:
+                    $min = $catf[$cat]->getAgeMin();
+                    $max = $catf[$cat]->getAgeMax();
+                    $cat++;
+                    break;
+
+                case 11:
+                    $min = $catf[$cat]->getAgeMin();
+                    $max = $catf[$cat]->getAgeMax();
+                    $cat++;
+                    break;
+
+
+                case 21:
+                    $min = $catf[$cat]->getAgeMin();
+                    $max = $catf[$cat]->getAgeMax();
+                    $cat++;
+                    break;
+
+                case 31:
+                    $min = $catf[$cat]->getAgeMin();
+                    $max = $catf[$cat]->getAgeMax();
+                    $cat++;
+                    break;
+
+                case 41:
+                    $min = $catf[$cat]->getAgeMin();
+                    $max = $catf[$cat]->getAgeMax();
+                    $cat++;
+                    break;
+            }
+
+            $cf[$i]->setDate($this->tools->randomDate($max,$min));
+            $this->em->persist($cf[$i]);
+        }
+
+        $cat = 0;
+        $min = 0;
+        $max = 0;
+
+        for ($i = 0; $i < count($cm); $i++) {
+            switch ($i) {
+                case 0:
+                    $min = $catm[$cat]->getAgeMin();
+                    $max = $catm[$cat]->getAgeMax();
+                    $cat++;
+                    break;
+
+                case 11:
+                    $min = $catm[$cat]->getAgeMin();
+                    $max = $catm[$cat]->getAgeMax();
+                    $cat++;
+                    break;
+
+
+                case 21:
+                    $min = $catm[$cat]->getAgeMin();
+                    $max = $catm[$cat]->getAgeMax();
+                    $cat++;
+                    break;
+
+                case 31:
+                    $min = $catm[$cat]->getAgeMin();
+                    $max = $catm[$cat]->getAgeMax();
+                    $cat++;
+                    break;
+
+                case 41:
+                    $min = $catm[$cat]->getAgeMin();
+                    $max = $catm[$cat]->getAgeMax();
+                    $cat++;
+                    break;
+            }
+
+            $cm[$i]->setDate($this->tools->randomDate($max,$min));
+            $this->em->persist($cm[$i]);
+            var_dump($this->tools->randomDate($max,$min));
+        }
+
+        $this->em->flush();
+    }
 
     public function request($action){
         $stmt = '';
