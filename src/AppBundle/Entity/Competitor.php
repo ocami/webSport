@@ -95,6 +95,7 @@ class Competitor
     private $races;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Category", inversedBy="competitors")
      * @var Category
      */
     private $category;

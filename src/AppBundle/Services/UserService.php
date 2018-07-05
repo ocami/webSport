@@ -27,7 +27,7 @@ class UserService
     private $ac;
     private $em;
     private $cs;
-    private $cts;
+    private $cpts;
     private $user;
     private $competitor;
     private $organizer;
@@ -35,13 +35,13 @@ class UserService
     public function __construct(TokenStorageInterface $ts,
                                 AuthorizationCheckerInterface $ac,
                                 EntityManagerInterface $em,
-                                CompetitorService $cts,
+                                CompetitorService $cpts,
                                 CodeService $cs)
     {
         $this->ts = $ts;
         $this->ac = $ac;
         $this->em = $em;
-        $this->cts = $cts;
+        $this->cpts = $cpts;
         $this->cs = $cs;
         $this->user = $this->ts->getToken()->getUser();
 
@@ -50,10 +50,8 @@ class UserService
         else
             $this->competitor = null;
 
-        if ($this->ac->isGranted('ROLE_COMPETITOR')){
+        if ($this->ac->isGranted('ROLE_COMPETITOR'))
             $this->competitor = $this->em->getRepository(Competitor::class)->findOneByUserId($this->user);
-            $this->competitor = $this->cts->setCategoryCompetitor($this->competitor);
-        }
         else
             $this->competitor = null;
     }
@@ -86,6 +84,7 @@ class UserService
         switch (get_class($userApp)) {
             case Competitor::class :
                 $this->user->addRole('ROLE_COMPETITOR');
+                $userApp = $this->cpts->setCategoryCompetitor($userApp);
                 break;
 
             case Organizer::class :

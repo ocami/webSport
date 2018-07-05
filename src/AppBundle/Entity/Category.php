@@ -8,11 +8,12 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Services\CodeService;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use AppBundle\Repository\CategoryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use AppBundle\Entity\Competitor;
+
 
 /**
  * category
@@ -71,10 +72,18 @@ class Category
      */
     private $ageMin;
 
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Competitor", mappedBy ="category")
+     */
+    private $competitors;
+    
+    
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Race", mappedBy ="categories")
      */
     private $races;
+    
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Competition", mappedBy ="categories")
@@ -86,8 +95,9 @@ class Category
      */
     public function __construct()
     {
-        $this->races = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->competitions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->races = new ArrayCollection();
+        $this->competitions = new ArrayCollection();
+        $this->competitors = new  ArrayCollection();
     }
 
     /**
@@ -277,6 +287,50 @@ class Category
     {
         return $this->races;
     }
+
+    /**
+     * Add competitor
+     *
+     * @param Competitor $competitor
+     *
+     * @return category
+     */
+    public function addCompetitor(Competitor $competitor)
+    {
+        $this->competitors[] = $competitor;
+
+        return $this;
+    }
+
+    /**
+     * Remove competitor
+     *
+     * @param Competitor $competitor
+     */
+    public function removeCompetitor(Competitor $competitor)
+    {
+        $this->competitors->removeElement($competitor);
+    }
+
+    /**
+     * Get competitors
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCompetitors()
+    {
+        return $this->competitors;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     /**
      * Add competition
