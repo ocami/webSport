@@ -14,7 +14,7 @@ use AppBundle\Entity\Competitor;
 class CompetitorRepository extends EntityRepository
 {
     /**
-     * array strings [id,firstName,lastName]
+     * array strings [id,firstName,lastName,category]
      * @param  Competitor $competitor
      * @return array
      * @throws \Doctrine\ORM\NoResultException
@@ -23,7 +23,8 @@ class CompetitorRepository extends EntityRepository
     public function toString(Competitor $competitor)
     {
         $c = $this->createQueryBuilder('c')
-            ->select('c.firstName,c.lastName,c.id')
+            ->innerJoin('c.category','cat')
+            ->select('c.firstName,c.lastName,c.id,cat.name as category')
             ->where('c.id = :id')
             ->setParameter('id', $competitor)
             ->getQuery()->getSingleResult();
@@ -116,6 +117,18 @@ class CompetitorRepository extends EntityRepository
         $c = $this->createQueryBuilder('c')
             ->where('c.id <= :nb')
             ->setParameter('nb', $nb)
+            ->getQuery()->getResult();
+
+        return $c;
+    }
+
+    public function firstAllBygender($nb,$gender)
+    {
+        $c = $this->createQueryBuilder('c')
+            ->where('c.id <= :nb')
+            ->andWhere('c.gender = :gender')
+            ->setParameter('nb', $nb)
+            ->setParameter('gender', $gender)
             ->getQuery()->getResult();
 
         return $c;

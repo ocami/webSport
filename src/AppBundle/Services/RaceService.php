@@ -137,7 +137,7 @@ class RaceService
         if ($this->em->getRepository(RaceCompetitor::class)->competitorIsRegisterToRace($race, $competitor))
             return 2;
 
-        if ($race->getCategories()->contains($this->us->getCategoryCompetitor($competitor)))
+        if ($race->getCategories()->contains($competitor->getCategory()))
             if ($race->getEnrol())
                 return 1;
 

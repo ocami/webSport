@@ -155,27 +155,12 @@ class RaceController extends Controller
         $idRace = $request->query->get('idRace');
         $cat = $request->query->get('category');
         $race = $this->getDoctrine()->getRepository(Race::class)->find($idRace);
-        $em = $this->getDoctrine()->getManager();
 
-        if ($cat == 'all') {
+        if ($cat == 'all')
             $competitors = $this->getDoctrine()->getRepository(RaceCompetitor::class)->allByRaceToString($race);
-
-            for ($i = 0; $i < count($competitors); $i++) {
-                $y = substr($competitors[$i]['date'], -10, 4);
-                $cat = $this->get(CategoryService::class)->getCategory($y, $competitors[$i]['gender']);
-
-                $competitors[$i]['category'] = $cat->getName();
-            }
-        } else {
+         else {
             $cat = $this->getDoctrine()->getRepository(Category::class)->find($cat);
             $competitors = $this->getDoctrine()->getRepository(RaceCompetitor::class)->allByRaceCategoryToString($race, $cat);
-
-            for ($i = 0; $i < count($competitors); $i++) {
-                $y = substr($competitors[$i]['date'], -10, 4);
-                $cat = $this->get(CategoryService::class)->getCategory($y, $competitors[$i]['gender']);
-
-                $competitors[$i]['category'] = $cat->getName();
-            }
         }
 
         $data['race_state'] = $race->getState();

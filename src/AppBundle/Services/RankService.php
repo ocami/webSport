@@ -60,12 +60,7 @@ class RankService
             $rc->setRank($i);
 
             foreach ($race->getCategories() as $cat) {
-
-                $y = substr($competitor->getDate(), -10, 4);
-                $competitorCat = $this->cs->getCategory($y, $competitor->getGender());
-                $competitor->setCategory($this->cs->getCategory($y, $competitor->getGender()));
-
-                if ($competitorCat == $cat) {
+                if ($competitor->getCategory() == $cat) {
                     $cpt++;
                     $arrayCountRaceCat[$cat->getId()]++;
                     $count = $arrayCountRaceCat[$cat->getId()];
@@ -118,13 +113,10 @@ class RankService
         foreach ($raceCompetitors as $rc) {
 
             $competitor = $rc->getCompetitor();
-            $y = substr($competitor->getDate(), -10, 4);
-            $competitorCat = $this->cs->getCategory($y, $competitor->getGender())->getId();
-
 
             $competitorLevel = $competitor->getLevel();
 
-            $iCat = $arrayICat[$competitorCat];
+            $iCat = $arrayICat[$competitor->getCategory()];
             if (!$iCat == 0)
                 $iCat = 1 + ($iCat / 100);
             else

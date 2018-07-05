@@ -17,8 +17,12 @@ class ToolsService
      * @param string $sFormat
      * @return bool|string
      */
-    function randomDate($sStartDate = '1-1-1960', $sEndDate = '31-12-2010', $sFormat = 'd-m-Y')
+    function randomDate($sStartDate = '1960', $sEndDate = '2010', $sFormat = 'd-m-Y')
     {
+
+        $sStartDate = '1-1-'.$sStartDate;
+        $sEndDate = '31-12-'.$sEndDate;
+
         // Convert the supplied date to timestamp
         $fMin = strtotime($sStartDate);
         $fMax = strtotime($sEndDate);
@@ -26,7 +30,9 @@ class ToolsService
         $fVal = mt_rand($fMin, $fMax);
         // Convert back to the specified date format
         $date = date($sFormat, $fVal);
-        return new \DateTime($date);
+        $date = new \DateTime($date);
+
+        return $date->format('Y-m-d');
 
     }
 }

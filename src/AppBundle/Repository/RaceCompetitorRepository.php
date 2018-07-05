@@ -45,7 +45,7 @@ class RaceCompetitorRepository extends EntityRepository
     }
 
     /**
-     * array strings [number,rank,rankCategory,chronoString,points,competitor[id,code,firstName,lastName,date,gender]]
+     * array strings [number,rank,rankCategory,chronoString,points,competitor[id,code,firstName,lastName,category]]
      * order by rank
      * @param  Race $race
      * @return array
@@ -54,18 +54,18 @@ class RaceCompetitorRepository extends EntityRepository
     {
         $rc = $this->createQueryBuilder('rc')
             ->innerJoin('rc.competitor', 'c')
+            ->innerJoin('c.category', 'cat')
             ->select('
-            rc.number, 
-            rc.rank, 
-            rc.rankCategory, 
-            rc.chronoString, 
-            rc.points, 
-            c.id,
-            c.code, 
-            c.firstName, 
-            c.lastName, 
-            c.date, 
-            c.gender')
+                rc.number, 
+                rc.rank, 
+                rc.rankCategory, 
+                rc.chronoString, 
+                rc.points, 
+                c.id,
+                c.firstName, 
+                c.lastName, 
+                cat.name as category
+            ')
             ->where('rc.race = :race')
             ->setParameter('race', $race)
             ->orderBy('rc.rank')
@@ -75,28 +75,27 @@ class RaceCompetitorRepository extends EntityRepository
     }
 
     /**
-     * array strings [number,rank,rankCategory,chronoString,points,competitor[id,code,firstName,lastName,date,gender]]
+     * array strings [number,rank,rankCategory,chronoString,points,competitor[id,code,firstName,lastName]]
      * order by chrono
      * @param  Race $race
      * @param  Category $category
      * @return array
      */
-    public function allByRaceCategoryToString(Race $race,$category)
+    public function allByRaceCategoryToString(Race $race, $category)
     {
         $rc = $this->createQueryBuilder('rc')
             ->innerJoin('rc.competitor', 'c')
+            ->innerJoin('c.category', 'cat')
             ->select('
-            rc.number, 
-            rc.rank, 
-            rc.rankCategory, 
-            rc.chronoString, 
-            rc.points, 
-            c.id,
-            c.code, 
-            c.firstName, 
-            c.lastName, 
-            c.date, 
-            c.gender')
+                rc.number, 
+                rc.rank, 
+                rc.rankCategory, 
+                rc.chronoString, 
+                rc.points, 
+                c.id,
+                c.firstName, 
+                c.lastName
+            ')
             ->where('rc.race = :race')
             ->andWhere('c.date >= :dateMax AND c.date <= :dateMin')
             ->setParameter('race', $race->getId())
@@ -165,9 +164,9 @@ class RaceCompetitorRepository extends EntityRepository
      * @return boolean
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function competitorIsRegisterToRace(Race $race,Competitor $competitor)
+    public function competitorIsRegisterToRace(Race $race, Competitor $competitor)
     {
-        if(is_null($this->onceByRaceCompetitor($race, $competitor)))
+        if (is_null($this->onceByRaceCompetitor($race, $competitor)))
             return false;
 
         return true;
