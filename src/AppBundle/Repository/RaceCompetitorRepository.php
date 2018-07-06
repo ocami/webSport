@@ -28,6 +28,23 @@ class RaceCompetitorRepository extends EntityRepository
     }
 
     /**
+     * RaceCompetitor collection order by race date
+     * @param Competitor $competitor
+     * @return array
+     */
+    public function allByCompetitor(Competitor $competitor)
+    {
+        $rc = $this->createQueryBuilder('rc')
+            ->innerJoin('rc.race','r')
+            ->where('rc.competitor = :competitor')
+            ->setParameter('competitor', $competitor)
+            ->orderBy('r.dateTime', 'DESC')
+            ->getQuery()->getResult();
+
+        return $rc;
+    }
+
+    /**
      * RaceCompetitor collection order by competitor.lastName
      * @param Race $race
      * @return array
@@ -137,6 +154,7 @@ class RaceCompetitorRepository extends EntityRepository
         $rc = $rc->getQuery()->getResult();
         return $rc;
     }
+
 
     /**
      * RaceCompetitor if $competitor is enrol for race | null

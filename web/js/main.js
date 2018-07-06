@@ -724,6 +724,7 @@ function competitorShow() {
         lengthChange: false,
         searching: false,
         paging: false,
+        order: [],
         columnDefs: [
             {targets: 0, responsivePriority: 1},
             {targets: 1, responsivePriority: 5},
