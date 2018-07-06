@@ -204,7 +204,7 @@ class RaceController extends Controller
      */
     public function simulateEnrol(Request $request, Race $race)
     {
-        $this->get(DbService::class)->simulateRaceEnrols($race);
+        $this->get(RankService::class)->simulateEnrols($race);
 
         $request->getSession()->getFlashBag()->add('success', 'Inscriptions enregistrées');
         return $this->redirectToRoute('race_show', array('id' => $race->getId()));

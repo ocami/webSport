@@ -51,7 +51,7 @@
                     <input type="button" class="btn-xs btn-info" value="S'inscrire"
                            onclick="location.href = '{{ path('app_competitor_addrace', {'race': race.id}) }}';">
                 {% endif %}
-                {% if race.competitorRegister == 2 %}
+                {% if race.competitorRegister == 2 and race.enrol == 1 %}
                     <input type="button" class="btn-xs btn-info" value="Annuler"
                            onclick="location.href = '{{ path('app_competitor_removerace', {'race': race.id}) }}';">
                 {% endif %}

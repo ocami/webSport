@@ -22,68 +22,6 @@ use AppBundle\Services\CompetitionService;
 class CompetitionController extends Controller
 {
     /**
-     * @Route("/competition/show/{id}", name="competition_show")
-     */
-    public function show(Competition $competition)
-    {
-        $competition = $this->get(UserService::class)->addUserDataInCompetition($competition);
-
-        if ($competition->getIsOrganizer())
-            $races = $this->getDoctrine()->getRepository(Race::class)->findByCompetition($competition->getId());
-        else
-            $races = $this->getDoctrine()->getRepository(Race::class)->allValidByCompetition($competition->getId());
-
-        $races = $this->get(RaceService::class)->postSelectAll($races);
-        $races = $this->get(UserService::class)->addUserDataInRaces($races);
-
-        return $this->render('competition/show.html.twig', array(
-            'competition' => $competition,
-            'races' => $races,
-        ));
-    }
-
-    /**
-     * @Route("/competition/show_all", name="competition_show_all")
-     */
-    public function showAll()
-    {
-        $competitions = $this->getDoctrine()->getRepository(Competition::class)->allValid();
-        $competitions = $this->get(UserService::class)->addUserDataInCompetitions($competitions);
-        //return array of competitions => passed/future
-        $competitions = $this->get(CompetitionService::class)->postSelect($competitions);
-
-        return $this->render('competition/showList.html.twig', array(
-            'competitions' => $competitions
-        ));
-    }
-
-    /**
-     * @Route("/competition/show_byOrganizer", name="competition_show_byOrganizer")
-     * @Security("has_role('ROLE_ORGANIZER')")
-     */
-    public function showByOrganizer()
-    {
-        $competitionRepository = $this->getDoctrine()->getRepository(Competition::class);
-        $organizer = $this->get(UserService::class)->getOrganizer();
-
-        $competitions = $competitionRepositoryallByOrganizer($organizer->getId());
-        $competitions = $this->get(UserService::class)->addUserDataInCompetitions($competitions);
-        //return array of competitions => passed/future
-        $competitions = $this->get(CompetitionService::class)->postSelect($competitions);
-
-        foreach ($competitions['future'] as $competition) {
-            $nbRaceNotSupervised = $competitionRepository->countNotSupervisedRace($competition);
-
-            if ($nbRaceNotSupervised > 0)
-                $competition->setNbRaceNotSupervised($nbRaceNotSupervised);
-        }
-
-        return $this->render('competition/showList.html.twig', array(
-            'competitions' => $competitions
-        ));
-    }
-
-    /**
      * @Route("/competition/new", name="competition_new")
      * @Security("has_role('ROLE_ORGANIZER')")
      */
@@ -131,6 +69,68 @@ class CompetitionController extends Controller
         return $this->render('competition/new.html.twig', array(
             'competition' => $competition,
             'form' => $form->createView()
+        ));
+    }
+
+    /**
+     * @Route("/competition/show/{id}", name="competition_show")
+     */
+    public function show(Competition $competition)
+    {
+        $competition = $this->get(UserService::class)->addUserDataInCompetition($competition);
+
+        if ($competition->getIsOrganizer())
+            $races = $this->getDoctrine()->getRepository(Race::class)->findByCompetition($competition->getId());
+        else
+            $races = $this->getDoctrine()->getRepository(Race::class)->allValidByCompetition($competition);
+
+        //return array of competitions => passed/future
+        $races = $this->get(RaceService::class)->postSelectAll($races);
+        $races = $this->get(UserService::class)->addUserDataInRaces($races);
+
+        return $this->render('competition/show.html.twig', array(
+            'competition' => $competition,
+            'races' => $races,
+        ));
+    }
+
+    /**
+     * @Route("/competition/show_all", name="competition_show_all")
+     */
+    public function showAll()
+    {
+        $competitions = $this->getDoctrine()->getRepository(Competition::class)->allValid();
+        $competitions = $this->get(UserService::class)->addUserDataInCompetitions($competitions);
+        $competitions = $this->get(CompetitionService::class)->postSelect($competitions);
+
+        return $this->render('competition/showList.html.twig', array(
+            'competitions' => $competitions
+        ));
+    }
+
+    /**
+     * @Route("/competition/show_byOrganizer", name="competition_show_byOrganizer")
+     * @Security("has_role('ROLE_ORGANIZER')")
+     */
+    public function showByOrganizer()
+    {
+        $competitionRepository = $this->getDoctrine()->getRepository(Competition::class);
+        $organizer = $this->get(UserService::class)->getOrganizer();
+
+        $competitions = $competitionRepository->allByOrganizer($organizer);
+        $competitions = $this->get(UserService::class)->addUserDataInCompetitions($competitions);
+        //return array of competitions => passed/future
+        $competitions = $this->get(CompetitionService::class)->postSelect($competitions);
+
+        foreach ($competitions['future'] as $competition) {
+            $nbRaceNotSupervised = $competitionRepository->countNotSupervisedRace($competition);
+
+            if ($nbRaceNotSupervised > 0)
+                $competition->setNbRaceNotSupervised($nbRaceNotSupervised);
+        }
+
+        return $this->render('competition/showList.html.twig', array(
+            'competitions' => $competitions
         ));
     }
 

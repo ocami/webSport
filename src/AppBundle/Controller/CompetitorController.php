@@ -145,6 +145,8 @@ class CompetitorController extends Controller
         return new JsonResponse($nextRace);
     }
 
+
+
     /**
      * use by show($id) and showCurrent()
      * @param Competitor $competitor
@@ -152,7 +154,7 @@ class CompetitorController extends Controller
      */
     private function showCompetitor(Competitor $competitor)
     {
-        $rc = $this->getDoctrine()->getRepository(RaceCompetitor::class)->findBy(array('competitor' => $competitor));
+        $rc = $this->getDoctrine()->getRepository(RaceCompetitor::class)->allByCompetitor($competitor);
         $cc = $this->getDoctrine()->getRepository(ChampionshipCompetitor::class)->findOneBy(array('competitor' => $competitor));
         $racesStat = $this->getDoctrine()->getRepository(Competitor::class)->racesStat($competitor);
 

@@ -64,7 +64,8 @@ class CompetitorRepository extends EntityRepository
                         FROM race_competitor rc
                         INNER JOIN race r ON rc.race_id = r.id
                         WHERE rc.competitor_id = '" . $competitor . "'
-                        AND r.date_time BETWEEN '" . $dateStart . "' AND '" . $dateEnd . "'";
+                        AND r.date_time BETWEEN '" . $dateStart . "' AND '" . $dateEnd . "'
+                        AND r.passed = 1";
 
         $stmt = $this->getEntityManager()->getConnection()->prepare($rawSqlAll);
         $stmt->execute([]);
