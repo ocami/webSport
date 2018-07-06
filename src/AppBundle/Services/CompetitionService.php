@@ -188,10 +188,9 @@ class CompetitionService
      *
      * @return Competition
      */
-
     public function competitorCanRegister(Competition $competition, Competitor $competitor)
     {
-        if ($competition->getCategories()->contains($competitor->getCategory()))
+        if ($competition->getCategories()->contains($this->us->getCategoryCompetitor($competitor)))
             $competition->setCompetitorCanRegister(true);
 
         return $competition;
