@@ -176,7 +176,7 @@ class RaceController extends Controller
      */
     public function enrolClosed(Request $request, Race $race)
     {
-        $this->get(RankService::class)->generateCompetitorsNumber($race);
+        $this->get(RankService::class)->competitorNumberGenerator($race);
         $request->getSession()->getFlashBag()->add('success', 'Inscriptions cloturées');
         $race->setState(1);
         $race->setEnrol(0);
@@ -196,8 +196,7 @@ class RaceController extends Controller
         return new JsonResponse($nbNewRace);
     }
 
-    //For demo /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    // !!! FOR DEMONSTRATION !!!! //
     /**
      * @Route("/race/simulateEnrol/{id}", name="race_simulateEnrol")
      * @Security("has_role('ROLE_ORGANIZER')")
@@ -218,6 +217,7 @@ class RaceController extends Controller
     {
         $this->get(RankService::class)->importCompetitorsTimes($race);
         $request->getSession()->getFlashBag()->add('success', 'Temps de course importés');
+        $race->setPassed(1);
         $race->setState(2);
         $em = $this->getDoctrine()->getManager();
         $em->persist($race);

@@ -13,6 +13,7 @@ use AppBundle\Entity\Championship;
 use AppBundle\Entity\ChampionshipCompetitor;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\RaceCompetitor;
+use AppBundle\Repository\RaceCompetitorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use AppBundle\Entity\Competitor;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -36,27 +37,7 @@ class RankService
         $this->user = $this->ts->getToken()->getUser();
     }
 
-
-    /************************************************ok****************************************************************/
-    public function simulateEnrols($race)
-    {
-        $competitors = $this->em->getRepository(Competitor::class)->firstAll(100);
-
-        foreach ($competitors as $competitor) {
-            foreach ($race->getCategories() as $category) {
-                if ($competitor->getCategory()==$category) {
-                        $raceCompetitor = new RaceCompetitor();
-                        $raceCompetitor->setRace($race);
-                        $raceCompetitor->setCompetitor($competitor);
-                        $this->em->persist($raceCompetitor);
-                        break;
-                }
-            }
-        }
-        $this->em->flush();
-    }
-
-    public function generateCompetitorsNumber($race)
+    public function competitorNumberGenerator($race)
     {
         $i = 0;
         $rc = $this->em->getRepository(RaceCompetitor::class)->allOrderByCompetitorLastName($race);
@@ -70,57 +51,59 @@ class RankService
         $this->em->flush();
     }
 
-    private function genrateTime($race)
+    public function importCompetitorsTimes($race)
     {
-        $raceCompetitors = $this->em->getRepository(RaceCompetitor::class)->findByRace($race);
+        $arrayChrono = $this->timeGenerator($race);
+        $arrayCategories = [];
+        $competitorRepo = $this->em->getRepository(Competitor::class);
+        $rcRepo = $this->em->getRepository(RaceCompetitor::class);
+        $ccRepo = $this->em->getRepository(ChampionshipCompetitor::class);
+        $champRepo = $this->em->getRepository(Championship::class);
 
-        $base = 260;
-        $arrayICat = array(
-            1 => 24,
-            2 => 16,
-            3 => 8,
-            4 => 0,
-            5 => 8,
-            6 => 32,
-            7 => 24,
-            8 => 16,
-            9 => 8,
-            10 => 16,
-        );
-        $arrayILevel = array(
-            1 => 1.2,
-            2 => 1,
-            3 => 0.8,
-        );
+        asort($arrayChrono);
 
-        foreach ($raceCompetitors as $rc) {
-
-            $competitor = $rc->getCompetitor();
-
-            $competitorLevel = $competitor->getLevel();
-
-            $iCat = $arrayICat[$competitor->getCategory()->getId()];
-            if (!$iCat == 0)
-                $iCat = 1 + ($iCat / 100);
-            else
-                $iCat = 1;
-
-
-            $level = $arrayILevel[$competitorLevel];
-
-            $random = random_int(0, 25);
-            $random = 1 + ($random / 100);
-
-            $time = $base * $race->getDistance() * $iCat * $level * $random;
-
-            $rc->setChrono($time);
-            $rc->setChronoString(gmdate("H:i:s", $time));
-            $this->em->persist($rc);
+        foreach ($race->getCategories() as $cat) {
+            $arrayCategories[$cat->getId()] = 1;
         }
-        $this ->em->flush();
+
+        $i = 0;
+        foreach ($arrayChrono as $key => $chrono) {
+            $i++;
+            $competitor = $competitorRepo->find($key);
+            $rankCategory = $arrayCategories[$competitor->getCategory()->getId()]++;
+
+            $rc = $rcRepo->onceByRaceCompetitor($race, $competitor);
+            $rc->setChrono($chrono);
+            $rc->setChronoString(gmdate("H:i:s", $chrono));
+            $rc->setRank($i);
+            $rc->setRankCategory($rankCategory);
+            $this->em->persist($rc);
+
+            if ($race->getInChampionship()) {
+
+                $cc = $ccRepo->findOneBy(array('competitor' => $competitor));
+
+                if ($cc == null) {
+                    $championship = $champRepo->findOneBy(array('category' => $competitor->getCategory()));
+                    $cc = new ChampionshipCompetitor();
+                    $cc->setCompetitor($competitor);
+                    $cc->setChampionship($championship);
+                }
+
+                $points = $this->pointGenerator($rankCategory);
+                $rc->setPoints($points);
+                $cc->setPoints($cc->getPoints() + $points);
+
+                $this->em->persist($cc);
+            }
+        }
+
+        if ($race->getInChampionship()) {
+            $this->championshipUpdateRank($race);
+        }
     }
 
-    private function point($pos)
+    private function pointGenerator($pos)
     {
         if ($pos > 39)
             return 0;
@@ -169,162 +152,90 @@ class RankService
 
         return $liste[$pos];
     }
-    /***********************************************??*****************************************************************/
-
-    public function importCompetitorsTimes($race)
-    {
-        $this->genrateTime($race);
-
-        $raceCompetitors = $this->em->getRepository(RaceCompetitor::class)->allByRace($race);
-        $arrayCountRaceCat = array();
-
-        foreach ($race->getCategories() as $cat) {
-            $arrayCountRaceCat[$cat->getId()] = 0;
-        }
-
-        $i = 0;
-        $cpt = 0;
-        foreach ($raceCompetitors as $rc) {
-            $i++;
-            $competitor = $rc->getCompetitor();
-
-            $rc->setRank($i);
-
-            foreach ($race->getCategories() as $cat) {
-                if ($competitor->getCategory() == $cat) {
-                    $cpt++;
-                    $arrayCountRaceCat[$cat->getId()]++;
-                    $count = $arrayCountRaceCat[$cat->getId()];
-
-                    $rc->setRankCategory($count);
-
-                    if ($race->getInChampionship())
-                        $rc->setPoints($this->point($count));
-
-                }
-                $this->em->persist($rc);
-            }
-        }
-
-
-        if ($race->getInChampionship())
-            $this->championshipSetPoints($race);
-
-
-        $race->setPassed(true);
-        $race->setState(3);
-        $this->em->persist($race);
-
-        $this->em->flush();
-    }
-
-    private function championshipSetPoints($race)
-    {
-        foreach ($race->getCategories() as $category) {
-
-            $rcByCategory = $this->em->getRepository(RaceCompetitor::class)->allByRaceCategory($race, $category);
-            $championship = $this->em->getRepository(Championship::class)->findOneByCategory($category);
-
-            $i = 0;
-            foreach ($rcByCategory as $row) {
-                $cc = $this->em->getRepository(ChampionshipCompetitor::class)
-                    ->findOneBy(array('championship' => $championship->getId(), 'competitor' => $row->getCompetitor()));
-
-                if ($cc == null) {
-                    $cc = new ChampionshipCompetitor();
-                    $cc->setCompetitor($row->getCompetitor());
-                    $cc->setChampionship($championship);
-                }
-
-                $i++;
-                $cc->setPoints($cc->getPoints() + $this->point($i));
-                $this->em->persist($cc);
-            }
-        }
-
-        $this->em->flush();
-        $this->championshipUpdateRank($race);
-    }
 
     private function championshipUpdateRank($race)
     {
+        $this->em->flush();
+
         foreach ($race->getCategories() as $category) {
             $championship = $this->em->getRepository(Championship::class)->findOneByCategory($category);
             $ccs = $this->em->getRepository(ChampionshipCompetitor::class)->allByChampionship($championship);
 
             $i = 0;
-            foreach ($ccs as $row) {
-
+            foreach ($ccs as $cc) {
                 $i++;
-                $row->setRank($i);
-                $this->em->persist($row);
+                $cc->setRank($i);
+                $this->em->persist($cc);
             }
         }
+    }
 
+    // !!! FOR DEMONSTRATION !!!! //
+    public function simulateEnrols($race)
+    {
+        $competitors = $this->em->getRepository(Competitor::class)->firstAll(100);
+
+        foreach ($competitors as $competitor) {
+            foreach ($race->getCategories() as $category) {
+                if ($competitor->getCategory() == $category) {
+                    $raceCompetitor = new RaceCompetitor();
+                    $raceCompetitor->setRace($race);
+                    $raceCompetitor->setCompetitor($competitor);
+                    $this->em->persist($raceCompetitor);
+                    break;
+                }
+            }
+        }
         $this->em->flush();
     }
-
-    /**********************************************inutil**************************************************************/
-
-
-
-
-
-
-
-/*
-
-    public function raceRank($race)
+    
+    private function timeGenerator($race)
     {
-        $rc = $this->em->getRepository(RaceCompetitor::class)->crOrderByChrono($race);
+        $arrayChrono = [];
 
-        $i = 0;
-        foreach ($rc as $c) {
-            $i++;
-            $c->setRank($i);
+        $raceCompetitors = $this->em->getRepository(RaceCompetitor::class)->findByRace($race);
+
+        $base = 260;
+        $arrayICat = array(
+            1 => 24,
+            2 => 16,
+            3 => 8,
+            4 => 0,
+            5 => 8,
+            6 => 32,
+            7 => 24,
+            8 => 16,
+            9 => 8,
+            10 => 16,
+        );
+        $arrayILevel = array(
+            1 => 1.2,
+            2 => 1,
+            3 => 0.8,
+        );
+
+        foreach ($raceCompetitors as $rc) {
+
+            $competitor = $rc->getCompetitor();
+
+            $competitorLevel = $competitor->getLevel();
+
+            $iCat = $arrayICat[$competitor->getCategory()->getId()];
+            if (!$iCat == 0)
+                $iCat = 1 + ($iCat / 100);
+            else
+                $iCat = 1;
+
+
+            $level = $arrayILevel[$competitorLevel];
+
+            $random = random_int(0, 25);
+            $random = 1 + ($random / 100);
+
+            $time = $base * $race->getDistance() * $iCat * $level * $random;
+
+            $arrayChrono[$competitor->getId()] = $time;
         }
-
-        return $rc;
+        return $arrayChrono;
     }
-
-    public function raceCategoriesRank($race)
-    {
-        $categoriesRank = new \ArrayObject();
-
-        foreach ($race->getCategories() as $category) {
-            $rc = $this->em->getRepository(RaceCompetitor::class)->allByRaceCategoryToString($race, $category);
-            $categoryRank = array(
-                'category' => $category,
-                'competitors' => $rc
-            );
-            $categoriesRank->append($categoryRank);
-        }
-
-        return $categoriesRank;
-    }
-
-    public function championshipsRank()
-    {
-        $championships = $this->em->getRepository(Championship::class)->findAll();
-        $championshipsRank = new \ArrayObject();
-
-        foreach ($championships as $championship) {
-
-            $cc = $this->em->getRepository(ChampionshipCompetitor::class)->allByChampionshipToString($championship);
-
-            $championshipRank = array(
-                'championship' => $championship,
-                'competitors' => $cc
-            );
-            $championshipsRank->append($championshipRank);
-        }
-
-        return $championshipsRank;
-    }
-*/
-
-
-
-
-
 }
