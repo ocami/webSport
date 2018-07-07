@@ -11,12 +11,11 @@
 
 <body>
 
-
 <div class="row">
     {% for label, messages in app.flashes %}
         {% for message in messages %}
-            <div class="alert alert-{{ label }} col-sm-offset-2 col-sm-8" style="text-align: center">
-                {{ message }}
+            <div class="alert alert-{{ label }} col-sm-offset-2 col-sm-8">
+                {{ message |nl2br }}
             </div>
         {% endfor %}
     {% endfor %}
@@ -56,9 +55,9 @@
 <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 
 <script>
-   $('.request').click(function () {
+    $('.request').click(function () {
 
-       window.location.href =  Routing.generate('dev_request', {action: $(this).val()});
+        window.location.href = Routing.generate('dev_request', {action: $(this).val()});
 
-   })
+    })
 </script>

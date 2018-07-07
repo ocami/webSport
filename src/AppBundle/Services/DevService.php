@@ -179,7 +179,7 @@ class DevService
         ALTER TABLE championship_competitor AUTO_INCREMENT=0;
         ';
 
-        $this->message = "Suppression des temps de courses".$this->message;
+        $this->message = "=> Suppression des temps de courses \n".$this->message;
 
         return $sql.$stmt;
     }
@@ -196,7 +196,7 @@ class DevService
         ALTER TABLE race AUTO_INCREMENT=0;
         ';
 
-        $this->message = "Suppression des courses \n".$this->message;
+        $this->message = "=> Suppression des courses \n".$this->message;
 
         return $sql.$stmt;
     }
@@ -211,7 +211,7 @@ class DevService
         ALTER TABLE location AUTO_INCREMENT=0;
         ';
 
-        $this->message = "Suppression des competitions \n".$this->message;
+        $this->message = "=> Suppression des competitions \n".$this->message;
 
 
         return $sql.$stmt;
@@ -224,7 +224,7 @@ class DevService
         ALTER TABLE organizer AUTO_INCREMENT=0;
         ';
 
-        $this->message = "Suppression des organisateurs \n".$this->message;
+        $this->message = "=> Suppression des organisateurs \n".$this->message;
 
 
         return $sql.$stmt;
@@ -1093,7 +1093,7 @@ class DevService
 (101, 10, 97, 75, 9);                       
         ";
 
-        $this->message = "Ajout des données \n".$this->message;
+        $this->message = "=> Ajout des données \n".$this->message;
 
         return $sql.$stmt;
     }
