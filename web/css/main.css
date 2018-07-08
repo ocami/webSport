@@ -245,10 +245,7 @@ div#fade-content {
         }
 
         .panel-model .categories {
-            padding-top: 0.5em;
-            overflow: hidden;
             font-size: 0.8em;
-            width: 100%;
         }
 
         .panel-model .categories .glyphicon {
@@ -290,18 +287,12 @@ div#fade-content {
         .panel-model .nbRace {
             text-align: center;
             font-weight: bold;
-            padding-top: 0.5em;
+            padding-top: 0.8em;
         }
 
         .panel-model .category-all {
             font-weight: bold;
             padding-top: 1.5em;
-        }
-
-        .panel-model .categories {
-            padding-top: 0.5em;
-            overflow: hidden;
-            width: 100%;
         }
 
         .panel-model .categories .glyphicon {
