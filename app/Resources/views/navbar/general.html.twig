@@ -45,7 +45,7 @@
                         <ul class="dropdown-menu">
 
                             {% if is_granted('ROLE_COMPETITOR') %}
-                                <li><a id="profile-href" data="{{ app.user.id }}" href="{{ path('competitor_show_current') }}">Mon profile</a></li>
+                                <li><a id="table-href" data="{{ app.user.id }}" href="{{ path('competitor_show_current') }}">Mon profile</a></li>
                                 <li><a href="#" onclick="competitorSearchRace('passed')">Mes courses passées</a></li>
                                 <li><a href="#" onclick="competitorSearchRace('future')">Mes courses à venir</a></li>
                             {% endif %}
