@@ -77,6 +77,11 @@ hr{
 .row-rank {
     text-align: center;
 }
+
+.table-href{
+    cursor: zoom-in;
+    color: #1b6d85;
+}
 /*== model table============================= */
 /********************************************
 /    use in :
@@ -85,11 +90,6 @@ hr{
 /*******************************************/
 .table-model{
     padding-top: 1em;
-}
-
-.table-model .profile-href {
-    cursor: zoom-in;
-    color: #1b6d85;
 }
 
 /**admin/races.html.twig************/

@@ -285,7 +285,7 @@ var language = {
 };
 
 /***********************************************************************************************************************
- /   race\show.html.twig
+ /   race/show.html.twig
  /**********************************************************************************************************************/
 function raceShow(race, loaderHeight) {
     var $btn = $('#categories-button').find('button');
@@ -326,7 +326,7 @@ function raceShow(race, loaderHeight) {
         $.ajax({
             url: path,
             success: function (data) {
-                displayTest(data, category);
+                displayRaceTable(data, category);
             },
             error: function () {
                 ajaxError();
@@ -334,7 +334,7 @@ function raceShow(race, loaderHeight) {
         });
     }
 
-    function displayTest(data, category) {
+    function displayRaceTable(data, category) {
 
         var options = {
             language: language,
@@ -404,13 +404,13 @@ function raceShow(race, loaderHeight) {
                 {
                     "data": "lastName",
                     "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                        $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
+                        $(nTd).html("<span class='table-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
                     }
                 },
                 {
                     "data": "firstName",
                     "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                        $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
+                        $(nTd).html("<span class='table-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
                     }
                 },
                 {data: 'category'}
@@ -431,13 +431,13 @@ function raceShow(race, loaderHeight) {
                 {
                     "data": "lastName",
                     "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                        $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
+                        $(nTd).html("<span class='table-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
                     }
                 },
                 {
                     "data": "firstName",
                     "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                        $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
+                        $(nTd).html("<span class='table-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
                     }
                 },
                 {data: 'category'},
@@ -465,13 +465,13 @@ function raceShow(race, loaderHeight) {
                 {
                     "data": "lastName",
                     "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                        $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
+                        $(nTd).html("<span class='table-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
                     }
                 },
                 {
                     "data": "firstName",
                     "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                        $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
+                        $(nTd).html("<span class='table-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
                     }
                 },
                 {data: 'chronoString', className: "row-rank"},
@@ -520,13 +520,13 @@ function raceShow(race, loaderHeight) {
                 {
                     "data": "lastName",
                     "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                        $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
+                        $(nTd).html("<span class='table-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
                     }
                 },
                 {
                     "data": "firstName",
                     "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                        $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
+                        $(nTd).html("<span class='table-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
                     }
                 },
             ];
@@ -544,13 +544,13 @@ function raceShow(race, loaderHeight) {
                 {
                     "data": "lastName",
                     "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                        $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
+                        $(nTd).html("<span class='table-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
                     }
                 },
                 {
                     "data": "firstName",
                     "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                        $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
+                        $(nTd).html("<span class='table-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
                     }
                 },
             ];
@@ -575,13 +575,13 @@ function raceShow(race, loaderHeight) {
                 {
                     "data": "lastName",
                     "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                        $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
+                        $(nTd).html("<span class='table-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
                     }
                 },
                 {
                     "data": "firstName",
                     "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                        $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
+                        $(nTd).html("<span class='table-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
                     }
                 },
                 {data: 'chronoString', className: "row-rank"},
@@ -683,13 +683,13 @@ function championshipShow(championship, loaderHeight) {
                 {
                     "data": "lastName",
                     "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                        $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
+                        $(nTd).html("<span class='table-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.lastName + "</span>");
                     }
                 },
                 {
                     "data": "firstName",
                     "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                        $(nTd).html("<span class='profile-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
+                        $(nTd).html("<span class='table-href' onclick='profilData(" + oData.id + " )' data-toggle='modal' data-target='#competitor-modal'>" + oData.firstName + "</span>");
                     }
                 },
                 {data: 'points', className: "row-rank"},
@@ -910,7 +910,7 @@ function competitionFormDates() {
  /   modal/profile_competitor.html.twig
  /**********************************************************************************************************************/
 function navbarCompetitorProfile() {
-    var $profile = $('#profile-href');
+    var $profile = $('#table-href');
 
     $profile.click(function () {
         var user = $(this).attr("data");
@@ -1035,7 +1035,7 @@ function userBarCompetitor() {
         var dt = date.split(/[\s \- :]+/);
         date = new Date(Date.UTC(dt[0], dt[1] - 1, dt[2], 0, 0, 0));
         var options = {weekday: 'long', month: 'long', day: 'numeric'};
-        var txt = 'Prochaine course : ' + date.toLocaleDateString('fr-FR', options) + ' ' + dt[3] + 'H' + dt[4];
+        var txt = 'Votre prochaine course : ' + date.toLocaleDateString('fr-FR', options) + ' ' + dt[3] + 'H' + dt[4];
         txtNextRace.text(txt);
     }
 }

@@ -52,20 +52,23 @@ class CompetitorRepository extends EntityRepository
         $dateEnd = $y . '-12-31 23:59:59';
 
         $rawSqlAll = " SELECT
-                        COUNT(r.id) as allNbRace,
-                        SUM(CASE When r.in_championship = 1 Then 1 Else 0 End) as icNbRace,
-                        SUM(CASE When r.in_championship = 0 Then 1 Else 0 End) as ncNbRace,
-                        SUM(r.distance) as allDistance, 
-                        SUM(CASE When r.in_championship = 1 Then r.distance Else 0 End) as icDistance,
-                        SUM(CASE When r.in_championship = 0 Then r.distance Else 0 End) as ncDistance,
-                        SUM(rc.chrono) as allChrono,
-                        SUM(CASE When r.in_championship = 1 Then rc.chrono Else 0 End) as icChrono,
-                        SUM(CASE When r.in_championship = 0 Then rc.chrono Else 0 End) as ncChrono
+                        COUNT(r.id) as allNbRaceEnrol,
+                        SUM(CASE When r.passed Then 1 Else 0 End) as allNbRace,
+                        SUM(CASE When r.in_championship = 1 AND r.passed Then 1 Else 0 End) as icNbRace,
+                        SUM(CASE When r.in_championship = 1 Then 1 Else 0 End) as icNbRaceEnrol,
+                        SUM(CASE When r.in_championship = 0 AND r.passed Then 1 Else 0 End) as ncNbRace,
+                        SUM(CASE When r.in_championship = 0 Then 1 Else 0 End) as ncNbRaceEnrol,
+                        SUM(CASE When r.passed Then r.distance Else 0 End) as allDistance,
+                        SUM(CASE When r.in_championship = 1 AND r.passed Then r.distance Else 0 End) as icDistance,
+                        SUM(CASE When r.in_championship = 0 AND r.passed Then r.distance Else 0 End) as ncDistance,
+                        SUM(CASE When r.passed Then rc.chrono Else 0 End) as allChrono,
+                        SUM(CASE When r.in_championship = 1 AND r.passed Then rc.chrono Else 0 End) as icChrono,
+                        SUM(CASE When r.in_championship = 0 AND r.passed Then rc.chrono Else 0 End) as ncChrono
                         FROM race_competitor rc
                         INNER JOIN race r ON rc.race_id = r.id
                         WHERE rc.competitor_id = '" . $competitor . "'
                         AND r.date_time BETWEEN '" . $dateStart . "' AND '" . $dateEnd . "'
-                        AND r.passed = 1";
+                        ";
 
         $stmt = $this->getEntityManager()->getConnection()->prepare($rawSqlAll);
         $stmt->execute([]);
