@@ -762,20 +762,23 @@ function registration() {
     var inputDate = $('#appbundle_competitor_date');
     var dp = $('#register-form-dp');
 
+
     dp.datepicker({
         language: 'fr',
         format: 'dd-mm-yyyy',
         startView: 2,
+        startDate : new Date('1950-01-01'),
+        endDate : new Date('2002-12-31'),
         autoclose: true,
         todayHighlight: true
     });
+
 
 
     dp.on('changeDate', function () {
         var compDate = parseDateFrToUs(dp.datepicker('getFormattedDate'));
         inputDate.val(compDate);
         inputDate.trigger('change');
-
     });
 }
 
@@ -1839,7 +1842,7 @@ function parseDateUsToFr(date) {
     return newdate;
 }
 
-function stringDate(date) {
+function stringDate(date)   {
     var dt = date.split(/[\s \- :]+/);
     date = new Date(Date.UTC(dt[0], dt[1] - 1, dt[2], 0, 0, 0));
     var options = {weekday: 'long', month: 'long', day: 'numeric'};
