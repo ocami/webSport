@@ -10,29 +10,37 @@
 {% block body %}
 
     {{ 0|loader }}
+    <div class="col-xs-12">
+        <button class="btn-xs btn-primary pull-right" id="competition-list-button" value="passed">
+            Compétitions passées
+        </button>
+        <br>
+        <h4 id="competition-list-title">Compétitions à venir</h4>
 
-    <button class="btn-xs btn-primary pull-right" id="competition-list-button" value="passed">
-        Compétitions passées
-    </button>
-    <br>
-    <h4 id="competition-list-title">Compétitions à venir</h4>
+        <div id="future-competition" class="col-xs-12 panels-container">
+            <div class="row">
+                {% for competition in competitions.future %}
+                <div class="col-sm-offset-1 col-sm-10 col-md-offset-0 col-md-6 competition-container">
+                    {% include 'competition/modelList.twig' %}
+                </div>
+                {% if loop.index is even and not loop.last %}</div>
+            <div class="row">{% endif %}
+                {% if loop.last %}</div>{% endif %}
+            {% endfor %}
+        </div>
 
-    <div id="future-competition" class="col-xs-12">
-        {% for competition in competitions.future %}
-            <div class="col-sm-offset-1 col-sm-10 col-md-offset-0 col-md-6 competitions-container">
-                {% include 'competition/modelList.twig' %}
-            </div>
-        {% endfor %}
-    </div>
-
-    <div id="passed-competition" class="col-xs-12">
-        <h4 id="competition-list-title-passed">Compétitions passées</h4>
-
-        {% for competition in competitions.passed %}
-            <div class="col-sm-offset-1 col-sm-10 col-md-offset-0 col-md-6 competitions-container">
-                {% include 'competition/modelList.twig' %}
-            </div>
-        {% endfor %}
+        <div id="passed-competition" class="col-xs-12 panels-container">
+            <h4 id="competition-list-title-passed">Compétitions passées</h4>
+            <div class="row">
+                {% for competition in competitions.passed %}
+                <div class="col-sm-offset-1 col-sm-10 col-md-offset-0 col-md-6 competition-container">
+                    {% include 'competition/modelList.twig' %}
+                </div>
+                {% if loop.index is even and not loop.last %}</div>
+            <div class="row">{% endif %}
+                {% if loop.last %}</div>{% endif %}
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
 

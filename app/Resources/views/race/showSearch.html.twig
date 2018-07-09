@@ -11,7 +11,7 @@
                 <h3 style="text-align: center">Aucune course trouvée</h3>
             {% endif %}
             {% for race in races %}
-                <div class="col-xs-12 races-container">
+                <div class="race-container">
                     {{ include('race/modelList.html.twig') }}
                 </div>
             {% endfor %}

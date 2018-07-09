@@ -172,6 +172,10 @@ div#fade-content {
     }
 }
 
+.panels-container{
+    padding: 0em;
+}
+
 .panel-heading {
     border-bottom: 0px;
 }
@@ -203,7 +207,7 @@ div#fade-content {
     }
 
     @media (max-width: 500px) {
-        .races-container, .competitions-container{
+        .race-container, .competition-container{
             padding: 0em;
         }
 
@@ -223,6 +227,13 @@ div#fade-content {
 
         .panel-model .panel-title{
             font-size: 1em;
+        }
+
+        .panel-show .location-panel span {
+            display: block;
+            text-align: center;
+            font-size: larger;
+            font-size: 0.8em;
         }
 
         .panel-model .date {
