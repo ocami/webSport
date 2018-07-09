@@ -50,17 +50,20 @@ class homeController extends Controller
         ));
     }
 
+
+
     /**
      * @Route("/test", options={"expose"=true}, name="test")
      */
     public function test()
     {
+        $competitions = $this->getDoctrine()->getRepository(Competition::class)->allValid();
+        $competitions = $this->get(UserService::class)->addUserDataInCompetitions($competitions);
+        $competitions = $this->get(CompetitionService::class)->postSelect($competitions);
 
-        $this->getDoctrine()->getRepository(Category::class)->updateCompetitors();
-
-
-
-        return $this->render('home/test.html.twig', array());
+        return $this->render('home/test.html.twig', array(
+            'competitions' => $competitions
+        ));
     }
 
 
