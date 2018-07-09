@@ -736,7 +736,7 @@ function competitorShow() {
     };
 
     $(document).ready(function () {
-        $('table').DataTable(options);
+        $('.cs-table-ranck').DataTable(options);
     });
 }
 
