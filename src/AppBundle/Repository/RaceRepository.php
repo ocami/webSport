@@ -62,7 +62,7 @@ class RaceRepository extends EntityRepository
                             l.street, l.postCode, l.city, l.x, l.y
                             ')
             ->where('r.id = :id')
-            ->setParameter('id', $race)
+            ->setParameter('id', $idRace)
             ->getQuery()->getResult();
 
         $categories = $this->createQueryBuilder('r')
