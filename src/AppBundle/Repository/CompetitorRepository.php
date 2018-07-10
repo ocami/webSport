@@ -58,9 +58,9 @@ class CompetitorRepository extends EntityRepository
                         SUM(CASE When r.in_championship = 1 Then 1 Else 0 End) as icNbRaceEnrol,
                         SUM(CASE When r.in_championship = 0 AND r.passed Then 1 Else 0 End) as ncNbRace,
                         SUM(CASE When r.in_championship = 0 Then 1 Else 0 End) as ncNbRaceEnrol,
-                        SUM(CASE When r.passed Then r.distance Else 0 End) as allDistance,
-                        SUM(CASE When r.in_championship = 1 AND r.passed Then r.distance Else 0 End) as icDistance,
-                        SUM(CASE When r.in_championship = 0 AND r.passed Then r.distance Else 0 End) as ncDistance,
+                        SUM(CASE When r.passed Then round(r.distance,1) Else 0 End) as allDistance,
+                        SUM(CASE When r.in_championship = 1 AND r.passed Then round(r.distance,1) Else 0 End) as icDistance,
+                        SUM(CASE When r.in_championship = 0 AND r.passed Then round(r.distance,1) Else 0 End) as ncDistance,
                         SUM(CASE When r.passed Then rc.chrono Else 0 End) as allChrono,
                         SUM(CASE When r.in_championship = 1 AND r.passed Then rc.chrono Else 0 End) as icChrono,
                         SUM(CASE When r.in_championship = 0 AND r.passed Then rc.chrono Else 0 End) as ncChrono

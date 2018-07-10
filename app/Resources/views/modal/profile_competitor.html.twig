@@ -1,55 +1,81 @@
 {% block body %}
-    <!-- Modal -->
-    <div class="modal fade" id="competitor-modal" role="dialog">
+    <div id="competitor-modal" class="modal fade" role="dialog">
         <div class="modal-dialog">
-
             <!-- Modal content-->
             <div class="modal-content">
-                <div class="modal-body col-xs-12">
-                    <div class="modal-container">
-                        <div id="competitor-show">
-                            <div class="cs-user col-md-6 col-xs-12">
-                                <div class="col-xs-4"><img alt="User Pic"
-                                                           src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg"
-                                                           id="profile-image1"
-                                                           class="img-circle img-responsive"></div>
-                                <div class="user col-xs-8">
-                                    <span class="firstName"></span>
-                                    <span class="lastName"></span><br>
-                                    <span class="age"></span>
-                                </div>
-                            </div>
-                            <div class="cs-panel-container col-xs-12 col-sm-6 col-md-4 col-md-6">
-                                <div class="cs-panel cs-panel-category">
-                                    <div class="user category"></div>
-                                    <span class="cs-label ic-races">Classement :</span><span class="rank ic-races"> </span><br>
-                                    <span class="cs-label ic-races">Points :</span> <span class="points ic-races"></span>
-                                    <div class="no-rank" style="display: none">Non classé</div>
-                                </div>
-                            </div>
-                            <div class="cs-panel-container col-xs-12 col-sm-12 col-md-6">
-                                <div class="cs-panel cs-panel-all ic-races">
-                                    <div class="modal-title">Championat</div>
-                                    <span class="cs-label">Nombre de courses : </span> <span class="icNbRace"></span><br>
-                                    <span class="cs-label">Distance parcourue : </span> <span class="icDistance"></span><br>
-                                    <span class="cs-label">Vitesse moyenne : </span> <span class="icSpeed"></span>
-                                </div>
-                            </div>
-                            <div class="cs-panel-container col-xs-12 col-sm-12 col-md-6">
-                                <div class="cs-panel cs-panel-all nc-races">
-                                    <div class="modal-title">Courses libres</div>
-                                    <span class="cs-label">Nombre de courses : </span> <span class="ncNbRace"></span><br>
-                                    <span class="cs-label">Distance parcourue : </span> <span class="ncDistance"></span><br>
-                                    <span class="cs-label">Vitesse moyenne : </span> <span class="ncSpeed"></span>
-                                </div>
-                            </div>
-
-
+                <div class="modal-body cs-body col-xs-12">
+                    <!-- name / img -->
+                    <div class="cs-user col-md-6 col-xs-12">
+                        <div class="col-xs-4"><img alt="User Pic"
+                                                   src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg"
+                                                   id="profile-image1"
+                                                   class="img-circle img-responsive"></div>
+                        <div class="user col-xs-8">
+                            <span class="firstName"></span>
+                            <span class="lastName"></span><br>
+                            <span class="age"></span>
+                        </div>
+                    </div>
+                    <!-- category / rank / points -->
+                    <div class="col-xs-12 col-md-6">
+                        <div class="cs-panel">
+                            <div class="text-primary cs-title category"></div>
+                            <table class="ic-races">
+                                <tr>
+                                    <th>Classement<span class="pull-right">:</span></th>
+                                    <th><span class="rank ic-races cs-data"></span></th>
+                                </tr>
+                                <tr>
+                                    <th>Points<span class="pull-right">:</span></th>
+                                    <th><span class="points ic-races cs-data"></span></th>
+                                </tr>
+                            </table>
+                            <div class="no-rank" style="display: none">Non classé</div>
+                        </div>
+                    </div>
+                    <!-- championship races stat -->
+                    <div class="col-xs-12 col-md-6">
+                        <div class="cs-panel">
+                            <div class="cs-title">Championat</div>
+                            <table class="ic-races">
+                                <tr>
+                                    <th >Nombre de courses<span class="pull-right">:</span></th>
+                                    <th><span class="icNbRace cs-data"></span></th>
+                                </tr>
+                                <tr>
+                                    <th >Distance parcourue<span class="pull-right">:</span></th>
+                                    <th><span class="icDistance cs-data"></span></th>
+                                </tr>
+                                <tr>
+                                    <th>Vitesse moyenne<span class="pull-right">:</span></th>
+                                    <th><span class="icSpeed cs-data"></span></th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- none championship races stat -->
+                    <div class="col-xs-12 col-md-6">
+                        <div class="cs-panel">
+                            <div class="cs-title">Courses libres</div>
+                            <table class="ic-races">
+                                <tr>
+                                    <th>Nombre de courses<span class="pull-right">:</span></th>
+                                    <th><span class="ncNbRace cs-data"></span></th>
+                                </tr>
+                                <tr>
+                                    <th>Distance parcourue<span class="pull-right">:</span></th>
+                                    <th><span class="ncDistance cs-data"></span></th>
+                                </tr>
+                                <tr>
+                                    <th>Vitesse moyenne<span class="pull-right">:</span></th>
+                                    <th><span class="ncSpeed cs-data"></span></th>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="button" class="btn btn-info competitor-profile" value="Voir profil complet">
+                    <input type="button" class="btn btn-info competitor-profile" value="Profil complet">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
                 </div>
             </div>

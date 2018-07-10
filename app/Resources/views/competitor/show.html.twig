@@ -19,110 +19,112 @@
 
 {% block body %}
 
-    <div id="competitor-show">
-        <div class="col-xs-12 col-sm-6 col-md-4">
-            <div class="cs-user col-xs-12">
-                <div class="col-xs-4"><img alt="User Pic"
-                                           src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg"
-                                           id="profile-image1"
-                                           class="img-circle img-responsive"></div>
-                <div class="user col-xs-8">
-                    <span>{{ competitor.firstName }}</span><br>
-                    <span>{{ competitor.lastName }}</span><br>
-                    <span>{{ competitor.age }} ans</span>
-                </div>
+    <!-- name / img -->
+    <div class="col-xs-12 col-sm-6 col-md-4">
+        <div class="cs-user col-xs-12">
+            <div class="col-xs-4"><img alt="User Pic"
+                                       src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg"
+                                       class="img-circle img-responsive"></div>
+            <div class="col-xs-8">
+                <span>{{ competitor.firstName }}</span><br>
+                <span>{{ competitor.lastName }}</span><br>
+                <span>{{ competitor.age }} ans</span>
             </div>
-            {% if is_granted('ROLE_COMPETITOR') %}
-                {% if app.user.id == competitor.userId %}
-                    <span>Id : {{ app.user.username }}</span><br>
-                    <span>{{ app.user.email }}</span>
-                {% endif %}
+        </div>
+        {% if is_granted('ROLE_COMPETITOR') %}
+            {% if app.user.id == competitor.userId %}
+                <span>Id : {{ app.user.username }}</span><br>
+                <span>{{ app.user.email }}</span>
             {% endif %}
-        </div>
-        <div class="cs-panel-container col-xs-12 col-sm-6 col-md-3">
-            <div class="cs-panel    ">
-                <div class="user">{{ competitor.category.name }} </div>
-                {% if cc %}
-                    <table>
-                        <tr>
-                            <th class="cs-label">Classement<span class="pull-right">:</span></th>
-                            <th>{{ cc.rank }}</th>
-                        </tr>
-                        <tr>
-                            <th class="cs-label">Points<span class="pull-right">:</span></th>
-                            <th>{{ cc.points }}</th>
-                        </tr>
-                    </table>
-                {% else %}
-                    <div>Non classé</div>
-                {% endif %}
-            </div>
-        </div>
-        <div class="cs-panel-container col-xs-12 col-sm-12 col-md-5">
-            <div class="cs-panel cs-panel-all">
-                <table>
+        {% endif %}
+    </div>
+    <!-- category / rank / points -->
+    <div class="col-xs-12 col-sm-6 col-md-3">
+        <div class="cs-panel">
+            <div class="text-primary cs-title">{{ competitor.category.name }}</div>
+            {% if cc %}
+                <table class="ic-races">
                     <tr>
-                        <th class="cs-label">Nombre de courses <span class="pull-right">:</span></th>
-                        <th>{{ racesStat.allNbRace }}</th>
+                        <th>Classement<span class="pull-right">:</span></th>
+                        <th><span class="cs-data">{{ cc.rank }}</span></th>
                     </tr>
                     <tr>
-                        <th class="cs-label">Distance parcourue <span class="pull-right">:</span></th>
-                        <th >{{ racesStat.allDistance }} Km</th>
+                        <th>Points<span class="pull-right">:</span></th>
+                        <th><span class="cs-data">{{ cc.points }}</span></th>
                     </tr>
-                    <tr>
-                        <th class="cs-label">Vitesse moyenne <span class="pull-right">:</span></th>
-                        <th>{{ racesStat.allSpeed }} Km/h</th>
-                    </tr>
-                </table>
-            </div>
-        </div>
-
-        <div class="col-xs-12 cs-races">
-            <div class="col-md-4 cs-title">Championat</div>
-            {% if racesStat.icNbRaceEnrol %}
-                <div class="col-md-8 cs-stat">
-                    <span>Nombre de courses : {{ racesStat.icNbRace }}</span>
-                    <span>Distance parcourue : {{ racesStat.icDistance }} Km</span>
-                    <span>Vitesse moyenne : {{ racesStat.icSpeed }} Km/h</span>
-                </div>
-                <table class="table cs-table-ranck table-striped table-bordered dt-responsive nowrap" style="width:100%">
-                    <thead>
-                    <tr>
-                        <th>Course</th>
-                        <th>Date</th>
-                        <th>Ville</th>
-                        <th>Dist.</th>
-                        <th>Temps</th>
-                        <th>Clt.</th>
-                        <th>Points</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for rc in rc %}
-                        {% if  rc.race.inChampionship %}
-                            <tr>
-                                <td onclick="location.href = '{{ path('race_show', {'id': rc.race.id}) }}'">
-                                    <span class='table-href'>{{ rc.race.name }}</span>
-                                </td>
-                                <td>{{ rc.race.dateTime|localizeddate('none', 'none', 'fr_BR', null, "cccc d MMMM") }}</td>
-                                <td>{{ rc.race.competition.location.city }}</td>
-                                <td class="row-rank">{{ rc.race.distance }}</td>
-                                <td class="row-rank">{{ rc.chronoString }}</td>
-                                <td class="row-rank">{{ rc.rankCategory }}</td>
-                                <td class="row-rank">{{ rc.points }}</td>
-                            </tr>
-                        {% endif %}
-                    {% endfor %}
-                    </tbody>
                 </table>
             {% else %}
-               <br><div align="center">Aucune course enregistrée</div>
+                <div>Non classé</div>
             {% endif %}
         </div>
+    </div>
+    <!-- general stat -->
+    <div class="col-xs-12 col-sm-12 col-md-5">
+        <div class="cs-panel">
+            <table style="margin-top: 0.5em">
+                <tr>
+                    <th>Nombre de courses<span class="pull-right"> :</span></th>
+                    <th><span class="cs-data">{{ racesStat.allNbRace }}</span></th>
+                </tr>
+                <tr>
+                    <th>Distance parcourue<span class="pull-right"> :</span></th>
+                    <th><span class="cs-data">{{ racesStat.allDistance }} Km</span></th>
+                </tr>
+                <tr>
+                    <th>Vitesse moyenne<span class="pull-right"> :</span></th>
+                    <th><span class="cs-data">{{ racesStat.allSpeed }} Km/h</span></th>
+                </tr>
+            </table>
+        </div>
+    </div>
 
-        <div class="col-xs-12 cs-races">
-            <div class="col-md-4 cs-title">Libre</div>
-            {% if racesStat.ncNbRaceEnrol %}
+    <div class="col-xs-12 cs-races">
+        <div class="col-md-4 cs-title">Championat</div>
+        {% if racesStat.icNbRaceEnrol %}
+            <div class="col-md-8 cs-stat">
+                <span>Nombre de courses : {{ racesStat.icNbRace }}</span>
+                <span>Distance parcourue : {{ racesStat.icDistance }} Km</span>
+                <span>Vitesse moyenne : {{ racesStat.icSpeed }} Km/h</span>
+            </div>
+            <table class="table cs-table-ranck table-striped table-bordered dt-responsive nowrap" style="width:100%">
+                <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Date</th>
+                    <th>Ville</th>
+                    <th>Dist.</th>
+                    <th>Temps</th>
+                    <th>Clt.</th>
+                    <th>Points</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for rc in rc %}
+                    {% if  rc.race.inChampionship %}
+                        <tr>
+                            <td onclick="location.href = '{{ path('race_show', {'id': rc.race.id}) }}'">
+                                <span class='table-href'>{{ rc.race.name }}</span>
+                            </td>
+                            <td>{{ rc.race.dateTime|localizeddate('none', 'none', 'fr_BR', null, "cccc d MMMM") }}</td>
+                            <td>{{ rc.race.competition.location.city }}</td>
+                            <td class="row-rank">{{ rc.race.distance }}</td>
+                            <td class="row-rank">{{ rc.chronoString }}</td>
+                            <td class="row-rank">{{ rc.rankCategory }}</td>
+                            <td class="row-rank">{{ rc.points }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <br>
+            <div align="center">Aucune course enregistrée</div>
+        {% endif %}
+    </div>
+
+    <div class="col-xs-12 cs-races">
+        <div class="col-md-4 cs-title">Courses libres</div>
+        {% if racesStat.ncNbRaceEnrol %}
             <div class="col-md-8 cs-stat">
                 <span>Nombre de courses : {{ racesStat.ncNbRace }}</span>
                 <span>Distance parcourue : {{ racesStat.ncDistance }} Km</span>
@@ -156,12 +158,11 @@
                 {% endfor %}
                 </tbody>
             </table>
-            {% else %}
-                <br><div align="center">Aucune course enregistrée</div>
-            {% endif %}
-        </div>
+        {% else %}
+            <br>
+            <div align="center">Aucune course enregistrée</div>
+        {% endif %}
     </div>
-
 {% endblock %}
 
 {% block javascripts %}

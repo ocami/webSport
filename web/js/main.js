@@ -920,7 +920,7 @@ function navbarCompetitorProfile() {
 }
 
 function profilData(id) {
-    var $container = $('.modal-container');
+    var $container = $('.cs-body');
 
     //init
     loaderDivStart($container);
