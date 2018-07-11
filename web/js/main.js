@@ -1118,11 +1118,12 @@ function showSearch() {
 
 function searchBarRace() {
 
+    var today = todayDate();
     var dataSearch = {
         categories: null,
         dep: null,
         dist: {min: null, max: null},
-        date: {min: null, max: null},
+        date: {min: today, max: null},
         inChampionship: null,
         enrol: null
     };
