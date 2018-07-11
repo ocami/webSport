@@ -22,14 +22,8 @@
 
 {% block body %}
 
-    <div id="future-competition" class="col-xs-12">
-        {% for competition in competitions.future %}
-            <div class="col-sm-offset-1 col-sm-10 col-md-offset-0 col-md-6 competitions-container">
-                {% include 'competition/modelList.twig' %}
-            </div>
-            {% if loop.index is even %}<br>{% endif %}
-        {% endfor %}
-    </div>
+
+
 
 {% endblock %}
 

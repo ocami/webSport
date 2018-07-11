@@ -51,19 +51,47 @@ class homeController extends Controller
     }
 
 
-
     /**
      * @Route("/test", options={"expose"=true}, name="test")
      */
     public function test()
     {
-        $competitions = $this->getDoctrine()->getRepository(Competition::class)->allValid();
-        $competitions = $this->get(UserService::class)->addUserDataInCompetitions($competitions);
-        $competitions = $this->get(CompetitionService::class)->postSelect($competitions);
 
-        return $this->render('home/test.html.twig', array(
-            'competitions' => $competitions
-        ));
+        $var1 = null;
+        $var2 = '0';
+        $var3 = '1';
+
+        $var = $var2;
+
+        var_dump(isset($var1));
+        var_dump(empty($var1));
+        var_dump(is_null($var1));
+        var_dump('********************');
+
+
+
+        var_dump(isset($var2));
+        var_dump(empty($var2));
+        var_dump(is_null($var2));
+        var_dump('********************');
+
+
+        var_dump(isset($var3));
+        var_dump(empty($var3));
+        var_dump(is_null($var3));
+        var_dump('********************');
+
+
+        if (is_int($var)) {
+            var_dump('yep');
+        } else {
+            var_dump('none');
+        }
+
+
+
+
+        return $this->render('home/test.html.twig', array());
     }
 
 
