@@ -147,7 +147,7 @@ class RaceRepository extends EntityRepository
             $rawSql .= $wherePostCode;
         }
 
-        if ($data['inChampionship'] == 0 || $data['inChampionship'] == 1) {
+        if (isset($data['inChampionship'])) {
             $whereChampionship = "AND r.in_championship = '" . $data['inChampionship'] . "'";
             $rawSql .= $whereChampionship;
         }
