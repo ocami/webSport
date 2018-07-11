@@ -697,6 +697,58 @@ div#fade-content {
     margin-bottom: 1em;
 }
 
+/***********************************************--SEARCH LAYOUT--*********************************************************/
+#search-bar {
+    margin-top: 16em;
+}
+
+#index-map {
+    height: 90%;
+}
+
+#small-map-container {
+    height: 13em;
+}
+
+#small-map {
+    height: 12em;
+}
+
+#index-map-container {
+    height: 85vh;
+
+}
+
+.leaflet-popup-img {
+    height: 3em;
+}
+
+#button-map {
+    visibility: hidden;
+}
+
+#index-container {
+    margin-left: 17em;
+    padding-right: 0em;
+}
+
+#left-container {
+    height: 100%;
+    width: 18em;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 4em;
+    padding-left: 0.5em;
+}
+
+#button-search-xs{
+    margin-top: -1em;
+    margin-bottom: 1em;
+}
 /***********************************************--LOADER--*************************************************************/
 #full-page {
     height: 90vh;
