@@ -1312,7 +1312,7 @@ function searchBarRace() {
         refreshDistance('active');
     });
 
-    $inputDate.on('changeDate', function () {
+    $inputDate.change('changeDate', function () {
         refreshDate('active');
     });
 
